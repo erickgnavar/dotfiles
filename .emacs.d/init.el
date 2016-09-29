@@ -266,10 +266,9 @@
 
 (use-package web-mode
   :ensure t
+  :mode (("\\.html\\'" . web-mode)
+         ("\\.html.eex\\'" . web-mode))
   :config
-  (add-to-list 'auto-mode-alist
-               '("\\.html?\\'" . web-mode)
-               '("\\.html.exx?\\'" . web-mode))
   (setq web-mode-enable-current-element-highlight t)
   (setq web-mode-enable-current-column-highlight t)
   (add-hook 'web-mode-hook 'emmet-mode))

@@ -22,7 +22,6 @@
 (require 'bind-key)
 
 ;; Base config
-(menu-bar-mode 1)
 (setq inhibit-startup-message t)
 ;; Hide the bell in the center of screen
 (setq ring-bell-function 'ignore)
@@ -42,7 +41,9 @@
 (defalias 'run-elisp 'ielm)
 
 (use-package better-defaults
-  :ensure t)
+  :ensure t
+  :config
+  (menu-bar-mode 1))
 
 (use-package pbcopy
   :ensure t)

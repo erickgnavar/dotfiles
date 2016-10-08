@@ -220,7 +220,7 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-global-mode)
+  (projectile-mode)
   (setq projectile-completion-system 'helm)
   (add-hook 'projectile-after-switch-project-hook
             (lambda ()

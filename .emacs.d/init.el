@@ -277,7 +277,10 @@
   :config
   (setq web-mode-enable-current-element-highlight t)
   (setq web-mode-enable-current-column-highlight t)
-  (add-hook 'web-mode-hook 'emmet-mode))
+  (defun my/web-mode-hook ()
+    (emmet-mode)
+    (autopair-mode -1))
+  (add-hook 'web-mode-hook 'my/web-mode-hook))
 
 (use-package rainbow-mode
   :ensure t)

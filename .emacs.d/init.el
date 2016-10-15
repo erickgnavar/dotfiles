@@ -200,7 +200,12 @@
 (use-package neotree
   :ensure t
   :config
-  (global-set-key [f3] 'neotree-toggle)
+  (defun my/neotree-toggle ()
+    (interactive)
+    (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
+        (my/neotree-open-projectile)
+      (neotree-toggle)))
+  (global-set-key [f3] 'my/neotree-toggle)
   (defvar neo-fit-to-contents t)
   (setq neo-fit-to-contents t)
   (setq neo-theme (quote classic))
@@ -384,6 +389,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (if (eq ns-alternate-modifier 'meta)
       (setq ns-alternate-modifier nil)
       (setq ns-alternate-modifier 'meta)))
+
+(defun my/neotree-open-projectile ()
+  "Open neotree with projectile root folfer."
+  (interactive)
+  (neotree-dir (projectile-project-root)))
 
 (provide 'init)
 ;;; init.el ends here

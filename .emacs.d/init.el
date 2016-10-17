@@ -159,6 +159,7 @@
   :ensure t
   :config
   (setq org-clock-persist 'history)
+  (setq org-src-fontify-natively t)
   (org-clock-persistence-insinuate)
   (use-package ox-twbs
     :ensure t)

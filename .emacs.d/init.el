@@ -82,7 +82,8 @@
   :ensure t
   :diminish ""
   :config
-  (global-flycheck-mode))
+  (global-flycheck-mode)
+  (setq flycheck-highlighting-mode 'lines))
 
 (use-package company
   :ensure t

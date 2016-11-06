@@ -339,6 +339,12 @@
   :config
   (add-hook 'haskell-mode-hook 'stack-mode))
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode)
+  (which-key-setup-minibuffer))
+
 (diminish 'undo-tree-mode)
 (diminish 'hs-minor-mode)
 

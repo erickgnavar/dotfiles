@@ -31,6 +31,12 @@
 (global-set-key (kbd "C-x -") 'text-scale-decrease)
 (global-set-key (kbd "C-x =") 'text-scale-increase)
 (global-set-key (kbd "C-x +") 'text-scale-increase)
+
+;; Fix unicode errors
+(setenv "LANG" "en_US.UTF-8")
+(setenv "LC_ALL" "en_US.UTF-8")
+(setenv "LC_CTYPE" "en_US.UTF-8")
+
 ;; Fix size of scroll
 (setq scroll-step 1
       scroll-conservatively  10000)

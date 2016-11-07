@@ -260,7 +260,7 @@
                 (cargo-minor-mode t)
                 (define-key cargo-minor-mode-map "\C-c\C-t" 'cargo-process-test)
                 (define-key cargo-minor-mode-map "\C-c\C-b" 'cargo-process-build)
-                (define-key cargo-minor-mode-map "\C-c\C-r" 'cargo-process-run)))))
+                (define-key cargo-minor-mode-map "\C-c\C-c" 'cargo-process-run)))))
 
 (use-package elpy
   :ensure t

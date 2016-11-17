@@ -264,6 +264,7 @@
 
 (use-package elpy
   :ensure t
+  :diminish ""
   :config
   (elpy-enable)
   (when (require 'flycheck nil t)
@@ -276,7 +277,8 @@
               (my/fold-buffer-when-is-too-big 100))))
 
 (use-package emmet-mode
-  :ensure t)
+  :ensure t
+  :diminish "")
 
 (use-package web-mode
   :ensure t
@@ -341,12 +343,14 @@
 
 (use-package which-key
   :ensure t
+  :diminish ""
   :config
   (which-key-mode)
   (which-key-setup-minibuffer))
 
 (diminish 'undo-tree-mode)
 (diminish 'hs-minor-mode)
+(diminish 'auto-revert-mode)
 
 ;; Use ESC key instead C-g to close and abort
 ;; copied from somewhere

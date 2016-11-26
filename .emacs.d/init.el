@@ -205,6 +205,9 @@
             (lambda ()
               (evil-emacs-state))))
 
+(use-package all-the-icons
+  :ensure t)
+
 (use-package neotree
   :ensure t
   :config

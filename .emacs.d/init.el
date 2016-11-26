@@ -141,6 +141,9 @@
 	"s" 'my/toggle-spanish-characters
 	"w" 'my/toggle-maximize
 	"g" 'magit-status
+        "hn" 'git-gutter:next-hunk
+        "hp" 'git-gutter:previous-hunk
+        "hk" 'git-gutter:revert-hunk
 	"k" 'kill-buffer)
     (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)))
 

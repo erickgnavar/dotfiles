@@ -219,7 +219,7 @@
   (global-set-key [f3] 'my/neotree-toggle)
   (defvar neo-fit-to-contents t)
   (setq neo-fit-to-contents t)
-  (setq neo-theme (quote classic))
+  (setq neo-theme 'icons)
   (setq neo-vc-integration (quote (face)))
   (evil-set-initial-state 'neotree-mode 'emacs)
   (add-hook 'neotree-mode-hook

@@ -276,6 +276,9 @@
               (highlight-indentation-mode -1) ; Remove vertical line
               (my/fold-buffer-when-is-too-big 100))))
 
+(use-package dockerfile-mode
+  :ensure t)
+
 (use-package emmet-mode
   :ensure t
   :diminish "")

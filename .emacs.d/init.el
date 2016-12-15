@@ -325,7 +325,11 @@
   (add-hook 'web-mode-hook 'my/web-mode-hook))
 
 (use-package rainbow-mode
-  :ensure t)
+  :ensure t
+  :diminish ""
+  :config
+  (add-hook 'css-mode-hook 'rainbow-mode)
+  (add-hook 'scss-mode-hook 'rainbow-mode))
 
 (use-package autopair
   :ensure t

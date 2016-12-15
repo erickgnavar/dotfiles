@@ -100,6 +100,29 @@
   (setq company-minimum-prefix-length 3)
   (add-hook 'after-init-hook 'global-company-mode))
 
+(use-package edbi-database-url
+  :ensure t
+  :init
+  (defun my/setup-db-url ()
+    (interactive)
+    (let ((driver (completing-read "driver: " '("pgsql" "mysql")))
+          (user (read-string "user: "))
+          (pass (read-passwd "pass: "))
+          (host (read-string "host: " "localhost"))
+          (port (read-string "port: "))
+          (name (read-string "name: ")))
+      (progn
+        (setenv edbi-database-url-env (format "%s://%s:%s@%s:%s/%s" driver user pass host port name))
+        (message "Database configured, run edbi-database-url"))))
+  :config
+  ;; Set path manually because the perl installation is local
+  (setenv "PATH"
+          (concat
+           (expand-file-name "~/perl5/bin")
+           (getenv "PATH")))
+  (setenv "PERL5LIB" (expand-file-name "~/perl5/lib/perl5"))
+  (setenv "PERL_LOCAL_LIB_ROOT" (expand-file-name "~/perl5")))
+
 (use-package git-gutter
   :ensure t
   :diminish ""

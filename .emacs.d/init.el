@@ -445,6 +445,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (unless pyvenv-virtual-env
     (pyvenv-workon name)))
 
+(defun my/config-file ()
+  "Open config file."
+  (interactive)
+  (find-file (expand-file-name "~/.emacs.d/init.el")))
+
 (defun my/toggle-spanish-characters ()
   "Enable/disable alt key to allow insert spanish characters."
   (interactive)

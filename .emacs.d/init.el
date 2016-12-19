@@ -440,6 +440,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (set-window-configuration (get-register register))
         (set-register register nil)))))
 
+(defun my/venv-workon (name)
+  "Active virtualenv NAME only is not setup yet."
+  (unless pyvenv-virtual-env
+    (pyvenv-workon name)))
+
 (defun my/toggle-spanish-characters ()
   "Enable/disable alt key to allow insert spanish characters."
   (interactive)

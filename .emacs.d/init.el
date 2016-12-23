@@ -289,7 +289,14 @@
                 (cargo-minor-mode t)
                 (define-key cargo-minor-mode-map "\C-c\C-t" 'cargo-process-test)
                 (define-key cargo-minor-mode-map "\C-c\C-b" 'cargo-process-build)
-                (define-key cargo-minor-mode-map "\C-c\C-c" 'cargo-process-run)))))
+                (define-key cargo-minor-mode-map "\C-c\C-c" 'cargo-process-run))))
+  (use-package racer
+    :ensure t
+    :config
+    (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))
+    (add-hook 'rust-mode-hook #'racer-mode)
+    (add-hook 'racer-mode-hook #'eldoc-mode)
+    (add-hook 'racer-mode-hook #'company-mode)))
 
 (use-package elpy
   :ensure t

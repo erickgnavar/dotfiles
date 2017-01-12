@@ -295,11 +295,15 @@
                 (define-key cargo-minor-mode-map "\C-c\C-c" 'cargo-process-run))))
   (use-package racer
     :ensure t
+    :diminish ""
     :config
     (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))
     (add-hook 'rust-mode-hook #'racer-mode)
     (add-hook 'racer-mode-hook #'eldoc-mode)
     (add-hook 'racer-mode-hook #'company-mode)))
+;; install rust dependencies
+;; cargo install rustfmt
+;; cargo install racer
 
 (use-package elpy
   :ensure t

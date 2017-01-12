@@ -267,14 +267,13 @@
   :config
   (projectile-mode)
   (setq projectile-completion-system 'helm)
-  (add-hook 'projectile-after-switch-project-hook
-            (lambda ()
-              (my/setup-eslint))))
-
-(use-package projectile-direnv
-  :ensure t
-  :config
-  (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables))
+  (use-package projectile-direnv
+    :ensure t
+    :config
+    (add-hook 'projectile-after-switch-project-hook
+              (lambda ()
+                (projectile-direnv-export-variables)
+                (my/setup-eslint)))))
 
 (use-package editorconfig
   :ensure t

@@ -402,6 +402,14 @@
 (diminish 'hs-minor-mode)
 (diminish 'auto-revert-mode)
 
+;; Eshell setup
+(add-hook 'eshell-mode-hook '(lambda ()
+                               (local-set-key (kbd "C-l") (lambda ()
+                                                            (interactive)
+                                                            (insert "clear 1")
+                                                            (execute-kbd-macro (read-kbd-macro "<return>"))))))
+
+
 ;; Use ESC key instead C-g to close and abort
 ;; copied from somewhere
 (defun minibuffer-keyboard-quit ()

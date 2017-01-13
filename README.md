@@ -2,6 +2,8 @@
 
 ## Emacs
 
+Tested on MacOS Sierra
+
 ### Packages
 
 - [better default](https://github.com/technomancy/better-defaults)

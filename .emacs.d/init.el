@@ -84,6 +84,9 @@
 (use-package restclient
   :ensure t)
 
+(use-package csv-mode
+  :ensure t)
+
 (use-package flycheck
   :ensure t
   :diminish ""

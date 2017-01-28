@@ -59,6 +59,11 @@
   :config
   (load-theme 'zerodark t))
 
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1))
+
 (use-package spaceline
   :ensure t
   :config

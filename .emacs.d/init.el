@@ -142,10 +142,7 @@
   :ensure t
   :config
   (evil-mode 1)
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (modify-syntax-entry ?_ "w")
-              (hs-minor-mode 1)))
+  (modify-syntax-entry ?_ "w")
   (use-package evil-nerd-commenter
     :ensure t
     :config

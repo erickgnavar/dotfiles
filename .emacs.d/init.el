@@ -369,6 +369,8 @@
   :ensure t
   :config
   (setq alchemist-mix-env "dev")
+  (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))
+  (setq alchemist-goto-erlang-source-dir (expand-file-name "~/Code/erlang/src"))
   (add-hook 'alchemist-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c C-t") 'alchemist-mix-test-this-buffer))))

@@ -131,12 +131,11 @@
   (setenv "PERL5LIB" (expand-file-name "~/perl5/lib/perl5"))
   (setenv "PERL_LOCAL_LIB_ROOT" (expand-file-name "~/perl5")))
 
-(use-package git-gutter
+(use-package git-gutter-fringe
   :ensure t
   :diminish ""
   :config
-  (global-git-gutter-mode)
-  (git-gutter:linum-setup))
+  (global-git-gutter-mode t))
 
 (use-package evil
   :ensure t

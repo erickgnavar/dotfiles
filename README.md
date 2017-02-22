@@ -16,7 +16,7 @@ Tested on MacOS Sierra
 - [flycheck](http://www.flycheck.org)
 - [company](https://company-mode.github.io)
 - [edbi-database-url](https://github.com/proofit404/edbi-database-url)
-- [git-gutter](https://github.com/syohex/emacs-git-gutter)
+- [git-gutter-fringe](https://github.com/syohex/emacs-git-gutter-fringe)
 - [evil](https://bitbucket.com/lyro/evil)
 - [evil-nerd-commenter](https://github.com/redguardtoo/evil-nerd-commenter)
 - [evil-surround](https://github.com/timcharper/evil-surround)

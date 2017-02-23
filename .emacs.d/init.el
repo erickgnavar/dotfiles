@@ -271,6 +271,7 @@
   :config
   (projectile-mode)
   (setq projectile-completion-system 'helm)
+  (setq projectile-mode-line '(:eval (format "Proj[%s]" (projectile-project-name))))
   (use-package projectile-direnv
     :ensure t
     :config

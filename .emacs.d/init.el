@@ -61,6 +61,7 @@
 
 (use-package beacon
   :ensure t
+  :diminish ""
   :config
   (beacon-mode 1))
 

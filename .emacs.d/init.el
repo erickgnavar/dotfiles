@@ -393,13 +393,11 @@
   (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
   (add-to-list 'company-backends 'company-elm))
 
-(use-package haskell-mode
-  :ensure t)
-
-(use-package stack-mode
+(use-package intero
   :ensure t
   :config
-  (add-hook 'haskell-mode-hook 'stack-mode))
+  (add-hook 'haskell-mode-hook 'intero-mode)
+  (evil-leader/set-key-for-mode 'haskell-mode "d" 'intero-goto-definition))
 
 (use-package which-key
   :ensure t

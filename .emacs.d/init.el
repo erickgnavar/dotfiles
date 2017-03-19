@@ -65,6 +65,11 @@
   :config
   (beacon-mode 1))
 
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
+
 (use-package spaceline
   :ensure t
   :config

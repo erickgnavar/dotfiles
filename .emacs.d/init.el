@@ -54,10 +54,10 @@
 (use-package pbcopy
   :ensure t)
 
-(use-package zerodark-theme
+(use-package dracula-theme
   :ensure t
   :config
-  (load-theme 'zerodark t))
+  (load-theme 'dracula t))
 
 (use-package beacon
   :ensure t

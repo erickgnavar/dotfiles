@@ -59,6 +59,13 @@
   :config
   (load-theme 'dracula t))
 
+(use-package nlinum
+  :ensure t
+  :config
+  (setq nlinum-format " %3d "
+        nlinum-highlight-current-line t
+        nlinum-redisplay-delay 0))
+
 (use-package beacon
   :ensure t
   :diminish ""
@@ -170,7 +177,7 @@
 	"y" 'helm-show-kill-ring
 	"SPC" 'helm-M-x
 	"m" 'ace-jump-mode
-	"l" 'linum-mode
+	"l" 'nlinum-mode
 	"s" 'my/toggle-spanish-characters
 	"w" 'my/toggle-maximize
 	"g" 'magit-status

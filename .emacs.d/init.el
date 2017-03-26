@@ -381,7 +381,8 @@
   (evil-leader/set-key-for-mode 'elixir-mode "d" 'alchemist-goto-definition-at-point)
   (add-hook 'alchemist-mode-hook
             (lambda ()
-              (local-set-key (kbd "C-c C-t") 'alchemist-mix-test-this-buffer))))
+              (local-set-key (kbd "C-c C-t") 'alchemist-mix-test-this-buffer)
+              (local-set-key (kbd "C-c C-s") 'alchemist-project-toggle-file-and-tests))))
 
 (use-package lfe-mode
   :ensure t

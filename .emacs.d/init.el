@@ -391,6 +391,13 @@
               (local-set-key (kbd "C-c C-t") 'alchemist-mix-test-this-buffer)
               (local-set-key (kbd "C-c C-s") 'alchemist-project-toggle-file-and-tests))))
 
+(use-package flycheck-dogma
+  :ensure t
+  :config
+  (eval-after-load 'flycheck
+    '(flycheck-dogma-setup))
+  (add-hook 'elixir-mode-hook 'flycheck-mode))
+
 (use-package lfe-mode
   :ensure t
   :config

@@ -240,6 +240,12 @@
   (use-package helm-ag
     :ensure t))
 
+(use-package git-timemachine
+  :ensure t
+  :config
+  (add-hook 'git-timemachine-mode-hook (lambda ()
+                                         (evil-emacs-state))))
+
 (use-package magit
   :ensure t
   :config

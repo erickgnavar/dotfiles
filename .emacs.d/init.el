@@ -338,6 +338,7 @@
     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
     (add-hook 'elpy-mode-hook 'flycheck-mode))
   (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
+  (define-key elpy-mode-map (kbd "C-c C-f") 'elpy-format-code)
   (setq elpy-test-django-runner-command '("./manage.py" "test" "--keepdb"))
   (add-hook 'elpy-mode-hook
             (lambda ()

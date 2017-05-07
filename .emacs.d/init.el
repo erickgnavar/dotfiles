@@ -235,7 +235,15 @@
                                  (lisp . t)
                                  (sql . t)
                                  (restclient . t)
+                                 (dot . t)
+                                 (plantuml . t)
                                  (emacs-lisp . t))))
+
+(use-package plantuml-mode
+  :ensure t
+  :config
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+  (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar")))
 
 (use-package helm
   :ensure t

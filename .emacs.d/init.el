@@ -105,7 +105,12 @@
     (exec-path-from-shell-initialize)))
 
 (use-package restclient
-  :ensure t)
+  :ensure t
+  :config
+  (use-package company-restclient
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-restclient)))
 
 (use-package csv-mode
   :ensure t)

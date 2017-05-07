@@ -410,15 +410,14 @@
 
 (use-package alchemist
   :ensure t
+  :bind (:map alchemist-mode-map
+              ("C-c C-t" . alchemist-mix-test-this-buffer)
+              ("C-c C-s" . alchemist-project-toggle-file-and-tests))
   :config
   (setq alchemist-mix-env "dev")
   (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))
   (setq alchemist-goto-erlang-source-dir (expand-file-name "~/Code/erlang/src"))
-  (evil-leader/set-key-for-mode 'elixir-mode "d" 'alchemist-goto-definition-at-point)
-  (add-hook 'alchemist-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c C-t") 'alchemist-mix-test-this-buffer)
-              (local-set-key (kbd "C-c C-s") 'alchemist-project-toggle-file-and-tests))))
+  (evil-leader/set-key-for-mode 'elixir-mode "d" 'alchemist-goto-definition-at-point))
 
 (use-package flycheck-dogma
   :ensure t

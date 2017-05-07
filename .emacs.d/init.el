@@ -429,12 +429,13 @@
 
 (use-package lfe-mode
   :ensure t
+  :bind (:map lfe-mode-map
+              ("C-c C-c" . lfe-eval-buffer))
   :config
   (defun lfe-eval-buffer ()
     "Send current buffer to inferior LFE process."
     (interactive)
-    (lfe-eval-region (point-min) (point-max) nil))
-  (define-key lfe-mode-map "\C-c\C-c" 'lfe-eval-buffer))
+    (lfe-eval-region (point-min) (point-max) nil)))
 
 (use-package elm-mode
   :ensure t

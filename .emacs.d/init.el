@@ -326,30 +326,31 @@
   (editorconfig-mode 1))
 
 (use-package rust-mode
-  :ensure t
-  :config
-  (use-package cargo
-    :ensure t
-    :bind (:map cargo-minor-mode-map
-                ("C-c C-t" . cargo-process-test)
-                ("C-c C-b" . cargo-process-build)
-                ("C-c C-c" . cargo-process-run))
-    :config
-    (add-hook 'rust-mode-hook
-              (lambda ()
-                (cargo-minor-mode t))))
-  (use-package racer
-    :ensure t
-    :diminish ""
-    :config
-    (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))
-    (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition)
-    (add-hook 'rust-mode-hook #'racer-mode)
-    (add-hook 'racer-mode-hook #'eldoc-mode)
-    (add-hook 'racer-mode-hook #'company-mode)))
+  :ensure t)
+
 ;; install rust dependencies
 ;; cargo install rustfmt
+(use-package cargo
+  :ensure t
+  :after rust-mode
+  :bind (:map cargo-minor-mode-map
+              ("C-c C-t" . cargo-process-test)
+              ("C-c C-b" . cargo-process-build)
+              ("C-c C-c" . cargo-process-run))
+  :config
+  (add-hook 'rust-mode-hook 'cargo-minor-mode))
+
 ;; cargo install racer
+(use-package racer
+  :ensure t
+  :diminish ""
+  :after rust-mode
+  :config
+  (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))
+  (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition)
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode))
 
 (use-package elpy
   :ensure t
@@ -413,6 +414,7 @@
   :bind (:map alchemist-mode-map
               ("C-c C-t" . alchemist-mix-test-this-buffer)
               ("C-c C-s" . alchemist-project-toggle-file-and-tests))
+  :after elixir-mode
   :config
   (setq alchemist-mix-env "dev")
   (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))

@@ -487,6 +487,21 @@
   (add-hook 'haskell-mode-hook 'intero-mode)
   (evil-leader/set-key-for-mode 'haskell-mode "d" 'intero-goto-definition))
 
+(use-package js2-mode
+  :ensure t
+  :mode "\\.js\\'"
+  :config
+  ;; let the error checking to flycheck
+  (setq js2-mode-show-strict-warnings nil))
+
+;; npm install -g tern
+(use-package company-tern
+  :ensure t
+  :after js2-mode
+  :config
+  (add-to-list 'company-backends 'company-tern)
+  (add-hook 'js2-mode-hook 'tern-mode))
+
 (use-package which-key
   :ensure t
   :diminish ""

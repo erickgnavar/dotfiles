@@ -352,6 +352,41 @@
   (add-hook 'racer-mode-hook #'eldoc-mode)
   (add-hook 'racer-mode-hook #'company-mode))
 
+;; Install godef with go get github.com/rogpeppe/godef
+;; Install goimports with go get golang.org/x/tools/cmd/goimports
+(use-package go-mode
+  :ensure t
+  :if (executable-find "go")
+  :bind (:map go-mode-map
+              ("C-c C-t" . go-test-current-file)
+              ("C-c C-c" . go-run)
+              ("C-c C-f" . gofmt))
+  :config
+  (setq gofmt-command "goimports")
+  (evil-leader/set-key-for-mode 'go-mode "d" 'godef-jump))
+
+;; Install gocode with go get github.com/nsf/gocode
+(use-package company-go
+  :ensure t
+  :if (executable-find "gocode")
+  :after go-mode
+  :config
+  (add-to-list 'company-backends 'company-go))
+
+(use-package go-eldoc
+  :ensure t
+  :if (executable-find "gocode")
+  :after go-mode
+  :config
+  (add-hook 'go-mode-hook 'go-eldoc-setup))
+
+(use-package go-playground
+  :ensure t
+  :if (executable-find "go")
+  :after go-mode
+  :config
+  (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
+
 (use-package elpy
   :ensure t
   :diminish ""

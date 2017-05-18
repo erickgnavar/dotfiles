@@ -118,6 +118,9 @@
 (use-package flycheck
   :ensure t
   :diminish ""
+  :bind (:map flycheck-mode-map
+              ("M-p" . flycheck-previous-error)
+              ("M-n" . flycheck-next-error))
   :config
   (global-flycheck-mode)
   (setq flycheck-highlighting-mode 'lines))

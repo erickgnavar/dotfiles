@@ -80,7 +80,8 @@
 (use-package rainbow-delimiters
   :ensure t
   :config
-  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode))
 
 (use-package spaceline
   :ensure t

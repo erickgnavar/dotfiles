@@ -404,6 +404,7 @@
   (setq elpy-test-django-runner-command '("./manage.py" "test" "--keepdb"))
   (add-hook 'elpy-mode-hook
             (lambda ()
+              (hs-minor-mode)
               (highlight-indentation-mode -1) ; Remove vertical line
               (my/fold-buffer-when-is-too-big 100))))
 

@@ -21,6 +21,9 @@ export LC_ALL=
 # Load the default .profile
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
 
+# setup fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh ]
+
 # PROMPT stuff
 function virtualenv_info () {
     [ $VIRTUAL_ENV ];

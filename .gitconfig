@@ -3,11 +3,22 @@
 	email = erick@navarro.io
 [alias]
 	pl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-    cm = commit
+    cm = commit -v
     co = checkout
     br = branch
     json = log --pretty=format:'{%n  "commit": "%H",%n  "abbreviated_commit": "%h",%n  "tree": "%T",%n  "abbreviated_tree": "%t",%n  "parent": "%P",%n  "abbreviated_parent": "%p",%n  "refs": "%D",%n  "encoding": "%e",%n  "subject": "%s",%n  "sanitized_subject_line": "%f",%n  "body": "%b",%n  "commit_notes": "%N",%n  "verification_flag": "%G?",%n  "signer": "%GS",%n  "signer_key": "%GK",%n  "author": {%n    "name": "%aN",%n    "email": "%aE",%n    "date": "%aD"%n  },%n  "commiter": {%n    "name": "%cN",%n    "email": "%cE",%n    "date": "%cD"%n  }%n},'
 [core]
 	editor = /usr/bin/vim
+	autocrlf = input
+	quotepath = false
 [github]
 	user = erickgnavar
+[diff]
+	compactionHeuristic = true
+[color "diff"]
+	old = red strike
+	new = green italic
+[commit]
+	template = ~/.git_commit_message.txt
+[status]
+	showUntrackedFiles = all

@@ -169,6 +169,8 @@
   :config
   (evil-mode 1)
   (modify-syntax-entry ?_ "w")
+  (define-key evil-normal-state-map (kbd "C-p") 'git-gutter:previous-hunk)
+  (define-key evil-normal-state-map (kbd "C-n") 'git-gutter:next-hunk)
   (use-package evil-nerd-commenter
     :ensure t
     :config

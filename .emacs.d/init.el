@@ -509,6 +509,20 @@
   (add-to-list 'company-backends 'company-tern)
   (add-hook 'js2-mode-hook 'tern-mode))
 
+(use-package tide
+  :ensure t
+  :init
+  (defun setup-tide-mode()
+    (interactive)
+    (tide-setup)
+    (flycheck-mode +1)
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1)
+    (company-mode +1))
+  :config
+  (add-hook 'typescript-mode-hook #'setup-tide-mode))
+
 (use-package which-key
   :ensure t
   :diminish ""

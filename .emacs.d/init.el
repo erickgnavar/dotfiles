@@ -229,6 +229,8 @@
   (setq org-clock-persist 'history)
   (setq org-src-fontify-natively t)
   (org-clock-persistence-insinuate)
+  (add-hook 'org-mode-hook (lambda ()
+                             (org-indent-mode t)))
   (use-package ox-twbs
     :ensure t)
   (use-package ob-restclient

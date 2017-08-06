@@ -200,7 +200,36 @@
         "hn" 'git-gutter:next-hunk
         "hp" 'git-gutter:previous-hunk
         "hk" 'git-gutter:revert-hunk
+        "t" 'my/find-tag
 	"k" 'kill-buffer)))
+
+(defun my/find-tag ()
+  "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
+  (interactive)
+  (if (projectile-project-p)
+      (let
+          ((tags-file-path (concat (projectile-project-root) "TAGS")))
+        (if (f-exists-p tags-file-path)
+            (helm-etags-select t)
+          (if (yes-or-no-p "Do you want generate a TAGS file?")
+              (progn
+                (my/gen-etags-file (projectile-project-root))
+                (helm-etags-select t)))))
+    (message "You are not in a project.")))
+
+(defun my/force-build-tags ()
+  "Force the build of the TAGS file."
+  (interactive)
+  (if (projectile-project-p)
+      (my/gen-etags-file (projectile-project-root))
+    (message "You are not in a project.")))
+
+(defun my/gen-etags-file (root-path)
+  "Generate etags file for the ROOT-PATH folder."
+  (let
+      ((pattern (read-string "Enter pattern of files to be used: ")))
+    (cd root-path)
+    (shell-command (format "find . -name \"%s\" | etags -" pattern))))
 
 (setq python-shell-completion-native-enable nil)
 

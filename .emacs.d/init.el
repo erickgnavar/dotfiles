@@ -200,6 +200,7 @@
         "hn" 'git-gutter:next-hunk
         "hp" 'git-gutter:previous-hunk
         "hk" 'git-gutter:revert-hunk
+        "hs" 'git-gutter:stage-hunk
         "t" 'my/find-tag
 	"k" 'kill-buffer)))
 

@@ -389,6 +389,12 @@
   (add-hook 'racer-mode-hook #'eldoc-mode)
   (add-hook 'racer-mode-hook #'company-mode))
 
+(use-package meghanada
+  :ensure t
+  :config
+  (add-hook 'java-mode-hook (lambda ()
+                              (meghanada-mode t))))
+
 ;; Install godef with go get github.com/rogpeppe/godef
 ;; Install goimports with go get golang.org/x/tools/cmd/goimports
 (use-package go-mode

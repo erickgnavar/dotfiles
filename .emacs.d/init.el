@@ -431,6 +431,16 @@
   :config
   (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
 
+(use-package cider
+  :ensure t)
+
+(use-package clj-refactor
+  :ensure t
+  :config
+  (defun my/clj-hook ()
+    (clj-refactor-mode 1))
+  (add-hook 'clojure-mode-hook #'my/clj-hook))
+
 (use-package elpy
   :ensure t
   :diminish ""

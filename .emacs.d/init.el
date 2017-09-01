@@ -171,6 +171,8 @@
   (modify-syntax-entry ?_ "w")
   (define-key evil-normal-state-map (kbd "C-p") 'git-gutter:previous-hunk)
   (define-key evil-normal-state-map (kbd "C-n") 'git-gutter:next-hunk)
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (modify-syntax-entry ?_ "w")))
   (use-package evil-nerd-commenter
     :ensure t
     :config

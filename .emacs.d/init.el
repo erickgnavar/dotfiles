@@ -366,6 +366,16 @@
   :config
   (editorconfig-mode 1))
 
+(use-package slime
+  :ensure t
+  :after lisp-mode
+  :bind (:map lisp-mode-map
+              ("C-c C-d" . slime-describe-symbol))
+  :config
+  (evil-leader/set-key-for-mode 'lisp-mode "d" 'slime-edit-definition)
+  (setq inferior-lisp-program (executable-find "sbcl"))
+  (setq slime-contribs '(slime-fancy)))
+
 (use-package rust-mode
   :ensure t)
 

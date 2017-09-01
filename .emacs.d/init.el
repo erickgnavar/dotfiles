@@ -509,6 +509,12 @@
   :config
   (yas-global-mode 1))
 
+(use-package erlang
+  :ensure t
+  :config
+  (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
+  (require 'erlang-start))
+
 (use-package elixir-mode
   :ensure t)
 

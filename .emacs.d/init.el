@@ -254,6 +254,7 @@
 
 ;; Enable go to definition with \ d keybonding
 (evil-leader/set-key-for-mode 'emacs-lisp-mode "d" 'xref-find-definitions)
+(evil-leader/set-key-for-mode 'lisp-interaction-mode "d" 'xref-find-definitions)
 
 (use-package org
   :ensure t

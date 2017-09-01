@@ -1,0 +1,1043 @@
+#+TITLE: Emacs config
+#+AUTHOR: Erick Navarro
+
+* Vanilla Emacs setup
+
+#+BEGIN_SRC emacs-lisp
+
+  (setq inhibit-startup-message t)
+  ;; Hide the bell in the center of screen
+  (setq ring-bell-function 'ignore)
+  (column-number-mode t)
+  (global-hl-line-mode 1)
+  (set-frame-font "Monaco 12")
+  (global-set-key (kbd "C-x -") 'text-scale-decrease)
+  (global-set-key (kbd "C-x =") 'text-scale-increase)
+  (global-set-key (kbd "C-x +") 'text-scale-increase)
+
+  ;; Fix unicode errors
+  (setenv "LANG" "en_US.UTF-8")
+  (setenv "LC_ALL" "en_US.UTF-8")
+  (setenv "LC_CTYPE" "en_US.UTF-8")
+
+  ;; Fix size of scroll
+  (setq scroll-step 1
+        scroll-conservatively  10000)
+  ;; Avoid close emacs by mistake
+  (global-unset-key (kbd "C-x C-c"))
+
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (defalias 'run-elisp 'ielm)
+
+#+END_SRC
+  
+* Better defaults
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package better-defaults
+    :ensure t
+    :config
+    (menu-bar-mode 1))
+
+#+END_SRC
+  
+* Theme and styles
+
+** Dracula
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package dracula-theme
+    :ensure t
+    :config
+    (load-theme 'dracula t))
+
+#+END_SRC
+
+** Spaceline
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package spaceline
+    :ensure t
+    :config
+    (require 'spaceline-config)
+    ;; default separator render fails
+    (defvar powerline-default-separator 'box)
+    (setq powerline-default-separator 'box)
+    (spaceline-spacemacs-theme)
+    (spaceline-helm-mode)
+    ;; vim mode colors
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
+
+#+END_SRC
+
+** All the icons
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package all-the-icons
+    :ensure t)
+
+#+END_SRC
+
+* Editor enhancements
+
+** Share clipoard with OS
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package pbcopy
+    :ensure t)
+
+#+END_SRC
+
+** Line numbers
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package nlinum
+    :ensure t
+    :config
+    (setq nlinum-format " %3d "
+          nlinum-highlight-current-line t
+          nlinum-redisplay-delay 0))
+
+#+END_SRC
+
+** Fic-mode: Highlight TODO, FIXME, etc
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package fic-mode
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'fic-mode))
+
+#+END_SRC
+
+** Beacon: Highlight line when enter to buffer
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package beacon
+    :ensure t
+    :diminish ""
+    :config
+    (beacon-mode 1))
+
+#+END_SRC
+
+** Load PATH environment
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-initialize)))
+
+#+END_SRC
+
+** Editorconfig
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package editorconfig
+    :ensure t
+    :diminish ""
+    :config
+    (editorconfig-mode 1))
+
+#+END_SRC
+
+** Snippets
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package yasnippet
+    :ensure t
+    :diminish ""
+    :config
+    (yas-global-mode 1))
+
+#+END_SRC
+* Evil
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package evil
+    :ensure t
+    :config
+    (evil-mode 1)
+    (modify-syntax-entry ?_ "w")
+    (define-key evil-normal-state-map (kbd "C-p") 'git-gutter:previous-hunk)
+    (define-key evil-normal-state-map (kbd "C-n") 'git-gutter:next-hunk)
+    (add-hook 'prog-mode-hook #'(lambda ()
+                                  (modify-syntax-entry ?_ "w")))
+    (use-package evil-nerd-commenter
+      :ensure t
+      :config
+      (evilnc-default-hotkeys)
+      (global-set-key (kbd "C-\-") 'evilnc-comment-operator))
+    (use-package evil-surround
+      :ensure t
+      :config
+      (global-evil-surround-mode 1))
+    (use-package evil-leader
+      :ensure t
+      :config
+      (global-evil-leader-mode)
+      (evil-leader/set-key
+          "f" 'find-file
+          "a" 'helm-ag-project-root
+          "e" 'my/find-file-in-project
+          "b" 'helm-buffers-list
+          "n" 'evil-buffer-new
+          "y" 'helm-show-kill-ring
+          "SPC" 'helm-M-x
+          "m" 'ace-jump-mode
+          "l" 'nlinum-mode
+          "s" 'my/toggle-spanish-characters
+          "w" 'my/toggle-maximize
+          "g" 'magit-status
+          "hn" 'git-gutter:next-hunk
+          "hp" 'git-gutter:previous-hunk
+          "hk" 'git-gutter:revert-hunk
+          "hs" 'git-gutter:stage-hunk
+          "t" 'my/find-tag
+          "k" 'kill-buffer)))
+#+END_SRC
+
+* Utils
+
+** Which-key
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package which-key
+    :ensure t
+    :diminish ""
+    :config
+    (which-key-mode)
+    (which-key-setup-minibuffer))
+
+#+END_SRC
+
+** Autopair
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package autopair
+    :ensure t
+    :diminish ""
+    :config
+    (autopair-global-mode))
+
+#+END_SRC
+
+** Database: edbi-database-url
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package edbi-database-url
+    :ensure t
+    :init
+    (defun my/setup-db-url ()
+      (interactive)
+      (let ((driver (completing-read "driver: " '("pgsql" "mysql")))
+            (user (read-string "user: "))
+            (pass (read-passwd "pass: "))
+            (host (read-string "host: " "localhost"))
+            (port (read-string "port: "))
+            (name (read-string "name: ")))
+        (progn
+          (setenv edbi-database-url-env (format "%s://%s:%s@%s:%s/%s" driver user pass host port name))
+          (message "Database configured, run edbi-database-url"))))
+    :config
+    ;; Set path manually because the perl installation is local
+    (setenv "PATH"
+            (concat
+             (expand-file-name "~/perl5/bin")
+             (getenv "PATH")))
+    (setenv "PERL5LIB" (expand-file-name "~/perl5/lib/perl5"))
+    (setenv "PERL_LOCAL_LIB_ROOT" (expand-file-name "~/perl5")))
+
+#+END_SRC
+
+** Ace-jump-mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package ace-jump-mode
+    :ensure t)
+
+#+END_SRC
+
+** Expand region
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package expand-region
+    :ensure t
+    :config
+    ;; unbind default keymap for "_", the default is: evil-next-line-1-first-non-blank
+    (define-key evil-motion-state-map (kbd "_") nil)
+    (define-key evil-normal-state-map (kbd "_") 'er/contract-region)
+    (define-key evil-normal-state-map (kbd "+") 'er/expand-region))
+
+#+END_SRC
+
+** Restclient
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package restclient
+    :ensure t
+    :config
+    (use-package company-restclient
+      :ensure t
+      :config
+      (add-to-list 'company-backends 'company-restclient)))
+
+#+END_SRC
+
+** Rainbow delimiters
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package rainbow-delimiters
+    :ensure t
+    :config
+    (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+    (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode))
+
+#+END_SRC
+
+** Eshell
+
+#+BEGIN_SRC emacs-lisp
+
+  (add-hook 'eshell-mode-hook '(lambda ()
+                                 (local-set-key (kbd "C-l") (lambda ()
+                                                              (interactive)
+                                                              (insert "clear 1")
+                                                              (execute-kbd-macro (read-kbd-macro "<return>"))))))
+
+#+END_SRC
+* Common packages
+
+Used in every major mode
+
+** Company
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package company
+    :ensure t
+    :config
+    (global-company-mode)
+    (setq company-idle-delay 0.1)
+    (setq company-tooltip-limit 10)
+    (setq company-minimum-prefix-length 3)
+    (add-hook 'after-init-hook 'global-company-mode))
+
+#+END_SRC
+
+** Flycheck
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package flycheck
+    :ensure t
+    :diminish ""
+    :bind (:map flycheck-mode-map
+                ("M-p" . flycheck-previous-error)
+                ("M-n" . flycheck-next-error))
+    :config
+    (global-flycheck-mode)
+    (setq flycheck-highlighting-mode 'lines))
+
+#+END_SRC
+
+** Projectile
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package projectile
+    :ensure t
+    :config
+    (projectile-mode)
+    (setq projectile-completion-system 'helm)
+    (setq projectile-mode-line '(:eval (format "Proj[%s]" (projectile-project-name))))
+    (use-package projectile-direnv
+      :ensure t
+      :config
+      (add-hook 'projectile-after-switch-project-hook
+                (lambda ()
+                  (projectile-direnv-export-variables)
+                  (my/setup-eslint)))))
+
+#+END_SRC
+
+** Helm
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package helm
+    :ensure t
+    :diminish ""
+    :config
+    (require 'helm-config)
+    (helm-mode 1)
+    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+    (setq helm-split-window-in-side-p t)
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*helm.*\\*\\'"
+                   (display-buffer-in-side-window)
+                   (inhibit-same-window . t)
+                   (window-height . 0.4)))
+    (use-package helm-ag
+      :ensure t))
+
+#+END_SRC
+
+** Neotree
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package neotree
+    :ensure t
+    :config
+    (defun my/neotree-toggle ()
+      (interactive)
+      (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
+          (my/neotree-open-projectile)
+        (neotree-toggle)))
+    (global-set-key [f3] 'my/neotree-toggle)
+    (defvar neo-fit-to-contents t)
+    (setq neo-fit-to-contents t)
+    (setq neo-theme 'icons)
+    (setq neo-vc-integration (quote (face)))
+    (evil-set-initial-state 'neotree-mode 'emacs)
+    (add-hook 'neotree-mode-hook
+              (lambda ()
+                (evil-emacs-state)
+                (local-set-key (kbd "C-c C-r") 'neotree-rename-node))))
+
+#+END_SRC
+* Orgmode
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org
+    :ensure t
+    :config
+    (setq org-clock-persist 'history)
+    (setq org-src-fontify-natively t)
+    (org-clock-persistence-insinuate)
+    (add-hook 'org-mode-hook (lambda ()
+                               (org-indent-mode t)))
+    (use-package ox-twbs
+      :ensure t)
+    (use-package ob-restclient
+      :ensure t)
+    (use-package htmlize
+      :ensure t)
+    (org-babel-do-load-languages 'org-babel-load-languages
+                                 '((python . t)
+                                   (sh . t)
+                                   (lisp . t)
+                                   (sql . t)
+                                   (restclient . t)
+                                   (dot . t)
+                                   (plantuml . t)
+                                   (emacs-lisp . t))))
+
+#+END_SRC
+
+* Git
+
+** Magit
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package magit
+    :ensure t
+    :config
+    (add-hook 'magit-blame-mode-hook
+              (lambda ()
+                (evil-emacs-state))))
+
+#+END_SRC
+
+** Git-fringe
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package git-gutter-fringe
+    :ensure t
+    :diminish ""
+    :config
+    (global-git-gutter-mode t))
+
+#+END_SRC
+
+** Timemachine
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package git-timemachine
+    :ensure t
+    :config
+    (add-hook 'git-timemachine-mode-hook (lambda ()
+                                           (evil-emacs-state))))
+
+#+END_SRC
+
+** Gist
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package gist
+    :ensure t)
+
+#+END_SRC
+
+* Web
+
+** Web mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package web-mode
+    :ensure t
+    :mode (("\\.html\\'" . web-mode)
+           ("\\.html.eex\\'" . web-mode))
+    :config
+    (setq web-mode-enable-current-element-highlight t)
+    (setq web-mode-enable-current-column-highlight t)
+    (defun my/web-mode-hook ()
+      (emmet-mode)
+      (autopair-mode -1))
+    (add-hook 'web-mode-hook 'my/web-mode-hook))
+
+#+END_SRC
+
+** Emmet
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package emmet-mode
+    :ensure t
+    :diminish "")
+
+#+END_SRC
+
+** Rainbow
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package rainbow-mode
+    :ensure t
+    :diminish ""
+    :config
+    (add-hook 'css-mode-hook 'rainbow-mode)
+    (add-hook 'scss-mode-hook 'rainbow-mode))
+
+#+END_SRC
+
+* Miscellaneous
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package writeroom-mode
+    :ensure t)
+
+  (use-package csv-mode
+    :ensure t)
+
+  (use-package plantuml-mode
+    :ensure t
+    :config
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar")))
+
+  (use-package yaml-mode
+    :ensure t)
+
+  (use-package toml-mode
+    :ensure t)
+
+  (use-package markdown-mode
+    :ensure t)
+
+  (use-package dockerfile-mode
+    :ensure t)
+
+#+END_SRC
+
+Use ESC key instead C-g to close and abort
+
+Copied from somewhere
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun minibuffer-keyboard-quit ()
+    "Abort recursive edit.
+  In Delete Selection mode, if the mark is active, just deactivate it;
+  then it takes a second \\[keyboard-quit] to abort the minibuffer."
+    (interactive)
+    (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark  t)
+      (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+      (abort-recursive-edit)))
+
+  (define-key evil-normal-state-map [escape] 'keyboard-quit)
+  (define-key evil-visual-state-map [escape] 'keyboard-quit)
+  (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+  (global-set-key [escape] 'evil-exit-emacs-state)
+
+#+END_SRC
+
+Toggle hs-minor-mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (define-key evil-normal-state-map (kbd "SPC") 'hs-toggle-hiding)
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (diminish 'undo-tree-mode)
+  (diminish 'hs-minor-mode)
+  (diminish 'auto-revert-mode)
+
+#+END_SRC
+
+* Programming languages
+
+** Python
+
+  For each virtual environment install the following packages:
+
+#+BEGIN_SRC sh
+  pip install elpy jedi flake8 importmagic autopep8 yapf epc
+#+END_SRC
+  
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elpy
+    :ensure t
+    :diminish ""
+    :config
+    (elpy-enable)
+    (when (require 'flycheck nil t)
+      (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+      (add-hook 'elpy-mode-hook 'flycheck-mode))
+    (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
+    (define-key elpy-mode-map (kbd "C-c C-f") 'elpy-format-code)
+    (setq elpy-test-django-runner-command '("./manage.py" "test" "--keepdb"))
+    (add-hook 'elpy-mode-hook
+              (lambda ()
+                (hs-minor-mode)
+                (highlight-indentation-mode -1) ; Remove vertical line
+                (my/fold-buffer-when-is-too-big 100))))
+
+  (setq python-shell-completion-native-enable nil)
+#+END_SRC
+  
+** Erlang
+
+Clone erlang source code into =~/Code/erlang/src/=
+
+#+BEGIN_SRC sh
+
+  git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package erlang
+    :ensure t
+    :config
+    (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
+    (require 'erlang-start))
+
+#+END_SRC
+
+** Elixir
+
+Clone elixir source code into =~/Code/elixir/src/=
+
+#+BEGIN_SRC sh
+
+  git clone https://github.com/elixir-lang/elixir.git ~/Code/elixir/src/
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elixir-mode
+    :ensure t)
+
+  (use-package alchemist
+    :ensure t
+    :bind (:map alchemist-mode-map
+                ("C-c C-t" . alchemist-mix-test-this-buffer)
+                ("C-c C-s" . alchemist-project-toggle-file-and-tests))
+    :after elixir-mode
+    :config
+    (setq alchemist-mix-env "dev")
+    (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))
+    (setq alchemist-goto-erlang-source-dir (expand-file-name "~/Code/erlang/src"))
+    (evil-leader/set-key-for-mode 'elixir-mode "d" 'alchemist-goto-definition-at-point))
+
+  (use-package flycheck-dogma
+    :ensure t
+    :config
+    (eval-after-load 'flycheck
+      '(flycheck-dogma-setup))
+    (add-hook 'elixir-mode-hook 'flycheck-mode))
+
+#+END_SRC
+
+** LFE
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package lfe-mode
+    :ensure t
+    :bind (:map lfe-mode-map
+                ("C-c C-c" . lfe-eval-buffer))
+    :init
+    (defun lfe-eval-buffer ()
+      "Send current buffer to inferior LFE process."
+      (interactive)
+      (if (eq (get-buffer-window "*inferior-lfe*") nil)
+          (run-lfe nil))
+      (lfe-eval-region (point-min) (point-max) nil)))
+
+#+END_SRC
+
+** Elm
+
+Install Elm
+
+#+BEGIN_SRC sh
+
+  npm -g install elm elm-format elm-oracle
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elm-mode
+    :ensure t
+    :config
+    (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+    (add-to-list 'company-backends 'company-elm))
+
+#+END_SRC
+
+** Haskell
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package intero
+    :ensure t
+    :config
+    (add-hook 'haskell-mode-hook 'intero-mode)
+    (evil-leader/set-key-for-mode 'haskell-mode "d" 'intero-goto-definition))
+
+#+END_SRC
+
+** Javascript
+
+Install tern
+
+#+BEGIN_SRC sh
+
+  npm -g install tern
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package js2-mode
+    :ensure t
+    :mode "\\.js\\'"
+    :config
+    ;; let the error checking to flycheck
+    (setq js2-mode-show-strict-warnings nil))
+
+  (use-package company-tern
+    :ensure t
+    :after js2-mode
+    :config
+    (add-to-list 'company-backends 'company-tern)
+    (add-hook 'js2-mode-hook 'tern-mode))
+
+#+END_SRC
+
+** Typescript
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package tide
+    :ensure t
+    :init
+    (defun setup-tide-mode()
+      (interactive)
+      (tide-setup)
+      (flycheck-mode +1)
+      (setq flycheck-check-syntax-automatically '(save mode-enabled))
+      (eldoc-mode +1)
+      (tide-hl-identifier-mode +1)
+      (company-mode +1))
+    :config
+    (add-hook 'typescript-mode-hook #'setup-tide-mode))
+
+#+END_SRC
+
+** Rust
+
+Clone rust source code into =~/Code/rust/src/=
+
+#+BEGIN_SRC sh
+
+  git clone https://github.com/rust-lang/rust.git ~/Code/rust/src/
+
+#+END_SRC
+
+Install dependencies
+
+#+BEGIN_SRC sh
+
+  cargo install rustfmt
+  cargo install racer
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package rust-mode
+    :ensure t)
+
+  (use-package cargo
+    :ensure t
+    :after rust-mode
+    :bind (:map cargo-minor-mode-map
+                ("C-c C-t" . cargo-process-test)
+                ("C-c C-b" . cargo-process-build)
+                ("C-c C-c" . cargo-process-run))
+    :config
+    (add-hook 'rust-mode-hook 'cargo-minor-mode))
+
+  (use-package racer
+    :ensure t
+    :diminish ""
+    :after rust-mode
+    :config
+    (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))
+    (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition)
+    (add-hook 'rust-mode-hook #'racer-mode)
+    (add-hook 'racer-mode-hook #'eldoc-mode)
+    (add-hook 'racer-mode-hook #'company-mode))
+
+#+END_SRC
+
+** Java
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package meghanada
+    :ensure t
+    :config
+    (add-hook 'java-mode-hook (lambda ()
+                                (meghanada-mode t))))
+
+#+END_SRC
+
+** Golang
+
+Install dependencies: godef, goimports, gocode
+
+#+BEGIN_SRC sh
+
+  go get github.com/rogpeppe/godef
+  go get golang.org/x/tools/cmd/goimports
+  go get github.com/nsf/gocode
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package go-mode
+    :ensure t
+    :if (executable-find "go")
+    :bind (:map go-mode-map
+                ("C-c C-t" . go-test-current-file)
+                ("C-c C-c" . go-run)
+                ("C-c C-f" . gofmt))
+    :config
+    (setq gofmt-command "goimports")
+    (evil-leader/set-key-for-mode 'go-mode "d" 'godef-jump))
+
+  (use-package company-go
+    :ensure t
+    :if (executable-find "gocode")
+    :after go-mode
+    :config
+    (add-to-list 'company-backends 'company-go))
+
+  (use-package go-eldoc
+    :ensure t
+    :if (executable-find "gocode")
+    :after go-mode
+    :config
+    (add-hook 'go-mode-hook 'go-eldoc-setup))
+
+  (use-package go-playground
+    :ensure t
+    :if (executable-find "go")
+    :after go-mode
+    :config
+    (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
+
+#+END_SRC
+
+** Common lisp
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package slime
+    :ensure t
+    :after lisp-mode
+    :bind (:map lisp-mode-map
+                ("C-c C-d" . slime-describe-symbol))
+    :config
+    (evil-leader/set-key-for-mode 'lisp-mode "d" 'slime-edit-definition)
+    (setq inferior-lisp-program (executable-find "sbcl"))
+    (setq slime-contribs '(slime-fancy)))
+
+#+END_SRC
+
+** Clojure
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package cider
+    :ensure t)
+
+  (use-package clj-refactor
+    :ensure t
+    :config
+    (defun my/clj-hook ()
+      (clj-refactor-mode 1))
+    (add-hook 'clojure-mode-hook #'my/clj-hook))
+
+#+END_SRC
+
+** Emacs lisp
+
+Enable go to definition with \ d keybinding
+
+#+BEGIN_SRC emacs-lisp
+
+  (evil-leader/set-key-for-mode 'emacs-lisp-mode "d" 'xref-find-definitions)
+  (evil-leader/set-key-for-mode 'lisp-interaction-mode "d" 'xref-find-definitions)
+
+#+END_SRC
+
+* Custom functions
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/find-file-in-project ()
+    "Custom find file function."
+    (interactive)
+    (if (projectile-project-p)
+        (projectile-find-file)
+        (helm-for-files)))
+
+  (defun my/fold-buffer-when-is-too-big (max-lines)
+    "Fold buffer is max lines if grater than as MAX-LINES."
+    (if (> (count-lines (point-min) (point-max)) max-lines)
+        (hs-hide-all)))
+
+  (defun my/setup-eslint ()
+    "If eslint is installed locally configure flycheck to use it."
+    (let ((local-eslint (concat (projectile-project-root) "node_modules/.bin/eslint")))
+      (setq flycheck-javascript-eslint-executable (and (file-exists-p local-eslint) local-eslint))))
+
+  (defun my/toggle-maximize ()
+    "Toggle maximization of current window."
+    (interactive)
+    (let ((register ?w))
+      (if (eq (get-register register) nil)
+        (progn
+          (set-register register (current-window-configuration))
+          (delete-other-windows))
+        (progn
+          (set-window-configuration (get-register register))
+          (set-register register nil)))))
+
+  (defun my/venv-workon (name)
+    "Active virtualenv NAME only is not setup yet."
+    (unless pyvenv-virtual-env
+      (pyvenv-workon name)))
+
+  (defun my/config-file ()
+    "Open config file."
+    (interactive)
+    (find-file (expand-file-name "~/.emacs.d/init.el")))
+
+  (defun my/toggle-spanish-characters ()
+    "Enable/disable alt key to allow insert spanish characters."
+    (interactive)
+    (if (eq ns-alternate-modifier 'meta)
+        (setq ns-alternate-modifier nil)
+        (setq ns-alternate-modifier 'meta)))
+
+  (defun my/neotree-open-projectile ()
+    "Open neotree with projectile root folfer."
+    (interactive)
+    (neotree-dir (projectile-project-root)))
+
+  (defun my/find-tag ()
+    "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
+    (interactive)
+    (if (projectile-project-p)
+        (let
+            ((tags-file-path (concat (projectile-project-root) "TAGS")))
+          (if (f-exists-p tags-file-path)
+              (helm-etags-select t)
+            (if (yes-or-no-p "Do you want generate a TAGS file?")
+                (progn
+                  (my/gen-etags-file (projectile-project-root))
+                  (helm-etags-select t)))))
+      (message "You are not in a project.")))
+
+  (defun my/force-build-tags ()
+    "Force the build of the TAGS file."
+    (interactive)
+    (if (projectile-project-p)
+        (my/gen-etags-file (projectile-project-root))
+      (message "You are not in a project.")))
+
+  (defun my/gen-etags-file (root-path)
+    "Generate etags file for the ROOT-PATH folder."
+    (let
+        ((pattern (read-string "Enter pattern of files to be used: ")))
+      (cd root-path)
+      (shell-command (format "find . -name \"%s\" | etags -" pattern))))
+#+END_SRC

@@ -421,11 +421,11 @@ Used in every major mode
     (setq neo-fit-to-contents t)
     (setq neo-theme 'icons)
     (setq neo-vc-integration (quote (face)))
-    (setq neo-show-hidden-files t)
     (evil-set-initial-state 'neotree-mode 'emacs)
     (add-hook 'neotree-mode-hook
               (lambda ()
                 (evil-emacs-state)
+                (local-set-key (kbd "C-c C-h") 'neotree-hidden-file-toggle)
                 (local-set-key (kbd "C-c C-r") 'neotree-rename-node))))
 
 #+END_SRC

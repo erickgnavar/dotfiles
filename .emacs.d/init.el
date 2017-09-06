@@ -25,6 +25,9 @@
 (require 'diminish)
 (require 'bind-key)
 
+;; Always follow symlinks, used to avoid emacs ask when open org conf file
+(setq vc-follow-symlinks t)
+
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "~/.emacs.d/bootstrap.org"))
 

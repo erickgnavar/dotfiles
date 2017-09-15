@@ -669,6 +669,7 @@ Clone erlang source code into =~/Code/erlang/src/=
 
   (use-package erlang
     :ensure t
+    :if (executable-find "erl")
     :config
     (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
     (require 'erlang-start))
@@ -717,6 +718,7 @@ Clone elixir source code into =~/Code/elixir/src/=
 
   (use-package lfe-mode
     :ensure t
+    :if (executable-find "lfe")
     :bind (:map lfe-mode-map
                 ("C-c C-c" . lfe-eval-buffer))
     :init
@@ -743,6 +745,7 @@ Install Elm
 
   (use-package elm-mode
     :ensure t
+    :if (executable-find "elm")
     :bind (:map elm-mode-map
                 ("C-c C-d" . elm-oracle-doc-at-point))
     :config
@@ -833,10 +836,12 @@ Install dependencies
 #+BEGIN_SRC emacs-lisp
 
   (use-package rust-mode
-    :ensure t)
+    :ensure t
+    :if (executable-find "rustc"))
 
   (use-package cargo
     :ensure t
+    :if (executable-find "cargo")
     :after rust-mode
     :bind (:map cargo-minor-mode-map
                 ("C-c C-t" . cargo-process-test)
@@ -847,6 +852,7 @@ Install dependencies
 
   (use-package racer
     :ensure t
+    :if (executable-find "racer")
     :diminish ""
     :after rust-mode
     :config
@@ -864,6 +870,7 @@ Install dependencies
 
   (use-package meghanada
     :ensure t
+    :if (executable-find "java")
     :config
     (add-hook 'java-mode-hook (lambda ()
                                 (meghanada-mode t))))

@@ -743,6 +743,8 @@ Install Elm
 
   (use-package elm-mode
     :ensure t
+    :bind (:map elm-mode-map
+                ("C-c C-d" . elm-oracle-doc-at-point))
     :config
     (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
     (add-to-list 'company-backends 'company-elm))

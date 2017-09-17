@@ -630,7 +630,7 @@ Toggle hs-minor-mode
   For each virtual environment install the following packages:
 
 #+BEGIN_SRC sh
-  pip install elpy jedi flake8 importmagic autopep8 yapf epc
+  pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
 #+END_SRC
   
 #+BEGIN_SRC emacs-lisp
@@ -653,6 +653,9 @@ Toggle hs-minor-mode
                 (my/fold-buffer-when-is-too-big 100))))
 
   (setq python-shell-completion-native-enable nil)
+
+  (use-package py-isort
+    :ensure t)
 #+END_SRC
   
 ** Erlang

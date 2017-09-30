@@ -950,7 +950,16 @@ Install dependencies: godef, goimports, gocode
 #+BEGIN_SRC emacs-lisp
 
   (use-package cider
-    :ensure t)
+    :ensure t
+    :bind (:map cider-mode-map
+                ("C-c C-f" . my/clj-format-code))
+    :config
+    (defun my/clj-format-code ()
+      "Format clojure code using cider commands"
+      (interactive)
+      (if (region-active-p)
+          (cider-format-region (region-beginning) (region-end))
+        (cider-format-buffer))))
 
   (use-package clj-refactor
     :ensure t

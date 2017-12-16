@@ -22,8 +22,10 @@
 (eval-when-compile
   (require 'use-package))
 
-(require 'diminish)
 (require 'bind-key)
+
+(use-package diminish
+  :ensure t)
 
 ;; Always follow symlinks, used to avoid emacs ask when open org conf file
 (setq vc-follow-symlinks t)

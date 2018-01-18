@@ -1019,6 +1019,7 @@ Enable go to definition with \ d keybinding
 
   (defun my/setup-eslint ()
     "If eslint is installed locally configure flycheck to use it."
+    (interactive)
     (let ((local-eslint (concat (projectile-project-root) "node_modules/.bin/eslint")))
       (setq flycheck-javascript-eslint-executable (and (file-exists-p local-eslint) local-eslint))))
 

@@ -727,7 +727,17 @@ Clone elixir source code into =~/Code/elixir/src/=
 #+BEGIN_SRC emacs-lisp
 
   (use-package elixir-mode
-    :ensure t)
+    :ensure t
+    :init
+    (defun my/mix-elixir-format-file()
+      (interactive)
+      (let ((path buffer-file-name))
+        (if (file-exists-p path)
+            (if (buffer-modified-p)
+                (message "Please save your changes first")
+              (shell-command (format "mix format %s" path))))))
+    :config
+    (define-key elixir-mode-map (kbd "C-c C-f") 'my/mix-elixir-format-file))
 
   (use-package alchemist
     :ensure t
@@ -740,13 +750,6 @@ Clone elixir source code into =~/Code/elixir/src/=
     (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))
     (setq alchemist-goto-erlang-source-dir (expand-file-name "~/Code/erlang/src"))
     (evil-leader/set-key-for-mode 'elixir-mode "d" 'alchemist-goto-definition-at-point))
-
-  (use-package flycheck-dogma
-    :ensure t
-    :config
-    (eval-after-load 'flycheck
-      '(flycheck-dogma-setup))
-    (add-hook 'elixir-mode-hook 'flycheck-mode))
 
 #+END_SRC
 

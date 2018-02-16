@@ -93,19 +93,6 @@
 
 #+END_SRC
 
-** Line numbers
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package nlinum
-    :ensure t
-    :config
-    (setq nlinum-format " %3d "
-          nlinum-highlight-current-line t
-          nlinum-redisplay-delay 0))
-
-#+END_SRC
-
 ** Fic-mode: Highlight TODO, FIXME, etc
 
 #+BEGIN_SRC emacs-lisp
@@ -223,7 +210,7 @@
           "y" 'helm-show-kill-ring
           "SPC" 'helm-M-x
           "m" 'ace-jump-mode
-          "l" 'nlinum-mode
+          "l" 'display-line-numbers-mode
           "s" 'my/toggle-spanish-characters
           "w" 'my/toggle-maximize
           "g" 'magit-status
@@ -474,7 +461,7 @@ Used in every major mode
       :ensure t)
     (org-babel-do-load-languages 'org-babel-load-languages
                                  '((python . t)
-                                   (sh . t)
+                                   (shell . t)
                                    (lisp . t)
                                    (sql . t)
                                    (restclient . t)

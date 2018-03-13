@@ -146,9 +146,6 @@ nmap <Leader>n :enew<ENTER>
 " " Fix to let ESC work as espected with Autoclose plugin
 let g:AutoClosePumvisible = {"ENTER": "\<C-Y>", "ESC": "\<ESC>"}
 
-set splitbelow
-set splitright
-
 set backspace=2
 
 let g:airline_powerline_fonts = 0

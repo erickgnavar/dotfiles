@@ -74,9 +74,7 @@ syntax enable "enable syntax highlight
 set path+=**
 
 set number "show line numbers
-set relativenumber
 set showcmd "show last command
-set cursorline "highlight cursor line
 set wildmenu "visual autocomplete for command menu
 set showmatch "highlight match [{}]
 set foldenable "enable folding

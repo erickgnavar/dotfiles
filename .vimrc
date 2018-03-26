@@ -155,3 +155,8 @@ let g:airline#extensions#whitespace#enabled = 0
 
 set lazyredraw
 set ttyfast
+
+map <c-n> <Nop>
+map <c-p> <Nop>
+map <c-n> :GitGutterNextHunk<ENTER>
+map <c-p> :GitGutterPrevHunk<ENTER>

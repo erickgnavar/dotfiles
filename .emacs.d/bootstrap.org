@@ -471,6 +471,7 @@ Used in every major mode
                                    (plantuml . t)
                                    (emacs-lisp . t))))
 
+  (diminish 'org-indent-mode)
 #+END_SRC
 
 * Git
@@ -494,7 +495,7 @@ Used in every major mode
 
   (use-package git-gutter-fringe
     :ensure t
-    :diminish ""
+    :diminish git-gutter-mode
     :config
     (global-git-gutter-mode t))
 
@@ -548,7 +549,7 @@ Used in every major mode
 
   (use-package emmet-mode
     :ensure t
-    :diminish "")
+    :diminish)
 
 #+END_SRC
 
@@ -664,7 +665,7 @@ Toggle hs-minor-mode
 
   (use-package elpy
     :ensure t
-    :diminish ""
+    :diminish
     :config
     (elpy-enable)
     (when (require 'flycheck nil t)
@@ -829,6 +830,7 @@ Install tern
 
   (use-package company-tern
     :ensure t
+    :diminish tern-mode
     :after js2-mode
     :config
     (add-to-list 'company-backends 'company-tern)
@@ -895,7 +897,7 @@ Install dependencies
   (use-package racer
     :ensure t
     :if (executable-find "racer")
-    :diminish ""
+    :diminish
     :after rust-mode
     :config
     (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))

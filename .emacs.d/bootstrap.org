@@ -188,6 +188,19 @@
     (define-key evil-normal-state-map (kbd "C-n") 'git-gutter:next-hunk)
     (add-hook 'prog-mode-hook #'(lambda ()
                                   (modify-syntax-entry ?_ "w")))
+
+    (face-spec-set
+     'evil-ex-substitute-matches
+     '((t :foreground "red"
+          :strike-through t
+          :weight bold)))
+
+    (face-spec-set
+     'evil-ex-substitute-replacement
+     '((t
+        :foreground "green"
+        :weight bold)))
+
     (use-package evil-nerd-commenter
       :ensure t
       :config

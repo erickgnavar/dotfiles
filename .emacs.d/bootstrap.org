@@ -63,10 +63,6 @@
     :ensure t
     :config
     (require 'spaceline-config)
-    ;; default separator render fails
-    (defvar powerline-default-separator 'box)
-    (setq powerline-default-separator 'box)
-    (spaceline-spacemacs-theme)
     (spaceline-helm-mode)
     ;; vim mode colors
     (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
@@ -79,6 +75,20 @@
 
   (use-package all-the-icons
     :ensure t)
+
+#+END_SRC
+
+** Spaceline all the icons
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package spaceline-all-the-icons
+    :ensure t
+    :after spaceline
+    :init
+    (setq spaceline-all-the-icons-separator-type 'none)
+    :config
+    (spaceline-all-the-icons-theme))
 
 #+END_SRC
 

@@ -1148,4 +1148,36 @@ Enable go to definition with \ d keybinding
         ((pattern (read-string "Enter pattern of files to be used: ")))
       (cd root-path)
       (shell-command (format "find . -name \"%s\" | etags -" pattern))))
+
+#+END_SRC
+
+
+Function to extract clocks from org buffer and filter them by month
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/collect-clocks ()
+    "Collect all the clocks of current buffer."
+    (org-element-map (org-element-parse-buffer) 'clock
+      (lambda (clock) clock)))
+
+  (defun my/filter-clocks-by-month (clocks month)
+    "Filter CLOCKS using MONTH value."
+    (seq-filter '(lambda (clock)
+                   (eq (org-element-property :month-end (org-element-property :value clock)) month)) clocks))
+
+  (defun my/org-filter-clocks-report ()
+    "Create a buffer with the tasks filtered by month."
+    (interactive)
+    (let* ((month (read-number "Insert month: "))
+           (clocks (my/collect-clocks))
+           (filtered-clocks (my/filter-clocks-by-month clocks month))
+           (buffer (get-buffer-create "*clocks report*")))
+      (switch-to-buffer buffer)
+      (org-mode)
+      (insert "* Report\n")
+      (seq-map '(lambda (clock)
+                  (insert (format "CLOCK: %s\n" (org-element-property :raw-value (org-element-property :value clock))))) filtered-clocks)
+      (org-clock-display)))
+
 #+END_SRC

@@ -1126,6 +1126,13 @@ Enable go to definition with \ d keybinding
     (interactive)
     (neotree-dir (projectile-project-root)))
 
+  (defun my/change-font-size()
+    "Change frame font size."
+    (interactive)
+    (let* ((size (read-number "New size: "))
+           (font (format "Monaco %d" size)))
+      (set-frame-font font)))
+
   (defun my/find-tag ()
     "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
     (interactive)

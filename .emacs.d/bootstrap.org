@@ -1027,15 +1027,15 @@ Install dependencies: godef, goimports, gocode
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package slime
+  (setq inferior-lisp-program (executable-find "sbcl"))
+
+  (use-package sly
+    :ensure t)
+
+  (use-package sly-company
     :ensure t
-    :after lisp-mode
-    :bind (:map lisp-mode-map
-                ("C-c C-d" . slime-describe-symbol))
     :config
-    (evil-leader/set-key-for-mode 'lisp-mode "d" 'slime-edit-definition)
-    (setq inferior-lisp-program (executable-find "sbcl"))
-    (setq slime-contribs '(slime-fancy)))
+    (add-hook 'sly-mode-hook 'sly-company-mode))
 
 #+END_SRC
 

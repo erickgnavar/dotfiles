@@ -379,7 +379,8 @@ Used in every major mode
   (use-package company
     :ensure t
     :config
-    (global-company-mode)
+    (define-key company-active-map (kbd "C-n") 'company-select-next)
+    (define-key company-active-map (kbd "C-p") 'company-select-previous)
     (setq company-idle-delay 0.1)
     (setq company-tooltip-limit 10)
     (setq company-minimum-prefix-length 3)

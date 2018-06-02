@@ -29,6 +29,10 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (defalias 'run-elisp 'ielm)
 
+  ;; place custom code generated for emacs in a separate file
+  (defconst custom-file (expand-file-name ".customize.el" user-emacs-directory))
+  (write-region "" "" custom-file)
+  (load custom-file)
 #+END_SRC
   
 * Better defaults

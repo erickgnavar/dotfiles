@@ -174,10 +174,11 @@
 ** Dimmer
 
 #+BEGIN_SRC emacs-lisp
+
   (use-package dimmer
     :ensure t
     :config
-    (dimmer-activate))
+    (dimmer-mode))
 
 #+END_SRC
 
@@ -439,7 +440,7 @@ Used in every major mode
     (require 'helm-config)
     (helm-mode 1)
     (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-    (setq helm-split-window-in-side-p t)
+    (setq helm-split-window-inside-p t)
     (add-to-list 'display-buffer-alist
                  '("\\`\\*helm.*\\*\\'"
                    (display-buffer-in-side-window)
@@ -726,7 +727,6 @@ Toggle hs-minor-mode
       (add-hook 'elpy-mode-hook 'flycheck-mode))
     (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
     (define-key elpy-mode-map (kbd "C-c C-f") 'elpy-format-code)
-    (setq elpy-test-django-runner-command '("./manage.py" "test" "--keepdb"))
     (setq elpy-rpc-python-command "python")
     (add-hook 'elpy-mode-hook
               (lambda ()
@@ -1027,7 +1027,7 @@ Install dependencies: godef, goimports, gocode
 
 #+BEGIN_SRC emacs-lisp
 
-  (setq inferior-lisp-program (executable-find "sbcl"))
+  (defconst inferior-lisp-program (executable-find "sbcl"))
 
   (use-package sly
     :ensure t)

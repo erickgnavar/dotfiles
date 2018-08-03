@@ -416,6 +416,8 @@ Used in every major mode
   (use-package projectile
     :ensure t
     :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
+    :init
+    (setq projectile-keymap-prefix (kbd "C-c p"))
     :config
     (projectile-mode)
     (setq projectile-completion-system 'helm)

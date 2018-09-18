@@ -18,6 +18,9 @@ export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_ALL=
 
+# Prevent duplicates in bash history
+setopt hist_ignore_all_dups
+
 # Load the default .profile
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
 

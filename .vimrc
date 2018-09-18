@@ -28,16 +28,13 @@ Plugin 'tpope/vim-surround'
 Plugin 'Townk/vim-autoclose' " Allow show diff sign of opened files
 Plugin 'lilydjwg/colorizer'
 Plugin 'editorconfig/editorconfig-vim'
-Plugin 'elixir-lang/vim-elixir'
+Plugin 'sheerun/vim-polyglot'  " Plugins for most of the programming languages
 Plugin 'bash-support.vim'
 Plugin 'elzr/vim-json'
 Plugin 'mattn/webapi-vim' "gist-vim requirement
 Plugin 'mattn/gist-vim'
-Plugin 'docker/docker' , {'rtp': '/contrib/syntax/vim/'}
 Plugin 'rking/ag.vim'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'morhetz/gruvbox'
-Plugin 'pangloss/vim-javascript'
 Plugin 'IndexedSearch'
 " XML/HTML tags navigation
 Plugin 'matchit.zip'

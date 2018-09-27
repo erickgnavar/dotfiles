@@ -153,7 +153,11 @@ let g:airline#extensions#whitespace#enabled = 0
 set lazyredraw
 set ttyfast
 
-map <c-n> <Nop>
-map <c-p> <Nop>
-map <c-n> :GitGutterNextHunk<ENTER>
-map <c-p> :GitGutterPrevHunk<ENTER>
+" GitGutter config
+set updatetime=100
+
+" Navigate through hunks
+nmap <c-n> <Nop>
+nmap <c-p> <Nop>
+nmap <c-n> :GitGutterNextHunk<ENTER>
+nmap <c-p> :GitGutterPrevHunk<ENTER>

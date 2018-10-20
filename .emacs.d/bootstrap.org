@@ -124,19 +124,16 @@ Speed up startup time
 
 #+END_SRC
 
-** Fic-mode: Highlight TODO, FIXME, etc
+** Highlight TODO, FIXME, etc
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package fic-mode
-    :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'fic-mode)
-    (face-spec-set
-     'fic-face
-     '((t :foreground "orange"
-          :background "#282a36"  ;; copied from Dracula theme
-          :weight bold))))
+  (defun my/highlight-todo-like-words ()
+    (font-lock-add-keywords
+     nil `(("\\<\\(FIXME\\|TODO\\)"
+            1 font-lock-warning-face t))))
+
+  (add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
 
 #+END_SRC
 

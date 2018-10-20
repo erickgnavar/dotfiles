@@ -49,6 +49,22 @@ Speed up startup time
   (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
 #+END_SRC
+
+Open scratch buffer
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/scratch-buffer()
+    "Switch to scratch buffer."
+    (interactive)
+    (let ((buffer (get-buffer "*scratch*")))
+      (if buffer
+          (switch-to-buffer buffer)
+        (switch-to-buffer (get-buffer-create "*scratch*"))
+        (insert initial-scratch-message))
+      (lisp-interaction-mode)))
+
+#+END_SRC
   
 * Better defaults
 

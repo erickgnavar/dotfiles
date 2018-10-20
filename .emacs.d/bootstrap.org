@@ -1213,3 +1213,32 @@ Function to extract clocks from org buffer and filter them by month
       (org-clock-display)))
 
 #+END_SRC
+
+** MacOS
+
+Functions to open Finder using current file or current project.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/open-finder-at (path)
+    "Open Finder app with the given PATH."
+    (let* ((finder (executable-find "open"))
+           (command (format "%s %s" finder path)))
+      (shell-command command)))
+
+  (defun my/open-project-in-finder ()
+    "Open current project in Finder app."
+    (interactive)
+    (if (projectile-project-p)
+        (my/open-finder-at (projectile-project-root))
+      (message "There is no active project.")))
+
+  (defun my/open-current-file-in-finder ()
+    "Open current file in Finder."
+    (interactive)
+    (let ((file (buffer-file-name)))
+      (if file
+          (my/open-finder-at (file-name-directory file))
+        (message "Buffer has not been saved yet!"))))
+
+#+END_SRC

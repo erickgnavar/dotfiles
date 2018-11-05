@@ -18,7 +18,6 @@ call vundle#rc()
 Plugin 'gmarik/vundle'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tComment'
-Plugin 'kien/ctrlp.vim'
 " Zen coding
 Plugin 'mattn/emmet-vim'
 " Airline
@@ -39,8 +38,9 @@ Plugin 'IndexedSearch'
 " XML/HTML tags navigation
 Plugin 'matchit.zip'
 Plugin 'terryma/vim-expand-region'
-Plugin 'rhysd/vim-color-spring-night'
 Plugin 'dracula/vim'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 
 if iCanHazVundle == 0
     echo "Installing Bundles, please ignore key map error messages"
@@ -93,7 +93,6 @@ if has('gui_running')
     set guifont=Monaco:h12
 endif
 
-" colorscheme spring-night
 color dracula
 
 set scrolloff=3 " when scrolling, keep cursor 3 lines away from screen border
@@ -122,20 +121,11 @@ map <F3> :NERDTreeToggle<CR>
 let NERDTreeIgnore = ['\.pyc$', '\.pyo$', '\.beam$', '\.mo$', '/.class$']
 let g:vim_debug_disable_mappings = 1
 
-" CtrlP ------------------------------
-" don't change working directory
-let g:ctrlp_working_path_mode = 0
-" ignore these files and folders on file finder
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.git|\.hg|\.svn|\.idea|node_modules|bower_components)$',
-  \ 'file': '\.pyc$\|\.pyo|\.beam$',
-  \ }
-
 " Setup leader functions
 nmap <Leader>a :Ag<space>
 nmap <Leader>b :buffer<space>
 nmap <Leader>c :ClearCtrlPCache<ENTER>
-nmap <Leader>e :CtrlP<ENTER>
+nmap <Leader>e :Files<ENTER>
 nmap <Leader>k :bdelete<space>
 nmap <Leader>n :enew<ENTER>
 
@@ -146,7 +136,6 @@ let g:AutoClosePumvisible = {"ENTER": "\<C-Y>", "ESC": "\<ESC>"}
 set backspace=2
 
 let g:airline_powerline_fonts = 0
-let g:airline_theme = 'spring_night'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 

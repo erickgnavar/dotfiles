@@ -819,16 +819,17 @@ Clone elixir source code into =~/Code/elixir/src/=
 
   (use-package elixir-mode
     :ensure t
-    :init
-    (defun my/mix-elixir-format-file()
-      (interactive)
-      (let ((path buffer-file-name))
-        (if (file-exists-p path)
-            (if (buffer-modified-p)
-                (message "Please save your changes first")
-              (shell-command (format "mix format %s" path))))))
+    :bind (:map elixir-mode-map
+                ("C-c C-f" . elixir-format))
     :config
-    (define-key elixir-mode-map (kbd "C-c C-f") 'my/mix-elixir-format-file))
+    ;; Copied from elixir-mode repo
+    ;TODO: Fix for imported deps in .formatter.exs file
+    (add-hook 'elixir-format-hook (lambda ()
+                                    (if (projectile-project-p)
+                                        (setq elixir-format-arguments
+                                              (list "--dot-formatter"
+                                                    (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
+                                      (setq elixir-format-arguments nil)))))
 
   (use-package alchemist
     :ensure t
@@ -837,6 +838,7 @@ Clone elixir source code into =~/Code/elixir/src/=
                 ("C-c C-t C-t" . alchemist-mix-test-at-point)
                 ("C-c C-s" . alchemist-project-toggle-file-and-tests))
     :after elixir-mode
+    :hook (elixir-mode . alchemist-mode)
     :config
     (setq alchemist-mix-env "dev")
     (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))

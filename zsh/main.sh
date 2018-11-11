@@ -75,8 +75,21 @@ function extract_youtube_audio() {
     youtube-dl $1 --audio-format=mp3 -x
 }
 
-function pypath() {
-    echo "${HOME}/.pyenv/versions/$1/bin/python"
+function mkvenv() {
+    local python_path="${HOME}/.pyenv/versions/$2/bin/python"
+
+    if [ -f $python_path ]; then
+        mkvirtualenv $1 --python=$python_path
+    else
+        echo "Python version doesn't exist"
+        echo "Installing python $2"
+
+        pyenv install $2
+
+        if [ $? -eq 0 ]; then
+            mkvirtualenv $1 --python=$python_path
+        fi
+    fi
 }
 
 # custom alias

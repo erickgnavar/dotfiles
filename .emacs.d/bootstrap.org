@@ -11,9 +11,10 @@
   (column-number-mode t)
   (global-hl-line-mode 1)
   (set-frame-font "Monaco 12")
-  (global-set-key (kbd "C-x -") 'text-scale-decrease)
-  (global-set-key (kbd "C-x =") 'text-scale-increase)
-  (global-set-key (kbd "C-x +") 'text-scale-increase)
+
+  (global-set-key (kbd "C-x -") 'my/decrease-font-height)
+  (global-set-key (kbd "C-x =") 'my/increase-font-height)
+  (global-set-key (kbd "C-x +") 'my/increase-font-height)
 
   ;; Navigate through buffers
   (global-set-key (kbd "M-[") 'previous-buffer)
@@ -1113,6 +1114,28 @@ Enable go to definition with \ d keybinding
 #+END_SRC
 
 * Custom functions
+
+Manipulate frame font height.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/change-font-height (delta)
+    "Use DELTA to increase/decrease the frame font height."
+    (let* ((current-height (face-attribute 'default :height))
+           (new-height (+ current-height delta)))
+      (set-face-attribute 'default (selected-frame) :height new-height)))
+
+  (defun my/decrease-font-height ()
+    "Decrease font height by 10."
+    (interactive)
+    (my/change-font-height -10))
+
+  (defun my/increase-font-height ()
+    "Increase font height by 10."
+    (interactive)
+    (my/change-font-height +10))
+
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 

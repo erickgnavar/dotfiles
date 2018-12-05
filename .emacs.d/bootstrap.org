@@ -758,6 +758,12 @@ Toggle hs-minor-mode
   
 #+BEGIN_SRC emacs-lisp
 
+  (defun my/python-format-code ()
+    (interactive)
+    (if (executable-find "black")
+        (blacken-buffer)
+      (elpy-format-code)))
+
   (use-package elpy
     :ensure t
     :diminish
@@ -767,7 +773,7 @@ Toggle hs-minor-mode
       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
       (add-hook 'elpy-mode-hook 'flycheck-mode))
     (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
-    (define-key elpy-mode-map (kbd "C-c C-f") 'elpy-format-code)
+    (define-key elpy-mode-map (kbd "C-c C-f") 'my/python-format-code)
     (setq elpy-rpc-python-command "python")
     (add-hook 'elpy-mode-hook
               (lambda ()
@@ -787,6 +793,10 @@ Toggle hs-minor-mode
         (message "Select a region before to call isort")))
     :bind (:map elpy-mode-map
                 ("C-c C-i" . my/sort-imports)))
+
+  (use-package blacken
+    :ensure t)
+
 #+END_SRC
   
 ** Erlang

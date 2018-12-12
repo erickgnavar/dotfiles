@@ -284,7 +284,7 @@ Open scratch buffer
           "l" 'display-line-numbers-mode
           "s" 'my/toggle-spanish-characters
           "w" 'my/toggle-maximize
-          "g" 'magit-status
+          "g" 'my/magit-status
           "hk" 'git-gutter:revert-hunk
           "hs" 'git-gutter:stage-hunk
           "t" 'my/find-tag
@@ -574,7 +574,20 @@ Used in every major mode
 
   (use-package magit
     :ensure t
+    :init
+    (defconst my/magit-register ?m)
+    (defun my/magit-status()
+      (interactive)
+      (set-register my/magit-register (current-window-configuration))
+      (magit-status)
+      (delete-other-windows))
+
+    (defun my/magit-status-exit()
+      (interactive)
+      (if (get-register my/magit-register)
+          (set-window-configuration (get-register my/magit-register))))
     :config
+    (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
     (add-hook 'magit-blame-mode-hook
               (lambda ()
                 (evil-emacs-state))))

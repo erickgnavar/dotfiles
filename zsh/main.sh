@@ -63,6 +63,15 @@ function docker_remove_containers() {
     docker rm $(docker ps -a -q)
 }
 
+function random_password() {
+    openssl rand -base64 $1
+}
+
+# Estimate the compressed size of a file (GZIP)
+function gzip_estimation() {
+    gzip -9 -c $1 | wc -c | awk '{$1=$1/1024; print "Estimated size:", $1, "Kb";}'
+}
+
 function docker_remove_images() {
     docker rmi $(docker images -q)
 }

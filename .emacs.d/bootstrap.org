@@ -583,10 +583,13 @@ Used in every major mode
       (magit-status)
       (delete-other-windows))
 
-    (defun my/magit-status-exit()
+    (defun my/magit-status-exit (&optional kill-buffer)
+      "Restore windows configuration after magit status buffer is closed."
       (interactive)
-      (if (get-register my/magit-register)
-          (set-window-configuration (get-register my/magit-register))))
+      (let ((magit-buffer-name (format "magit: %s" (projectile-project-name)))
+            (register-value (get-register my/magit-register)))
+        (if (and register-value (string-equal magit-buffer-name (buffer-name)))
+            (set-window-configuration register-value))))
     :config
     (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
     (add-hook 'magit-blame-mode-hook

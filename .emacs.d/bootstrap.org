@@ -40,6 +40,15 @@
 
 #+END_SRC
 
+Adjust font size to screen resolution, increase font size for 4K screens
+
+#+BEGIN_SRC emacs-lisp
+
+  (if (= (x-display-pixel-width) 3840)
+      (set-frame-font "Monaco 16"))
+
+#+END_SRC
+
 Speed up startup time
 
 #+BEGIN_SRC emacs-lisp
@@ -287,35 +296,6 @@ Open scratch buffer
 
 #+END_SRC
 
-** Database: edbi-database-url
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package edbi-database-url
-    :ensure t
-    :init
-    (defun my/setup-db-url ()
-      (interactive)
-      (let ((driver (completing-read "driver: " '("pgsql" "mysql")))
-            (user (read-string "user: "))
-            (pass (read-passwd "pass: "))
-            (host (read-string "host: " "localhost"))
-            (port (read-string "port: "))
-            (name (read-string "name: ")))
-        (progn
-          (setenv edbi-database-url-env (format "%s://%s:%s@%s:%s/%s" driver user pass host port name))
-          (message "Database configured, run edbi-database-url"))))
-    :config
-    ;; Set path manually because the perl installation is local
-    (setenv "PATH"
-            (concat
-             (expand-file-name "~/perl5/bin")
-             (getenv "PATH")))
-    (setenv "PERL5LIB" (expand-file-name "~/perl5/lib/perl5"))
-    (setenv "PERL_LOCAL_LIB_ROOT" (expand-file-name "~/perl5")))
-
-#+END_SRC
-
 ** Ace-jump-mode
 
 #+BEGIN_SRC emacs-lisp
@@ -465,12 +445,27 @@ Used in every major mode
 
 #+END_SRC
 
+** Helm backup
+
+This allows to create backups of edited files using a git repitory. The backup folder is located in =~/.helm-backup=
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package helm-backup
+    :ensure t
+    :config
+    (add-hook 'after-save-hook 'helm-backup-versioning))
+
+#+END_SRC
+
 ** Neotree
 
 #+BEGIN_SRC emacs-lisp
 
   (use-package neotree
     :ensure t
+    :init
+    (setq neo-window-fixed-size nil)
     :config
     (defun my/neotree-toggle ()
       (interactive)
@@ -564,6 +559,20 @@ Used in every major mode
     (add-hook 'magit-blame-mode-hook
               (lambda ()
                 (evil-emacs-state))))
+#+END_SRC
+
+** Magit TODOs
+
+Show files containing =TODO= like text in =magit= status buffer.
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package magit-todos
+    :ensure t
+    :init
+    (setq magit-todos-exclude-globs '("*.org"))
+    :config
+    (add-hook 'magit-status-mode-hook 'magit-todos-mode))
 
 #+END_SRC
 
@@ -684,9 +693,6 @@ Used in every major mode
   (use-package dockerfile-mode
     :ensure t)
 
-  (use-package po-mode
-    :ensure t)
-
 #+END_SRC
 
 Use ESC key instead C-g to close and abort
@@ -799,6 +805,7 @@ Clone erlang source code into =~/Code/erlang/src/=
 
   (use-package erlang
     :ensure t
+    :defer t
     :if (executable-find "erl")
     :config
     (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))

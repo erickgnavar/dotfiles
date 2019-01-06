@@ -488,14 +488,23 @@ This allows to create backups of edited files using a git repitory. The backup f
 #+END_SRC
 * Orgmode
 
+Configured variables:
+
+- =org-latex-caption-above= puts table captions at the bottom
+- =org-clock-persist= persists time even if emacs is closed
+- =org-src-fontify-natively= enables syntax highlighting for code blocks
+- =org-log-done= saves the timestamp when a task is done
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package org
     :ensure t
+    :init
+    (setq org-latex-caption-above nil
+          org-clock-persist 'history
+          org-src-fontify-natively t
+          org-log-done t)
     :config
-    (setq org-clock-persist 'history)
-    (setq org-src-fontify-natively t)
-    (setq org-log-done t)
     (org-clock-persistence-insinuate)
     (add-hook 'org-mode-hook (lambda ()
                                (org-indent-mode t)
@@ -517,6 +526,18 @@ This allows to create backups of edited files using a git repitory. The backup f
                                    (emacs-lisp . t))))
 
   (diminish 'org-indent-mode)
+
+#+END_SRC
+
+** Org-ref
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-ref
+    :ensure t
+    :init
+    (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+
 #+END_SRC
 
 * Latex

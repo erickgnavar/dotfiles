@@ -1302,6 +1302,30 @@ Function to extract clocks from org buffer and filter them by month
 
 #+END_SRC
 
+Copy absolute and relative path to clipboard
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/copy-abs-path ()
+    "Copy absolute path of the buffer to clipboard"
+    (interactive)
+    (if buffer-file-name
+        (progn
+          (kill-new buffer-file-name)
+          (message (format "%s copied to clipboard" buffer-file-name)))
+      (message "File not saved yet")))
+
+  (defun my/copy-relative-path ()
+    "Copy relative path of the buffer to clipboard"
+    (interactive)
+    (if (and (projectile-project-p) buffer-file-name)
+        (let ((path (file-relative-name buffer-file-name (projectile-project-root))))
+          (kill-new path)
+          (message (format "%s copied to clipboard" path)))
+      (message "File not saved yet or not inside project")))
+
+#+END_SRC
+
 ** MacOS
 
 Functions to open Finder using current file or current project.

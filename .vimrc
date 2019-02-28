@@ -39,6 +39,7 @@ Plugin 'IndexedSearch'
 Plugin 'matchit.zip'
 Plugin 'terryma/vim-expand-region'
 Plugin 'dracula/vim'
+Plugin 'wakatime/vim-wakatime'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 

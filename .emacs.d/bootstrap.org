@@ -64,6 +64,17 @@ Open scratch buffer
       (lisp-interaction-mode)))
 
 #+END_SRC
+
+** Ansi term
+
+For some reason ansi-term doesn't respect the global keybinding for =M-]= so this have to be setup in =term-raw-map= as well.
+
+#+BEGIN_SRC emacs-lisp
+
+  (require 'term)
+  (define-key term-raw-map (kbd "M-]") 'next-buffer)
+
+#+END_SRC
   
 * Better defaults
 

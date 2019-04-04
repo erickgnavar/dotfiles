@@ -1214,13 +1214,12 @@ Manipulate frame font height.
     (if (projectile-project-p)
         (let* ((buffer-name (format "[%s]-ansi-term" (projectile-project-name)))
                (buffer-name-for-search (format "*%s*" buffer-name))
+               (default-directory (projectile-project-root))
                (buffer (get-buffer buffer-name-for-search)))
           (if buffer
               (switch-to-buffer buffer)
             (ansi-term "/bin/zsh" buffer-name))
           (evil-insert-state))))
-
-  ;TODO: go to project root when create the buffer
 
 #+END_SRC
 

@@ -42,6 +42,9 @@ Plugin 'dracula/vim'
 Plugin 'wakatime/vim-wakatime'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
+Plugin 'andymass/vim-matchup'
+
+let g:loaded_matchit = 1
 
 if iCanHazVundle == 0
     echo "Installing Bundles, please ignore key map error messages"

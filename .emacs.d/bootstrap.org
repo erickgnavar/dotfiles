@@ -284,6 +284,7 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
           "a" 'helm-ag-project-root
           "e" 'my/find-file-in-project
           "b" 'helm-buffers-list
+          "c" 'my/goto-term
           "n" 'evil-buffer-new
           "y" 'helm-show-kill-ring
           "SPC" 'helm-M-x
@@ -1200,6 +1201,24 @@ Manipulate frame font height.
     "Increase font height by 10."
     (interactive)
     (my/change-font-height +10))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/goto-term ()
+    "Create a new `ansi-term` buffer."
+    (interactive)
+    (if (projectile-project-p)
+        (let* ((buffer-name (format "[%s]-ansi-term" (projectile-project-name)))
+               (buffer-name-for-search (format "*%s*" buffer-name))
+               (buffer (get-buffer buffer-name-for-search)))
+          (if buffer
+              (switch-to-buffer buffer)
+            (ansi-term "/bin/zsh" buffer-name))
+          (evil-insert-state))))
+
+  ;TODO: go to project root when create the buffer
 
 #+END_SRC
 

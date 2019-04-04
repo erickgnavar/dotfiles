@@ -122,6 +122,9 @@ map <F3> :NERDTreeToggle<CR>
 let NERDTreeIgnore = ['\.pyc$', '\.pyo$', '\.beam$', '\.mo$', '/.class$']
 let g:vim_debug_disable_mappings = 1
 
+" Setup clipboard
+set clipboard=unnamed
+
 " Setup leader functions
 nmap <Leader>a :Ag<space>
 nmap <Leader>b :buffer<space>

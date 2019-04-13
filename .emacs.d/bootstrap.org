@@ -121,13 +121,28 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
 
 #+END_SRC
 
+* Dired
+
 ** All the icons dired
 
 #+BEGIN_SRC emacs-lisp
 
   (use-package all-the-icons-dired
     :ensure t
+    :defer t
     :hook (dired-mode . all-the-icons-dired-mode))
+
+#+END_SRC
+
+** Dired subtree
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package dired-subtree
+    :ensure t
+    :after dired
+    :config
+    (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle))
 
 #+END_SRC
 

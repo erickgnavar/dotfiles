@@ -102,7 +102,9 @@ alias vi="vim"
 alias weather="curl http://wttr.in/Lima"
 alias wow="git status"
 alias ipython='fades -d ipython -x ipython'
-alias cookiecutter='fades -d cookiecutter -x cookiecutter'
+alias cat="bat"
+alias ls="exa"
+alias ping="prettyping --nolegend"
 
 # direnv conf
 eval "$(direnv hook zsh)"

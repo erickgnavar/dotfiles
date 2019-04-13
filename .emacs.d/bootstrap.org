@@ -10,7 +10,9 @@
   (setq ring-bell-function 'ignore)
   (column-number-mode t)
   (global-hl-line-mode 1)
-  (set-frame-font "Monaco 12")
+
+  (if (member "Monaco" (font-family-list))
+      (set-frame-font "Monaco 12"))
 
   (global-set-key (kbd "C-x -") 'my/decrease-font-height)
   (global-set-key (kbd "C-x =") 'my/increase-font-height)
@@ -44,11 +46,11 @@ Setup fira code symbols mode.
 
 #+BEGIN_SRC emacs-lisp
 
-  (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
-
-  (require 'fira-code-mode)
-
-  (add-hook 'prog-mode-hook 'fira-code-mode)
+  (if (member "Fira Code" (font-family-list))
+      (progn
+        (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
+        (require 'fira-code-mode)
+        (add-hook 'prog-mode-hook 'fira-code-mode)))
 
 #+END_SRC
 

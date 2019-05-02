@@ -1213,6 +1213,35 @@ Enable go to definition with \ d keybinding
 
 * Custom functions
 
+Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".
+
+#+BEGIN_SRC emacs-lisp
+
+  (defvar my/window-snapshots '())
+
+  (defun my/save-window-snapshot ()
+    "Save the current window configuration into `window-snapshots` alist."
+    (interactive)
+    (let ((key (read-string "Enter a name for the snapshot: ")))
+      (setf (alist-get key my/window-snapshots) (current-window-configuration))
+      (message "%s window snapshot saved!" key)))
+
+  (defun my/get-window-snapshot (key)
+    "Given a KEY return the saved value in `window-snapshots` alist."
+    (let ((value (assoc key my/window-snapshots)))
+      (cdr value)))
+
+  (defun my/restore-window-snapshot ()
+    "Restore a window snapshot from the window-snapshots alist."
+    (interactive)
+    (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car my/window-snapshots)))
+           (snapshot (my/get-window-snapshot snapshot-name)))
+      (if snapshot
+          (set-window-configuration snapshot)
+        (message "Snapshot %s not found" snapshot-name))))
+
+#+END_SRC
+
 Manipulate frame font height.
 
 #+BEGIN_SRC emacs-lisp

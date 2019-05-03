@@ -1238,6 +1238,23 @@ Enable go to definition with \ d keybinding
 
 #+END_SRC
 
+** OCaml
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package tuareg
+    :ensure t)
+
+  (use-package merlin
+    :ensure t
+    :hook ((tuareg-mode caml-mode) . merlin-mode))
+
+  (use-package merlin-eldoc
+    :ensure t
+    :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup))
+
+#+END_SRC
+
 * Custom functions
 
 Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".

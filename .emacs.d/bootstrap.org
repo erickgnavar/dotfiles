@@ -1471,6 +1471,21 @@ Copy absolute and relative path to clipboard
 
 #+END_SRC
 
+Create a temp file with the current buffer content and render it with =eww=.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/preview-buffer-in-eww ()
+    "Preview buffer content in EWW."
+    (interactive)
+    (let* ((temp-file (make-temp-name (temporary-file-directory)))
+           (path (concat temp-file ".html")))
+      (write-file path)
+      (kill-buffer)
+      (eww-open-file path)))
+
+#+END_SRC
+
 ** MacOS
 
 Functions to open Finder using current file or current project.

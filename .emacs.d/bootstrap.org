@@ -89,6 +89,24 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
   (define-key term-raw-map (kbd "M-]") 'next-buffer)
 
 #+END_SRC
+
+** Compilation
+
+Allow to show color characters in the compilation buffer.
+
+copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer/3072831#3072831
+
+#+BEGIN_SRC emacs-lisp
+
+  (require 'ansi-color)
+
+  (defun colorize-compilation-buffer ()
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max))))
+
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+#+END_SRC
   
 * Better defaults
 

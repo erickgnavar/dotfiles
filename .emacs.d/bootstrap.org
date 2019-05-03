@@ -410,7 +410,11 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
 
   (use-package restclient
     :ensure t
+    :defer t
     :mode (("\\.http\\'" . restclient-mode))
+    :bind
+    ("C-c C-f" . json-mode-beautify)
+    ;TODO: change to only apply json formatting when the content-type is application/json
     :config
     (use-package company-restclient
       :ensure t

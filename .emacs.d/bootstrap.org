@@ -933,6 +933,25 @@ Toggle hs-minor-mode
     :ensure t)
 
 #+END_SRC
+
+Show a list of the available django commands and run the selected one using a compilation buffer.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/run-django-command ()
+    "Run a django command."
+    (interactive)
+    (let* ((python-bin (concat (getenv "VIRTUAL_ENV") "/bin/python"))
+           (manage-py-file (concat (projectile-project-root) "manage.py"))
+           (default-directory (projectile-project-root))
+           (raw-help (shell-command-to-string (concat python-bin " " manage-py-file " help")))
+           (splited-lines (split-string raw-help "\n"))
+           (options (seq-filter '(lambda (line) (cl-search "    " line)) splited-lines))
+           (selection (completing-read "Pick django command: " (mapcar 'string-trim options)))
+           (command (concat python-bin " " manage-py-file " " selection)))
+      (compile command)))
+
+#+END_SRC
   
 ** Erlang
 

@@ -1061,6 +1061,15 @@ Install Elm
 
 ** Haskell
 
+Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is loaded in =PATH=.
+
+#+BEGIN_SRC shell
+
+  stack install hlint
+  stack install hindent
+
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package intero
@@ -1068,6 +1077,13 @@ Install Elm
     :config
     (add-hook 'haskell-mode-hook 'intero-mode)
     (evil-leader/set-key-for-mode 'haskell-mode "d" 'intero-goto-definition))
+
+  (use-package hindent
+    :ensure t
+    :bind (:map haskell-mode-map
+                ("C-c C-f" . hindent-reformat-buffer))
+    :config
+    (add-hook 'haskell-mode-hook 'hindent-mode))
 
 #+END_SRC
 

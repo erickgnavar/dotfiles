@@ -92,6 +92,15 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
 
 ** Compilation
 
+Disable =h= key-binding, this has a conflict with evil-mode left navigation key-binding.
+
+#+BEGIN_SRC emacs-lisp
+
+  (eval-after-load "compile"
+    '(define-key compilation-mode-map (kbd "h") nil))
+
+#+END_SRC
+
 Allow to show color characters in the compilation buffer.
 
 copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer/3072831#3072831

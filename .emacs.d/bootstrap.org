@@ -85,8 +85,8 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
 
 #+BEGIN_SRC emacs-lisp
 
-  (require 'term)
-  (define-key term-raw-map (kbd "M-]") 'next-buffer)
+  (eval-after-load "term"
+    '(define-key term-raw-map (kbd "M-]") 'next-buffer))
 
 #+END_SRC
 

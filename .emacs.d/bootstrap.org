@@ -511,6 +511,23 @@ Used in every major mode
 
 #+END_SRC
 
+** Direnv
+
+This allow to update environment using =.envrc= file.
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package direnv
+    :ensure t
+    :config
+    (defun direnv-allow ()
+      "Run direnv allow to approve changes and apply them using direnv-update-environment."
+      (interactive)
+      (shell-command "direnv allow")
+      (direnv-update-environment)))
+
+#+END_SRC
+
 ** Projectile
 
 #+BEGIN_SRC emacs-lisp
@@ -523,14 +540,7 @@ Used in every major mode
     (setq projectile-switch-project-action 'helm-ls-git-ls)
     :config
     (projectile-mode)
-    (setq projectile-completion-system 'helm)
-    (use-package projectile-direnv
-      :ensure t
-      :config
-      (add-hook 'projectile-after-switch-project-hook
-                (lambda ()
-                  (projectile-direnv-export-variables)
-                  (my/setup-eslint)))))
+    (setq projectile-completion-system 'helm))
 
 #+END_SRC
 

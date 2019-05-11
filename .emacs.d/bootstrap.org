@@ -1094,6 +1094,19 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
     :config
     (add-hook 'haskell-mode-hook 'hindent-mode))
 
+  (defun my/run-hlint ()
+    "Run  hlint over the current project."
+    (interactive)
+    (let ((default-directory (projectile-project-root)))
+      (compile "hlint .")))
+
+  (defun my/run-hlint-buffer ()
+    "Run  hlint over the current buffer."
+    (interactive)
+    (let* ((current-file (buffer-file-name))
+           (default-directory (projectile-project-root)))
+      (compile (concat "hlint " current-file))))
+
 #+END_SRC
 
 ** Lua

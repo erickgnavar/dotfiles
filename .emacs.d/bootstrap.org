@@ -11,7 +11,7 @@
   (column-number-mode t)
   (global-hl-line-mode 1)
 
-  (if (member "Monaco" (font-family-list))
+  (when (member "Monaco" (font-family-list))
       (set-frame-font "Monaco 12"))
 
   (global-set-key (kbd "C-x -") 'my/decrease-font-height)
@@ -46,11 +46,10 @@ Setup fira code symbols mode.
 
 #+BEGIN_SRC emacs-lisp
 
-  (if (member "Fira Code" (font-family-list))
-      (progn
-        (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
-        (require 'fira-code-mode)
-        (add-hook 'prog-mode-hook 'fira-code-mode)))
+  (when (member "Fira Code" (font-family-list))
+    (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
+    (require 'fira-code-mode)
+    (add-hook 'prog-mode-hook 'fira-code-mode))
 
 #+END_SRC
 
@@ -58,7 +57,7 @@ Adjust font size to screen resolution, increase font size for 4K screens
 
 #+BEGIN_SRC emacs-lisp
 
-  (if (= (x-display-pixel-width) 3840)
+  (when (= (x-display-pixel-width) 3840)
       (set-frame-font "Monaco 16"))
 
 #+END_SRC
@@ -211,18 +210,6 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
 
 #+END_SRC
 
-** Beacon: Highlight line when enter to buffer
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package beacon
-    :ensure t
-    :diminish ""
-    :config
-    (beacon-mode 1))
-
-#+END_SRC
-
 ** Load PATH environment
 
 #+BEGIN_SRC emacs-lisp
@@ -244,17 +231,6 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
     :diminish ""
     :config
     (editorconfig-mode 1))
-
-#+END_SRC
-
-** Dimmer
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package dimmer
-    :ensure t
-    :config
-    (dimmer-mode))
 
 #+END_SRC
 
@@ -485,13 +461,14 @@ Used in every major mode
 
   (use-package company
     :ensure t
+    :init
+    (setq company-idle-delay 0.1
+          company-tooltip-limit 10
+          company-minimum-prefix-length 3)
+    :hook (after-init . global-company-mode)
     :config
     (define-key company-active-map (kbd "C-n") 'company-select-next)
-    (define-key company-active-map (kbd "C-p") 'company-select-previous)
-    (setq company-idle-delay 0.1)
-    (setq company-tooltip-limit 10)
-    (setq company-minimum-prefix-length 3)
-    (add-hook 'after-init-hook 'global-company-mode))
+    (define-key company-active-map (kbd "C-p") 'company-select-previous))
 
 #+END_SRC
 
@@ -535,11 +512,11 @@ This allow to update environment using =.envrc= file.
     :ensure t
     :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
     :init
-    (setq projectile-keymap-prefix (kbd "C-c p"))
-    (setq projectile-switch-project-action 'helm-ls-git-ls)
+    (setq projectile-keymap-prefix (kbd "C-c p")
+          projectile-switch-project-action 'helm-ls-git-ls
+          projectile-completion-system 'helm)
     :config
-    (projectile-mode)
-    (setq projectile-completion-system 'helm))
+    (projectile-mode))
 
 #+END_SRC
 
@@ -592,18 +569,17 @@ This allows to create backups of edited files using a git repitory. The backup f
   (use-package neotree
     :ensure t
     :init
-    (setq neo-window-fixed-size nil)
-    :config
+    (setq neo-window-fixed-size nil
+          neo-fit-to-contents t
+          neo-theme 'icons
+          neo-vc-integration (quote (face)))
     (defun my/neotree-toggle ()
       (interactive)
       (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
           (my/neotree-open-projectile)
         (neotree-toggle)))
+    :config
     (global-set-key [f3] 'my/neotree-toggle)
-    (defvar neo-fit-to-contents t)
-    (setq neo-fit-to-contents t)
-    (setq neo-theme 'icons)
-    (setq neo-vc-integration (quote (face)))
     (evil-set-initial-state 'neotree-mode 'emacs)
     (add-hook 'neotree-mode-hook
               (lambda ()
@@ -613,6 +589,7 @@ This allows to create backups of edited files using a git repitory. The backup f
                 (local-set-key (kbd "C-c C-r") 'neotree-rename-node))))
 
 #+END_SRC
+
 * Orgmode
 
 Configured variables:
@@ -777,16 +754,18 @@ Show files containing =TODO= like text in =magit= status buffer.
 
   (use-package web-mode
     :ensure t
-    :mode (("\\.html\\'" . web-mode)
-           ("\\.html.eex\\'" . web-mode)
-           ("\\.hbs\\'" . web-mode))
-    :config
-    (setq web-mode-enable-current-element-highlight t)
-    (setq web-mode-enable-current-column-highlight t)
+    :init
+    (setq web-mode-enable-current-element-highlight t
+          web-mode-enable-current-column-highlight t)
     (defun my/web-mode-hook ()
       (emmet-mode)
       (rainbow-delimiters-mode-disable)
       (autopair-mode -1))
+    :mode (("\\.html\\'" . web-mode)
+           ("\\.html.eex\\'" . web-mode)
+           ("\\.html.leex\\'" . web-mode)
+           ("\\.hbs\\'" . web-mode))
+    :config
     (add-hook 'web-mode-hook 'my/web-mode-hook))
 
 #+END_SRC

@@ -282,6 +282,15 @@ Disable lock files
 
 #+END_SRC
 
+** Reformatter
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package reformatter
+    :ensure t)
+
+#+END_SRC
+
 * Evil
 
 #+BEGIN_SRC emacs-lisp
@@ -991,16 +1000,12 @@ Clone elixir source code into =~/Code/elixir/src/=
   (use-package elixir-mode
     :ensure t
     :bind (:map elixir-mode-map
-                ("C-c C-f" . elixir-format))
+                ("C-c C-f" . elixir-format-buffer))
     :config
     ;; Copied from elixir-mode repo
-    ;TODO: Fix for imported deps in .formatter.exs file
-    (add-hook 'elixir-format-hook (lambda ()
-                                    (if (projectile-project-p)
-                                        (setq elixir-format-arguments
-                                              (list "--dot-formatter"
-                                                    (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
-                                      (setq elixir-format-arguments nil)))))
+    (reformatter-define elixir-format
+      :program "mix"
+      :args '("format" "-")))
 
   (use-package alchemist
     :ensure t

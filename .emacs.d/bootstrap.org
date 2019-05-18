@@ -986,14 +986,6 @@ Clone erlang source code into =~/Code/erlang/src/=
 
 ** Elixir
 
-Clone elixir source code into =~/Code/elixir/src/=
-
-#+BEGIN_SRC sh
-
-  git clone https://github.com/elixir-lang/elixir.git ~/Code/elixir/src/
-
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 
   (reformatter-define elixir-format
@@ -1004,21 +996,41 @@ Clone elixir source code into =~/Code/elixir/src/=
   (use-package elixir-mode
     :ensure t
     :bind (:map elixir-mode-map
+                ("C-c C-t" . 'my/mix-run-test-at-point)
                 ("C-c C-f" . elixir-format-buffer)))
 
-  (use-package alchemist
-    :ensure t
-    :bind (:map alchemist-mode-map
-                ("C-c C-t C-a" . alchemist-mix-test-this-buffer)
-                ("C-c C-t C-t" . alchemist-mix-test-at-point)
-                ("C-c C-s" . alchemist-project-toggle-file-and-tests))
-    :after elixir-mode
-    :hook (elixir-mode . alchemist-mode)
-    :config
-    (setq alchemist-mix-env "dev")
-    (setq alchemist-goto-elixir-source-dir (expand-file-name "~/Code/elixir/src"))
-    (setq alchemist-goto-erlang-source-dir (expand-file-name "~/Code/erlang/src"))
-    (evil-leader/set-key-for-mode 'elixir-mode "d" 'alchemist-goto-definition-at-point))
+#+END_SRC
+
+Custom functions to run elixir tests.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/mix-run-test (&optional at-point)
+    "If AT-POINT is true it will pass the line number to mix test."
+    (interactive)
+    (let* ((current-file (buffer-file-name))
+           (current-line (line-number-at-pos))
+
+           (possible-mix-paths `(,(concat (projectile-project-root) "mix.exs")
+                                 ,(concat (projectile-project-root) "src/mix.exs")))
+           (mix-file (car (seq-filter 'file-exists-p possible-mix-paths)))
+           (default-directory (file-name-directory mix-file))
+           (mix-env "MIX_ENV=test"))
+
+      (if at-point
+          (compile (format "%s mix test %s:%s" mix-env current-file current-line))
+        (compile (format "%s mix test %s" mix-env current-file)))))
+
+
+  (defun my/mix-run-test-file ()
+    "Run mix test over the current file."
+    (interactive)
+    (my/mix-run-test nil))
+
+  (defun my/mix-run-test-at-point ()
+    "Run mix test at point."
+    (interactive)
+    (my/mix-run-test t))
 
 #+END_SRC
 

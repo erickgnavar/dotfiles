@@ -996,15 +996,15 @@ Clone elixir source code into =~/Code/elixir/src/=
 
 #+BEGIN_SRC emacs-lisp
 
+  (reformatter-define elixir-format
+    :program "mix"
+    :args '("format" "-")
+    :group 'elixir)
+
   (use-package elixir-mode
     :ensure t
     :bind (:map elixir-mode-map
-                ("C-c C-f" . elixir-format-buffer))
-    :config
-    ;; Copied from elixir-mode repo
-    (reformatter-define elixir-format
-      :program "mix"
-      :args '("format" "-")))
+                ("C-c C-f" . elixir-format-buffer)))
 
   (use-package alchemist
     :ensure t

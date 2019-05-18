@@ -1077,18 +1077,20 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
 
 #+BEGIN_SRC emacs-lisp
 
+  (reformatter-define haskell-format
+    :program "hindent"
+    :group 'haskell)
+
+  (use-package haskell-mode
+    :ensure t
+    :bind (:map haskell-mode-map
+                ("C-c C-f" . haskell-format-buffer)))
+
   (use-package intero
     :ensure t
     :config
     (add-hook 'haskell-mode-hook 'intero-mode)
     (evil-leader/set-key-for-mode 'haskell-mode "d" 'intero-goto-definition))
-
-  (use-package hindent
-    :ensure t
-    :bind (:map haskell-mode-map
-                ("C-c C-f" . hindent-reformat-buffer))
-    :config
-    (add-hook 'haskell-mode-hook 'hindent-mode))
 
   (defun my/run-hlint ()
     "Run  hlint over the current project."

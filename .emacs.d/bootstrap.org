@@ -1010,6 +1010,8 @@ Clone erlang source code into =~/Code/erlang/src/=
 
 Custom functions to run elixir tests.
 
+=elixir-extra-test-env= can be set up on =.dir-locals.el=
+
 #+BEGIN_SRC emacs-lisp
 
   (defun my/mix-run-test (&optional at-point)
@@ -1022,7 +1024,8 @@ Custom functions to run elixir tests.
                                  ,(concat (projectile-project-root) "src/mix.exs")))
            (mix-file (car (seq-filter 'file-exists-p possible-mix-paths)))
            (default-directory (file-name-directory mix-file))
-           (mix-env "MIX_ENV=test"))
+           (extra-env (if (boundp 'elixir-extra-test-env) elixir-extra-test-env ""))
+           (mix-env (concat "MIX_ENV=test " extra-env)))
 
       (if at-point
           (compile (format "%s mix test %s:%s" mix-env current-file current-line))

@@ -115,6 +115,13 @@ then
     export PATH=$PATH:$HOME/.cargo/bin
 fi
 
+# Use ~/.ssh/config to prompt a list of host and ssh to the chosen one
+function ssh_connect() {
+    host=`cat ~/.ssh/config | grep "Host " | awk '{print $2} END {print ""}' | fzf | sed 's/ //g' | sed 's/\n//g'`
+    echo "Connecting to $host..."
+    ssh $host
+}
+
 # load custom OS code
 if [ $(uname -s) = "Darwin" ]
 then

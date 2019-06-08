@@ -9,3 +9,8 @@ export WORKON_HOME=~/.virtualenvs
 export PATH=$PATH:$HOME/Library/Python/2.7/bin
 # shellcheck source=/dev/null
 . "$HOME/Library/Python/2.7/bin/virtualenvwrapper.sh"
+
+# Setup asdf
+export ASDF_DIR="/usr/local/opt/asdf"
+# shellcheck source=/dev/null
+. "$ASDF_DIR/asdf.sh"

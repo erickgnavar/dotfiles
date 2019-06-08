@@ -91,6 +91,22 @@ function mkvenv() {
     fi
 }
 
+
+function git_search() {
+    git grep $1 $(git rev-list --all)
+}
+
+function kp() {
+    local pid=$(ps -ef | sed 1d | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[kill:process]'" | awk '{print $2}')
+    # https://github.com/SidOfc/dotfiles/blob/d07fa3862ed065c2a5a7f1160ae98416bfe2e1ee/zsh/kp
+
+    if [ "x$pid" != "x" ]
+    then
+        echo $pid | xargs kill -${1:-9}
+        kp
+    fi
+}
+
 # custom alias
 alias got="ps aux | grep"
 alias grep="grep --color=auto"

@@ -3,5 +3,6 @@ export PATH=/usr/local/bin:$PATH:/Applications/Postgres.app/Contents/Versions/la
 
 # virtualenvwrapper
 export WORKON_HOME=~/.virtualenvs
-source ~/Library/Python/2.7/bin/virtualenvwrapper.sh
-# TODO: change to relative path
+export PATH=$PATH:$HOME/Library/Python/2.7/bin
+# shellcheck source=/dev/null
+. "$HOME/Library/Python/2.7/bin/virtualenvwrapper.sh"

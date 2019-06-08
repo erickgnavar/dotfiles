@@ -32,7 +32,6 @@ Plugin 'bash-support.vim'
 Plugin 'elzr/vim-json'
 Plugin 'mattn/webapi-vim' "gist-vim requirement
 Plugin 'mattn/gist-vim'
-Plugin 'rking/ag.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'IndexedSearch'
 " XML/HTML tags navigation

@@ -125,6 +125,10 @@ alias ping="prettyping --nolegend"
 # direnv conf
 eval "$(direnv hook zsh)"
 
+# Use binaries from ~/.local/bin
+# haskell stack install some binaries here: hindent, hlint, etc
+export PATH="$PATH:$HOME/.local/bin"
+
 # load cargo bin
 if [ -d $HOME/.cargo/bin ]
 then

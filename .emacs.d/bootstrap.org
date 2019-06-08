@@ -362,6 +362,7 @@ Disable lock files
           "t" 'my/find-tag
           "pr" 'my/copy-relative-path
           "pa" 'my/copy-abs-path
+          "x" 'my/resize-window
           "k" 'kill-buffer)))
 #+END_SRC
 
@@ -1597,6 +1598,29 @@ Create a temp file with the current buffer content and render it with =eww=.
       (write-file path)
       (kill-buffer)
       (eww-open-file path)))
+
+#+END_SRC
+
+Resize window: allow create a "resize mode" and use hjkl to increase/decrease width/height of the current window
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/resize-window ()
+    "Resize window using j k h l keys."
+    (interactive)
+    (let ((keys-map '((?h . evil-window-decrease-width)
+                      (?j . evil-window-decrease-height)
+                      (?k . evil-window-increase-height)
+                      (?l . evil-window-increase-width)))
+          (overlay (make-overlay (point-min) (point-max) (window-buffer))))
+      (let ((is-reading t))
+        (overlay-put overlay 'face '((t (:foreground "gray40"))))
+        (while is-reading
+          (let ((action (alist-get (read-key) keys-map)))
+            (if action
+                (apply action '(1))
+              (setq is-reading nil)
+              (delete-overlay overlay)))))))
 
 #+END_SRC
 

@@ -248,11 +248,14 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
   (use-package yasnippet
     :ensure t
     :diminish ""
-    :config
-    (yas-global-mode 1))
+    :hook ((prog-mode . yas-minor-mode)
+           (conf-mode . yas-minor-mode)
+           (text-mode . yas-minor-mode)
+           (snippet-mode . yas-minor-mode)))
 
   (use-package yasnippet-snippets
-    :ensure t)
+    :ensure t
+    :after (yasnippet))
 
 #+END_SRC
 

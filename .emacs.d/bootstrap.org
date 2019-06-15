@@ -866,6 +866,11 @@ Show files containing =TODO= like text in =magit= status buffer.
   (use-package dockerfile-mode
     :ensure t)
 
+  (use-package dumb-jump
+    :ensure t
+    :init
+    (setq dumb-jump-selector 'helm))
+
 #+END_SRC
 
 Use ESC key instead C-g to close and abort
@@ -1018,7 +1023,9 @@ Clone erlang source code into =~/Code/erlang/src/=
     :ensure t
     :bind (:map elixir-mode-map
                 ("C-c C-t" . 'my/mix-run-test-at-point)
-                ("C-c C-f" . elixir-format-buffer)))
+                ("C-c C-f" . elixir-format-buffer))
+    :config
+    (evil-leader/set-key-for-mode 'elixir-mode "d" 'dumb-jump-go))
 
 #+END_SRC
 

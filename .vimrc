@@ -129,7 +129,7 @@ set clipboard=unnamed
 
 " Setup leader functions
 nmap <Leader>a :Ag<space>
-nmap <Leader>b :buffer<space>
+nmap <Leader>b :Buffers<ENTER>
 nmap <Leader>c :ClearCtrlPCache<ENTER>
 nmap <Leader>e :Files<ENTER>
 nmap <Leader>k :bdelete<space>

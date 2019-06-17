@@ -34,6 +34,7 @@ Plugin 'mattn/webapi-vim' "gist-vim requirement
 Plugin 'mattn/gist-vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'IndexedSearch'
+Plugin 'airblade/vim-rooter'
 " XML/HTML tags navigation
 Plugin 'matchit.zip'
 Plugin 'terryma/vim-expand-region'

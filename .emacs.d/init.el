@@ -32,19 +32,22 @@
 ;; Always follow symlinks, used to avoid emacs ask when open org conf file
 (setq vc-follow-symlinks t)
 
-;; Change GC config to speed up startup time, copied from emacs-doom
+;; Change GC config to speed up startup time
+;; Copied from https://github.com/hlissner/doom-emacs/issues/310#issuecomment-354424413
+(defvar last-file-name-handler-alist file-name-handler-alist)
 (setq gc-cons-threshold 402653184
-      gc-cons-percentage 0.6)
+      gc-cons-percentage 0.6
+      file-name-handler-alist nil)
 
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "~/.emacs.d/bootstrap.org"))
-
 
 ;; Restore GC previous config
 (add-hook 'emacs-startup-hook
           '(lambda ()
              (setq gc-cons-threshold 16777216
-                   gc-cons-percentage 0.1)))
+                   gc-cons-percentage 0.1
+                   file-name-handler-alist last-file-name-handler-alist)))
 
 (provide 'init.el)
 ;;; init.el ends here

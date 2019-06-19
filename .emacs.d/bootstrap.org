@@ -354,43 +354,49 @@ Disable lock files
      'evil-ex-substitute-replacement
      '((t
         :foreground "green"
-        :weight bold)))
+        :weight bold))))
 
-    (use-package evil-nerd-commenter
-      :ensure t
-      :config
-      (evilnc-default-hotkeys)
-      (global-set-key (kbd "C-\-") 'evilnc-comment-operator))
-    (use-package evil-surround
-      :ensure t
-      :config
-      (global-evil-surround-mode 1))
-    (use-package evil-leader
-      :ensure t
-      :config
-      (global-evil-leader-mode)
-      (evil-leader/set-key
-          "f" 'find-file
-          "a" 'helm-ag-project-root
-          "e" 'my/find-file-in-project
-          "b" 'helm-buffers-list
-          "c" 'eshell-toggle
-          "n" 'evil-buffer-new
-          "y" 'helm-show-kill-ring
-          "SPC" 'helm-M-x
-          "q" 'helm-swoop
-          "m" 'ace-jump-mode
-          "l" 'display-line-numbers-mode
-          "s" 'my/toggle-spanish-characters
-          "w" 'my/toggle-maximize
-          "g" 'my/magit-status
-          "hk" 'git-gutter:revert-hunk
-          "hs" 'git-gutter:stage-hunk
-          "t" 'my/find-tag
-          "pr" 'my/copy-relative-path
-          "pa" 'my/copy-abs-path
-          "x" 'my/resize-window
-          "k" 'kill-buffer)))
+  (use-package evil-nerd-commenter
+    :ensure t
+    :after (evil)
+    :config
+    (evilnc-default-hotkeys)
+    (global-set-key (kbd "C-\-") 'evilnc-comment-operator))
+
+  (use-package evil-surround
+    :ensure t
+    :after (evil)
+    :config
+    (global-evil-surround-mode 1))
+
+  (use-package evil-leader
+    :ensure t
+    :after (evil)
+    :config
+    (global-evil-leader-mode)
+    (evil-leader/set-key
+      "SPC" 'helm-M-x
+      "a" 'helm-ag-project-root
+      "b" 'helm-buffers-list
+      "c" 'eshell-toggle
+      "e" 'my/find-file-in-project
+      "f" 'find-file
+      "g" 'my/magit-status
+      "hk" 'git-gutter:revert-hunk
+      "hs" 'git-gutter:stage-hunk
+      "k" 'kill-buffer
+      "l" 'display-line-numbers-mode
+      "m" 'ace-jump-mode
+      "n" 'evil-buffer-new
+      "pa" 'my/copy-abs-path
+      "pr" 'my/copy-relative-path
+      "q" 'helm-swoop
+      "s" 'my/toggle-spanish-characters
+      "t" 'my/find-tag
+      "w" 'my/toggle-maximize
+      "x" 'my/resize-window
+      "y" 'helm-show-kill-ring))
+
 #+END_SRC
 
 * Utils

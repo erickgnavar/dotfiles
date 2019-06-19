@@ -313,6 +313,18 @@ Disable lock files
 
 #+END_SRC
 
+** Toggle terminal
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package eshell-toggle
+    :ensure t
+    :custom
+    (eshell-toggle-init-function #'(lambda (dir)
+                                     (my/goto-term))))
+
+#+END_SRC
+
 * Evil
 
 #+BEGIN_SRC emacs-lisp
@@ -362,7 +374,7 @@ Disable lock files
           "a" 'helm-ag-project-root
           "e" 'my/find-file-in-project
           "b" 'helm-buffers-list
-          "c" 'my/goto-term
+          "c" 'eshell-toggle
           "n" 'evil-buffer-new
           "y" 'helm-show-kill-ring
           "SPC" 'helm-M-x

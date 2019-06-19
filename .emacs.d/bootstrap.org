@@ -667,12 +667,6 @@ Configured variables:
     (add-hook 'org-mode-hook (lambda ()
                                (org-indent-mode t)
                                (diminish 'org-indent-mode)))
-    (use-package ox-twbs
-      :ensure t)
-    (use-package ob-restclient
-      :ensure t)
-    (use-package htmlize
-      :ensure t)
     (org-babel-do-load-languages 'org-babel-load-languages
                                  '((python . t)
                                    (shell . t)
@@ -683,7 +677,17 @@ Configured variables:
                                    (plantuml . t)
                                    (emacs-lisp . t))))
 
-  (diminish 'org-indent-mode)
+  (use-package ox-twbs
+    :ensure t
+    :after (org))
+
+  (use-package ob-restclient
+    :ensure t
+    :after (org))
+
+  (use-package htmlize
+    :ensure t
+    :after (org))
 
 #+END_SRC
 
@@ -730,6 +734,7 @@ Open selected region in remote repo
 
   (use-package magit
     :ensure t
+    :defer t
     :init
     (defconst my/magit-register ?m)
     (defun my/magit-status()
@@ -760,6 +765,7 @@ Show files containing =TODO= like text in =magit= status buffer.
 
   (use-package magit-todos
     :ensure t
+    :after (magit)
     :init
     (setq magit-todos-exclude-globs '("*.org"))
     :config
@@ -962,6 +968,7 @@ Toggle hs-minor-mode
   (use-package elpy
     :ensure t
     :diminish
+    :after (python)
     :config
     (elpy-enable)
     (when (require 'flycheck nil t)
@@ -980,6 +987,7 @@ Toggle hs-minor-mode
 
   (use-package py-isort
     :ensure t
+    :after (elpy)
     :init
     (defun my/sort-imports ()
       (interactive)
@@ -1380,6 +1388,7 @@ Install dependencies: godef, goimports, gocode
 
   (use-package clj-refactor
     :ensure t
+    :after (cider)
     :config
     (defun my/clj-hook ()
       (clj-refactor-mode 1))

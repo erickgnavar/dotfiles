@@ -1424,6 +1424,20 @@ Enable go to definition with \ d keybinding
 
 #+END_SRC
 
+** Dart
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package dart-mode
+    :ensure t
+    :if (or (executable-find "dart") (executable-find "flutter"))
+    :bind (:map dart-mode-map
+                ("C-c C-f" . dart-format))
+    :config
+    (evil-leader/set-key-for-mode 'dart-mode "d" 'dart-goto))
+
+#+END_SRC
+
 * Custom functions
 
 Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".

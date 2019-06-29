@@ -29,6 +29,13 @@
 (use-package delight
   :ensure t)
 
+(use-package quelpa-use-package
+  :ensure t
+  :custom
+  (quelpa-update-melpa-p nil)
+  :config
+  (quelpa-use-package-activate-advice))
+
 ;; Always follow symlinks, used to avoid emacs ask when open org conf file
 (setq vc-follow-symlinks t)
 

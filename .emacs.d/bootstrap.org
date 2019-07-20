@@ -68,6 +68,23 @@ Adjust font size to screen resolution, increase font size for 4K screens
 
 #+END_SRC
 
+Parrot mode FTW!
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/parrot-animate-when-compile-success (buffer result)
+    (if (string-match "^finished" result)
+        (parrot-start-animation)))
+
+  (use-package parrot
+    :ensure t
+    :config
+    (parrot-mode)
+    (add-hook 'before-save-hook 'parrot-start-animation)
+    (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
+
+#+END_SRC
+
 Open scratch buffer
 
 #+BEGIN_SRC emacs-lisp

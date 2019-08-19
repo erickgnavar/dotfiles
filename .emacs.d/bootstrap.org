@@ -355,7 +355,9 @@ Disable lock files
     :ensure t
     :custom
     (eshell-toggle-init-function #'(lambda (dir)
-                                     (my/goto-term))))
+                                     (my/goto-term)))
+    :config
+    (global-set-key [f2] 'eshell-toggle))
 
 #+END_SRC
 
@@ -412,7 +414,6 @@ Disable lock files
       "SPC" 'helm-M-x
       "a" 'helm-ag-project-root
       "b" 'helm-buffers-list
-      "c" 'eshell-toggle
       "e" 'my/find-file-in-project
       "f" 'find-file
       "g" 'my/magit-status

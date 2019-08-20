@@ -21,6 +21,11 @@
 (eval-when-compile
   (require 'use-package))
 
+;; setup zsh as a default shell when is available
+(let ((zsh-path (executable-find "zsh")))
+  (when zsh-path
+    (setq shell-file-name zsh-path)))
+
 (require 'bind-key)
 
 (use-package diminish

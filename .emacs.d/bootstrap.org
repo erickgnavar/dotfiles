@@ -1749,6 +1749,19 @@ Resize window: allow create a "resize mode" and use hjkl to increase/decrease wi
 
 #+END_SRC
 
+Kill the current buffer and delete the related file
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/delete-close-file ()
+    "Delete the current file and kill its buffer."
+    (interactive)
+    (when buffer-file-name
+      (delete-file buffer-file-name)
+      (kill-buffer)))
+
+#+END_SRC
+
 ** MacOS
 
 Functions to open Finder using current file or current project.

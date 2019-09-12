@@ -558,6 +558,19 @@ Disable lock files
                                                               (execute-kbd-macro (read-kbd-macro "<return>"))))))
 
 #+END_SRC
+
+** XML formatter
+
+#+BEGIN_SRC emacs-lisp
+
+  (reformatter-define xml-format
+    :program "xmlformat"
+    :group 'xml)
+
+  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer)
+
+#+END_SRC
+
 * Common packages
 
 Used in every major mode

@@ -567,7 +567,8 @@ Disable lock files
     :program "xmlformat"
     :group 'xml)
 
-  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer)
+  (eval-after-load "nxml-mode"
+    '(define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
 
 #+END_SRC
 

@@ -1,11 +1,4 @@
-export ZSH=$HOME/.oh-my-zsh
-
-ZSH_THEME="dracula"
-# TODO: make dracula theme downloable if no exists
-
-plugins=(git docker)
-
-source $ZSH/oh-my-zsh.sh
+ZSH_THEME=""
 
 # User configuration
 
@@ -25,14 +18,14 @@ setopt hist_ignore_all_dups
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
 
 # setup fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh ]
+[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
 
-source $(dirname $0)/prompt.sh
+source "$(dirname $0)/prompt.sh"
 
 # helper functions
 
-function reload() {
-    source ~/.zshrc
+function reload {
+    source "$HOME/.zshrc"
 }
 
 function run() {

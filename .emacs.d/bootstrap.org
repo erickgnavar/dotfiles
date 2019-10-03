@@ -63,8 +63,8 @@ Adjust font size to screen resolution, increase font size for 4K screens
 
 #+BEGIN_SRC emacs-lisp
 
-  (when (= (x-display-pixel-width) 3840)
-      (set-frame-font "Monaco 16"))
+  (when (and (display-graphic-p) (= (x-display-pixel-width) 3840))
+    (set-frame-font "Monaco 16"))
 
 #+END_SRC
 
@@ -855,6 +855,14 @@ Show files containing =TODO= like text in =magit= status buffer.
 
   (use-package git-gutter-fringe
     :ensure t
+    :if (display-graphic-p)
+    :diminish git-gutter-mode
+    :config
+    (global-git-gutter-mode t))
+
+  (use-package git-gutter
+    :ensure t
+    :if (not (display-graphic-p))
     :diminish git-gutter-mode
     :config
     (global-git-gutter-mode t))

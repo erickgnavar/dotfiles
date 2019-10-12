@@ -986,16 +986,16 @@ Show files containing =TODO= like text in =magit= status buffer.
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
     (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar")))
 
-  (use-package yaml-mode
-    :ensure t)
-
   (defun my/k8s-apply ()
     "Apply current yaml file to the current kubernetes context."
     (interactive)
     (let ((default-directory (file-name-directory buffer-file-name)))
       (compile (format "kubectl apply -f %s" buffer-file-name))))
 
-  (define-key yaml-mode-map (kbd "C-c C-c") 'my/k8s-apply)
+  (use-package yaml-mode
+    :ensure t
+    :bind (:map yaml-mode-map
+                ("C-c C-c" . 'my/k8s-apply)))
 
   ;; Used for gherkin files (.feature)
   (use-package feature-mode

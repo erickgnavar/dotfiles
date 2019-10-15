@@ -145,3 +145,8 @@ then
 else
     source $(dirname $0)/linux.sh
 fi
+
+function gitpr {
+    git fetch upstream refs/pull/$1/head:PR$1
+    git checkout PR$1
+}

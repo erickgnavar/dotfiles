@@ -150,3 +150,7 @@ function gitpr {
     git fetch upstream refs/pull/$1/head:PR$1
     git checkout PR$1
 }
+
+function video_to_gif {
+    ffmpeg -i $1 $2 -hide_banner
+}

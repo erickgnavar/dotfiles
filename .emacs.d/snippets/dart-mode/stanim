@@ -1,0 +1,33 @@
+# -*- mode: snippet -*-
+# name: Flutter widget with AnimationController
+# key: stanim
+# group: flutter
+# --
+class $1 extends StatefulWidget {
+  @override
+  $1State createState() => $1State();
+}
+
+class $1State extends State<$1>
+with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+  
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      $2
+    );
+  }
+}

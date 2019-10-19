@@ -1885,3 +1885,13 @@ Functions to open Finder using current file or current project.
         (message "Buffer has not been saved yet!"))))
 
 #+END_SRC
+
+Open the current file with macOS =open= command. This will open the file with the default app configured for the type of file.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/macos-open-current-file ()
+    (interactive)
+    (shell-command (format "open %s" (buffer-file-name))))
+
+#+END_SRC

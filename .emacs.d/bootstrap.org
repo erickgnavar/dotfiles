@@ -375,6 +375,18 @@ Disable lock files
 
 #+END_SRC
 
+** iSpell
+
+Avoid check spelling in markdown code blocks
+
+#+BEGIN_SRC emacs-lisp
+
+  (eval-after-load "ispell"
+    '(add-to-list 'ispell-skip-region-alist
+                  '("^```" . "^```")))
+
+#+END_SRC
+
 * Evil
 
 #+BEGIN_SRC emacs-lisp

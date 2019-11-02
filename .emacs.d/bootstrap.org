@@ -166,12 +166,15 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
 
 ** Doom modeline
 
+Enable =display-battery-mode= after =doom-modeline= is loaded.
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package doom-modeline
     :ensure t
     :defer t
-    :hook (after-init . doom-modeline-mode))
+    :hook (after-init . doom-modeline-mode)
+    :config (add-hook 'doom-modeline-mode-hook '(lambda () (display-battery-mode))))
 
 #+END_SRC
 
@@ -550,16 +553,6 @@ Avoid check spelling in markdown code blocks
     :ensure t
     :config
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
-#+END_SRC
-
-** Battery status
-
-Use builtin emacs function to show battery status in doom-modeline
-
-#+BEGIN_SRC emacs-lisp
-
-  (display-battery-mode)
 
 #+END_SRC
 

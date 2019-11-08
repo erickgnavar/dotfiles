@@ -441,7 +441,8 @@ Avoid check spelling in markdown code blocks
     (global-evil-leader-mode)
     (evil-leader/set-key
       "SPC" 'helm-M-x
-      "a" 'helm-ag-project-root
+      "a" 'my/helm-ag-with-default-term
+      "A" 'my/helm-ag-without-default-term
       "b" 'helm-buffers-list
       "e" 'my/find-file-in-project
       "f" 'find-file
@@ -670,8 +671,16 @@ This allow to update environment using =.envrc= file.
 
   (use-package helm-ag
     :ensure t
-    :custom
-    (helm-ag-insert-at-point 'word))
+    :init
+    (defun my/helm-ag-with-default-term ()
+      (interactive)
+      (let ((helm-ag-insert-at-point 'word))
+        (helm-ag-project-root)))
+
+    (defun my/helm-ag-without-default-term ()
+      (interactive)
+      (let ((helm-ag-insert-at-point nil))
+        (helm-ag-project-root))))
 
   (use-package helm-ls-git
     :ensure t)

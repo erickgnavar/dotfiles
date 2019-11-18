@@ -584,6 +584,27 @@ Avoid check spelling in markdown code blocks
 
 #+END_SRC
 
+** SQL formatter
+
+Install =pgformatter= using homebrew =brew install pgformatter=
+
+#+BEGIN_SRC emacs-lisp
+
+  (reformatter-define sql-format
+    :program "pg_format")
+
+  (defun my/format-sql ()
+    "Format active region otherwise format the entire buffer."
+    (interactive)
+    (if (region-active-p)
+        (sql-format-region (region-beginning) (region-end))
+      (sql-format-buffer)))
+
+  (eval-after-load "sql"
+    '(define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
+
+#+END_SRC
+
 * Common packages
 
 Used in every major mode

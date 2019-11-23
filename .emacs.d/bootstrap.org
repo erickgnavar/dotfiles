@@ -1948,6 +1948,19 @@ Functions to open Finder using current file or current project.
 
 #+END_SRC
 
+Open current file with an macOS app. Installed macOS apps will be listed using helm
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/macos-open-file-with ()
+    "Open current file with and macOS installed app."
+    (interactive)
+    (let* ((apps-list (directory-files "/Applications" nil "\\.app$"))
+           (selected-app (completing-read "Choose an application: " apps-list)))
+      (shell-command (format "open %s -a '%s'" (buffer-file-name) selected-app))))
+
+#+END_SRC
+
 Open the current file with macOS =open= command. This will open the file with the default app configured for the type of file.
 
 #+BEGIN_SRC emacs-lisp

@@ -1400,6 +1400,34 @@ Install tern
 
 #+END_SRC
 
+Formattter
+
+Put this script in some =$PATH= location like =~/.local/bin=. This script is needed because prettier can't read code from stdin :/
+
+#+BEGIN_SRC bash
+
+  #!/bin/bash -
+
+  tmp="$(mktemp).js"
+  while read line
+  do
+      echo $line >> $tmp
+  done < /dev/stdin
+
+  prettier $tmp
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (reformatter-define js-format
+    :program "fixprettier.sh")
+
+  (eval-after-load "js2-mode"
+    `(define-key js2-mode-map (kbd "C-c C-f") 'js-format-buffer))
+
+#+END_SRC
+
 ** Typescript
 
 #+BEGIN_SRC emacs-lisp

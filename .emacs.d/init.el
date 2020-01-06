@@ -3,22 +3,25 @@
 ;;; Code:
 (require 'package)
 
-(setq package-enable-at-startup nil)
+(defvar bootstrap-version)
 
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+(defvar straight-use-package-by-default t)
 
-(package-initialize)
+;; Install straight.el
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Install use-package
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package))
+;; Install use-package using straight
+(straight-use-package 'use-package)
 
 ;; setup zsh as a default shell when is available
 (let ((zsh-path (executable-find "zsh")))
@@ -32,13 +35,6 @@
 
 (use-package delight
   :ensure t)
-
-(use-package quelpa-use-package
-  :ensure t
-  :custom
-  (quelpa-update-melpa-p nil)
-  :config
-  (quelpa-use-package-activate-advice))
 
 ;; Always follow symlinks, used to avoid emacs ask when open org conf file
 (setq vc-follow-symlinks t)

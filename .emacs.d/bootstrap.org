@@ -721,26 +721,24 @@ Configured variables:
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package org
-    :ensure t
-    :init
-    (setq org-latex-caption-above nil
-          org-clock-persist 'history
-          org-src-fontify-natively t
-          org-log-done t)
-    :config
-    (org-clock-persistence-insinuate)
-    (add-hook 'org-mode-hook (lambda ()
-                               (org-indent-mode t)
-                               (diminish 'org-indent-mode)))
-    (org-babel-do-load-languages 'org-babel-load-languages
-                                 '((python . t)
-                                   (shell . t)
-                                   (lisp . t)
-                                   (sql . t)
-                                   (dot . t)
-                                   (plantuml . t)
-                                   (emacs-lisp . t))))
+  (eval-after-load "org"
+    `(progn
+       (setq org-latex-caption-above nil
+             org-clock-persist 'history
+             org-src-fontify-natively t
+             org-log-done t)
+       (org-clock-persistence-insinuate)
+       (add-hook 'org-mode-hook (lambda ()
+                                  (org-indent-mode t)
+                                  (diminish 'org-indent-mode)))
+       (org-babel-do-load-languages 'org-babel-load-languages
+                                    '((python . t)
+                                      (shell . t)
+                                      (lisp . t)
+                                      (sql . t)
+                                      (dot . t)
+                                      (plantuml . t)
+                                      (emacs-lisp . t)))))
 
   (use-package htmlize
     :ensure t

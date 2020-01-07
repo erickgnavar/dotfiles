@@ -338,15 +338,6 @@ Dired preview mode, allow to see a preview of the file at point.
 
 #+END_SRC
 
-** Darkroom
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package darkroom
-    :ensure t)
-
-#+END_SRC
-
 ** Various changes
 
 Disable lock files
@@ -453,7 +444,6 @@ Avoid check spelling in markdown code blocks
       "hs" 'git-gutter:stage-hunk
       "k" 'kill-buffer
       "l" 'display-line-numbers-mode
-      "m" 'ace-jump-mode
       "n" 'evil-buffer-new
       "pa" 'my/copy-abs-path
       "pr" 'my/copy-relative-path
@@ -501,30 +491,6 @@ Avoid check spelling in markdown code blocks
 
 #+END_SRC
 
-** Ace-jump-mode
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package ace-jump-mode
-    :ensure t)
-
-#+END_SRC
-
-** Expand region
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package expand-region
-    :ensure t
-    :after evil
-    :config
-    ;; unbind default keymap for "_", the default is: evil-next-line-1-first-non-blank
-    (define-key evil-motion-state-map (kbd "_") nil)
-    (define-key evil-normal-state-map (kbd "_") 'er/contract-region)
-    (define-key evil-normal-state-map (kbd "+") 'er/expand-region))
-
-#+END_SRC
-
 ** Restclient
 
 #+BEGIN_SRC emacs-lisp
@@ -556,18 +522,6 @@ Avoid check spelling in markdown code blocks
     :ensure t
     :config
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
-#+END_SRC
-
-** Eshell
-
-#+BEGIN_SRC emacs-lisp
-
-  (add-hook 'eshell-mode-hook '(lambda ()
-                                 (local-set-key (kbd "C-l") (lambda ()
-                                                              (interactive)
-                                                              (insert "clear 1")
-                                                              (execute-kbd-macro (read-kbd-macro "<return>"))))))
 
 #+END_SRC
 
@@ -784,18 +738,9 @@ Configured variables:
                                    (shell . t)
                                    (lisp . t)
                                    (sql . t)
-                                   (restclient . t)
                                    (dot . t)
                                    (plantuml . t)
                                    (emacs-lisp . t))))
-
-  (use-package ox-twbs
-    :ensure t
-    :after (org))
-
-  (use-package ob-restclient
-    :ensure t
-    :after (org))
 
   (use-package htmlize
     :ensure t
@@ -1129,7 +1074,7 @@ Toggle hs-minor-mode
 #+BEGIN_SRC sh
   pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
 #+END_SRC
-  
+
 #+BEGIN_SRC emacs-lisp
 
   (defun my/python-format-code ()
@@ -1192,7 +1137,7 @@ Show a list of the available django commands and run the selected one using a co
       (compile command)))
 
 #+END_SRC
-  
+
 ** Erlang
 
 Clone erlang source code into =~/Code/erlang/src/=

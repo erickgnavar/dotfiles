@@ -8,6 +8,17 @@
   (setq inhibit-startup-message t)
   (setq default-directory (expand-file-name "~/"))
 
+  ;; Hide vertical scroll bar
+  (scroll-bar-mode -1)
+
+  ;; Hide toolbar
+  (tool-bar-mode -1)
+
+  ;; Change backups directory to emacs folder
+  ;; this avoid to save backup files in the same directory of the original files
+  (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                                 "backups"))))
+
   ;; Hide the bell in the center of screen
   (setq ring-bell-function 'ignore)
   (column-number-mode t)
@@ -136,17 +147,6 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
       (ansi-color-apply-on-region (point-min) (point-max))))
 
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-
-#+END_SRC
-
-* Better defaults
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package better-defaults
-    :ensure t
-    :config
-    (menu-bar-mode 1))
 
 #+END_SRC
 

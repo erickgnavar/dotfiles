@@ -154,3 +154,18 @@ function gitpr {
 function video_to_gif {
     ffmpeg -i $1 $2 -hide_banner
 }
+
+# k8s helpers
+
+function pod_shell {
+    namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    echo "Connecting to $pod"
+
+    if [ -z $1 ]
+    then
+	kubectl -n $namespace exec -ti $pod bash
+    else
+	kubectl -n $namespace exec -ti $pod $1
+    fi
+}

@@ -20,6 +20,9 @@ setopt hist_ignore_all_dups
 # setup fzf
 [[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
 
+# load poetry
+[[ -f "$HOME/.poetry/env" ]] && source "$HOME/.poetry/env"
+
 source "$(dirname $0)/prompt.sh"
 
 # helper functions

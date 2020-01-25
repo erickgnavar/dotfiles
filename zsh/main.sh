@@ -70,6 +70,10 @@ function extract_youtube_audio() {
     youtube-dl $1 --audio-format=mp3 -x
 }
 
+function download_video_best_quality() {
+    youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 $1
+}
+
 function mkvenv() {
     local python_path="${HOME}/.pyenv/versions/$2/bin/python"
 

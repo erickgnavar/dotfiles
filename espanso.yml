@@ -1,0 +1,46 @@
+# espanso configuration file
+
+# This is the default configuration file, change it as you like it
+# You can refer to the official documentation:
+# https://espanso.org/docs/
+
+# Matches are the substitution rules, when you type the "trigger" string
+# it gets replaced by the "replace" string.
+matches:
+  - trigger: ":date"
+    replace: "{{date}}"
+    vars:
+      - name: date
+        type: date
+        params:
+          format: "%m/%d/%Y"
+
+  - trigger: ":isodate"
+    replace: "{{date}}"
+    vars:
+      - name: date
+        type: date
+        params:
+          format: "%Y-%m-%d"
+
+  - trigger: ":time"
+    replace: "{{time}}"
+    vars:
+      - name: time
+        type: date
+        params:
+          format: "%X"
+
+  - trigger: ":fliptable"
+    replace: "(ノ°Д°）ノ︵ ┻━┻)"
+
+  - trigger: ":well"
+    replace: "¯\\_(ツ)_/¯"
+
+  - trigger: ":ip"
+    replace: "{{ip}}"
+    vars:
+      - name: ip
+        type: shell
+        params:
+          cmd: "dig +short myip.opendns.com @resolver1.opendns.com"

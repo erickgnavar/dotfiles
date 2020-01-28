@@ -14,3 +14,13 @@ export PATH=$PATH:$HOME/Library/Python/2.7/bin
 export ASDF_DIR="/usr/local/opt/asdf"
 # shellcheck source=/dev/null
 . "$ASDF_DIR/asdf.sh"
+
+# fix emoji and symbol pallete when it doesn't show up
+function fix_emoji_palette {
+    preferences_path="~/Library/Preferences/com.apple.HIToolbox.plist"
+
+    if [ -e "$preferences_path" ]
+    then
+	rm "$preferences_path"
+    fi
+}

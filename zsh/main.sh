@@ -136,6 +136,9 @@ eval "$(direnv hook zsh)"
 # haskell stack install some binaries here: hindent, hlint, etc
 export PATH="$PATH:$HOME/.local/bin"
 
+# variable used to avoid java as a requirement when installing a version of erlang with asdf
+export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
+
 # load cargo bin
 if [ -d $HOME/.cargo/bin ]
 then

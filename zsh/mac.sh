@@ -4,6 +4,9 @@ export PATH=/usr/local/bin:$PATH:/Applications/Postgres.app/Contents/Versions/la
 # Setup gettext binaries
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 
+# autojump setup
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
 # virtualenvwrapper
 export WORKON_HOME=~/.virtualenvs
 export PATH=$PATH:$HOME/Library/Python/2.7/bin

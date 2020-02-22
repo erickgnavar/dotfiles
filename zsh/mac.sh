@@ -11,12 +11,12 @@ export PATH="/usr/local/opt/gettext/bin:$PATH"
 export WORKON_HOME=~/.virtualenvs
 export PATH=$PATH:$HOME/Library/Python/2.7/bin
 # shellcheck source=/dev/null
-. "$HOME/Library/Python/2.7/bin/virtualenvwrapper.sh"
+[ -f "$HOME/Library/Python/2.7/bin/virtualenvwrapper.sh" ] && source "$HOME/Library/Python/2.7/bin/virtualenvwrapper.sh"
 
 # Setup asdf
 export ASDF_DIR="/usr/local/opt/asdf"
 # shellcheck source=/dev/null
-. "$ASDF_DIR/asdf.sh"
+[ -f "$ASDF_DIR/asdf.sh" ] && source "$ASDF_DIR/asdf.sh"
 
 # fix emoji and symbol pallete when it doesn't show up
 function fix_emoji_palette {

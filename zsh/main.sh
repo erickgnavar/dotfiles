@@ -179,3 +179,13 @@ function pod_shell {
 	kubectl -n $namespace exec -ti $pod $1
     fi
 }
+
+function pod_proxy {
+    namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    echo "Enter port mapping using the form local_port:pod_port"
+    read port_mapping
+    echo "Setting up proxy to $pod on $port_mapping..."
+
+    kubectl port-forward -n $namespace $pod $port_mapping
+}

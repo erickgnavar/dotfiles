@@ -5,7 +5,6 @@
  ("auctex" . "fafa28d54276a73604e696b51c6a1a36d727d3fb")
  ("autopair" . "2b6d72bccb0ebba6e7e711528872b898b0c65b0a")
  ("biblio.el" . "efeeab720cb8e3f95ddb4298d0cc62393cf237e9")
- ("blacken" . "a09f8e2564739792a1b86bc8a6ce41039db3bbf8")
  ("caml-mode" . "38ebde12d3d529e6ef8078967997d32226e69e82")
  ("cargo.el" . "3d9f7d20d01ca046dbc739d8aeca2838bfb1c413")
  ("cider" . "e1f8ab0bc33a3efcd0dba88f805c21881a573551")

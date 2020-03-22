@@ -1325,14 +1325,6 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
 
 ** Javascript
 
-Install tern
-
-#+BEGIN_SRC sh
-
-  npm -g install tern
-
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 
   (use-package js2-mode
@@ -1341,14 +1333,6 @@ Install tern
     :config
     ;; let the error checking to flycheck
     (setq js2-mode-show-strict-warnings nil))
-
-  (use-package company-tern
-    :ensure t
-    :diminish tern-mode
-    :after js2-mode
-    :config
-    (add-to-list 'company-backends 'company-tern)
-    (add-hook 'js2-mode-hook 'tern-mode))
 
 #+END_SRC
 

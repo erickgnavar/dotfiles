@@ -189,3 +189,11 @@ function pod_proxy {
 
     kubectl port-forward -n $namespace $pod $port_mapping
 }
+
+function pod_logs {
+    namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    echo "Showing logs for $pod"
+
+    kubectl -n $namespace logs -f $pod
+}

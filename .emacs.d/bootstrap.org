@@ -240,6 +240,17 @@ Dired preview mode, allow to see a preview of the file at point.
 
 * Editor enhancements
 
+** Deactivate extended region in visual mode
+
+This allow to visual mode work more like vim visual highlighting.
+
+#+begin_src emacs-lisp
+
+  (unless (version< emacs-version "27")
+    (set-face-attribute 'region nil :extend nil))
+
+#+end_src
+
 ** Dark and transparent title bar in macOS
 
 #+BEGIN_SRC emacs-lisp

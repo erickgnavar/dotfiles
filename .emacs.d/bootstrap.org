@@ -750,6 +750,11 @@ Configured variables:
              org-src-fontify-natively t
              org-log-done t)
        (org-clock-persistence-insinuate)
+
+       ;; this is needed to use shortcuts like <s to create source blocks
+       (unless (version< emacs-version "27")
+         (require 'org-tempo))
+
        (add-hook 'org-mode-hook (lambda ()
                                   (org-indent-mode t)
                                   (autopair-mode -1)

@@ -1589,11 +1589,15 @@ Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
 
+  (reformatter-define dart-format
+    :program "dartfmt"
+    :group 'dart)
+
   (use-package dart-mode
     :ensure t
     :if (or (executable-find "dart") (executable-find "flutter"))
     :bind (:map dart-mode-map
-                ("C-c C-f" . dart-format))
+                ("C-c C-f" . dart-format-buffer))
     :config
     (evil-leader/set-key-for-mode 'dart-mode "d" 'dart-goto))
 

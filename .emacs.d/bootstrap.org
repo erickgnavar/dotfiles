@@ -1965,3 +1965,19 @@ Open the current file with macOS =open= command. This will open the file with th
     (shell-command (format "open %s" (buffer-file-name))))
 
 #+END_SRC
+
+Save image from clipboard to path.
+
+#+begin_src emacs-lisp
+
+  (defun my/save-image-from-clipboard ()
+    "Save image from clipboard to the given path."
+    (interactive)
+    (unless (executable-find "pngpaste")
+      (user-error "Install pngpaste to continue"))
+    (let* ((path (read-file-name ""))
+           (command (format "pngpaste %s" path)))
+      (shell-command command)
+      (kill-new path)))
+
+#+end_src

@@ -133,7 +133,7 @@
  ("queue" . "52206c0f78afc0dfb9a287cb928c1e725103336d")
  ("rainbow-delimiters" . "5125f4e47604ad36c3eb4706310fcafac729ca8c")
  ("rainbow-mode" . "170d06e5599c6ae27975282e574f02cbd1da2f9f")
- ("reformatter.el" . "6c5e7f64c5ac1178dff5ca28d9809c08398fb3e6")
+ ("reformatter.el" . "8423ad9e83474530b43b871dc94b9005feb0352f")
  ("restclient.el" . "e8ca809ace13549a1ddffb4e4aaa5d5fce750f3d")
  ("rust-mode" . "d0f3f45cc4fe1c5b72466253f051294d275a4b64")
  ("s.el" . "03410e6a7a2b11e47e1fea3b7d9899c7df26435e")

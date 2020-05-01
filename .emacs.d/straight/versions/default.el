@@ -85,7 +85,6 @@
  ("hl-todo" . "6c79749236c8da28183092607f824727464079fd")
  ("ht.el" . "66c5f9131242697fabaede5566d87ecda4c14b1f")
  ("hydra" . "9db28034d7d61bfeff89899633b958f22befc53d")
- ("intero" . "30d8e7330c9b20c2905035bc417fa8645e7b4b85")
  ("js2-mode" . "b3841a7a304d9d1328fdb0868fbbecf0c2f9831f")
  ("json-mode" . "0e819e519ae17a2686e0881c4ca51fa873fa9b83")
  ("json-reformat" . "8eb6668ed447988aea06467ba8f42e1f2178246f")

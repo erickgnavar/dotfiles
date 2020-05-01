@@ -1312,12 +1312,6 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
     :bind (:map haskell-mode-map
                 ("C-c C-f" . haskell-format-buffer)))
 
-  (use-package intero
-    :ensure t
-    :config
-    (add-hook 'haskell-mode-hook 'intero-mode)
-    (evil-leader/set-key-for-mode 'haskell-mode "d" 'intero-goto-definition))
-
   (defun my/run-hlint ()
     "Run  hlint over the current project."
     (interactive)

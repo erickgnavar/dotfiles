@@ -371,6 +371,15 @@ Disable lock files
 
 #+END_SRC
 
+** Vterm
+
+#+begin_src emacs-lisp
+
+  (use-package vterm
+    :ensure t)
+
+#+end_src
+
 ** Toggle terminal
 
 #+BEGIN_SRC emacs-lisp
@@ -379,9 +388,7 @@ Disable lock files
     :ensure t
     :custom
     (eshell-toggle-init-function #'(lambda (dir)
-                                     (my/goto-term)))
-    :config
-    (global-set-key [f2] 'eshell-toggle))
+                                     (my/goto-term))))
 
 #+END_SRC
 
@@ -456,6 +463,7 @@ Avoid check spelling in markdown code blocks
       "a" 'my/helm-ag-with-default-term
       "A" 'my/helm-ag-without-default-term
       "b" 'helm-buffers-list
+      "c" 'eshell-toggle
       "e" 'my/find-file-in-project
       "f" 'find-file
       "g" 'my/magit-status
@@ -1654,16 +1662,16 @@ Manipulate frame font height.
 #+BEGIN_SRC emacs-lisp
 
   (defun my/goto-term ()
-    "Create a new `ansi-term` buffer."
+    "Create a new `vterm` buffer."
     (interactive)
     (if (projectile-project-p)
-        (let* ((buffer-name (format "[%s]-ansi-term" (projectile-project-name)))
+        (let* ((buffer-name (format "[%s]-vterm" (projectile-project-name)))
                (buffer-name-for-search (format "*%s*" buffer-name))
                (default-directory (projectile-project-root))
                (buffer (get-buffer buffer-name-for-search)))
           (if buffer
               (switch-to-buffer buffer)
-            (ansi-term "/bin/zsh" buffer-name))
+            (vterm buffer-name))
           (evil-insert-state))))
 
 #+END_SRC

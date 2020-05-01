@@ -52,7 +52,8 @@
 ;; Restore GC previous config
 (add-hook 'emacs-startup-hook
           '(lambda ()
-             (setq gc-cons-threshold 16777216
+             ;; a bigger value is required for lsp to work properly
+             (setq gc-cons-threshold (* 100 1024 1024)
                    gc-cons-percentage 0.1
                    file-name-handler-alist last-file-name-handler-alist)))
 

@@ -1583,11 +1583,17 @@ Enable go to definition with \ d keybinding
     :program "dartfmt"
     :group 'dart)
 
+  (defun my/dart-run-file ()
+    "Execute the code of the current file."
+    (interactive)
+    (compile (format "dart %s" (buffer-file-name))))
+
   (use-package dart-mode
     :ensure t
     :if (or (executable-find "dart") (executable-find "flutter"))
     :bind (:map dart-mode-map
-                ("C-c C-f" . dart-format-buffer))
+                ("C-c C-f" . dart-format-buffer)
+                ("C-c C-c" . my/dart-run-file))
     :config
     (evil-leader/set-key-for-mode 'dart-mode "d" 'dart-goto))
 

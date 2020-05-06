@@ -1620,9 +1620,52 @@ Enable go to definition with \ d keybinding
                 ("C-c C-f" . dart-format-buffer)
                 ("C-c C-c" . my/dart-run-file))
     :config
-    (evil-leader/set-key-for-mode 'dart-mode "d" 'dart-goto))
+    (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
 
 #+END_SRC
+
+For some reason =straight.el= can't fetch =lsp-dart= from melpa ¯\_(ツ)_/¯
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-dart
+    :ensure t
+    :straight (lsp-dart
+               :type git
+               :host github
+               :repo "emacs-lsp/lsp-dart")
+    :hook (dart-mode . lsp))
+
+#+end_src
+
+*** Flutter
+
+#+begin_src emacs-lisp
+
+  (defun my/flutter-goto-logs-buffer()
+    "Go to buffer logs buffer."
+    (interactive)
+    (let ((buffer (get-buffer flutter-buffer-name)))
+      (unless buffer
+        (user-error "flutter is not running."))
+      (switch-to-buffer buffer)
+      (goto-line (point-max))))
+
+  (use-package flutter
+    :ensure t
+    :after dart-mode
+    :bind (:map dart-mode-map
+                ("C-c C-r" . #'flutter-run-or-hot-reload)
+                ("C-c C-l" . #'my/flutter-goto-logs-buffer))
+    :hook (dart-mode . flutter-test-mode)
+    :custom
+    ;; sdk path will be the parent-parent directory of flutter cli
+    (flutter-sdk-path (directory-file-name
+                       (file-name-directory
+                        (directory-file-name
+                         (file-name-directory (executable-find "flutter")))))))
+
+#+end_src
 
 ** F-sharp
 

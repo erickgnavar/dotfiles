@@ -100,7 +100,7 @@
  ("lfe" . "af14b1439097850ffa39935419ed83f5bcaa6d09")
  ("linkode.el" . "d5921590eaf0b5c0f3834413dcef1289cf03b5ad")
  ("logito" . "824acb89d2cc18cb47281a4fbddd81ad244a2052")
- ("lsp-mode" . "1b40992834f90334efcb1767af2b450b4eda87b3")
+ ("lsp-mode" . "11750e7b118858b38417a538c1c6eff8759c12f3")
  ("lsp-dart" . "a0261be0300ec34534e30b1c573ab44f44a3e309")
  ("lua-mode" . "1f596a93b3f1caadd7bba01030f8c179b029600b")
  ("magit" . "bbb755267a5373774e6b0e61fbc486ea485fad93")

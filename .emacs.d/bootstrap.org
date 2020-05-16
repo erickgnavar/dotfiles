@@ -755,6 +755,16 @@ Configured variables:
 
 #+BEGIN_SRC emacs-lisp
 
+  (defconst my/org-edit-block-register ?o)
+
+  (defun my/org-edit-special (&optional arg)
+    "Save current window configuration before a org-edit buffer is open."
+    (set-register my/org-edit-block-register (current-window-configuration)))
+
+  (defun my/org-edit-src-exit ()
+    "Restore the window configuration that was saved before org-edit-special was called."
+    (set-window-configuration (get-register my/org-edit-block-register)))
+
   (eval-after-load "org"
     `(progn
        (setq org-latex-caption-above nil
@@ -771,6 +781,10 @@ Configured variables:
                                   (org-indent-mode t)
                                   (autopair-mode -1)
                                   (diminish 'org-indent-mode)))
+
+       (advice-add 'org-edit-special :before 'my/org-edit-special)
+       (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
+
        (org-babel-do-load-languages 'org-babel-load-languages
                                     '((python . t)
                                       (shell . t)

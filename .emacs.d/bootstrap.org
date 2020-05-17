@@ -755,15 +755,15 @@ Configured variables:
 
 #+BEGIN_SRC emacs-lisp
 
-  (defconst my/org-edit-block-register ?o)
+  (defvar my/org-src-block-tmp-window-configuration nil)
 
   (defun my/org-edit-special (&optional arg)
     "Save current window configuration before a org-edit buffer is open."
-    (set-register my/org-edit-block-register (current-window-configuration)))
+    (setq my/org-src-block-tmp-window-configuration (current-window-configuration)))
 
   (defun my/org-edit-src-exit ()
     "Restore the window configuration that was saved before org-edit-special was called."
-    (set-window-configuration (get-register my/org-edit-block-register)))
+    (set-window-configuration my/org-src-block-tmp-window-configuration))
 
   (eval-after-load "org"
     `(progn

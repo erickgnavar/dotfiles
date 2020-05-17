@@ -109,7 +109,7 @@ function kp() {
 
 # Use ~/.ssh/config to prompt a list of host and ssh to the chosen one
 function ssh_connect() {
-    host=`cat ~/.ssh/config | grep "Host " | awk '{print $2} END {print ""}' | fzf | sed 's/ //g' | sed 's/\n//g'`
+    local host=`cat ~/.ssh/config | grep "Host " | awk '{print $2} END {print ""}' | fzf | sed 's/ //g' | sed 's/\n//g'`
     echo "Connecting to $host..."
     ssh $host
 }
@@ -168,21 +168,22 @@ function video_to_gif {
 # k8s helpers
 
 function pod_shell {
-    namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
     echo "Connecting to $pod"
 
     if [ -z $1 ]
     then
-	kubectl -n $namespace exec -ti $pod bash
+        kubectl -n $namespace exec -ti $pod bash
     else
-	kubectl -n $namespace exec -ti $pod $1
+        kubectl -n $namespace exec -ti $pod $1
     fi
 }
 
 function pod_proxy {
-    namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local port_mapping
     echo "Enter port mapping using the form local_port:pod_port"
     read port_mapping
     echo "Setting up proxy to $pod on $port_mapping..."
@@ -191,8 +192,8 @@ function pod_proxy {
 }
 
 function pod_logs {
-    namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
     echo "Showing logs for $pod"
 
     kubectl -n $namespace logs -f $pod

@@ -52,7 +52,7 @@
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
  ("eshell-toggle" . "70353f478e799ce2605e5842ff862e5f756b9bbd")
  ("esup" . "c9c95e245068d15d8e2732098af9a5d2bc8ec931")
- ("evil" . "d8ca23db61e813ebe0690f07de9b3839134f3ebf")
+ ("evil" . "3f3b2fea87172f155e5f91d75f0fb69d8648acf2")
  ("evil-leader" . "39f7014bcf8b36463e0c7512c638bda4bac6c2cf")
  ("evil-matchit" . "11d98debf8b051b10068137668eb54c2fede0e30")
  ("evil-nerd-commenter" . "1bd2de52011c39777a3e8779b14cee2790dc873b")

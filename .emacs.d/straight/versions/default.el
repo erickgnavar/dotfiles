@@ -62,7 +62,7 @@
  ("flutter" . "b44aff1a5f332ec1b030ca91a4d65d715b3c0431")
  ("flycheck" . "269237f6529a4ad7db5bbbc5a40c1f038accf3cd")
  ("flymake" . "bc83b105cdfc44a46b6e85745085a9db120fd860")
- ("forge" . "c36f26cd5229efb68051a46cc41f72ce43c42917")
+ ("forge" . "09bf8adc9c9afb492632e612f51f39e1cc15fca0")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
  ("gh.el" . "f029fc11f345ef04ab62ee91c38657e29c462fea")
  ("ghub" . "0804a981cea6deba69b4566d21f8f12fc5789b17")

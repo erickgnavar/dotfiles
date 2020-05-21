@@ -32,6 +32,7 @@ Plugin 'bash-support.vim'
 Plugin 'elzr/vim-json'
 Plugin 'mattn/webapi-vim' "gist-vim requirement
 Plugin 'mattn/gist-vim'
+Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'IndexedSearch'
 Plugin 'airblade/vim-rooter'
@@ -133,6 +134,7 @@ nmap <Leader>a :Ag<space>
 nmap <Leader>b :Buffers<ENTER>
 nmap <Leader>c :ClearCtrlPCache<ENTER>
 nmap <Leader>e :Files<ENTER>
+nmap <Leader>g :Git<ENTER>
 nmap <Leader>k :bdelete<space>
 nmap <Leader>n :enew<ENTER>
 

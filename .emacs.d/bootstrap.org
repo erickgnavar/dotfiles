@@ -650,37 +650,45 @@ This allow to update environment using =.envrc= file.
 
 ** Helm
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 
   (use-package helm
     :ensure t
     :diminish ""
     :custom
     (helm-M-x-use-completion-styles nil)
+    (helm-split-window-inside-p t)
+    :bind (:map helm-map
+                ("<tab>" . 'helm-execute-persistent-action))
     :config
     (require 'helm-config)
-    (helm-mode 1)
-    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-    (setq helm-split-window-inside-p t)
+    (helm-mode 1))
+
+  (with-eval-after-load 'helm
     (add-to-list 'display-buffer-alist
                  '("\\`\\*helm.*\\*\\'"
                    (display-buffer-in-side-window)
                    (inhibit-same-window . t)
                    (window-height . 0.4))))
+#+end_src
+
+Helm util packages
+
+#+begin_src emacs-lisp
+
+  (defun my/helm-ag-with-default-term ()
+    (interactive)
+    (let ((helm-ag-insert-at-point 'word))
+      (helm-ag-project-root)))
+
+  (defun my/helm-ag-without-default-term ()
+    (interactive)
+    (let ((helm-ag-insert-at-point nil))
+      (helm-ag-project-root)))
 
   (use-package helm-ag
     :ensure t
-    :defer t
-    :init
-    (defun my/helm-ag-with-default-term ()
-      (interactive)
-      (let ((helm-ag-insert-at-point 'word))
-        (helm-ag-project-root)))
-
-    (defun my/helm-ag-without-default-term ()
-      (interactive)
-      (let ((helm-ag-insert-at-point nil))
-        (helm-ag-project-root))))
+    :defer t)
 
   (use-package helm-ls-git
     :ensure t
@@ -690,7 +698,7 @@ This allow to update environment using =.envrc= file.
     :ensure t
     :defer t)
 
-#+END_SRC
+#+end_src
 
 ** Neotree
 

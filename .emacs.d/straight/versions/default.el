@@ -147,7 +147,6 @@
  ("straight.el" . "167cbcdc09bf78a228c0f49cc5f9580576d7046f")
  ("swiper" . "e7eca371522d96d27bc4b2f7d87f19c1b75e927c")
  ("tablist" . "41a9612f51bad36d6689667c11f42f8143103bb2")
- ("tide" . "4e4a4d814077414052983fde731b2926116ab957")
  ("toml-mode.el" . "f6c61817b00f9c4a3cab1bae9c309e0fc45cdd06")
  ("transient" . "a6e4cced303b3febd59412b24a97eaf1e855e6d7")
  ("treepy.el" . "306f7031d26e4ebfc9ff36614acdc6993f3e23c3")

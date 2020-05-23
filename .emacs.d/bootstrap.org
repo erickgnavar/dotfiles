@@ -1445,26 +1445,6 @@ Put this script in some =$PATH= location like =~/.local/bin=. This script is nee
 
 #+END_SRC
 
-** Typescript
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package tide
-    :ensure t
-    :init
-    (defun setup-tide-mode()
-      (interactive)
-      (tide-setup)
-      (flycheck-mode +1)
-      (setq flycheck-check-syntax-automatically '(save mode-enabled))
-      (eldoc-mode +1)
-      (tide-hl-identifier-mode +1)
-      (company-mode +1))
-    :config
-    (add-hook 'typescript-mode-hook #'setup-tide-mode))
-
-#+END_SRC
-
 ** Rust
 
 Clone rust source code into =~/Code/rust/src/=

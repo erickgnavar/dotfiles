@@ -637,7 +637,8 @@ This allow to update environment using =.envrc= file.
 
   (use-package direnv
     :ensure t
-    :config
+    :defer t
+    :init
     (defun my/direnv-edit ()
       "Edit .envrc file for the current project."
       (interactive)
@@ -683,6 +684,7 @@ This allow to update environment using =.envrc= file.
 
   (use-package helm-ag
     :ensure t
+    :defer t
     :init
     (defun my/helm-ag-with-default-term ()
       (interactive)
@@ -695,10 +697,12 @@ This allow to update environment using =.envrc= file.
         (helm-ag-project-root))))
 
   (use-package helm-ls-git
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package helm-swoop
-    :ensure t)
+    :ensure t
+    :defer t)
 
 #+END_SRC
 
@@ -833,7 +837,8 @@ Open selected region in remote repo page
 #+BEGIN_SRC emacs-lisp
 
   (use-package git-link
-    :ensure t)
+    :ensure t
+    :defer t)
 
 #+END_SRC
 
@@ -842,6 +847,7 @@ Open selected region in remote repo page
 #+BEGIN_SRC emacs-lisp
 
   (use-package gitignore-mode
+    :defer t
     :ensure t)
 
 #+END_SRC
@@ -1004,7 +1010,8 @@ Show files containing =TODO= like text in =magit= status buffer.
 #+BEGIN_SRC emacs-lisp
 
   (use-package sass-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
 #+END_SRC
 
@@ -1015,10 +1022,10 @@ Show files containing =TODO= like text in =magit= status buffer.
   (use-package rainbow-mode
     :ensure t
     :diminish ""
-    :config
-    (add-hook 'css-mode-hook 'rainbow-mode)
-    (add-hook 'sass-mode-hook 'rainbow-mode)
-    (add-hook 'scss-mode-hook 'rainbow-mode))
+    :hook
+    ((css-mode . rainbow-mode)
+     (sass-mode . rainbow-mode)
+     (scss-mode . rainbow-mode)))
 
 #+END_SRC
 
@@ -1030,10 +1037,12 @@ Show files containing =TODO= like text in =magit= status buffer.
     :ensure t)
 
   (use-package csv-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package json-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package plantuml-mode
     :ensure t
@@ -1054,21 +1063,26 @@ Show files containing =TODO= like text in =magit= status buffer.
 
   ;; Used for gherkin files (.feature)
   (use-package feature-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package toml-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package markdown-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package dockerfile-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package dumb-jump
     :ensure t
-    :init
-    (setq dumb-jump-selector 'helm))
+    :defer t
+    :custom
+    (dumb-jump-selector 'helm))
 
 #+END_SRC
 

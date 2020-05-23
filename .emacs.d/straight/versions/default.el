@@ -129,7 +129,7 @@
  ("plantuml-mode" . "5889166b6cfe94a37532ea27fc8de13be2ebfd02")
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
  ("pos-tip" . "c9ced6c485788a4556161f8e3b7893d230a49db2")
- ("projectile" . "1e7b37f0ae07a6b4ac1b1a5f0e5422cfcb8e1c55")
+ ("projectile" . "5103cfc4248bc341d24c0c96f0728962c85bf8ed")
  ("py-isort.el" . "e67306f459c47c53a65604e4eea88a3914596560")
  ("pyvenv" . "861998b6d157ae73b829f02a5a6c8a9118310831")
  ("queue" . "52206c0f78afc0dfb9a287cb928c1e725103336d")

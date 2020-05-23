@@ -123,7 +123,6 @@
  ("pcache" . "1f8086077d770e524492e6fa59b07856e85a6fea")
  ("pcre2el" . "0b5b2a2c173aab3fd14aac6cf5e90ad3bf58fa7d")
  ("pdf-tools" . "1116b3342cf6d50c2bec5710bbe5be7aec2db24b")
- ("peep-dired" . "1d410a4e48db07a942e54d3b83a85c7a7ec0aab3")
  ("peg.el" . "081efeca91d790c7fbc90871ac22c40935f4833b")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("plantuml-mode" . "5889166b6cfe94a37532ea27fc8de13be2ebfd02")

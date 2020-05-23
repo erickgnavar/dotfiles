@@ -43,7 +43,7 @@
  ("emacs-helm-ag" . "2fc02c4ead29bf0db06fd70740cc7c364cb650ac")
  ("emacs-htmlize" . "86f22f211e9230857197c42a9823d3f05381deed")
  ("emacs-memoize" . "c70773e0eb799a17f1f44334d14389c518ec14d4")
- ("emacs-neotree" . "5e1271655170f4cdc6849258e383c548a4e6e3d0")
+ ("emacs-neotree" . "98fe21334affaffe2334bf7c987edaf1980d2d0b")
  ("emacs-racer" . "a0bdf778f01e8c4b8a92591447257422ac0b455b")
  ("emacs-which-key" . "1e3640e48c31f8062f018b5fc84acad696a0ea2a")
  ("emacsmirror-mirror" . "b82249cf2eeb69a45fa64542aed6aa4794f11b1d")

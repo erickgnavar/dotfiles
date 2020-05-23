@@ -696,28 +696,34 @@ This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
 
+  (defun my/neotree-toggle ()
+    "Custom function with some tweaks to be aplied when neotree opens."
+    (interactive)
+    (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
+        (my/neotree-open-projectile)
+      (neotree-toggle)))
+
   (use-package neotree
     :ensure t
-    :init
-    (setq neo-window-fixed-size nil
-          neo-fit-to-contents t
-          neo-theme 'icons
-          neo-autorefresh nil
-          neo-vc-integration (quote (face)))
-    (defun my/neotree-toggle ()
-      (interactive)
-      (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
-          (my/neotree-open-projectile)
-        (neotree-toggle)))
-    :config
-    (global-set-key [f3] 'my/neotree-toggle)
-    (evil-set-initial-state 'neotree-mode 'emacs)
-    (add-hook 'neotree-mode-hook
-              (lambda ()
-                (evil-emacs-state)
-                (local-set-key (kbd "C-w l") 'evil-window-right)
-                (local-set-key (kbd "C-c C-h") 'neotree-hidden-file-toggle)
-                (local-set-key (kbd "C-c C-r") 'neotree-rename-node))))
+    :straight (neotree
+               :type git
+               :host github
+               :repo "jaypei/emacs-neotree"
+               :branch "dev")
+    :custom
+    (neo-window-fixed-size nil)
+    (neo-fit-to-contents t)
+    (neo-theme 'icons)
+    (neo-autorefresh nil)
+    (neo-vc-integration '(face))
+    :bind (([f3] . 'my/neotree-toggle)
+           :map neotree-mode-map
+           ("C-w l" . 'evil-window-right)
+           ("C-c C-h" . 'neotree-hidden-file-toggle)
+           ("C-c C-r" . 'neotree-rename-node)))
+
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'neotree-mode 'emacs))
 
 #+END_SRC
 

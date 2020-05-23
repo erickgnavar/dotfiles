@@ -835,29 +835,31 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
+  (defconst my/magit-register ?m)
+
+  (defun my/magit-status()
+    (interactive)
+    (set-register my/magit-register (current-window-configuration))
+    (magit-status)
+    (delete-other-windows))
+
+  (defun my/magit-status-exit (&optional kill-buffer)
+    "Restore windows configuration after magit status buffer is closed."
+    (interactive)
+    (let ((magit-buffer-name (format "magit: %s" (projectile-project-name)))
+          (register-value (get-register my/magit-register)))
+      (if (and register-value (string-equal magit-buffer-name (buffer-name)))
+          (set-window-configuration register-value))))
+
   (use-package magit
     :ensure t
     :defer t
-    :init
-    (defconst my/magit-register ?m)
-    (defun my/magit-status()
-      (interactive)
-      (set-register my/magit-register (current-window-configuration))
-      (magit-status)
-      (delete-other-windows))
-
-    (defun my/magit-status-exit (&optional kill-buffer)
-      "Restore windows configuration after magit status buffer is closed."
-      (interactive)
-      (let ((magit-buffer-name (format "magit: %s" (projectile-project-name)))
-            (register-value (get-register my/magit-register)))
-        (if (and register-value (string-equal magit-buffer-name (buffer-name)))
-            (set-window-configuration register-value))))
     :config
     (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
     (add-hook 'magit-blame-mode-hook
               (lambda ()
                 (evil-emacs-state))))
+
 #+END_SRC
 
 ** Magit TODOs

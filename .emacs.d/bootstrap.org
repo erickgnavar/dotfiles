@@ -797,6 +797,7 @@ Configured variables:
 
   (use-package org-ref
     :ensure t
+    :defer t
     :init
     (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
 
@@ -944,7 +945,8 @@ Show files containing =TODO= like text in =magit= status buffer.
 #+BEGIN_SRC emacs-lisp
 
   (use-package gist
-    :ensure t)
+    :ensure t
+    :defer t)
 
 #+END_SRC
 
@@ -1137,6 +1139,7 @@ Emacs Start Up Profiler
 
   (use-package lsp-mode
     :ensure t
+    :defer t
     :init
     (setq lsp-prefer-capf t)
     ;; 10Mb LSP consume large payloads so a higher value is required

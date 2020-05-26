@@ -7,6 +7,11 @@
 
 (defvar straight-use-package-by-default t)
 
+;; This avoid that straight.el check for packages modifications on startup
+;; when I modify a package I run manually straight-rebuild-package so this checking
+;; on startup is not needed
+(defvar straight-check-for-modifications nil)
+
 ;; Install straight.el
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))

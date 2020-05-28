@@ -129,11 +129,12 @@ Disable =h= key-binding, this has a conflict with evil-mode left navigation key-
 
 #+BEGIN_SRC emacs-lisp
 
-  (eval-after-load "compile"
-    '(progn
-       (define-key compilation-mode-map (kbd "g") nil)
-       (define-key compilation-mode-map (kbd "r") 'recompile)
-       (define-key compilation-mode-map (kbd "h") nil)))
+  (with-eval-after-load 'compile
+    ;; set cursor to follow compilation output
+    (setq compilation-scroll-output t)
+    (define-key compilation-mode-map (kbd "g") nil)
+    (define-key compilation-mode-map (kbd "r") 'recompile)
+    (define-key compilation-mode-map (kbd "h") nil))
 
 #+END_SRC
 

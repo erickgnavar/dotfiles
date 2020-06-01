@@ -23,7 +23,7 @@
  ("diminish.el" . "96b47cf90360e4bd19138fe82dc59bfa86c7bf7d")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
  ("dockerfile-mode" . "ed73e82dcc636dad00d1a8c3b32a49136d25ee60")
- ("doom-modeline" . "a6f6f25877343a5fcf04eaffa410175411a4c1dd")
+ ("doom-modeline" . "8e1cc53b8c21c0e6b79bcd98a5bcfe223dd8590a")
  ("dumb-jump" . "738d40ceb7e2d6a3a26f7f27a31ba93924baaa2d")
  ("editorconfig-emacs" . "65f8244ffbeb9bf2720d922d4b5fc74849b9af82")
  ("edn.el" . "be9e32d1b49e35247b263b0243df7cfdc8d413ab")

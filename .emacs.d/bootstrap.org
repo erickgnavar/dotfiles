@@ -640,12 +640,12 @@ This allow to update environment using =.envrc= file.
   (use-package projectile
     :ensure t
     :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
-    :init
-    (setq projectile-keymap-prefix (kbd "C-c p")
-          projectile-switch-project-action 'helm-ls-git-ls
-          projectile-completion-system 'helm)
-    :config
-    (projectile-mode))
+    :custom
+    (projectile-keymap-prefix (kbd "C-c p"))
+    (projectile-switch-project-action 'helm-ls-git-ls)
+    (projectile-completion-system 'helm)
+    :hook
+    (after-init . projectile-mode))
 
 #+END_SRC
 

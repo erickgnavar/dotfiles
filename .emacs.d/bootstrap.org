@@ -179,8 +179,9 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
     :defer t
     :custom
     (doom-modeline-modal-icon nil)
-    :hook (after-init . doom-modeline-mode)
-    :config (add-hook 'doom-modeline-mode-hook '(lambda () (display-battery-mode))))
+    :hook
+    (after-init . doom-modeline-mode)
+    (doom-modeline-mode . display-battery-mode))
 
 #+END_SRC
 
@@ -334,8 +335,8 @@ This allow to visual mode work more like vim visual highlighting.
 
   (use-package highlight-thing
     :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'highlight-thing-mode))
+    :hook
+    (prog-mode . highlight-thing-mode))
 
 #+END_SRC
 
@@ -540,8 +541,8 @@ Avoid check spelling in markdown code blocks
 
   (use-package rainbow-delimiters
     :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
 
 #+END_SRC
 
@@ -925,8 +926,8 @@ Show files containing =TODO= like text in =magit= status buffer.
 
   (use-package diff-hl
     :ensure t
-    :config
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+    :hook
+    (dired-mode . diff-hl-dired-mode))
 
 #+END_SRC
 

@@ -813,7 +813,8 @@ Configured variables:
     :defer t)
 
   (use-package latex-preview-pane
-    :ensure t)
+    :ensure t
+    :defer t)
 
 #+END_SRC
 
@@ -1479,12 +1480,13 @@ Install dependencies
     :if (executable-find "racer")
     :diminish
     :after rust-mode
+    :custom
+    (racer-rust-src-path "~/Code/rust/src/src")
+    :hook ((rust-mode . racer-mode)
+           (racer-mode . eldoc-mode)
+           (racer-mode . company-mode))
     :config
-    (setq racer-rust-src-path (expand-file-name "~/Code/rust/src/src"))
-    (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition)
-    (add-hook 'rust-mode-hook #'racer-mode)
-    (add-hook 'racer-mode-hook #'eldoc-mode)
-    (add-hook 'racer-mode-hook #'company-mode))
+    (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition))
 
 #+END_SRC
 
@@ -1543,7 +1545,8 @@ Install dependencies: godef, goimports, gocode
   (defconst inferior-lisp-program (executable-find "sbcl"))
 
   (use-package sly
-    :ensure t)
+    :ensure t
+    :defer t)
 
 #+END_SRC
 
@@ -1589,7 +1592,8 @@ Enable go to definition with \ d keybinding
 #+BEGIN_SRC emacs-lisp
 
   (use-package tuareg
-    :ensure t)
+    :ensure t
+    :defer t)
 
   (use-package merlin
     :ensure t

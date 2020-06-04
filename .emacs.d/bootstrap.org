@@ -1406,9 +1406,11 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
   (use-package js2-mode
     :ensure t
     :mode "\\.js\\'"
-    :config
+    :custom
     ;; let the error checking to flycheck
-    (setq js2-mode-show-strict-warnings nil))
+    (js2-mode-show-strict-warnings nil)
+    :config
+    (evil-leader/set-key-for-mode 'js2-mode "d" 'dumb-jump-go))
 
 #+END_SRC
 

@@ -149,7 +149,7 @@
  ("transient" . "a6e4cced303b3febd59412b24a97eaf1e855e6d7")
  ("treepy.el" . "306f7031d26e4ebfc9ff36614acdc6993f3e23c3")
  ("tuareg" . "c12061eb80c1487a1963af7cdae268d709a70ca9")
- ("typescript.el" . "761f3aec6e192ddf0a9f1cc3d5d2ee77d32cb06c")
+ ("typescript.el" . "0fc729787007b5111f3584034af0f3ef2389098f")
  ("undo-tree" . "d54ef13e3c69655e39f977b8bf75399a6d2b5e42")
  ("use-package" . "4b58ab78177f636f862a66c7a8fdcf9b070e0925")
  ("visual-fill-column" . "772d4b25ba19f57409cd03524be0f5bfdc2e8da1")

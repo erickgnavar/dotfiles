@@ -896,7 +896,10 @@ Show files containing =TODO= like text in =magit= status buffer.
 
   (use-package forge
     :ensure t
-    :after magit)
+    :after magit
+    :config
+    (add-hook 'forge-topic-mode-hook (lambda ()
+                                       (evil-emacs-state))))
 
 #+END_SRC
 

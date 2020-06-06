@@ -979,15 +979,16 @@ Show files containing =TODO= like text in =magit= status buffer.
 
 #+BEGIN_SRC emacs-lisp
 
+  (defun my/web-mode-hook ()
+    (emmet-mode)
+    (rainbow-delimiters-mode-disable)
+    (autopair-mode -1))
+
   (use-package web-mode
     :ensure t
-    :init
-    (setq web-mode-enable-current-element-highlight t
-          web-mode-enable-current-column-highlight t)
-    (defun my/web-mode-hook ()
-      (emmet-mode)
-      (rainbow-delimiters-mode-disable)
-      (autopair-mode -1))
+    :custom
+    (web-mode-enable-current-element-highlight t)
+    (web-mode-enable-current-column-highlight t)
     :mode (("\\.html\\'" . web-mode)
            ("\\.html.eex\\'" . web-mode)
            ("\\.html.leex\\'" . web-mode)

@@ -883,10 +883,10 @@ Show files containing =TODO= like text in =magit= status buffer.
   (use-package magit-todos
     :ensure t
     :after (magit)
-    :init
-    (setq magit-todos-exclude-globs '("*.org"))
-    :config
-    (add-hook 'magit-status-mode-hook 'magit-todos-mode))
+    :custom
+    (magit-todos-exclude-globs '("*.org"))
+    :hook
+    (magit-status-mode . magit-todos-mode))
 
 #+END_SRC
 

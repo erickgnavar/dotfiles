@@ -863,11 +863,16 @@ Open selected region in remote repo page
       (if (and register-value (string-equal magit-buffer-name (buffer-name)))
           (set-window-configuration register-value))))
 
+  (defun my/magit-blame-quit ()
+    "Restore evil state after magit blame mode is closed."
+    (evil-exit-emacs-state))
+
   (use-package magit
     :ensure t
     :defer t
     :config
     (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
+    (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
     (add-hook 'magit-blame-mode-hook
               (lambda ()
                 (evil-emacs-state))))

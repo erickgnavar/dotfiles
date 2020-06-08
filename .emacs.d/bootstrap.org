@@ -623,14 +623,14 @@ This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
 
+  (defun my/direnv-edit ()
+    "Edit .envrc file for the current project."
+    (interactive)
+    (find-file (concat (projectile-project-root) ".envrc")))
+
   (use-package direnv
     :ensure t
-    :defer t
-    :init
-    (defun my/direnv-edit ()
-      "Edit .envrc file for the current project."
-      (interactive)
-      (find-file (concat (projectile-project-root) ".envrc"))))
+    :defer t)
 
 #+END_SRC
 

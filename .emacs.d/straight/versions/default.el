@@ -97,7 +97,7 @@
  ("latex-preview-pane" . "5297668a89996b50b2b62f99cba01cc544dbed2e")
  ("let-alist" . "681570f2abec73ec6494d67f8a904ac9ea15063f")
  ("lfe" . "af14b1439097850ffa39935419ed83f5bcaa6d09")
- ("linkode.el" . "d5921590eaf0b5c0f3834413dcef1289cf03b5ad")
+ ("linkode.el" . "376fdc0f990322385534a16ee2cd08df20f76f48")
  ("logito" . "824acb89d2cc18cb47281a4fbddd81ad244a2052")
  ("lsp-mode" . "11750e7b118858b38417a538c1c6eff8759c12f3")
  ("lsp-dart" . "a0261be0300ec34534e30b1c573ab44f44a3e309")

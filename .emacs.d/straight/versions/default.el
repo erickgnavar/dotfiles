@@ -34,7 +34,7 @@
  ("emacs-anzu" . "592f8ee6d0b1bc543943b36a30063c2d1aac4b22")
  ("emacs-async" . "11769c189528738f9b4e3ce3ca19d73863045c45")
  ("emacs-direnv" . "fd0b6bbd5e3eaf6aa48bccd4a1ff3048bfb2c69b")
- ("emacs-elixir" . "5920edcf19f0526bbee97b01435c4b8bf3b59c36")
+ ("emacs-elixir" . "670098a88c88c222b822e445216000fb13b2cce8")
  ("emacs-evil-anzu" . "9bca6ca14d865e7e005bc02a28a09b4ae74facc9")
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
  ("emacs-git-gutter" . "00c05264af046b5ce248e5b0bc42f117d9c27a09")

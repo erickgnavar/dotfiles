@@ -106,7 +106,7 @@
  ("magit-todos" . "a0e5d1f3c7dfcb4f18c1b0d57f1746a4872df5c6")
  ("markdown-mode" . "f3c54e34cc5228001af36a5301883325319f21d4")
  ("marshal.el" . "f038689cbd5b3680b80b44edd0c7a63ca3038e26")
- ("melpa" . "578c150cb8f61058f8003554d372944a990d7a7d")
+ ("melpa" . "ee055cc258692a92f727633306adf7df31267479")
  ("merlin" . "a451081bf0b0c5e86c4ee61ea0ea0cc0f03a4a0f")
  ("merlin-eldoc" . "db7fab1eddfe34781b7e79694f8923b285698032")
  ("multiple-cursors.el" . "b880554d04b8f61165afba7d4de19ac9e39bb7ab")

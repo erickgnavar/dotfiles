@@ -29,7 +29,7 @@
  ("edn.el" . "be9e32d1b49e35247b263b0243df7cfdc8d413ab")
  ("eglot" . "b0fdfb02e14f1c3e40b4a601bb7d6abb470ea63b")
  ("elm-mode" . "86394794e5ba538a5359c1a5d896ed47a464f804")
- ("elpy" . "c98e52b7c82a4d48acf57ba7fc4808588299bfe9")
+ ("elpy" . "03a7517ee48204257ae3ca0aa24a370e283d8790")
  ("emacs" . "95ec96f9d8816f8d16c668336f6a4f383d1a7f1d")
  ("emacs-anzu" . "592f8ee6d0b1bc543943b36a30063c2d1aac4b22")
  ("emacs-async" . "11769c189528738f9b4e3ce3ca19d73863045c45")

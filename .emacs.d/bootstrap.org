@@ -1102,19 +1102,9 @@ Copied from somewhere
 
 #+END_SRC
 
-Toggle hs-minor-mode
-
-#+BEGIN_SRC emacs-lisp
-
-  (eval-after-load "evil"
-    '(define-key evil-normal-state-map (kbd "SPC") 'hs-toggle-hiding))
-
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 
   (diminish 'undo-tree-mode)
-  (diminish 'hs-minor-mode)
   (diminish 'auto-revert-mode)
 
 #+END_SRC
@@ -1181,7 +1171,6 @@ Emacs Start Up Profiler
     (setq elpy-rpc-python-command "python")
     (add-hook 'elpy-mode-hook
               (lambda ()
-                (hs-minor-mode)
                 (highlight-indentation-mode -1)))) ; Remove vertical line
 
   (setq python-shell-completion-native-enable nil)

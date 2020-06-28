@@ -201,3 +201,9 @@ function pod_logs {
 
     kubectl -n $namespace logs -f $pod
 }
+
+function k8s_change_context {
+    local context=`kubectl config get-contexts --output='name' | fzf`
+    echo "Changing to $context"
+    kubectl config use-context $context
+}

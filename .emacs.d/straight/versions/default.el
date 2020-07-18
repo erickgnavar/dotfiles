@@ -109,6 +109,7 @@
  ("multiple-cursors.el" . "b880554d04b8f61165afba7d4de19ac9e39bb7ab")
  ("nadvice" . "2dfcf614dc5472fb21e48f93d0ebb4546276377f")
  ("org-ref" . "e64d5b15c1667bcff817940191a45c5ff074a6fb")
+ ("org-tree-slide" . "7126a4365072a32898f169ead8fb59265dabc605")
  ("otp" . "7ed659fd1144b455883eef18dab38cddc904a065")
  ("paredit" . "814999bb320e6d5aaa9c8ff663b1933157129571")
  ("parrot" . "13757524f1c708b866f4aaab5a9fb3599a1c4f56")

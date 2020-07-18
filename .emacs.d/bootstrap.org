@@ -47,6 +47,9 @@
   ;; Show a marker when the line has empty characters at the end
   (setq-default show-trailing-whitespace t)
 
+  ;; disable `show-trailing-whitespace' for modes based in comint-mode
+  (add-hook 'comint-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
+
   ;; Avoid close emacs by mistake
   (global-unset-key (kbd "C-x C-c"))
 

@@ -153,7 +153,6 @@
  ("use-package" . "4b58ab78177f636f862a66c7a8fdcf9b070e0925")
  ("visual-fill-column" . "772d4b25ba19f57409cd03524be0f5bfdc2e8da1")
  ("vterm" . "e63bd65eece7c5de3a534b7e2fdbe58256ec2da0")
- ("wakatime-mode" . "2531cb58287770883ba534d20b3288955c4d6ef3")
  ("web-mode" . "cd000fcfce97152f8b831b7eef4ea0d0b1eed11a")
  ("with-editor" . "814777ce8ad42ad115eebc38743c55b99af5d2e7")
  ("writeroom-mode" . "fa17eb651102502f60086d62784f1dae15c0630d")

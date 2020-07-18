@@ -122,7 +122,6 @@
  ("pdf-tools" . "1116b3342cf6d50c2bec5710bbe5be7aec2db24b")
  ("peg.el" . "081efeca91d790c7fbc90871ac22c40935f4833b")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
- ("plantuml-mode" . "5889166b6cfe94a37532ea27fc8de13be2ebfd02")
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
  ("pos-tip" . "c9ced6c485788a4556161f8e3b7893d230a49db2")
  ("projectile" . "5103cfc4248bc341d24c0c96f0728962c85bf8ed")

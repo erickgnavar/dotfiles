@@ -770,7 +770,6 @@ Configured variables:
                                       (lisp . t)
                                       (sql . t)
                                       (dot . t)
-                                      (plantuml . t)
                                       (emacs-lisp . t)))))
 
   (use-package htmlize
@@ -1029,12 +1028,6 @@ Open selected region in remote repo page
   (use-package json-mode
     :ensure t
     :defer t)
-
-  (use-package plantuml-mode
-    :ensure t
-    :config
-    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-    (setq org-plantuml-jar-path (expand-file-name "~/plantuml.jar")))
 
   (defun my/k8s-apply ()
     "Apply current yaml file to the current kubernetes context."

@@ -148,7 +148,7 @@
  ("tuareg" . "c12061eb80c1487a1963af7cdae268d709a70ca9")
  ("typescript.el" . "0fc729787007b5111f3584034af0f3ef2389098f")
  ("undo-tree" . "d54ef13e3c69655e39f977b8bf75399a6d2b5e42")
- ("use-package" . "4b58ab78177f636f862a66c7a8fdcf9b070e0925")
+ ("use-package" . "7d925367ef0857d513d62eab4cb57b7436b9ffe9")
  ("visual-fill-column" . "772d4b25ba19f57409cd03524be0f5bfdc2e8da1")
  ("vterm" . "e63bd65eece7c5de3a534b7e2fdbe58256ec2da0")
  ("web-mode" . "cd000fcfce97152f8b831b7eef4ea0d0b1eed11a")

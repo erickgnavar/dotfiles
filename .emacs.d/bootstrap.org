@@ -1375,18 +1375,7 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
 
 ** Javascript
 
-#+BEGIN_SRC emacs-lisp
-
-  (use-package js2-mode
-    :ensure t
-    :mode "\\.js\\'"
-    :custom
-    ;; let the error checking to flycheck
-    (js2-mode-show-strict-warnings nil)
-    :config
-    (evil-leader/set-key-for-mode 'js2-mode "d" 'dumb-jump-go))
-
-#+END_SRC
+We use default =js-mode= because it has been improved in emacs 27.
 
 Formattter
 
@@ -1411,8 +1400,10 @@ Put this script in some =$PATH= location like =~/.local/bin=. This script is nee
   (reformatter-define js-format
     :program "fixprettier.sh")
 
-  (eval-after-load "js2-mode"
-    `(define-key js2-mode-map (kbd "C-c C-f") 'js-format-buffer))
+  (with-eval-after-load 'js
+    (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
+    (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
+
 
 #+END_SRC
 

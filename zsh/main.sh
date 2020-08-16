@@ -23,8 +23,6 @@ setopt hist_ignore_all_dups
 # load poetry
 [[ -f "$HOME/.poetry/env" ]] && source "$HOME/.poetry/env"
 
-source "$(dirname $0)/prompt.sh"
-
 # helper functions
 
 function reload {

@@ -17,7 +17,7 @@ call vundle#rc()
 " Plugins
 Plugin 'gmarik/vundle'
 Plugin 'scrooloose/nerdtree'
-Plugin 'tComment'
+Plugin 'tomtom/tcomment_vim'
 " Zen coding
 Plugin 'mattn/emmet-vim'
 " Airline
@@ -28,16 +28,13 @@ Plugin 'Townk/vim-autoclose' " Allow show diff sign of opened files
 Plugin 'lilydjwg/colorizer'
 Plugin 'editorconfig/editorconfig-vim'
 Plugin 'sheerun/vim-polyglot'  " Plugins for most of the programming languages
-Plugin 'bash-support.vim'
 Plugin 'elzr/vim-json'
 Plugin 'mattn/webapi-vim' "gist-vim requirement
 Plugin 'mattn/gist-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'IndexedSearch'
+Plugin 'henrik/vim-indexed-search'
 Plugin 'airblade/vim-rooter'
-" XML/HTML tags navigation
-Plugin 'matchit.zip'
 Plugin 'terryma/vim-expand-region'
 Plugin 'dracula/vim'
 Plugin 'junegunn/fzf'

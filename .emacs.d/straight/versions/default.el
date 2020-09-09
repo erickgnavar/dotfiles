@@ -158,5 +158,5 @@
  ("writeroom-mode" . "fa17eb651102502f60086d62784f1dae15c0630d")
  ("yaml-mode" . "cecf4b106b0c4236931b14919fdf87ff3546e2c9")
  ("yasnippet" . "4046f61588dbd63b1b579bbf6eb6977ad605d262")
- ("yasnippet-snippets" . "b14d93bfd172eead16bdaa42223d304808be44bd"))
+ ("yasnippet-snippets" . "281752335ec797cfb2f8ab17d01e9293eab3f137"))
 :alpha

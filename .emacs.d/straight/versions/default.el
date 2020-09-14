@@ -94,7 +94,7 @@
  ("know-your-http-well" . "3cc5ab6d2764ab7aacb1b6e026abaccbeb6c37f2")
  ("latex-preview-pane" . "5297668a89996b50b2b62f99cba01cc544dbed2e")
  ("let-alist" . "caeeae983455079ec89c69b7958a2e5a5b60003c")
- ("lfe" . "af14b1439097850ffa39935419ed83f5bcaa6d09")
+ ("lfe" . "d8337516ab09edd4b281a27ac85684b81cdeb8bd")
  ("linkode.el" . "376fdc0f990322385534a16ee2cd08df20f76f48")
  ("logito" . "824acb89d2cc18cb47281a4fbddd81ad244a2052")
  ("lsp-dart" . "9036e4b3a7666162fd1a6f8ec339157c28f788f0")

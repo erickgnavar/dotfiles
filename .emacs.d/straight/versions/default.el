@@ -154,6 +154,7 @@
  ("visual-fill-column" . "772d4b25ba19f57409cd03524be0f5bfdc2e8da1")
  ("vterm" . "e63bd65eece7c5de3a534b7e2fdbe58256ec2da0")
  ("web-mode" . "cd000fcfce97152f8b831b7eef4ea0d0b1eed11a")
+ ("wakatime-mode" . "7626678315918bdbb81ede68149f20a7d97a928f")
  ("with-editor" . "814777ce8ad42ad115eebc38743c55b99af5d2e7")
  ("writeroom-mode" . "fa17eb651102502f60086d62784f1dae15c0630d")
  ("yaml-mode" . "cecf4b106b0c4236931b14919fdf87ff3546e2c9")

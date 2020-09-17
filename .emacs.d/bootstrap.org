@@ -329,6 +329,20 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+END_SRC
 
+** Wakatime
+
+#+begin_src emacs-lisp
+
+  (use-package wakatime-mode
+    :ensure t
+    :if (executable-find "wakatime")
+    :init
+    (setq wakatime-cli-path (executable-find "wakatime"))
+    :config
+    (global-wakatime-mode))
+
+#+end_src
+
 ** Highlight thing
 
 #+BEGIN_SRC emacs-lisp

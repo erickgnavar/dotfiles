@@ -403,9 +403,10 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (eval-after-load "ispell"
-    '(add-to-list 'ispell-skip-region-alist
-                  '("^```" . "^```")))
+  (with-eval-after-load 'ispell
+    (setq ispell-program-name "aspell")
+    (add-to-list 'ispell-skip-region-alist
+                 '("^```" . "^```")))
 
 #+END_SRC
 

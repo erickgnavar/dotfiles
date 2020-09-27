@@ -13,8 +13,6 @@ brew "asdf"
 brew "aspell"
 brew "autojump"
 brew "bat"
-brew "ghc"
-brew "cabal-install"
 brew "caddy", restart_service: true
 brew "cmake"
 brew "curl"

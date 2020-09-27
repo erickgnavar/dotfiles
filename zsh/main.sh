@@ -145,6 +145,11 @@ then
     export PATH=$PATH:$HOME/.cargo/bin
 fi
 
+if [ -d $HOME/.ghcup/ ]
+then
+    export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
+fi
+
 # opam configuration
 test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null || true
 

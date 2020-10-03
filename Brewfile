@@ -33,6 +33,7 @@ brew "hugo"
 brew "jansson"
 brew "jq"
 brew "kubernetes-cli"
+brew "librsvg"
 brew "libvterm"
 brew "libxml2"
 brew "mailhog", restart_service: true

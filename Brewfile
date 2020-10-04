@@ -49,6 +49,7 @@ brew "tesseract"
 brew "the_silver_searcher"
 brew "tmux"
 brew "tree"
+brew "tsung"
 brew "vim", link: false
 brew "wakatime-cli"
 brew "wget"

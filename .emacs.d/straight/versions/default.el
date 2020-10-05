@@ -100,7 +100,7 @@
  ("lsp-dart" . "9036e4b3a7666162fd1a6f8ec339157c28f788f0")
  ("lsp-mode" . "c8f6f1acc1c6717065c24bcac9d7d81e9b0a432b")
  ("lua-mode" . "1f596a93b3f1caadd7bba01030f8c179b029600b")
- ("magit" . "1ce4d1c0781b1925912704f3385128433f46d07c")
+ ("magit" . "fd6466025725f8780b7da18639ded1b7b141de26")
  ("markdown-mode" . "f3c54e34cc5228001af36a5301883325319f21d4")
  ("marshal.el" . "f038689cbd5b3680b80b44edd0c7a63ca3038e26")
  ("melpa" . "dada661402d2f3c9c4bcea8c41ebd926f8b26748")

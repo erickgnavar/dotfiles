@@ -1713,6 +1713,34 @@ Enable go to definition with \ d keybinding
 
 #+END_SRC
 
+* Writing
+
+Custom functions to speed up writing process
+
+** Hugo
+
+Insert =org-link= image using clipboard value, if the current file is =blog/demo.org= it will place the resulting image into =static/images/blog/demo/image.png=.
+
+#+begin_src emacs-lisp
+
+  (defun my/hugo-insert-image-from-clipboard ()
+    "Use clipoard image and put it in a generated images folder for the current file."
+    (interactive)
+    (let* ((absolute-path (buffer-file-name))
+           (splitted (reverse (split-string absolute-path "/")))
+           (filename (replace-regexp-in-string ".org" "" (car splitted)))
+           (dir (nth 1 splitted))
+           (base-image-path (concat (projectile-project-root) "static/images"))
+           (result-image-dir (format "%s/%s/%s" base-image-path dir filename))
+           (result-image-name (read-string "Filename: " "image.png"))
+           (full-path-result-image (format "%s/%s" result-image-dir result-image-name)))
+
+      (shell-command (format "mkdir -p %s" result-image-dir))
+      (shell-command (format "pngpaste %s" full-path-result-image))
+      (insert (format "[[file:%s]]" (car (cdr (split-string full-path-result-image "static")))))))
+
+#+end_src
+
 * Custom functions
 
 Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".

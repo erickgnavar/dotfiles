@@ -14,6 +14,7 @@ brew "aspell"
 brew "autojump"
 brew "bat"
 brew "caddy", restart_service: true
+brew "clang-format"
 brew "cmake"
 brew "curl"
 brew "defaultbrowser"

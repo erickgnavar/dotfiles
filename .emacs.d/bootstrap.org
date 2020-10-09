@@ -1168,6 +1168,20 @@ Emacs Start Up Profiler
 
 * Programming languages
 
+** C
+
+=clang-format= is required for this, we can install it with =brew install clang-format=
+
+#+begin_src emacs-lisp
+
+  (reformatter-define c-format
+    :program "clang-format")
+
+  (with-eval-after-load 'cc-mode
+    (define-key c-mode-map (kbd "C-c C-f") 'c-format-buffer))
+
+#+end_src
+
 ** Python
 
   For each virtual environment install the following packages:

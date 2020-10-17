@@ -12,7 +12,7 @@
  ("clojure-mode" . "51016faaa88956bdd4decf2fa94dd5198777a47c")
  ("closql" . "92f8f2dba684b7c9cc60821aa5668d336544ab99")
  ("company-lua" . "29f6819de4d691e5fd0b62893a9f4fbc1c6fcb52")
- ("company-mode" . "1f56bec0ba7ce336eb8661b4d34e4b024d7dd04c")
+ ("company-mode" . "5f5949b6ae8ea9df94c6cb3e01d9cae43623b794")
  ("company-restclient" . "e5a3ec54edb44776738c13e13e34c85b3085277b")
  ("csv-mode" . "fbf942e127e68ac8cfcd08a53500ca554fcac079")
  ("cucumber.el" . "11ae1671629bfedaa553c7b819676d64eb320992")

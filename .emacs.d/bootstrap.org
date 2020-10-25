@@ -650,6 +650,14 @@ This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
 
+  (defun my/projectile-open-new-project ()
+    "Open a project for the first time and add it to projectile known projects list."
+    (interactive)
+    (let* ((project-path-abs (read-directory-name "Enter project root: "))
+           (project-path (replace-regexp-in-string (expand-file-name "~") "~" project-path-abs)))
+      (add-to-list 'projectile-known-projects project-path)
+      (projectile-switch-project-by-name project-path)))
+
   (use-package projectile
     :ensure t
     :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
@@ -657,6 +665,8 @@ This allow to update environment using =.envrc= file.
     (projectile-keymap-prefix (kbd "C-c p"))
     (projectile-switch-project-action 'helm-ls-git-ls)
     (projectile-completion-system 'helm)
+    :bind (:map projectile-mode-map
+                ("C-c p n" . 'my/projectile-open-new-project))
     :hook
     (after-init . projectile-mode))
 

@@ -769,6 +769,23 @@ Configured variables:
 - =org-log-done= saves the timestamp when a task is done
 - =org-src-preserve-indentation= when is =t= avoid to insert a left indentation in source blocks
 
+#+begin_src emacs-lisp
+
+  (defun my/org-insert-image-from-clipboard ()
+    "Insert image from clipboard using an org tag"
+    (interactive)
+    (let* ((image-name (read-string "Filename: " "image.png"))
+           (images-folder "./images")
+           (image-path (format "%s/%s" images-folder image-name)))
+      (unless (file-directory-p images-folder)
+        (shell-command (format "mkdir -p %s" images-folder)))
+      (shell-command (format "pngpaste %s" image-path))
+      (insert (format "[[file:%s]]" image-path))))
+
+  (evil-leader/set-key-for-mode 'org-mode "mii" 'my/org-insert-image-from-clipboard)
+
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 
   (defvar my/org-src-block-tmp-window-configuration nil)

@@ -3,6 +3,9 @@
 ;;; Code:
 (require 'package)
 
+;; Avoid to show a message about deprecation of cl package
+(setq byte-compile-warnings '(cl-functions))
+
 (defvar bootstrap-version)
 
 (defvar straight-use-package-by-default t)

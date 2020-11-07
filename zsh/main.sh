@@ -1,16 +1,5 @@
 ZSH_THEME=""
 
-# User configuration
-
-export LANG="en_US.UTF-8"
-export LC_COLLATE="en_US.UTF-8"
-export LC_CTYPE="en_US.UTF-8"
-export LC_MESSAGES="en_US.UTF-8"
-export LC_MONETARY="en_US.UTF-8"
-export LC_NUMERIC="en_US.UTF-8"
-export LC_TIME="en_US.UTF-8"
-export LC_ALL=
-
 # Prevent duplicates in bash history
 setopt hist_ignore_all_dups
 
@@ -128,30 +117,6 @@ alias ls="exa"
 
 # direnv conf
 eval "$(direnv hook zsh)"
-
-# Use binaries from ~/.local/bin
-# haskell stack install some binaries here: hindent, hlint, etc
-export PATH="$PATH:$HOME/.local/bin"
-
-# variable used to avoid java as a requirement when installing a version of erlang with asdf
-export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
-
-# Always save iex session history
-export ERL_AFLAGS="-kernel shell_history enabled"
-
-# load cargo bin
-if [ -d $HOME/.cargo/bin ]
-then
-    export PATH=$PATH:$HOME/.cargo/bin
-fi
-
-if [ -d $HOME/.ghcup/ ]
-then
-    export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
-fi
-
-# opam configuration
-test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null || true
 
 # load custom OS code
 if [ $(uname -s) = "Darwin" ]

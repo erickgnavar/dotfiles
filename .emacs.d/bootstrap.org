@@ -287,11 +287,14 @@ This allow to visual mode work more like vim visual highlighting.
 
 ** Load PATH environment
 
+=exec-path-from-shell= by default uses =("-l" "-i")= when starts a new shell to get the =PATH=, =-i= option was removed to open a non interactive shell so it can be faster at startup.
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package exec-path-from-shell
     :ensure t
     :custom
+    (exec-path-from-shell-arguments '("-l"))
     (exec-path-from-shell-check-startup-files nil)
     :config
     (when (memq window-system '(mac ns))

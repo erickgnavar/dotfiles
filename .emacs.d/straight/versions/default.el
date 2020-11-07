@@ -54,7 +54,7 @@
  ("evil-matchit" . "11d98debf8b051b10068137668eb54c2fede0e30")
  ("evil-nerd-commenter" . "1bd2de52011c39777a3e8779b14cee2790dc873b")
  ("evil-surround" . "9b0b17f06cef9bac81ee4800d121265e54718a17")
- ("exec-path-from-shell" . "53ca76b97f0a08bd194852b10261f4f7754a898e")
+ ("exec-path-from-shell" . "4ea306a76f0f8371053dd12d77a3b5b4438974d3")
  ("f.el" . "1814209e2ff43cf2e6d38c4cd476218915f550fb")
  ("flutter" . "b44aff1a5f332ec1b030ca91a4d65d715b3c0431")
  ("flycheck" . "269237f6529a4ad7db5bbbc5a40c1f038accf3cd")

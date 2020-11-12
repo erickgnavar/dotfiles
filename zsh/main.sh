@@ -144,9 +144,9 @@ function pod_shell {
 
     if [ -z $1 ]
     then
-        kubectl -n $namespace exec -ti $pod bash
+        kubectl -n $namespace exec -ti $pod -- bash
     else
-        kubectl -n $namespace exec -ti $pod $1
+        kubectl -n $namespace exec -ti $pod -- $1
     fi
 }
 

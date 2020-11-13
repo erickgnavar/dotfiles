@@ -73,7 +73,7 @@
  ("gocode" . "939b4a677f2f843ea13d9dd90206d57111f0ceb9")
  ("gotest.el" . "70f63eafda1f6a2f0a01a9320cc4d2edee9a17b2")
  ("goto-chg" . "1829a13026c597e358f716d2c7793202458120b5")
- ("graphql-mode" . "7c37aee28bf8c8ffb3da73df5571c4e1e352562b")
+ ("graphql-mode" . "2371316a750b807de941184d49ca19d277ecadcd")
  ("haml-mode" . "bf5b6c11b1206759d2b28af48765e04882dd1fc4")
  ("haskell-mode" . "9cb7f862bb50e1596a4b592bd46f53283a26389d")
  ("helm" . "54e2c05432dfbdd89807f16a38c5a7d3c5dbfe41")

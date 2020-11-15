@@ -42,7 +42,7 @@
  ("emacs-memoize" . "c70773e0eb799a17f1f44334d14389c518ec14d4")
  ("emacs-neotree" . "98fe21334affaffe2334bf7c987edaf1980d2d0b")
  ("emacs-racer" . "a0bdf778f01e8c4b8a92591447257422ac0b455b")
- ("emacs-which-key" . "1e3640e48c31f8062f018b5fc84acad696a0ea2a")
+ ("emacs-which-key" . "ca268fd313d3fb2bd03a8b5e4bdcca675ce58ca7")
  ("emacsmirror-mirror" . "a65e5ce72299554854f784161006d42ea0d032ab")
  ("emacsql" . "a118b6c95af1306f0288a383d274b5dd93efbbda")
  ("emmet-mode" . "1acb821e0142136344ccf40c1e5fb664d7db2e70")

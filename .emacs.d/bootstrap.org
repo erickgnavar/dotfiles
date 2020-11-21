@@ -1386,8 +1386,8 @@ Custom functions to run elixir tests.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/mix-run-test (&optional at-point)
-    "If AT-POINT is true it will pass the line number to mix test."
+  (defun my/mix-run-test (&optional scope)
+    "Run elixir test for the given SCOPE."
     (interactive)
     (let* ((current-file (buffer-file-name))
            (current-line (line-number-at-pos))
@@ -1399,20 +1399,31 @@ Custom functions to run elixir tests.
            (extra-env (if (boundp 'elixir-extra-test-env) elixir-extra-test-env ""))
            (mix-env (concat "MIX_ENV=test " extra-env)))
 
-      (if at-point
-          (compile (format "%s mix test %s:%s" mix-env current-file current-line))
-        (compile (format "%s mix test %s" mix-env current-file)))))
+      (cond
+       ((string-equal scope "file")
+        (compile (format "%s mix test %s" mix-env current-file)))
+
+       ((string-equal scope "at-point")
+        (compile (format "%s mix test %s:%s" mix-env current-file current-line)))
+
+       (t
+        (compile (format "%s mix test" mix-env))))))
 
 
   (defun my/mix-run-test-file ()
     "Run mix test over the current file."
     (interactive)
-    (my/mix-run-test nil))
+    (my/mix-run-test "file"))
 
   (defun my/mix-run-test-at-point ()
     "Run mix test at point."
     (interactive)
-    (my/mix-run-test t))
+    (my/mix-run-test "at-point"))
+
+  (defun my/mix-run-test-all ()
+    "Run mix test at point."
+    (interactive)
+    (my/mix-run-test))
 
 #+END_SRC
 

@@ -489,7 +489,7 @@ Avoid check spelling in markdown code blocks
       "r" 'my/replace-word-at-point
       "R" 'recompile
       "s" 'my/toggle-spanish-characters
-      "t" 'my/find-tag
+      "t" 'persp-switch
       "w" 'my/toggle-maximize
       "x" 'my/resize-window
       "y" 'helm-show-kill-ring))
@@ -667,6 +667,23 @@ This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
 
+  (defun my/projectile-switch-action ()
+    "Create a new perspective with the opened project name."
+    (interactive)
+    (persp-switch (projectile-project-name))
+    (helm-ls-git-ls))
+
+  (defun my/projectile-kill-buffers ()
+    "Delete the current persp when all project related buffers are killed."
+    (interactive)
+    (let* ((project-name (projectile-project-name)))
+      (projectile-kill-buffers)
+      ;; we delete the persp only when the user accept to kill all the project related buffers,
+      ;; `projectile-kill-buffers' doesn't return a value so to make this validation we compare
+      ;; the current project-name against the value of `project-name' that was computed before
+      (unless (string-equal (projectile-project-name) project-name)
+        (persp-kill project-name))))
+
   (defun my/projectile-open-new-project ()
     "Open a project for the first time and add it to projectile known projects list."
     (interactive)
@@ -680,10 +697,11 @@ This allow to update environment using =.envrc= file.
     :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
     :custom
     (projectile-keymap-prefix (kbd "C-c p"))
-    (projectile-switch-project-action 'helm-ls-git-ls)
+    (projectile-switch-project-action 'my/projectile-switch-action)
     (projectile-completion-system 'helm)
     :bind (:map projectile-mode-map
-                ("C-c p n" . 'my/projectile-open-new-project))
+                ("C-c p n" . 'my/projectile-open-new-project)
+                ("C-c p k" . 'my/projectile-kill-buffers))
     :hook
     (after-init . projectile-mode))
 

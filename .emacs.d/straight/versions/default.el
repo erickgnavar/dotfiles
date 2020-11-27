@@ -127,6 +127,7 @@
  ("peg.el" . "081efeca91d790c7fbc90871ac22c40935f4833b")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
+ ("perspective-el" . "1eb46847ea563e213e21e65ec65892e37aeda577")
  ("pos-tip" . "c9ced6c485788a4556161f8e3b7893d230a49db2")
  ("projectile" . "5103cfc4248bc341d24c0c96f0728962c85bf8ed")
  ("py-isort.el" . "e67306f459c47c53a65604e4eea88a3914596560")

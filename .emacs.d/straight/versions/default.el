@@ -129,7 +129,7 @@
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
  ("perspective-el" . "1eb46847ea563e213e21e65ec65892e37aeda577")
  ("pos-tip" . "c9ced6c485788a4556161f8e3b7893d230a49db2")
- ("projectile" . "5103cfc4248bc341d24c0c96f0728962c85bf8ed")
+ ("projectile" . "d1cfad008b1719a6bee17fbe9479db414c0dc5d9")
  ("py-isort.el" . "e67306f459c47c53a65604e4eea88a3914596560")
  ("pyvenv" . "861998b6d157ae73b829f02a5a6c8a9118310831")
  ("queue" . "52206c0f78afc0dfb9a287cb928c1e725103336d")

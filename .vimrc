@@ -71,6 +71,9 @@ set hlsearch "highlighted search results
 syntax enable "enable syntax highlight
 set path+=**
 
+" avoid to show an error with long file paths
+set shortmess=F
+
 set number "show line numbers
 set showcmd "show last command
 set wildmenu "visual autocomplete for command menu

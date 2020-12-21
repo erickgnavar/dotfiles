@@ -114,6 +114,7 @@ alias wow="git status"
 alias ipython='fades -d ipython -x ipython'
 alias cat="bat"
 alias ls="exa"
+alias k="kubectl"
 
 # direnv conf
 eval "$(direnv hook zsh)"

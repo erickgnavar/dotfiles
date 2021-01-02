@@ -936,11 +936,36 @@ Configured variables:
 
 A tool to show org file as an slideshow
 
+=hide-mode-line= hide the modeline to allow to have a clean screen while using =org-tree-slide-mode=
+
 #+begin_src emacs-lisp
+
+  (use-package hide-mode-line
+    :ensure t)
+
+#+end_src
+
+Some tweaks to have a better looking while presenting slides
+
+#+begin_src emacs-lisp
+
+  (defun my/org-tree-slide-setup ()
+    (org-display-inline-images)
+    (hide-mode-line-mode 1))
+
+  (defun my/org-tree-slide-end ()
+    (org-display-inline-images)
+    (hide-mode-line-mode 0))
 
   (use-package org-tree-slide
     :ensure t
     :defer t
+    :custom
+    (org-image-actual-width nil)
+    (org-tree-slide-activate-message "Presentation started!")
+    (org-tree-slide-deactivate-message "Presentation finished!")
+    :hook ((org-tree-slide-play . my/org-tree-slide-setup)
+           (org-tree-slide-stop . my/org-tree-slide-end))
     :bind (:map org-tree-slide-mode-map
                 ("C-<" . org-tree-slide-move-previous-tree)
                 ("C->" . org-tree-slide-move-next-tree)))

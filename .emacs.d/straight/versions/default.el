@@ -36,6 +36,7 @@
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
  ("emacs-go-eldoc" . "cbbd2ea1e94a36004432a9ac61414cb5a95a39bd")
  ("emacs-helm-ag" . "2fc02c4ead29bf0db06fd70740cc7c364cb650ac")
+ ("emacs-hide-mode-line" . "88888825b5b27b300683e662fa3be88d954b1cea")
  ("emacs-htmlize" . "86f22f211e9230857197c42a9823d3f05381deed")
  ("emacs-memoize" . "c70773e0eb799a17f1f44334d14389c518ec14d4")
  ("emacs-neotree" . "98fe21334affaffe2334bf7c987edaf1980d2d0b")

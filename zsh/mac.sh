@@ -25,3 +25,7 @@ function fix_emoji_palette {
 	rm "$preferences_path"
     fi
 }
+
+function rae {
+    open "https://dle.rae.es/$1"
+}

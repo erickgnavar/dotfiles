@@ -1321,12 +1321,10 @@ Emacs Start Up Profiler
 
   (use-package elpy
     :ensure t
-    :diminish
-    :after (python)
+    :hook (python-mode . elpy-enable)
     :custom
     (elpy-shell-echo-input . nil)
     :config
-    (elpy-enable)
     (when (require 'flycheck nil t)
       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
       (add-hook 'elpy-mode-hook 'flycheck-mode))

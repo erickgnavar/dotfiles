@@ -34,8 +34,6 @@
  ("emacs-direnv" . "fd0b6bbd5e3eaf6aa48bccd4a1ff3048bfb2c69b")
  ("emacs-elixir" . "670098a88c88c222b822e445216000fb13b2cce8")
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
- ("emacs-git-gutter" . "00c05264af046b5ce248e5b0bc42f117d9c27a09")
- ("emacs-git-gutter-fringe" . "16226caab44174301f1659f7bf8cc67a76153445")
  ("emacs-go-eldoc" . "cbbd2ea1e94a36004432a9ac61414cb5a95a39bd")
  ("emacs-helm-ag" . "2fc02c4ead29bf0db06fd70740cc7c364cb650ac")
  ("emacs-htmlize" . "86f22f211e9230857197c42a9823d3f05381deed")

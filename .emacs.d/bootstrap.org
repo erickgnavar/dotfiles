@@ -427,8 +427,8 @@ Avoid check spelling in markdown code blocks
     :config
     (evil-mode 1)
     (modify-syntax-entry ?_ "w")
-    (define-key evil-normal-state-map (kbd "C-p") 'git-gutter:previous-hunk)
-    (define-key evil-normal-state-map (kbd "C-n") 'git-gutter:next-hunk)
+    (define-key evil-normal-state-map (kbd "C-p") 'diff-hl-previous-hunk)
+    (define-key evil-normal-state-map (kbd "C-n") 'diff-hl-next-hunk)
     (add-hook 'prog-mode-hook #'(lambda ()
                                   (modify-syntax-entry ?_ "w")))
 
@@ -478,9 +478,7 @@ Avoid check spelling in markdown code blocks
       "g" 'my/magit-status
       "G" 'magit-file-dispatch
       "i" 'imenu
-      "hk" 'git-gutter:revert-hunk
-      "hs" 'git-gutter:stage-hunk
-      "hp" 'git-gutter:popup-hunk
+      "hk" 'diff-hl-revert-hunk
       "k" 'kill-buffer
       "l" 'display-line-numbers-mode
       "n" 'evil-buffer-new
@@ -1036,34 +1034,19 @@ Open selected region in remote repo page
 
 #+END_SRC
 
-** Git-fringe
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package git-gutter-fringe
-    :ensure t
-    :if (display-graphic-p)
-    :diminish git-gutter-mode
-    :config
-    (global-git-gutter-mode t))
-
-  (use-package git-gutter
-    :ensure t
-    :if (not (display-graphic-p))
-    :diminish git-gutter-mode
-    :config
-    (global-git-gutter-mode t))
-
-#+END_SRC
-
 ** Git diff-hl
 
 #+BEGIN_SRC emacs-lisp
 
   (use-package diff-hl
     :ensure t
-    :hook
-    (dired-mode . diff-hl-dired-mode))
+    ;; for some reason the :hook form doesn't work so we have to use :init
+    :init
+    (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+    :config
+    (global-diff-hl-mode))
 
 #+END_SRC
 

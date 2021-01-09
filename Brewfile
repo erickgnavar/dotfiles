@@ -56,6 +56,7 @@ brew "leiningen"
 brew "libiconv"
 brew "librsvg"
 brew "libvterm"
+brew "lorem"
 brew "mailhog", restart_service: true
 brew "mailutils"
 brew "minikube"

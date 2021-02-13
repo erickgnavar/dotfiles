@@ -1,7 +1,7 @@
 (("Highlight-Indentation-for-Emacs" . "d03803f2c06749c430443a3d24e039cbafc9c58f")
  ("a.el" . "18966975db7110d0aac726be95b593e2fc3d44ed")
  ("all-the-icons-dired" . "fc2dfa1e9eb8bf1c402a675e7089638d702a27a5")
- ("all-the-icons.el" . "7b4e5f411110ccf8269bd34d6d8b997548810027")
+ ("all-the-icons.el" . "2f5ea7259ed104a0ef8727f640ee2525108038d5")
  ("auctex" . "fafa28d54276a73604e696b51c6a1a36d727d3fb")
  ("autopair" . "2b6d72bccb0ebba6e7e711528872b898b0c65b0a")
  ("biblio.el" . "efeeab720cb8e3f95ddb4298d0cc62393cf237e9")

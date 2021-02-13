@@ -659,12 +659,16 @@ This allow to update environment using =.envrc= file.
 
 #+END_SRC
 
-** Perspective.el
+** persp-mode.el
 
 #+begin_src emacs-lisp
 
-  (use-package perspective
+  (use-package persp-mode
     :ensure t
+    :custom
+    (persp-auto-resume-time 0)
+    (persp-auto-save-opt 0)
+    (persp-auto-save-persps-to-their-file nil)
     :config
     (persp-mode)
     ;; setup vim tab like key-bindings

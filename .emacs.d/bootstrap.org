@@ -424,6 +424,17 @@ Avoid check spelling in markdown code blocks
 
 #+END_SRC
 
+** Undo system
+
+#+begin_src emacs-lisp
+
+  (use-package undo-fu
+    :ensure t
+    :config
+    (global-undo-tree-mode -1))
+
+#+end_src
+
 * Evil
 
 #+BEGIN_SRC emacs-lisp
@@ -434,7 +445,8 @@ Avoid check spelling in markdown code blocks
     (setq evil-emacs-state-cursor '("white" box)
           evil-normal-state-cursor '("green" box)
           evil-visual-state-cursor '("orange" box)
-          evil-insert-state-cursor '("red" bar))
+          evil-insert-state-cursor '("red" bar)
+          evil-undo-system 'undo-fu)
     :config
     (evil-mode 1)
     (modify-syntax-entry ?_ "w")
@@ -1277,7 +1289,6 @@ Copied from somewhere
 
 #+BEGIN_SRC emacs-lisp
 
-  (diminish 'undo-tree-mode)
   (diminish 'auto-revert-mode)
 
 #+END_SRC

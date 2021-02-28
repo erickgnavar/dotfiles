@@ -437,6 +437,20 @@ Avoid check spelling in markdown code blocks
 
 * Evil
 
+#+begin_src emacs-lisp
+
+  (defun my/find-file-under-cursor ()
+    "Check it the filepath under cursor is an absolute path otherwise open helm and insert the filepath."
+    (interactive)
+    (let ((file-path (thing-at-point 'filename t)))
+      (if (file-name-absolute-p file-path)
+          (find-file-at-point file-path)
+        (minibuffer-with-setup-hook (lambda ()
+                                      (insert file-path))
+          (helm-ls-git-ls)))))
+
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package evil
@@ -452,6 +466,7 @@ Avoid check spelling in markdown code blocks
     (modify-syntax-entry ?_ "w")
     (define-key evil-normal-state-map (kbd "C-p") 'diff-hl-previous-hunk)
     (define-key evil-normal-state-map (kbd "C-n") 'diff-hl-next-hunk)
+    (define-key evil-normal-state-map "gf" 'my/find-file-under-cursor)
     (add-hook 'prog-mode-hook #'(lambda ()
                                   (modify-syntax-entry ?_ "w")))
 

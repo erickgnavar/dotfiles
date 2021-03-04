@@ -917,6 +917,23 @@ Configured variables:
 
 #+end_src
 
+When I read books on Apple Books and I want to insert some quote Apple Books insert some text I don't want in my notes, this function delete that and just insert the meaning part using org quote syntax.
+
+#+begin_src emacs-lisp
+
+  (defun my/org-insert-quote-from-apple-books ()
+    "Take quote from clipboard and remove all the unnecesary text and insert
+    an org quote in the current position"
+    (interactive)
+    (let* ((raw-value (current-kill 0 t))
+           (tmp (second (split-string raw-value "“")))
+           (quote-value (car (split-string tmp "”"))))
+      (insert "#+begin_quote\n")
+      (insert (concat quote-value "\n"))
+      (insert "#+end_quote\n")))
+
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 
   (defvar my/org-src-block-tmp-window-configuration nil)

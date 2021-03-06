@@ -1789,15 +1789,33 @@ Install dependencies: godef, goimports, gocode
         (cider-format-region (region-beginning) (region-end))
       (cider-format-buffer)))
 
+  (defun my/cider-repl-reset ()
+    "Call (reset) in the active repl and return to the position where was called."
+    (interactive)
+    (save-window-excursion
+      (cider-insert-in-repl "(reset)" t)))
+
   (use-package cider
     :ensure t
     :bind (:map cider-mode-map
-                ("C-c C-f" . my/clj-format-code)))
+                ("C-c C-f" . my/clj-format-code)
+                ("C-c C-r" . my/cider-repl-reset)))
 
   (with-eval-after-load 'evil
     (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
 
 #+END_SRC
+
+#+begin_src emacs-lisp
+
+  (use-package clj-refactor
+    :ensure t
+    :after cider
+    :bind (:map clojure-mode-map
+                ("C-c C-a" . cljr-add-project-dependency))
+    :hook (clojure . clj-refactor))
+
+#+end_src
 
 ** Emacs lisp
 

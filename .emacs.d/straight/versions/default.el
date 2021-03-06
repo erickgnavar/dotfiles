@@ -8,6 +8,7 @@
  ("caml-mode" . "38ebde12d3d529e6ef8078967997d32226e69e82")
  ("cargo.el" . "3d9f7d20d01ca046dbc739d8aeca2838bfb1c413")
  ("cider" . "7894bb6402810bf66af6cafff1556c239c26609f")
+ ("clj-refactor.el" . "b24ce76acefe792975f00147c94b4dd784e65b80")
  ("clojure-mode" . "53ef8ac076ae7811627fbdd408e519ab7fca9a0b")
  ("closql" . "c864c1fadfea4a05fff29cb60891b7a32ac88c78")
  ("company-lua" . "29f6819de4d691e5fd0b62893a9f4fbc1c6fcb52")

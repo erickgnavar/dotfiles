@@ -2232,21 +2232,6 @@ Generate daily report for work.
 
 #+END_SRC
 
-Open file given a highlighted region
-
-#+BEGIN_SRC emacs-lisp
-
-  (defun my/open-file-at-point()
-    "Open the path selected if the file exists."
-    (interactive)
-    (when (region-active-p)
-      (let ((path (buffer-substring (region-beginning) (region-end))))
-        (if (file-exists-p path)
-            (find-file path)
-          (message "file not found")))))
-
-#+END_SRC
-
 ** MacOS
 
 Functions to open Finder using current file or current project.

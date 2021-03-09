@@ -5,82 +5,82 @@
 
 #+BEGIN_SRC emacs-lisp
 
-  (setq inhibit-startup-message t)
-  (setq default-directory (expand-file-name "~/"))
+(setq inhibit-startup-message t)
+(setq default-directory (expand-file-name "~/"))
 
-  ;; Hide vertical scroll bar
-  (scroll-bar-mode -1)
+;; Hide vertical scroll bar
+(scroll-bar-mode -1)
 
-  ;; Hide toolbar
-  (tool-bar-mode -1)
+;; Hide toolbar
+(tool-bar-mode -1)
 
-  ;; Change backups directory to emacs folder
-  ;; this avoid to save backup files in the same directory of the original files
-  (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                                 "backups"))))
+;; Change backups directory to emacs folder
+;; this avoid to save backup files in the same directory of the original files
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "backups"))))
 
-  ;; Hide the bell in the center of screen
-  (setq ring-bell-function 'ignore)
-  (column-number-mode t)
-  (global-hl-line-mode 1)
+;; Hide the bell in the center of screen
+(setq ring-bell-function 'ignore)
+(column-number-mode t)
+(global-hl-line-mode 1)
 
-  (when (member "Monaco" (font-family-list))
-      (set-frame-font "Monaco 12"))
+(when (member "Monaco" (font-family-list))
+  (set-frame-font "Monaco 12"))
 
-  (global-set-key (kbd "C-x -") 'my/decrease-font-height)
-  (global-set-key (kbd "C-x =") 'my/increase-font-height)
-  (global-set-key (kbd "C-x +") 'my/increase-font-height)
+(global-set-key (kbd "C-x -") 'my/decrease-font-height)
+(global-set-key (kbd "C-x =") 'my/increase-font-height)
+(global-set-key (kbd "C-x +") 'my/increase-font-height)
 
-  ;; Navigate through buffers
-  (global-set-key (kbd "M-[") 'previous-buffer)
-  (global-set-key (kbd "M-]") 'next-buffer)
+;; Navigate through buffers
+(global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "M-]") 'next-buffer)
 
-  ;; Fix unicode errors
-  (setenv "LANG" "en_US.UTF-8")
-  (setenv "LC_ALL" "en_US.UTF-8")
-  (setenv "LC_CTYPE" "en_US.UTF-8")
+;; Fix unicode errors
+(setenv "LANG" "en_US.UTF-8")
+(setenv "LC_ALL" "en_US.UTF-8")
+(setenv "LC_CTYPE" "en_US.UTF-8")
 
-  ;; Fix size of scroll
-  (setq scroll-step 1
-        scroll-conservatively  10000)
+;; Fix size of scroll
+(setq scroll-step 1
+      scroll-conservatively  10000)
 
-  ;; Show a marker when the line has empty characters at the end
-  (setq-default show-trailing-whitespace t)
+;; Show a marker when the line has empty characters at the end
+(setq-default show-trailing-whitespace t)
 
-  ;; disable `show-trailing-whitespace' for modes based in comint-mode
-  (add-hook 'comint-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
+;; disable `show-trailing-whitespace' for modes based in comint-mode
+(add-hook 'comint-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
 
-  ;; Avoid close emacs by mistake
-  (global-unset-key (kbd "C-x C-c"))
+;; Avoid close emacs by mistake
+(global-unset-key (kbd "C-x C-c"))
 
-  (defalias 'yes-or-no-p 'y-or-n-p)
-  (defalias 'run-elisp 'ielm)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'run-elisp 'ielm)
 
-  ;; place custom code generated for emacs in a separate file
-  (defconst custom-file (expand-file-name ".customize.el" user-emacs-directory))
-  (load custom-file :noerror)
+;; place custom code generated for emacs in a separate file
+(defconst custom-file (expand-file-name ".customize.el" user-emacs-directory))
+(load custom-file :noerror)
 
 #+END_SRC
 
 Show a message with emacs startup time
 
 #+begin_src emacs-lisp
-  (defun my/display-startup-time ()
-    (message "🚀 Emacs loaded in %s with %d garbage collections."
-             (float-time (time-subtract after-init-time before-init-time))
-             gcs-done))
+(defun my/display-startup-time ()
+  (message "🚀 Emacs loaded in %s with %d garbage collections."
+           (float-time (time-subtract after-init-time before-init-time))
+           gcs-done))
 
-  (add-hook 'emacs-startup-hook #'my/display-startup-time)
+(add-hook 'emacs-startup-hook #'my/display-startup-time)
 #+end_src
 
 Setup fira code symbols mode.
 
 #+BEGIN_SRC emacs-lisp
 
-  (when (member "Fira Code" (font-family-list))
-    (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
-    (require 'fira-code-mode)
-    (add-hook 'prog-mode-hook 'fira-code-mode))
+(when (member "Fira Code" (font-family-list))
+  (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
+  (require 'fira-code-mode)
+  (add-hook 'prog-mode-hook 'fira-code-mode))
 
 #+END_SRC
 
@@ -88,8 +88,8 @@ Adjust font size to screen resolution, increase font size for 4K screens
 
 #+BEGIN_SRC emacs-lisp
 
-  (when (and (display-graphic-p) (>= (x-display-pixel-width) 3840))
-    (set-frame-font "Monaco 16"))
+(when (and (display-graphic-p) (>= (x-display-pixel-width) 3840))
+  (set-frame-font "Monaco 16"))
 
 #+END_SRC
 
@@ -97,16 +97,16 @@ Parrot mode FTW!
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/parrot-animate-when-compile-success (buffer result)
-    (if (string-match "^finished" result)
-        (parrot-start-animation)))
+(defun my/parrot-animate-when-compile-success (buffer result)
+  (if (string-match "^finished" result)
+      (parrot-start-animation)))
 
-  (use-package parrot
-    :ensure t
-    :config
-    (parrot-mode)
-    (add-hook 'before-save-hook 'parrot-start-animation)
-    (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
+(use-package parrot
+  :ensure t
+  :config
+  (parrot-mode)
+  (add-hook 'before-save-hook 'parrot-start-animation)
+  (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
 
 #+END_SRC
 
@@ -114,15 +114,15 @@ Open scratch buffer
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/scratch-buffer()
-    "Switch to scratch buffer."
-    (interactive)
-    (let ((buffer (get-buffer "*scratch*")))
-      (if buffer
-          (switch-to-buffer buffer)
-        (switch-to-buffer (get-buffer-create "*scratch*"))
-        (insert initial-scratch-message))
-      (lisp-interaction-mode)))
+(defun my/scratch-buffer()
+  "Switch to scratch buffer."
+  (interactive)
+  (let ((buffer (get-buffer "*scratch*")))
+    (if buffer
+        (switch-to-buffer buffer)
+      (switch-to-buffer (get-buffer-create "*scratch*"))
+      (insert initial-scratch-message))
+    (lisp-interaction-mode)))
 
 #+END_SRC
 
@@ -132,8 +132,8 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
 
 #+BEGIN_SRC emacs-lisp
 
-  (eval-after-load "term"
-    '(define-key term-raw-map (kbd "M-]") 'next-buffer))
+(eval-after-load "term"
+  '(define-key term-raw-map (kbd "M-]") 'next-buffer))
 
 #+END_SRC
 
@@ -143,12 +143,12 @@ Disable =h= key-binding, this has a conflict with evil-mode left navigation key-
 
 #+BEGIN_SRC emacs-lisp
 
-  (with-eval-after-load 'compile
-    ;; set cursor to follow compilation output
-    (setq compilation-scroll-output t)
-    (define-key compilation-mode-map (kbd "g") nil)
-    (define-key compilation-mode-map (kbd "r") 'recompile)
-    (define-key compilation-mode-map (kbd "h") nil))
+(with-eval-after-load 'compile
+  ;; set cursor to follow compilation output
+  (setq compilation-scroll-output t)
+  (define-key compilation-mode-map (kbd "g") nil)
+  (define-key compilation-mode-map (kbd "r") 'recompile)
+  (define-key compilation-mode-map (kbd "h") nil))
 
 #+END_SRC
 
@@ -158,13 +158,13 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
 
 #+BEGIN_SRC emacs-lisp
 
-  (require 'ansi-color)
+(require 'ansi-color)
 
-  (defun colorize-compilation-buffer ()
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region (point-min) (point-max))))
+(defun colorize-compilation-buffer ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
 
-  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
 #+END_SRC
 
@@ -174,11 +174,11 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package dracula-theme
-    :ensure t
-    :config
-    (load-theme 'dracula t)
-    (set-face-foreground 'font-lock-variable-name-face "gray"))
+(use-package dracula-theme
+  :ensure t
+  :config
+  (load-theme 'dracula t)
+  (set-face-foreground 'font-lock-variable-name-face "gray"))
 
 #+END_SRC
 
@@ -188,14 +188,14 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package doom-modeline
-    :ensure t
-    :defer t
-    :custom
-    (doom-modeline-modal-icon nil)
-    :hook
-    (after-init . doom-modeline-mode)
-    (doom-modeline-mode . display-battery-mode))
+(use-package doom-modeline
+  :ensure t
+  :defer t
+  :custom
+  (doom-modeline-modal-icon nil)
+  :hook
+  (after-init . doom-modeline-mode)
+  (doom-modeline-mode . display-battery-mode))
 
 #+END_SRC
 
@@ -203,8 +203,8 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package all-the-icons
-    :ensure t)
+(use-package all-the-icons
+  :ensure t)
 
 #+END_SRC
 
@@ -212,10 +212,10 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+begin_src emacs-lisp
 
-  (use-package unicode-fonts
-    :ensure t
-    :config
-    (unicode-fonts-setup))
+(use-package unicode-fonts
+  :ensure t
+  :config
+  (unicode-fonts-setup))
 
 #+end_src
 
@@ -223,8 +223,8 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
 
-  (eval-after-load "dired"
-    '(define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
+(eval-after-load "dired"
+  '(define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
 
 #+END_SRC
 
@@ -232,10 +232,10 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package all-the-icons-dired
-    :ensure t
-    :defer t
-    :hook (dired-mode . all-the-icons-dired-mode))
+(use-package all-the-icons-dired
+  :ensure t
+  :defer t
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 #+END_SRC
 
@@ -243,11 +243,11 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package dired-subtree
-    :ensure t
-    :after dired
-    :config
-    (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle))
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :config
+  (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle))
 
 #+END_SRC
 
@@ -259,8 +259,8 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+begin_src emacs-lisp
 
-  (unless (version< emacs-version "27")
-    (set-face-attribute 'region nil :extend nil))
+(unless (version< emacs-version "27")
+  (set-face-attribute 'region nil :extend nil))
 
 #+end_src
 
@@ -268,9 +268,9 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 
-  (when (memq window-system '(mac ns))
-    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-    (add-to-list 'default-frame-alist '(ns-appearance . dark)))
+(when (memq window-system '(mac ns))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
 #+END_SRC
 
@@ -287,12 +287,12 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/highlight-todo-like-words ()
-    (font-lock-add-keywords
-     nil `(("\\<\\(FIXME\\|TODO\\)"
-            1 font-lock-warning-face t))))
+(defun my/highlight-todo-like-words ()
+  (font-lock-add-keywords
+   nil `(("\\<\\(FIXME\\|TODO\\)"
+          1 font-lock-warning-face t))))
 
-  (add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
+(add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
 
 #+END_SRC
 
@@ -302,14 +302,14 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package exec-path-from-shell
-    :ensure t
-    :custom
-    (exec-path-from-shell-arguments '("-l"))
-    (exec-path-from-shell-check-startup-files nil)
-    :config
-    (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell
+  :ensure t
+  :custom
+  (exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-check-startup-files nil)
+  :config
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)))
 
 #+END_SRC
 
@@ -317,11 +317,11 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package editorconfig
-    :ensure t
-    :diminish ""
-    :config
-    (editorconfig-mode 1))
+(use-package editorconfig
+  :ensure t
+  :diminish ""
+  :config
+  (editorconfig-mode 1))
 
 #+END_SRC
 
@@ -329,17 +329,17 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package yasnippet
-    :ensure t
-    :diminish ""
-    :hook ((prog-mode . yas-minor-mode)
-           (conf-mode . yas-minor-mode)
-           (text-mode . yas-minor-mode)
-           (snippet-mode . yas-minor-mode)))
+(use-package yasnippet
+  :ensure t
+  :diminish ""
+  :hook ((prog-mode . yas-minor-mode)
+         (conf-mode . yas-minor-mode)
+         (text-mode . yas-minor-mode)
+         (snippet-mode . yas-minor-mode)))
 
-  (use-package yasnippet-snippets
-    :ensure t
-    :after (yasnippet))
+(use-package yasnippet-snippets
+  :ensure t
+  :after (yasnippet))
 
 #+END_SRC
 
@@ -347,13 +347,13 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+begin_src emacs-lisp
 
-  (use-package wakatime-mode
-    :ensure t
-    :if (executable-find "wakatime")
-    :init
-    (setq wakatime-cli-path (executable-find "wakatime"))
-    :config
-    (global-wakatime-mode))
+(use-package wakatime-mode
+  :ensure t
+  :if (executable-find "wakatime")
+  :init
+  (setq wakatime-cli-path (executable-find "wakatime"))
+  :config
+  (global-wakatime-mode))
 
 #+end_src
 
@@ -361,10 +361,10 @@ This allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package highlight-thing
-    :ensure t
-    :hook
-    (prog-mode . highlight-thing-mode))
+(use-package highlight-thing
+  :ensure t
+  :hook
+  (prog-mode . highlight-thing-mode))
 
 #+END_SRC
 
@@ -374,7 +374,7 @@ Disable lock files
 
 #+BEGIN_SRC emacs-lisp
 
-  (setq create-lockfiles nil)
+(setq create-lockfiles nil)
 
 #+END_SRC
 
@@ -382,8 +382,8 @@ Disable lock files
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package reformatter
-    :ensure t)
+(use-package reformatter
+  :ensure t)
 
 #+END_SRC
 
@@ -391,11 +391,11 @@ Disable lock files
 
 #+begin_src emacs-lisp
 
-  (use-package vterm
-    :ensure t
-    :custom
-    (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-    (vterm-always-compile-module t))
+(use-package vterm
+  :ensure t
+  :custom
+  (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+  (vterm-always-compile-module t))
 
 #+end_src
 
@@ -403,11 +403,11 @@ Disable lock files
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package eshell-toggle
-    :ensure t
-    :custom
-    (eshell-toggle-init-function #'(lambda (dir)
-                                     (my/goto-term))))
+(use-package eshell-toggle
+  :ensure t
+  :custom
+  (eshell-toggle-init-function #'(lambda (dir)
+                                   (my/goto-term))))
 
 #+END_SRC
 
@@ -417,10 +417,10 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (with-eval-after-load 'ispell
-    (setq ispell-program-name "aspell")
-    (add-to-list 'ispell-skip-region-alist
-                 '("^```" . "^```")))
+(with-eval-after-load 'ispell
+  (setq ispell-program-name "aspell")
+  (add-to-list 'ispell-skip-region-alist
+               '("^```" . "^```")))
 
 #+END_SRC
 
@@ -428,10 +428,10 @@ Avoid check spelling in markdown code blocks
 
 #+begin_src emacs-lisp
 
-  (use-package undo-fu
-    :ensure t
-    :config
-    (global-undo-tree-mode -1))
+(use-package undo-fu
+  :ensure t
+  :config
+  (global-undo-tree-mode -1))
 
 #+end_src
 
@@ -439,101 +439,101 @@ Avoid check spelling in markdown code blocks
 
 #+begin_src emacs-lisp
 
-  (defun my/find-file-under-cursor ()
-    "Check it the filepath under cursor is an absolute path otherwise open helm and insert the filepath."
-    (interactive)
-    (let ((file-path (thing-at-point 'filename t)))
-      (if (file-name-absolute-p file-path)
-          (find-file-at-point file-path)
-        (minibuffer-with-setup-hook (lambda ()
-                                      (insert file-path))
-          (helm-ls-git-ls)))))
+(defun my/find-file-under-cursor ()
+  "Check it the filepath under cursor is an absolute path otherwise open helm and insert the filepath."
+  (interactive)
+  (let ((file-path (thing-at-point 'filename t)))
+    (if (file-name-absolute-p file-path)
+        (find-file-at-point file-path)
+      (minibuffer-with-setup-hook (lambda ()
+                                    (insert file-path))
+        (helm-ls-git-ls)))))
 
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-emacs-state-cursor '("white" box)
-          evil-normal-state-cursor '("green" box)
-          evil-visual-state-cursor '("orange" box)
-          evil-insert-state-cursor '("red" bar)
-          evil-undo-system 'undo-fu)
-    :config
-    (evil-mode 1)
-    (modify-syntax-entry ?_ "w")
-    (define-key evil-normal-state-map (kbd "C-p") 'diff-hl-previous-hunk)
-    (define-key evil-normal-state-map (kbd "C-n") 'diff-hl-next-hunk)
-    (define-key evil-normal-state-map "gf" 'my/find-file-under-cursor)
-    (add-hook 'prog-mode-hook #'(lambda ()
-                                  (modify-syntax-entry ?_ "w")))
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-emacs-state-cursor '("white" box)
+        evil-normal-state-cursor '("green" box)
+        evil-visual-state-cursor '("orange" box)
+        evil-insert-state-cursor '("red" bar)
+        evil-undo-system 'undo-fu)
+  :config
+  (evil-mode 1)
+  (modify-syntax-entry ?_ "w")
+  (define-key evil-normal-state-map (kbd "C-p") 'diff-hl-previous-hunk)
+  (define-key evil-normal-state-map (kbd "C-n") 'diff-hl-next-hunk)
+  (define-key evil-normal-state-map "gf" 'my/find-file-under-cursor)
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (modify-syntax-entry ?_ "w")))
 
-    (face-spec-set
-     'evil-ex-substitute-matches
-     '((t :foreground "red"
-          :strike-through t
-          :weight bold)))
+  (face-spec-set
+   'evil-ex-substitute-matches
+   '((t :foreground "red"
+        :strike-through t
+        :weight bold)))
 
-    (face-spec-set
-     'evil-ex-substitute-replacement
-     '((t
-        :foreground "green"
-        :weight bold))))
+  (face-spec-set
+   'evil-ex-substitute-replacement
+   '((t
+      :foreground "green"
+      :weight bold))))
 
-  (use-package evil-nerd-commenter
-    :ensure t
-    :after (evil)
-    :config
-    (evilnc-default-hotkeys)
-    (global-set-key (kbd "C-\-") 'evilnc-comment-operator))
+(use-package evil-nerd-commenter
+  :ensure t
+  :after (evil)
+  :config
+  (evilnc-default-hotkeys)
+  (global-set-key (kbd "C-\-") 'evilnc-comment-operator))
 
-  (use-package evil-surround
-    :ensure t
-    :after (evil)
-    :config
-    (global-evil-surround-mode 1))
+(use-package evil-surround
+  :ensure t
+  :after (evil)
+  :config
+  (global-evil-surround-mode 1))
 
-  (defun my/replace-word-at-point ()
-    "Setup buffer replace string for word at point using evil ex mode."
-    (interactive)
-    (evil-ex (concat "%s/" (word-at-point) "/")))
+(defun my/replace-word-at-point ()
+  "Setup buffer replace string for word at point using evil ex mode."
+  (interactive)
+  (evil-ex (concat "%s/" (word-at-point) "/")))
 
-  (use-package evil-leader
-    :ensure t
-    :after (evil)
-    :config
-    (global-evil-leader-mode)
-    (evil-leader/set-key
-      "SPC" 'helm-M-x
-      "a" 'my/helm-ag-with-default-term
-      "A" 'my/helm-ag-without-default-term
-      "b" 'helm-buffers-list
-      "c" 'eshell-toggle
-      "e" 'my/find-file-in-project
-      "f" 'find-file
-      "g" 'my/magit-status
-      "G" 'magit-file-dispatch
-      "i" 'imenu
-      "hk" 'diff-hl-revert-hunk
-      "k" 'kill-buffer
-      "l" 'display-line-numbers-mode
-      "n" 'evil-buffer-new
-      "pa" 'my/copy-abs-path
-      "pr" 'my/copy-relative-path
-      "q" 'helm-swoop
-      "r" 'my/replace-word-at-point
-      "R" 'recompile
-      "s" 'my/toggle-spanish-characters
-      "t" 'persp-switch
-      "w" 'my/toggle-maximize
-      "x" 'my/resize-window
-      "y" 'helm-show-kill-ring))
+(use-package evil-leader
+  :ensure t
+  :after (evil)
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-key
+    "SPC" 'helm-M-x
+    "a" 'my/helm-ag-with-default-term
+    "A" 'my/helm-ag-without-default-term
+    "b" 'helm-buffers-list
+    "c" 'eshell-toggle
+    "e" 'my/find-file-in-project
+    "f" 'find-file
+    "g" 'my/magit-status
+    "G" 'magit-file-dispatch
+    "i" 'imenu
+    "hk" 'diff-hl-revert-hunk
+    "k" 'kill-buffer
+    "l" 'display-line-numbers-mode
+    "n" 'evil-buffer-new
+    "pa" 'my/copy-abs-path
+    "pr" 'my/copy-relative-path
+    "q" 'helm-swoop
+    "r" 'my/replace-word-at-point
+    "R" 'recompile
+    "s" 'my/toggle-spanish-characters
+    "t" 'persp-switch
+    "w" 'my/toggle-maximize
+    "x" 'my/resize-window
+    "y" 'helm-show-kill-ring))
 
-  (use-package evil-matchit
-    :ensure t
-    :config (global-evil-matchit-mode 1))
+(use-package evil-matchit
+  :ensure t
+  :config (global-evil-matchit-mode 1))
 
 #+END_SRC
 
@@ -543,12 +543,12 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package which-key
-    :ensure t
-    :diminish ""
-    :config
-    (which-key-mode)
-    (which-key-setup-minibuffer))
+(use-package which-key
+  :ensure t
+  :diminish ""
+  :config
+  (which-key-mode)
+  (which-key-setup-minibuffer))
 
 #+END_SRC
 
@@ -556,11 +556,11 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package autopair
-    :ensure t
-    :diminish ""
-    :config
-    (autopair-global-mode))
+(use-package autopair
+  :ensure t
+  :diminish ""
+  :config
+  (autopair-global-mode))
 
 #+END_SRC
 
@@ -568,22 +568,22 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package restclient
-    :ensure t
-    :defer t
-    :mode (("\\.http\\'" . restclient-mode))
-    :bind (:map restclient-mode-map
-                ("C-c C-f" . json-mode-beautify))) ;TODO: change to only apply json formatting when the content-type is application/json
+(use-package restclient
+  :ensure t
+  :defer t
+  :mode (("\\.http\\'" . restclient-mode))
+  :bind (:map restclient-mode-map
+              ("C-c C-f" . json-mode-beautify))) ;TODO: change to only apply json formatting when the content-type is application/json
 
-  (use-package restclient-helm
-    :ensure t
-    :after (restclient))
+(use-package restclient-helm
+  :ensure t
+  :after (restclient))
 
-  (use-package company-restclient
-    :ensure t
-    :after (restclient)
-    :config
-    (add-to-list 'company-backends 'company-restclient))
+(use-package company-restclient
+  :ensure t
+  :after (restclient)
+  :config
+  (add-to-list 'company-backends 'company-restclient))
 
 #+END_SRC
 
@@ -591,10 +591,10 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package rainbow-delimiters
-    :ensure t
-    :hook
-    (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :ensure t
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
 
 #+END_SRC
 
@@ -602,12 +602,12 @@ Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define xml-format
-    :program "xmlformat"
-    :group 'xml)
+(reformatter-define xml-format
+  :program "xmlformat"
+  :group 'xml)
 
-  (eval-after-load "nxml-mode"
-    '(define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
+(eval-after-load "nxml-mode"
+  '(define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
 
 #+END_SRC
 
@@ -617,18 +617,18 @@ Install =pgformatter= using homebrew =brew install pgformatter=
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define sql-format
-    :program "pg_format")
+(reformatter-define sql-format
+  :program "pg_format")
 
-  (defun my/format-sql ()
-    "Format active region otherwise format the entire buffer."
-    (interactive)
-    (if (region-active-p)
-        (sql-format-region (region-beginning) (region-end))
-      (sql-format-buffer)))
+(defun my/format-sql ()
+  "Format active region otherwise format the entire buffer."
+  (interactive)
+  (if (region-active-p)
+      (sql-format-region (region-beginning) (region-end))
+    (sql-format-buffer)))
 
-  (eval-after-load "sql"
-    '(define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
+(eval-after-load "sql"
+  '(define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
 
 #+END_SRC
 
@@ -640,16 +640,16 @@ Used in every major mode
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package company
-    :ensure t
-    :init
-    (setq company-idle-delay 0.1
-          company-tooltip-limit 10
-          company-minimum-prefix-length 3)
-    :hook (after-init . global-company-mode)
-    :config
-    (define-key company-active-map (kbd "C-n") 'company-select-next)
-    (define-key company-active-map (kbd "C-p") 'company-select-previous))
+(use-package company
+  :ensure t
+  :init
+  (setq company-idle-delay 0.1
+        company-tooltip-limit 10
+        company-minimum-prefix-length 3)
+  :hook (after-init . global-company-mode)
+  :config
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous))
 
 #+END_SRC
 
@@ -657,15 +657,15 @@ Used in every major mode
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package flycheck
-    :ensure t
-    :diminish ""
-    :bind (:map flycheck-mode-map
-                ("M-p" . flycheck-previous-error)
-                ("M-n" . flycheck-next-error))
-    :config
-    (global-flycheck-mode)
-    (setq flycheck-highlighting-mode 'lines))
+(use-package flycheck
+  :ensure t
+  :diminish ""
+  :bind (:map flycheck-mode-map
+              ("M-p" . flycheck-previous-error)
+              ("M-n" . flycheck-next-error))
+  :config
+  (global-flycheck-mode)
+  (setq flycheck-highlighting-mode 'lines))
 
 #+END_SRC
 
@@ -675,14 +675,14 @@ This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/direnv-edit ()
-    "Edit .envrc file for the current project."
-    (interactive)
-    (find-file (concat (projectile-project-root) ".envrc")))
+(defun my/direnv-edit ()
+  "Edit .envrc file for the current project."
+  (interactive)
+  (find-file (concat (projectile-project-root) ".envrc")))
 
-  (use-package direnv
-    :ensure t
-    :defer t)
+(use-package direnv
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -690,19 +690,19 @@ This allow to update environment using =.envrc= file.
 
 #+begin_src emacs-lisp
 
-  (use-package persp-mode
-    :ensure t
-    :custom
-    (persp-auto-resume-time 0)
-    (persp-auto-save-opt 0)
-    ;; make possible to add any buffer with a major mode to the current perspective
-    (persp-add-buffer-on-after-change-major-mode t)
-    (persp-auto-save-persps-to-their-file nil)
-    :config
-    (persp-mode)
-    ;; setup vim tab like key-bindings
-    (define-key evil-normal-state-map (kbd "gt") 'persp-next)
-    (define-key evil-normal-state-map (kbd "gT") 'persp-prev))
+(use-package persp-mode
+  :ensure t
+  :custom
+  (persp-auto-resume-time 0)
+  (persp-auto-save-opt 0)
+  ;; make possible to add any buffer with a major mode to the current perspective
+  (persp-add-buffer-on-after-change-major-mode t)
+  (persp-auto-save-persps-to-their-file nil)
+  :config
+  (persp-mode)
+  ;; setup vim tab like key-bindings
+  (define-key evil-normal-state-map (kbd "gt") 'persp-next)
+  (define-key evil-normal-state-map (kbd "gT") 'persp-prev))
 
 #+end_src
 
@@ -710,43 +710,43 @@ This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/projectile-switch-action ()
-    "Create a new perspective with the opened project name."
-    (interactive)
-    (persp-switch (projectile-project-name))
-    (helm-ls-git-ls))
+(defun my/projectile-switch-action ()
+  "Create a new perspective with the opened project name."
+  (interactive)
+  (persp-switch (projectile-project-name))
+  (helm-ls-git-ls))
 
-  (defun my/projectile-kill-buffers ()
-    "Delete the current persp when all project related buffers are killed."
-    (interactive)
-    (let* ((project-name (projectile-project-name)))
-      (projectile-kill-buffers)
-      ;; we delete the persp only when the user accept to kill all the project related buffers,
-      ;; `projectile-kill-buffers' doesn't return a value so to make this validation we compare
-      ;; the current project-name against the value of `project-name' that was computed before
-      (unless (string-equal (projectile-project-name) project-name)
-        (persp-kill project-name))))
+(defun my/projectile-kill-buffers ()
+  "Delete the current persp when all project related buffers are killed."
+  (interactive)
+  (let* ((project-name (projectile-project-name)))
+    (projectile-kill-buffers)
+    ;; we delete the persp only when the user accept to kill all the project related buffers,
+    ;; `projectile-kill-buffers' doesn't return a value so to make this validation we compare
+    ;; the current project-name against the value of `project-name' that was computed before
+    (unless (string-equal (projectile-project-name) project-name)
+      (persp-kill project-name))))
 
-  (defun my/projectile-open-new-project ()
-    "Open a project for the first time and add it to projectile known projects list."
-    (interactive)
-    (let* ((project-path-abs (read-directory-name "Enter project root: "))
-           (project-path (replace-regexp-in-string (expand-file-name "~") "~" project-path-abs)))
-      (add-to-list 'projectile-known-projects project-path)
-      (projectile-switch-project-by-name project-path)))
+(defun my/projectile-open-new-project ()
+  "Open a project for the first time and add it to projectile known projects list."
+  (interactive)
+  (let* ((project-path-abs (read-directory-name "Enter project root: "))
+         (project-path (replace-regexp-in-string (expand-file-name "~") "~" project-path-abs)))
+    (add-to-list 'projectile-known-projects project-path)
+    (projectile-switch-project-by-name project-path)))
 
-  (use-package projectile
-    :ensure t
-    :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
-    :custom
-    (projectile-keymap-prefix (kbd "C-c p"))
-    (projectile-switch-project-action 'my/projectile-switch-action)
-    (projectile-completion-system 'helm)
-    :bind (:map projectile-mode-map
-                ("C-c p n" . 'my/projectile-open-new-project)
-                ("C-c p k" . 'my/projectile-kill-buffers))
-    :hook
-    (after-init . projectile-mode))
+(use-package projectile
+  :ensure t
+  :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
+  :custom
+  (projectile-keymap-prefix (kbd "C-c p"))
+  (projectile-switch-project-action 'my/projectile-switch-action)
+  (projectile-completion-system 'helm)
+  :bind (:map projectile-mode-map
+              ("C-c p n" . 'my/projectile-open-new-project)
+              ("C-c p k" . 'my/projectile-kill-buffers))
+  :hook
+  (after-init . projectile-mode))
 
 #+END_SRC
 
@@ -754,51 +754,51 @@ This allow to update environment using =.envrc= file.
 
 #+begin_src emacs-lisp
 
-  (use-package helm
-    :ensure t
-    :diminish ""
-    :custom
-    (helm-M-x-use-completion-styles nil)
-    (helm-split-window-inside-p t)
-    :bind (:map helm-map
-                ("<tab>" . 'helm-execute-persistent-action))
-    :config
-    (require 'helm-config)
-    (helm-mode 1))
+(use-package helm
+  :ensure t
+  :diminish ""
+  :custom
+  (helm-M-x-use-completion-styles nil)
+  (helm-split-window-inside-p t)
+  :bind (:map helm-map
+              ("<tab>" . 'helm-execute-persistent-action))
+  :config
+  (require 'helm-config)
+  (helm-mode 1))
 
-  (with-eval-after-load 'helm
-    (add-to-list 'display-buffer-alist
-                 '("\\`\\*helm.*\\*\\'"
-                   (display-buffer-in-side-window)
-                   (inhibit-same-window . t)
-                   (window-height . 0.4))))
+(with-eval-after-load 'helm
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*helm.*\\*\\'"
+                 (display-buffer-in-side-window)
+                 (inhibit-same-window . t)
+                 (window-height . 0.4))))
 #+end_src
 
 Helm util packages
 
 #+begin_src emacs-lisp
 
-  (defun my/helm-ag-with-default-term ()
-    (interactive)
-    (let ((helm-ag-insert-at-point 'word))
-      (helm-ag-project-root)))
+(defun my/helm-ag-with-default-term ()
+  (interactive)
+  (let ((helm-ag-insert-at-point 'word))
+    (helm-ag-project-root)))
 
-  (defun my/helm-ag-without-default-term ()
-    (interactive)
-    (let ((helm-ag-insert-at-point nil))
-      (helm-ag-project-root)))
+(defun my/helm-ag-without-default-term ()
+  (interactive)
+  (let ((helm-ag-insert-at-point nil))
+    (helm-ag-project-root)))
 
-  (use-package helm-ag
-    :ensure t
-    :defer t)
+(use-package helm-ag
+  :ensure t
+  :defer t)
 
-  (use-package helm-ls-git
-    :ensure t
-    :defer t)
+(use-package helm-ls-git
+  :ensure t
+  :defer t)
 
-  (use-package helm-swoop
-    :ensure t
-    :defer t)
+(use-package helm-swoop
+  :ensure t
+  :defer t)
 
 #+end_src
 
@@ -806,34 +806,34 @@ Helm util packages
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/neotree-toggle ()
-    "Custom function with some tweaks to be aplied when neotree opens."
-    (interactive)
-    (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
-        (my/neotree-open-projectile)
-      (neotree-toggle)))
+(defun my/neotree-toggle ()
+  "Custom function with some tweaks to be aplied when neotree opens."
+  (interactive)
+  (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
+      (my/neotree-open-projectile)
+    (neotree-toggle)))
 
-  (use-package neotree
-    :ensure t
-    :straight (neotree
-               :type git
-               :host github
-               :repo "jaypei/emacs-neotree"
-               :branch "dev")
-    :custom
-    (neo-window-fixed-size nil)
-    (neo-fit-to-contents t)
-    (neo-theme 'icons)
-    (neo-autorefresh nil)
-    (neo-vc-integration '(face))
-    :bind (([f3] . 'my/neotree-toggle)
-           :map neotree-mode-map
-           ("C-w l" . 'evil-window-right)
-           ("C-c C-h" . 'neotree-hidden-file-toggle)
-           ("C-c C-r" . 'neotree-rename-node)))
+(use-package neotree
+  :ensure t
+  :straight (neotree
+             :type git
+             :host github
+             :repo "jaypei/emacs-neotree"
+             :branch "dev")
+  :custom
+  (neo-window-fixed-size nil)
+  (neo-fit-to-contents t)
+  (neo-theme 'icons)
+  (neo-autorefresh nil)
+  (neo-vc-integration '(face))
+  :bind (([f3] . 'my/neotree-toggle)
+         :map neotree-mode-map
+         ("C-w l" . 'evil-window-right)
+         ("C-c C-h" . 'neotree-hidden-file-toggle)
+         ("C-c C-r" . 'neotree-rename-node)))
 
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'neotree-mode 'emacs))
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'neotree-mode 'emacs))
 
 #+END_SRC
 
@@ -843,50 +843,50 @@ This package requires to have svg support in emacs, this feature relies on =libr
 
 #+begin_src emacs-lisp
 
-  (defun my/meme-from-clipboard ()
-    "Create a meme using an image from clipboard"
-    (interactive)
-    (unless (executable-find "pngpaste")
-      (user-error "please install pngpaste"))
+(defun my/meme-from-clipboard ()
+  "Create a meme using an image from clipboard"
+  (interactive)
+  (unless (executable-find "pngpaste")
+    (user-error "please install pngpaste"))
 
-    (let* ((filepath (make-temp-file "clipboard" nil ".png"))
-           (command (format "pngpaste %s" filepath))
-           (command-stdout (shell-command-to-string command)))
-      ;; pngpaste returns "" when found a valid image in the clipboard
-      (unless (string-equal command-stdout "")
-          (user-error (string-trim command-stdout)))
+  (let* ((filepath (make-temp-file "clipboard" nil ".png"))
+         (command (format "pngpaste %s" filepath))
+         (command-stdout (shell-command-to-string command)))
+    ;; pngpaste returns "" when found a valid image in the clipboard
+    (unless (string-equal command-stdout "")
+      (user-error (string-trim command-stdout)))
 
-      (switch-to-buffer (get-buffer-create "*meme*"))
-      (meme-mode)
-      (meme--setup-image filepath)))
+    (switch-to-buffer (get-buffer-create "*meme*"))
+    (meme-mode)
+    (meme--setup-image filepath)))
 
 #+end_src
 
 #+begin_src emacs-lisp
 
-  (use-package imgur
-    :ensure t
-    :defer t
-    :straight (imgur
-               :type git
-               :host github
-               :repo "myuhe/imgur.el"))
+(use-package imgur
+  :ensure t
+  :defer t
+  :straight (imgur
+             :type git
+             :host github
+             :repo "myuhe/imgur.el"))
 
-  (use-package meme
-    :ensure t
-    :defer t
-    :commands (meme-mode meme)
-    :straight (meme
-               :type git
-               :host github
-               :repo "larsmagne/meme")
-    :config
-    ;; fix to be able to read images, straight.el put files in a different directory so we have to
-    ;; move them to the right one
-    (let ((images-dest-dir (concat user-emacs-directory "straight/build/meme/images"))
-          (images-source-dir (concat user-emacs-directory "straight/repos/meme/images")))
-      (unless (file-directory-p images-dest-dir)
-        (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
+(use-package meme
+  :ensure t
+  :defer t
+  :commands (meme-mode meme)
+  :straight (meme
+             :type git
+             :host github
+             :repo "larsmagne/meme")
+  :config
+  ;; fix to be able to read images, straight.el put files in a different directory so we have to
+  ;; move them to the right one
+  (let ((images-dest-dir (concat user-emacs-directory "straight/build/meme/images"))
+        (images-source-dir (concat user-emacs-directory "straight/repos/meme/images")))
+    (unless (file-directory-p images-dest-dir)
+      (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
 
 #+end_src
 
@@ -902,18 +902,18 @@ Configured variables:
 
 #+begin_src emacs-lisp
 
-  (defun my/org-insert-image-from-clipboard ()
-    "Insert image from clipboard using an org tag"
-    (interactive)
-    (let* ((image-name (read-string "Filename: " "image.png"))
-           (images-folder "./images")
-           (image-path (format "%s/%s" images-folder image-name)))
-      (unless (file-directory-p images-folder)
-        (shell-command (format "mkdir -p %s" images-folder)))
-      (shell-command (format "pngpaste %s" image-path))
-      (insert (format "[[file:%s]]" image-path))))
+(defun my/org-insert-image-from-clipboard ()
+  "Insert image from clipboard using an org tag"
+  (interactive)
+  (let* ((image-name (read-string "Filename: " "image.png"))
+         (images-folder "./images")
+         (image-path (format "%s/%s" images-folder image-name)))
+    (unless (file-directory-p images-folder)
+      (shell-command (format "mkdir -p %s" images-folder)))
+    (shell-command (format "pngpaste %s" image-path))
+    (insert (format "[[file:%s]]" image-path))))
 
-  (evil-leader/set-key-for-mode 'org-mode "mii" 'my/org-insert-image-from-clipboard)
+(evil-leader/set-key-for-mode 'org-mode "mii" 'my/org-insert-image-from-clipboard)
 
 #+end_src
 
@@ -921,63 +921,63 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
 
 #+begin_src emacs-lisp
 
-  (defun my/org-insert-quote-from-apple-books ()
-    "Take quote from clipboard and remove all the unnecesary text and insert
+(defun my/org-insert-quote-from-apple-books ()
+  "Take quote from clipboard and remove all the unnecesary text and insert
     an org quote in the current position"
-    (interactive)
-    (let* ((raw-value (current-kill 0 t))
-           (tmp (second (split-string raw-value "“")))
-           (quote-value (car (split-string tmp "”"))))
-      (insert "#+begin_quote\n")
-      (insert (concat quote-value "\n"))
-      (insert "#+end_quote\n")))
+  (interactive)
+  (let* ((raw-value (current-kill 0 t))
+         (tmp (second (split-string raw-value "“")))
+         (quote-value (car (split-string tmp "”"))))
+    (insert "#+begin_quote\n")
+    (insert (concat quote-value "\n"))
+    (insert "#+end_quote\n")))
 
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
 
-  (defvar my/org-src-block-tmp-window-configuration nil)
+(defvar my/org-src-block-tmp-window-configuration nil)
 
-  (defun my/org-edit-special (&optional arg)
-    "Save current window configuration before a org-edit buffer is open."
-    (setq my/org-src-block-tmp-window-configuration (current-window-configuration)))
+(defun my/org-edit-special (&optional arg)
+  "Save current window configuration before a org-edit buffer is open."
+  (setq my/org-src-block-tmp-window-configuration (current-window-configuration)))
 
-  (defun my/org-edit-src-exit ()
-    "Restore the window configuration that was saved before org-edit-special was called."
-    (set-window-configuration my/org-src-block-tmp-window-configuration))
+(defun my/org-edit-src-exit ()
+  "Restore the window configuration that was saved before org-edit-special was called."
+  (set-window-configuration my/org-src-block-tmp-window-configuration))
 
-  (eval-after-load "org"
-    `(progn
-       (setq org-latex-caption-above nil
-             org-clock-persist 'history
-             org-src-fontify-natively t
-             org-src-preserve-indentation t
-             org-log-done t)
-       (org-clock-persistence-insinuate)
+(eval-after-load "org"
+  `(progn
+     (setq org-latex-caption-above nil
+           org-clock-persist 'history
+           org-src-fontify-natively t
+           org-src-preserve-indentation t
+           org-log-done t)
+     (org-clock-persistence-insinuate)
 
-       ;; this is needed to use shortcuts like <s to create source blocks
-       (unless (version< emacs-version "27")
-         (require 'org-tempo))
+     ;; this is needed to use shortcuts like <s to create source blocks
+     (unless (version< emacs-version "27")
+       (require 'org-tempo))
 
-       (add-hook 'org-mode-hook (lambda ()
-                                  (org-indent-mode t)
-                                  (autopair-mode -1)
-                                  (diminish 'org-indent-mode)))
+     (add-hook 'org-mode-hook (lambda ()
+                                (org-indent-mode t)
+                                (autopair-mode -1)
+                                (diminish 'org-indent-mode)))
 
-       (advice-add 'org-edit-special :before 'my/org-edit-special)
-       (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
+     (advice-add 'org-edit-special :before 'my/org-edit-special)
+     (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
 
-       (org-babel-do-load-languages 'org-babel-load-languages
-                                    '((python . t)
-                                      (shell . t)
-                                      (lisp . t)
-                                      (sql . t)
-                                      (dot . t)
-                                      (emacs-lisp . t)))))
+     (org-babel-do-load-languages 'org-babel-load-languages
+                                  '((python . t)
+                                    (shell . t)
+                                    (lisp . t)
+                                    (sql . t)
+                                    (dot . t)
+                                    (emacs-lisp . t)))))
 
-  (use-package htmlize
-    :ensure t
-    :after (org))
+(use-package htmlize
+  :ensure t
+  :after (org))
 
 #+END_SRC
 
@@ -985,11 +985,11 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package org-ref
-    :ensure t
-    :defer t
-    :init
-    (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+(use-package org-ref
+  :ensure t
+  :defer t
+  :init
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
 
 #+END_SRC
 
@@ -1001,8 +1001,8 @@ A tool to show org file as an slideshow
 
 #+begin_src emacs-lisp
 
-  (use-package hide-mode-line
-    :ensure t)
+(use-package hide-mode-line
+  :ensure t)
 
 #+end_src
 
@@ -1010,26 +1010,26 @@ Some tweaks to have a better looking while presenting slides
 
 #+begin_src emacs-lisp
 
-  (defun my/org-tree-slide-setup ()
-    (org-display-inline-images)
-    (hide-mode-line-mode 1))
+(defun my/org-tree-slide-setup ()
+  (org-display-inline-images)
+  (hide-mode-line-mode 1))
 
-  (defun my/org-tree-slide-end ()
-    (org-display-inline-images)
-    (hide-mode-line-mode 0))
+(defun my/org-tree-slide-end ()
+  (org-display-inline-images)
+  (hide-mode-line-mode 0))
 
-  (use-package org-tree-slide
-    :ensure t
-    :defer t
-    :custom
-    (org-image-actual-width nil)
-    (org-tree-slide-activate-message "Presentation started!")
-    (org-tree-slide-deactivate-message "Presentation finished!")
-    :hook ((org-tree-slide-play . my/org-tree-slide-setup)
-           (org-tree-slide-stop . my/org-tree-slide-end))
-    :bind (:map org-tree-slide-mode-map
-                ("C-<" . org-tree-slide-move-previous-tree)
-                ("C->" . org-tree-slide-move-next-tree)))
+(use-package org-tree-slide
+  :ensure t
+  :defer t
+  :custom
+  (org-image-actual-width nil)
+  (org-tree-slide-activate-message "Presentation started!")
+  (org-tree-slide-deactivate-message "Presentation finished!")
+  :hook ((org-tree-slide-play . my/org-tree-slide-setup)
+         (org-tree-slide-stop . my/org-tree-slide-end))
+  :bind (:map org-tree-slide-mode-map
+              ("C-<" . org-tree-slide-move-previous-tree)
+              ("C->" . org-tree-slide-move-next-tree)))
 
 #+end_src
 
@@ -1037,13 +1037,13 @@ Some tweaks to have a better looking while presenting slides
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package auctex
-    :ensure t
-    :defer t)
+(use-package auctex
+  :ensure t
+  :defer t)
 
-  (use-package latex-preview-pane
-    :ensure t
-    :defer t)
+(use-package latex-preview-pane
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -1055,9 +1055,9 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package git-link
-    :ensure t
-    :defer t)
+(use-package git-link
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -1065,9 +1065,9 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package gitignore-mode
-    :defer t
-    :ensure t)
+(use-package gitignore-mode
+  :defer t
+  :ensure t)
 
 #+END_SRC
 
@@ -1075,35 +1075,35 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (defconst my/magit-register ?m)
+(defconst my/magit-register ?m)
 
-  (defun my/magit-status()
-    (interactive)
-    (set-register my/magit-register (current-window-configuration))
-    (magit-status)
-    (delete-other-windows))
+(defun my/magit-status()
+  (interactive)
+  (set-register my/magit-register (current-window-configuration))
+  (magit-status)
+  (delete-other-windows))
 
-  (defun my/magit-status-exit (&optional kill-buffer)
-    "Restore windows configuration after magit status buffer is closed."
-    (interactive)
-    (let ((magit-buffer-name (format "magit: %s" (projectile-project-name)))
-          (register-value (get-register my/magit-register)))
-      (if (and register-value (string-equal magit-buffer-name (buffer-name)))
-          (set-window-configuration register-value))))
+(defun my/magit-status-exit (&optional kill-buffer)
+  "Restore windows configuration after magit status buffer is closed."
+  (interactive)
+  (let ((magit-buffer-name (format "magit: %s" (projectile-project-name)))
+        (register-value (get-register my/magit-register)))
+    (if (and register-value (string-equal magit-buffer-name (buffer-name)))
+        (set-window-configuration register-value))))
 
-  (defun my/magit-blame-quit ()
-    "Restore evil state after magit blame mode is closed."
-    (evil-exit-emacs-state))
+(defun my/magit-blame-quit ()
+  "Restore evil state after magit blame mode is closed."
+  (evil-exit-emacs-state))
 
-  (use-package magit
-    :ensure t
-    :defer t
-    :config
-    (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
-    (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
-    (add-hook 'magit-blame-mode-hook
-              (lambda ()
-                (evil-emacs-state))))
+(use-package magit
+  :ensure t
+  :defer t
+  :config
+  (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
+  (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
+  (add-hook 'magit-blame-mode-hook
+            (lambda ()
+              (evil-emacs-state))))
 
 #+END_SRC
 
@@ -1111,12 +1111,12 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package forge
-    :ensure t
-    :after magit
-    :config
-    (add-hook 'forge-topic-mode-hook (lambda ()
-                                       (evil-emacs-state))))
+(use-package forge
+  :ensure t
+  :after magit
+  :config
+  (add-hook 'forge-topic-mode-hook (lambda ()
+                                     (evil-emacs-state))))
 
 #+END_SRC
 
@@ -1124,15 +1124,15 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package diff-hl
-    :ensure t
-    ;; for some reason the :hook form doesn't work so we have to use :init
-    :init
-    (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-    :config
-    (global-diff-hl-mode))
+(use-package diff-hl
+  :ensure t
+  ;; for some reason the :hook form doesn't work so we have to use :init
+  :init
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  :config
+  (global-diff-hl-mode))
 
 #+END_SRC
 
@@ -1140,11 +1140,11 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package git-timemachine
-    :ensure t
-    :config
-    (add-hook 'git-timemachine-mode-hook (lambda ()
-                                           (evil-emacs-state))))
+(use-package git-timemachine
+  :ensure t
+  :config
+  (add-hook 'git-timemachine-mode-hook (lambda ()
+                                         (evil-emacs-state))))
 
 #+END_SRC
 
@@ -1152,9 +1152,9 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package gist
-    :ensure t
-    :defer t)
+(use-package gist
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -1162,9 +1162,9 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package linkode
-    :ensure t
-    :defer t)
+(use-package linkode
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -1174,22 +1174,22 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/web-mode-hook ()
-    (emmet-mode)
-    (rainbow-delimiters-mode-disable)
-    (autopair-mode -1))
+(defun my/web-mode-hook ()
+  (emmet-mode)
+  (rainbow-delimiters-mode-disable)
+  (autopair-mode -1))
 
-  (use-package web-mode
-    :ensure t
-    :custom
-    (web-mode-enable-current-element-highlight t)
-    (web-mode-enable-current-column-highlight t)
-    :mode (("\\.html\\'" . web-mode)
-           ("\\.html.eex\\'" . web-mode)
-           ("\\.html.leex\\'" . web-mode)
-           ("\\.hbs\\'" . web-mode))
-    :config
-    (add-hook 'web-mode-hook 'my/web-mode-hook))
+(use-package web-mode
+  :ensure t
+  :custom
+  (web-mode-enable-current-element-highlight t)
+  (web-mode-enable-current-column-highlight t)
+  :mode (("\\.html\\'" . web-mode)
+         ("\\.html.eex\\'" . web-mode)
+         ("\\.html.leex\\'" . web-mode)
+         ("\\.hbs\\'" . web-mode))
+  :config
+  (add-hook 'web-mode-hook 'my/web-mode-hook))
 
 #+END_SRC
 
@@ -1197,9 +1197,9 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package emmet-mode
-    :ensure t
-    :diminish)
+(use-package emmet-mode
+  :ensure t
+  :diminish)
 
 #+END_SRC
 
@@ -1207,9 +1207,9 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package sass-mode
-    :ensure t
-    :defer t)
+(use-package sass-mode
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -1217,13 +1217,13 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package rainbow-mode
-    :ensure t
-    :diminish ""
-    :hook
-    ((css-mode . rainbow-mode)
-     (sass-mode . rainbow-mode)
-     (scss-mode . rainbow-mode)))
+(use-package rainbow-mode
+  :ensure t
+  :diminish ""
+  :hook
+  ((css-mode . rainbow-mode)
+   (sass-mode . rainbow-mode)
+   (scss-mode . rainbow-mode)))
 
 #+END_SRC
 
@@ -1231,63 +1231,63 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package writeroom-mode
-    :ensure t)
+(use-package writeroom-mode
+  :ensure t)
 
-  (use-package csv-mode
-    :ensure t
-    :defer t)
+(use-package csv-mode
+  :ensure t
+  :defer t)
 
-  (use-package json-mode
-    :ensure t
-    :defer t)
+(use-package json-mode
+  :ensure t
+  :defer t)
 
-  (use-package request
-    :ensure t
-    :defer t)
+(use-package request
+  :ensure t
+  :defer t)
 
-  (use-package graphql-mode
-    :ensure t
-    :defer t)
+(use-package graphql-mode
+  :ensure t
+  :defer t)
 
-  (defun my/k8s-apply ()
-    "Apply current yaml file to the current kubernetes context."
-    (interactive)
-    (let ((default-directory (file-name-directory buffer-file-name)))
-      (compile (format "kubectl apply -f %s" buffer-file-name))))
+(defun my/k8s-apply ()
+  "Apply current yaml file to the current kubernetes context."
+  (interactive)
+  (let ((default-directory (file-name-directory buffer-file-name)))
+    (compile (format "kubectl apply -f %s" buffer-file-name))))
 
-  (use-package yaml-mode
-    :ensure t
-    :bind (:map yaml-mode-map
-                ("C-c C-c" . 'my/k8s-apply)))
+(use-package yaml-mode
+  :ensure t
+  :bind (:map yaml-mode-map
+              ("C-c C-c" . 'my/k8s-apply)))
 
-  ;; Used for gherkin files (.feature)
-  (use-package feature-mode
-    :ensure t
-    :defer t)
+;; Used for gherkin files (.feature)
+(use-package feature-mode
+  :ensure t
+  :defer t)
 
-  (use-package toml-mode
-    :ensure t
-    :defer t)
+(use-package toml-mode
+  :ensure t
+  :defer t)
 
-  (use-package nix-mode
-    :ensure t
-    :defer t
-    :mode "\\.nix\\'")
+(use-package nix-mode
+  :ensure t
+  :defer t
+  :mode "\\.nix\\'")
 
-  (use-package markdown-mode
-    :ensure t
-    :defer t)
+(use-package markdown-mode
+  :ensure t
+  :defer t)
 
-  (use-package dockerfile-mode
-    :ensure t
-    :defer t)
+(use-package dockerfile-mode
+  :ensure t
+  :defer t)
 
-  (use-package dumb-jump
-    :ensure t
-    :defer t
-    :custom
-    (dumb-jump-selector 'helm))
+(use-package dumb-jump
+  :ensure t
+  :defer t
+  :custom
+  (dumb-jump-selector 'helm))
 
 #+END_SRC
 
@@ -1297,33 +1297,33 @@ Copied from somewhere
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun minibuffer-keyboard-quit ()
-    "Abort recursive edit.
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit.
   In Delete Selection mode, if the mark is active, just deactivate it;
   then it takes a second \\[keyboard-quit] to abort the minibuffer."
-    (interactive)
-    (if (and delete-selection-mode transient-mark-mode mark-active)
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
       (setq deactivate-mark  t)
-      (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
-      (abort-recursive-edit)))
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
 
-  (eval-after-load "evil"
-    '(progn
-       (define-key evil-normal-state-map [escape] 'keyboard-quit)
-       (define-key evil-visual-state-map [escape] 'keyboard-quit)))
+(eval-after-load "evil"
+  '(progn
+     (define-key evil-normal-state-map [escape] 'keyboard-quit)
+     (define-key evil-visual-state-map [escape] 'keyboard-quit)))
 
-  (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-  (global-set-key [escape] 'evil-exit-emacs-state)
+(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+(global-set-key [escape] 'evil-exit-emacs-state)
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (diminish 'auto-revert-mode)
+(diminish 'auto-revert-mode)
 
 #+END_SRC
 
@@ -1331,8 +1331,8 @@ Emacs Start Up Profiler
 
 #+begin_src emacs-lisp
 
-  (use-package esup
-    :ensure t)
+(use-package esup
+  :ensure t)
 
 #+end_src
 
@@ -1340,13 +1340,13 @@ Emacs Start Up Profiler
 
 #+begin_src emacs-lisp
 
-  (use-package lsp-mode
-    :ensure t
-    :defer t
-    :init
-    (setq lsp-prefer-capf t)
-    ;; 10Mb LSP consume large payloads so a higher value is required
-    (setq read-process-output-max (* 10 1024 1024)))
+(use-package lsp-mode
+  :ensure t
+  :defer t
+  :init
+  (setq lsp-prefer-capf t)
+  ;; 10Mb LSP consume large payloads so a higher value is required
+  (setq read-process-output-max (* 10 1024 1024)))
 
 #+end_src
 
@@ -1358,11 +1358,11 @@ Emacs Start Up Profiler
 
 #+begin_src emacs-lisp
 
-  (reformatter-define c-format
-    :program "clang-format")
+(reformatter-define c-format
+  :program "clang-format")
 
-  (with-eval-after-load 'cc-mode
-    (define-key c-mode-map (kbd "C-c C-f") 'c-format-buffer))
+(with-eval-after-load 'cc-mode
+  (define-key c-mode-map (kbd "C-c C-f") 'c-format-buffer))
 
 #+end_src
 
@@ -1371,51 +1371,51 @@ Emacs Start Up Profiler
   For each virtual environment install the following packages:
 
 #+BEGIN_SRC sh
-  pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
+pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define python-black-format
-    :program "black"
-    :args '("-")
-    :group 'python)
+(reformatter-define python-black-format
+  :program "black"
+  :args '("-")
+  :group 'python)
 
-  (defun my/python-format-code ()
+(defun my/python-format-code ()
+  (interactive)
+  (if (executable-find "black")
+      (python-black-format-buffer)
+    (elpy-format-code)))
+
+(use-package elpy
+  :ensure t
+  :hook (python-mode . elpy-enable)
+  :custom
+  (elpy-shell-echo-input . nil)
+  :config
+  (when (require 'flycheck nil t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode))
+  (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
+  (define-key elpy-mode-map (kbd "C-c C-f") 'my/python-format-code)
+  (setq elpy-rpc-python-command "python")
+  (add-hook 'elpy-mode-hook
+            (lambda ()
+              (highlight-indentation-mode -1)))) ; Remove vertical line
+
+(setq python-shell-completion-native-enable nil)
+
+(use-package py-isort
+  :ensure t
+  :after (elpy)
+  :init
+  (defun my/sort-imports ()
     (interactive)
-    (if (executable-find "black")
-        (python-black-format-buffer)
-      (elpy-format-code)))
-
-  (use-package elpy
-    :ensure t
-    :hook (python-mode . elpy-enable)
-    :custom
-    (elpy-shell-echo-input . nil)
-    :config
-    (when (require 'flycheck nil t)
-      (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-      (add-hook 'elpy-mode-hook 'flycheck-mode))
-    (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
-    (define-key elpy-mode-map (kbd "C-c C-f") 'my/python-format-code)
-    (setq elpy-rpc-python-command "python")
-    (add-hook 'elpy-mode-hook
-              (lambda ()
-                (highlight-indentation-mode -1)))) ; Remove vertical line
-
-  (setq python-shell-completion-native-enable nil)
-
-  (use-package py-isort
-    :ensure t
-    :after (elpy)
-    :init
-    (defun my/sort-imports ()
-      (interactive)
-      (if (region-active-p)
-          (py-isort-region)
-        (message "Select a region before to call isort")))
-    :bind (:map elpy-mode-map
-                ("C-c C-i" . my/sort-imports)))
+    (if (region-active-p)
+        (py-isort-region)
+      (message "Select a region before to call isort")))
+  :bind (:map elpy-mode-map
+              ("C-c C-i" . my/sort-imports)))
 
 #+END_SRC
 
@@ -1423,18 +1423,18 @@ Show a list of the available django commands and run the selected one using a co
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/run-django-command ()
-    "Run a django command."
-    (interactive)
-    (let* ((python-bin (concat (getenv "VIRTUAL_ENV") "/bin/python"))
-           (manage-py-file (concat (projectile-project-root) "manage.py"))
-           (default-directory (projectile-project-root))
-           (raw-help (shell-command-to-string (concat python-bin " " manage-py-file " help")))
-           (splited-lines (split-string raw-help "\n"))
-           (options (seq-filter '(lambda (line) (cl-search "    " line)) splited-lines))
-           (selection (completing-read "Pick django command: " (mapcar 'string-trim options)))
-           (command (concat python-bin " " manage-py-file " " selection)))
-      (compile command)))
+(defun my/run-django-command ()
+  "Run a django command."
+  (interactive)
+  (let* ((python-bin (concat (getenv "VIRTUAL_ENV") "/bin/python"))
+         (manage-py-file (concat (projectile-project-root) "manage.py"))
+         (default-directory (projectile-project-root))
+         (raw-help (shell-command-to-string (concat python-bin " " manage-py-file " help")))
+         (splited-lines (split-string raw-help "\n"))
+         (options (seq-filter '(lambda (line) (cl-search "    " line)) splited-lines))
+         (selection (completing-read "Pick django command: " (mapcar 'string-trim options)))
+         (command (concat python-bin " " manage-py-file " " selection)))
+    (compile command)))
 
 #+END_SRC
 
@@ -1444,19 +1444,19 @@ Clone erlang source code into =~/Code/erlang/src/=
 
 #+BEGIN_SRC sh
 
-  git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
+git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package erlang
-    :ensure t
-    :defer t
-    :if (executable-find "erl")
-    :config
-    (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
-    (require 'erlang-start))
+(use-package erlang
+  :ensure t
+  :defer t
+  :if (executable-find "erl")
+  :config
+  (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
+  (require 'erlang-start))
 
 #+END_SRC
 
@@ -1464,18 +1464,18 @@ Clone erlang source code into =~/Code/erlang/src/=
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define elixir-format
-    :program "mix"
-    :args '("format" "-")
-    :group 'elixir)
+(reformatter-define elixir-format
+  :program "mix"
+  :args '("format" "-")
+  :group 'elixir)
 
-  (use-package elixir-mode
-    :ensure t
-    :bind (:map elixir-mode-map
-                ("C-c C-t" . 'my/mix-run-test-at-point)
-                ("C-c C-f" . elixir-format-buffer))
-    :config
-    (evil-leader/set-key-for-mode 'elixir-mode "d" 'dumb-jump-go))
+(use-package elixir-mode
+  :ensure t
+  :bind (:map elixir-mode-map
+              ("C-c C-t" . 'my/mix-run-test-at-point)
+              ("C-c C-f" . elixir-format-buffer))
+  :config
+  (evil-leader/set-key-for-mode 'elixir-mode "d" 'dumb-jump-go))
 
 #+END_SRC
 
@@ -1485,44 +1485,44 @@ Custom functions to run elixir tests.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/mix-run-test (&optional scope)
-    "Run elixir test for the given SCOPE."
-    (interactive)
-    (let* ((current-file (buffer-file-name))
-           (current-line (line-number-at-pos))
+(defun my/mix-run-test (&optional scope)
+  "Run elixir test for the given SCOPE."
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+         (current-line (line-number-at-pos))
 
-           (possible-mix-paths `(,(concat (projectile-project-root) "mix.exs")
-                                 ,(concat (projectile-project-root) "src/mix.exs")))
-           (mix-file (car (seq-filter 'file-exists-p possible-mix-paths)))
-           (default-directory (file-name-directory mix-file))
-           (extra-env (if (boundp 'elixir-extra-test-env) elixir-extra-test-env ""))
-           (mix-env (concat "MIX_ENV=test " extra-env)))
+         (possible-mix-paths `(,(concat (projectile-project-root) "mix.exs")
+                               ,(concat (projectile-project-root) "src/mix.exs")))
+         (mix-file (car (seq-filter 'file-exists-p possible-mix-paths)))
+         (default-directory (file-name-directory mix-file))
+         (extra-env (if (boundp 'elixir-extra-test-env) elixir-extra-test-env ""))
+         (mix-env (concat "MIX_ENV=test " extra-env)))
 
-      (cond
-       ((string-equal scope "file")
-        (compile (format "%s mix test %s" mix-env current-file)))
+    (cond
+     ((string-equal scope "file")
+      (compile (format "%s mix test %s" mix-env current-file)))
 
-       ((string-equal scope "at-point")
-        (compile (format "%s mix test %s:%s" mix-env current-file current-line)))
+     ((string-equal scope "at-point")
+      (compile (format "%s mix test %s:%s" mix-env current-file current-line)))
 
-       (t
-        (compile (format "%s mix test" mix-env))))))
+     (t
+      (compile (format "%s mix test" mix-env))))))
 
 
-  (defun my/mix-run-test-file ()
-    "Run mix test over the current file."
-    (interactive)
-    (my/mix-run-test "file"))
+(defun my/mix-run-test-file ()
+  "Run mix test over the current file."
+  (interactive)
+  (my/mix-run-test "file"))
 
-  (defun my/mix-run-test-at-point ()
-    "Run mix test at point."
-    (interactive)
-    (my/mix-run-test "at-point"))
+(defun my/mix-run-test-at-point ()
+  "Run mix test at point."
+  (interactive)
+  (my/mix-run-test "at-point"))
 
-  (defun my/mix-run-test-all ()
-    "Run mix test at point."
-    (interactive)
-    (my/mix-run-test))
+(defun my/mix-run-test-all ()
+  "Run mix test at point."
+  (interactive)
+  (my/mix-run-test))
 
 #+END_SRC
 
@@ -1530,18 +1530,18 @@ Custom functions to run elixir tests.
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package lfe-mode
-    :ensure t
-    :if (executable-find "lfe")
-    :bind (:map lfe-mode-map
-                ("C-c C-c" . lfe-eval-buffer))
-    :init
-    (defun lfe-eval-buffer ()
-      "Send current buffer to inferior LFE process."
-      (interactive)
-      (if (eq (get-buffer-window "*inferior-lfe*") nil)
-          (run-lfe nil))
-      (lfe-eval-region (point-min) (point-max) nil)))
+(use-package lfe-mode
+  :ensure t
+  :if (executable-find "lfe")
+  :bind (:map lfe-mode-map
+              ("C-c C-c" . lfe-eval-buffer))
+  :init
+  (defun lfe-eval-buffer ()
+    "Send current buffer to inferior LFE process."
+    (interactive)
+    (if (eq (get-buffer-window "*inferior-lfe*") nil)
+        (run-lfe nil))
+    (lfe-eval-region (point-min) (point-max) nil)))
 
 #+END_SRC
 
@@ -1551,20 +1551,20 @@ Install Elm
 
 #+BEGIN_SRC sh
 
-  npm -g install elm elm-format elm-oracle
+npm -g install elm elm-format elm-oracle
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package elm-mode
-    :ensure t
-    :if (executable-find "elm")
-    :bind (:map elm-mode-map
-                ("C-c C-d" . elm-oracle-doc-at-point))
-    :config
-    (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
-    (add-to-list 'company-backends 'company-elm))
+(use-package elm-mode
+  :ensure t
+  :if (executable-find "elm")
+  :bind (:map elm-mode-map
+              ("C-c C-d" . elm-oracle-doc-at-point))
+  :config
+  (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+  (add-to-list 'company-backends 'company-elm))
 
 #+END_SRC
 
@@ -1574,34 +1574,34 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
 
 #+BEGIN_SRC shell
 
-  stack install hlint
-  stack install hindent
+stack install hlint
+stack install hindent
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define haskell-format
-    :program "hindent"
-    :group 'haskell)
+(reformatter-define haskell-format
+  :program "hindent"
+  :group 'haskell)
 
-  (use-package haskell-mode
-    :ensure t
-    :bind (:map haskell-mode-map
-                ("C-c C-f" . haskell-format-buffer)))
+(use-package haskell-mode
+  :ensure t
+  :bind (:map haskell-mode-map
+              ("C-c C-f" . haskell-format-buffer)))
 
-  (defun my/run-hlint ()
-    "Run  hlint over the current project."
-    (interactive)
-    (let ((default-directory (projectile-project-root)))
-      (compile "hlint .")))
+(defun my/run-hlint ()
+  "Run  hlint over the current project."
+  (interactive)
+  (let ((default-directory (projectile-project-root)))
+    (compile "hlint .")))
 
-  (defun my/run-hlint-buffer ()
-    "Run  hlint over the current buffer."
-    (interactive)
-    (let* ((current-file (buffer-file-name))
-           (default-directory (projectile-project-root)))
-      (compile (concat "hlint " current-file))))
+(defun my/run-hlint-buffer ()
+  "Run  hlint over the current buffer."
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+         (default-directory (projectile-project-root)))
+    (compile (concat "hlint " current-file))))
 
 #+END_SRC
 
@@ -1609,15 +1609,15 @@ Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is 
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package lua-mode
-    :ensure t
-    :bind (:map lua-mode-map
-                ("C-c C-b" . compile)))
+(use-package lua-mode
+  :ensure t
+  :bind (:map lua-mode-map
+              ("C-c C-b" . compile)))
 
-  (use-package company-lua
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-lua))
+(use-package company-lua
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-lua))
 
 #+END_SRC
 
@@ -1631,26 +1631,26 @@ Put this script in some =$PATH= location like =~/.local/bin=. This script is nee
 
 #+BEGIN_SRC bash
 
-  #!/bin/bash -
+#!/bin/bash -
 
-  tmp="$(mktemp).js"
-  while read line
-  do
-      echo $line >> $tmp
-  done < /dev/stdin
+tmp="$(mktemp).js"
+while read line
+do
+    echo $line >> $tmp
+done < /dev/stdin
 
-  prettier $tmp
+prettier $tmp
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define js-format
-    :program "fixprettier.sh")
+(reformatter-define js-format
+  :program "fixprettier.sh")
 
-  (with-eval-after-load 'js
-    (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
-    (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
+(with-eval-after-load 'js
+  (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
+  (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
 
 
 #+END_SRC
@@ -1659,11 +1659,11 @@ Put this script in some =$PATH= location like =~/.local/bin=. This script is nee
 
 #+begin_src emacs-lisp
 
-  (use-package typescript-mode
-    :ensure t
-    :defer t
-    :config
-    (evil-leader/set-key-for-mode 'typescript-mode "d" 'dumb-jump-go))
+(use-package typescript-mode
+  :ensure t
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'typescript-mode "d" 'dumb-jump-go))
 
 #+end_src
 
@@ -1673,7 +1673,7 @@ Clone rust source code into =~/Code/rust/src/=
 
 #+BEGIN_SRC sh
 
-  git clone https://github.com/rust-lang/rust.git ~/Code/rust/src/
+git clone https://github.com/rust-lang/rust.git ~/Code/rust/src/
 
 #+END_SRC
 
@@ -1681,40 +1681,40 @@ Install dependencies
 
 #+BEGIN_SRC sh
 
-  cargo install rustfmt
-  cargo install racer
+cargo install rustfmt
+cargo install racer
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package rust-mode
-    :ensure t
-    :if (executable-find "rustc"))
+(use-package rust-mode
+  :ensure t
+  :if (executable-find "rustc"))
 
-  (use-package cargo
-    :ensure t
-    :if (executable-find "cargo")
-    :after rust-mode
-    :bind (:map cargo-minor-mode-map
-                ("C-c C-t" . cargo-process-test)
-                ("C-c C-b" . cargo-process-build)
-                ("C-c C-c" . cargo-process-run))
-    :config
-    (add-hook 'rust-mode-hook 'cargo-minor-mode))
+(use-package cargo
+  :ensure t
+  :if (executable-find "cargo")
+  :after rust-mode
+  :bind (:map cargo-minor-mode-map
+              ("C-c C-t" . cargo-process-test)
+              ("C-c C-b" . cargo-process-build)
+              ("C-c C-c" . cargo-process-run))
+  :config
+  (add-hook 'rust-mode-hook 'cargo-minor-mode))
 
-  (use-package racer
-    :ensure t
-    :if (executable-find "racer")
-    :diminish
-    :after rust-mode
-    :custom
-    (racer-rust-src-path "~/Code/rust/src/src")
-    :hook ((rust-mode . racer-mode)
-           (racer-mode . eldoc-mode)
-           (racer-mode . company-mode))
-    :config
-    (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition))
+(use-package racer
+  :ensure t
+  :if (executable-find "racer")
+  :diminish
+  :after rust-mode
+  :custom
+  (racer-rust-src-path "~/Code/rust/src/src")
+  :hook ((rust-mode . racer-mode)
+         (racer-mode . eldoc-mode)
+         (racer-mode . company-mode))
+  :config
+  (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition))
 
 #+END_SRC
 
@@ -1724,45 +1724,45 @@ Install dependencies: godef, goimports, gocode
 
 #+BEGIN_SRC sh
 
-  go get github.com/rogpeppe/godef
-  go get golang.org/x/tools/cmd/goimports
-  go get github.com/mdempsky/gocode
+go get github.com/rogpeppe/godef
+go get golang.org/x/tools/cmd/goimports
+go get github.com/mdempsky/gocode
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package go-mode
-    :ensure t
-    :if (executable-find "go")
-    :bind (:map go-mode-map
-                ("C-c C-t" . go-test-current-file)
-                ("C-c C-c" . go-run)
-                ("C-c C-f" . gofmt))
-    :config
-    (setq gofmt-command "goimports")
-    (evil-leader/set-key-for-mode 'go-mode "d" 'godef-jump))
+(use-package go-mode
+  :ensure t
+  :if (executable-find "go")
+  :bind (:map go-mode-map
+              ("C-c C-t" . go-test-current-file)
+              ("C-c C-c" . go-run)
+              ("C-c C-f" . gofmt))
+  :config
+  (setq gofmt-command "goimports")
+  (evil-leader/set-key-for-mode 'go-mode "d" 'godef-jump))
 
-  (use-package company-go
-    :ensure t
-    :if (executable-find "gocode")
-    :after go-mode
-    :config
-    (add-to-list 'company-backends 'company-go))
+(use-package company-go
+  :ensure t
+  :if (executable-find "gocode")
+  :after go-mode
+  :config
+  (add-to-list 'company-backends 'company-go))
 
-  (use-package go-eldoc
-    :ensure t
-    :if (executable-find "gocode")
-    :after go-mode
-    :config
-    (add-hook 'go-mode-hook 'go-eldoc-setup))
+(use-package go-eldoc
+  :ensure t
+  :if (executable-find "gocode")
+  :after go-mode
+  :config
+  (add-hook 'go-mode-hook 'go-eldoc-setup))
 
-  (use-package go-playground
-    :ensure t
-    :if (executable-find "go")
-    :after go-mode
-    :config
-    (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
+(use-package go-playground
+  :ensure t
+  :if (executable-find "go")
+  :after go-mode
+  :config
+  (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
 
 #+END_SRC
 
@@ -1770,11 +1770,11 @@ Install dependencies: godef, goimports, gocode
 
 #+BEGIN_SRC emacs-lisp
 
-  (defconst inferior-lisp-program (executable-find "sbcl"))
+(defconst inferior-lisp-program (executable-find "sbcl"))
 
-  (use-package sly
-    :ensure t
-    :defer t)
+(use-package sly
+  :ensure t
+  :defer t)
 
 #+END_SRC
 
@@ -1782,38 +1782,38 @@ Install dependencies: godef, goimports, gocode
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/clj-format-code ()
-    "Format clojure code using cider commands."
-    (interactive)
-    (if (region-active-p)
-        (cider-format-region (region-beginning) (region-end))
-      (cider-format-buffer)))
+(defun my/clj-format-code ()
+  "Format clojure code using cider commands."
+  (interactive)
+  (if (region-active-p)
+      (cider-format-region (region-beginning) (region-end))
+    (cider-format-buffer)))
 
-  (defun my/cider-repl-reset ()
-    "Call (reset) in the active repl and return to the position where was called."
-    (interactive)
-    (save-window-excursion
-      (cider-insert-in-repl "(reset)" t)))
+(defun my/cider-repl-reset ()
+  "Call (reset) in the active repl and return to the position where was called."
+  (interactive)
+  (save-window-excursion
+    (cider-insert-in-repl "(reset)" t)))
 
-  (use-package cider
-    :ensure t
-    :bind (:map cider-mode-map
-                ("C-c C-f" . my/clj-format-code)
-                ("C-c C-r" . my/cider-repl-reset)))
+(use-package cider
+  :ensure t
+  :bind (:map cider-mode-map
+              ("C-c C-f" . my/clj-format-code)
+              ("C-c C-r" . my/cider-repl-reset)))
 
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
 
 #+END_SRC
 
 #+begin_src emacs-lisp
 
-  (use-package clj-refactor
-    :ensure t
-    :after cider
-    :bind (:map clojure-mode-map
-                ("C-c C-a" . cljr-add-project-dependency))
-    :hook (clojure . clj-refactor))
+(use-package clj-refactor
+  :ensure t
+  :after cider
+  :bind (:map clojure-mode-map
+              ("C-c C-a" . cljr-add-project-dependency))
+  :hook (clojure . clj-refactor))
 
 #+end_src
 
@@ -1823,8 +1823,8 @@ Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
 
-  (evil-leader/set-key-for-mode 'emacs-lisp-mode "d" 'xref-find-definitions)
-  (evil-leader/set-key-for-mode 'lisp-interaction-mode "d" 'xref-find-definitions)
+(evil-leader/set-key-for-mode 'emacs-lisp-mode "d" 'xref-find-definitions)
+(evil-leader/set-key-for-mode 'lisp-interaction-mode "d" 'xref-find-definitions)
 
 #+END_SRC
 
@@ -1832,17 +1832,17 @@ Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package tuareg
-    :ensure t
-    :defer t)
+(use-package tuareg
+  :ensure t
+  :defer t)
 
-  (use-package merlin
-    :ensure t
-    :hook ((tuareg-mode caml-mode) . merlin-mode))
+(use-package merlin
+  :ensure t
+  :hook ((tuareg-mode caml-mode) . merlin-mode))
 
-  (use-package merlin-eldoc
-    :ensure t
-    :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup))
+(use-package merlin-eldoc
+  :ensure t
+  :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup))
 
 #+END_SRC
 
@@ -1850,32 +1850,32 @@ Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
 
-  (reformatter-define dart-format
-    :program "dart"
-    :args '("format")
-    :group 'dart)
+(reformatter-define dart-format
+  :program "dart"
+  :args '("format")
+  :group 'dart)
 
-  (defun my/dart-run-file ()
-    "Execute the code of the current file."
-    (interactive)
-    (compile (format "dart %s" (buffer-file-name))))
+(defun my/dart-run-file ()
+  "Execute the code of the current file."
+  (interactive)
+  (compile (format "dart %s" (buffer-file-name))))
 
-  (use-package dart-mode
-    :ensure t
-    :if (or (executable-find "dart") (executable-find "flutter"))
-    :bind (:map dart-mode-map
-                ("C-c C-f" . dart-format-buffer)
-                ("C-c C-c" . my/dart-run-file))
-    :config
-    (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
+(use-package dart-mode
+  :ensure t
+  :if (or (executable-find "dart") (executable-find "flutter"))
+  :bind (:map dart-mode-map
+              ("C-c C-f" . dart-format-buffer)
+              ("C-c C-c" . my/dart-run-file))
+  :config
+  (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
 
 #+END_SRC
 
 #+begin_src emacs-lisp
 
-  (use-package lsp-dart
-    :ensure t
-    :hook (dart-mode . lsp))
+(use-package lsp-dart
+  :ensure t
+  :hook (dart-mode . lsp))
 
 #+end_src
 
@@ -1883,28 +1883,28 @@ Enable go to definition with \ d keybinding
 
 #+begin_src emacs-lisp
 
-  (defun my/flutter-goto-logs-buffer()
-    "Go to buffer logs buffer."
-    (interactive)
-    (let ((buffer (get-buffer flutter-buffer-name)))
-      (unless buffer
-        (user-error "flutter is not running."))
-      (switch-to-buffer buffer)
-      (goto-line (point-max))))
+(defun my/flutter-goto-logs-buffer()
+  "Go to buffer logs buffer."
+  (interactive)
+  (let ((buffer (get-buffer flutter-buffer-name)))
+    (unless buffer
+      (user-error "flutter is not running."))
+    (switch-to-buffer buffer)
+    (goto-line (point-max))))
 
-  (use-package flutter
-    :ensure t
-    :after dart-mode
-    :bind (:map dart-mode-map
-                ("C-c C-r" . #'flutter-run-or-hot-reload)
-                ("C-c C-l" . #'my/flutter-goto-logs-buffer))
-    :hook (dart-mode . flutter-test-mode)
-    :custom
-    ;; sdk path will be the parent-parent directory of flutter cli
-    (flutter-sdk-path (directory-file-name
-                       (file-name-directory
-                        (directory-file-name
-                         (file-name-directory (executable-find "flutter")))))))
+(use-package flutter
+  :ensure t
+  :after dart-mode
+  :bind (:map dart-mode-map
+              ("C-c C-r" . #'flutter-run-or-hot-reload)
+              ("C-c C-l" . #'my/flutter-goto-logs-buffer))
+  :hook (dart-mode . flutter-test-mode)
+  :custom
+  ;; sdk path will be the parent-parent directory of flutter cli
+  (flutter-sdk-path (directory-file-name
+                     (file-name-directory
+                      (directory-file-name
+                       (file-name-directory (executable-find "flutter")))))))
 
 #+end_src
 
@@ -1912,12 +1912,12 @@ Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package fsharp-mode
-    :ensure t
-    :defer t
-    :if (executable-find "dotnet")
-    :config
-    (evil-leader/set-key-for-mode 'fsharp-mode "d" 'fsharp-ac/gotodefn-at-point))
+(use-package fsharp-mode
+  :ensure t
+  :defer t
+  :if (executable-find "dotnet")
+  :config
+  (evil-leader/set-key-for-mode 'fsharp-mode "d" 'fsharp-ac/gotodefn-at-point))
 
 #+END_SRC
 
@@ -1931,21 +1931,21 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
 
 #+begin_src emacs-lisp
 
-  (defun my/hugo-insert-image-from-clipboard ()
-    "Use clipoard image and put it in a generated images folder for the current file."
-    (interactive)
-    (let* ((absolute-path (buffer-file-name))
-           (splitted (reverse (split-string absolute-path "/")))
-           (filename (replace-regexp-in-string ".org" "" (car splitted)))
-           (dir (nth 1 splitted))
-           (base-image-path (concat (projectile-project-root) "static/images"))
-           (result-image-dir (format "%s/%s/%s" base-image-path dir filename))
-           (result-image-name (read-string "Filename: " "image.png"))
-           (full-path-result-image (format "%s/%s" result-image-dir result-image-name)))
+(defun my/hugo-insert-image-from-clipboard ()
+  "Use clipoard image and put it in a generated images folder for the current file."
+  (interactive)
+  (let* ((absolute-path (buffer-file-name))
+         (splitted (reverse (split-string absolute-path "/")))
+         (filename (replace-regexp-in-string ".org" "" (car splitted)))
+         (dir (nth 1 splitted))
+         (base-image-path (concat (projectile-project-root) "static/images"))
+         (result-image-dir (format "%s/%s/%s" base-image-path dir filename))
+         (result-image-name (read-string "Filename: " "image.png"))
+         (full-path-result-image (format "%s/%s" result-image-dir result-image-name)))
 
-      (shell-command (format "mkdir -p %s" result-image-dir))
-      (shell-command (format "pngpaste %s" full-path-result-image))
-      (insert (format "[[file:%s]]" (car (cdr (split-string full-path-result-image "static")))))))
+    (shell-command (format "mkdir -p %s" result-image-dir))
+    (shell-command (format "pngpaste %s" full-path-result-image))
+    (insert (format "[[file:%s]]" (car (cdr (split-string full-path-result-image "static")))))))
 
 #+end_src
 
@@ -1955,28 +1955,28 @@ Manage window configurations, allows to save a "snapshot" of the current windows
 
 #+BEGIN_SRC emacs-lisp
 
-  (defvar my/window-snapshots '())
+(defvar my/window-snapshots '())
 
-  (defun my/save-window-snapshot ()
-    "Save the current window configuration into `window-snapshots` alist."
-    (interactive)
-    (let ((key (read-string "Enter a name for the snapshot: ")))
-      (setf (alist-get key my/window-snapshots) (current-window-configuration))
-      (message "%s window snapshot saved!" key)))
+(defun my/save-window-snapshot ()
+  "Save the current window configuration into `window-snapshots` alist."
+  (interactive)
+  (let ((key (read-string "Enter a name for the snapshot: ")))
+    (setf (alist-get key my/window-snapshots) (current-window-configuration))
+    (message "%s window snapshot saved!" key)))
 
-  (defun my/get-window-snapshot (key)
-    "Given a KEY return the saved value in `window-snapshots` alist."
-    (let ((value (assoc key my/window-snapshots)))
-      (cdr value)))
+(defun my/get-window-snapshot (key)
+  "Given a KEY return the saved value in `window-snapshots` alist."
+  (let ((value (assoc key my/window-snapshots)))
+    (cdr value)))
 
-  (defun my/restore-window-snapshot ()
-    "Restore a window snapshot from the window-snapshots alist."
-    (interactive)
-    (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car my/window-snapshots)))
-           (snapshot (my/get-window-snapshot snapshot-name)))
-      (if snapshot
-          (set-window-configuration snapshot)
-        (message "Snapshot %s not found" snapshot-name))))
+(defun my/restore-window-snapshot ()
+  "Restore a window snapshot from the window-snapshots alist."
+  (interactive)
+  (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car my/window-snapshots)))
+         (snapshot (my/get-window-snapshot snapshot-name)))
+    (if snapshot
+        (set-window-configuration snapshot)
+      (message "Snapshot %s not found" snapshot-name))))
 
 #+END_SRC
 
@@ -1984,129 +1984,129 @@ Manipulate frame font height.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/change-font-height (delta)
-    "Use DELTA to increase/decrease the frame font height."
-    (let* ((current-height (face-attribute 'default :height))
-           (new-height (+ current-height delta)))
-      (set-face-attribute 'default (selected-frame) :height new-height)))
+(defun my/change-font-height (delta)
+  "Use DELTA to increase/decrease the frame font height."
+  (let* ((current-height (face-attribute 'default :height))
+         (new-height (+ current-height delta)))
+    (set-face-attribute 'default (selected-frame) :height new-height)))
 
-  (defun my/decrease-font-height ()
-    "Decrease font height by 10."
-    (interactive)
-    (my/change-font-height -10))
+(defun my/decrease-font-height ()
+  "Decrease font height by 10."
+  (interactive)
+  (my/change-font-height -10))
 
-  (defun my/increase-font-height ()
-    "Increase font height by 10."
-    (interactive)
-    (my/change-font-height +10))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-
-  (defun my/goto-term ()
-    "Create a new `vterm` buffer."
-    (interactive)
-    (if (projectile-project-p)
-        (let* ((buffer-name (format "[%s]-vterm" (projectile-project-name)))
-               (buffer-name-for-search (format "*%s*" buffer-name))
-               (default-directory (projectile-project-root))
-               (buffer (get-buffer buffer-name-for-search)))
-          (if buffer
-              (switch-to-buffer buffer)
-            (vterm buffer-name))
-          (evil-insert-state))))
+(defun my/increase-font-height ()
+  "Increase font height by 10."
+  (interactive)
+  (my/change-font-height +10))
 
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/find-file-in-project ()
-    "Custom find file function."
-    (interactive)
-    (if (projectile-project-p)
-        (helm-ls-git-ls)
-        (helm-for-files)))
+(defun my/goto-term ()
+  "Create a new `vterm` buffer."
+  (interactive)
+  (if (projectile-project-p)
+      (let* ((buffer-name (format "[%s]-vterm" (projectile-project-name)))
+             (buffer-name-for-search (format "*%s*" buffer-name))
+             (default-directory (projectile-project-root))
+             (buffer (get-buffer buffer-name-for-search)))
+        (if buffer
+            (switch-to-buffer buffer)
+          (vterm buffer-name))
+        (evil-insert-state))))
 
-  (defun my/fold-buffer-when-is-too-big (max-lines)
-    "Fold buffer is max lines if grater than as MAX-LINES."
-    (if (> (count-lines (point-min) (point-max)) max-lines)
-        (hs-hide-all)))
+#+END_SRC
 
-  (defun my/setup-eslint ()
-    "If eslint is installed locally configure flycheck to use it."
-    (interactive)
-    (let ((local-eslint (concat (projectile-project-root) "node_modules/.bin/eslint")))
-      (setq flycheck-javascript-eslint-executable (and (file-exists-p local-eslint) local-eslint))))
+#+BEGIN_SRC emacs-lisp
 
-  (defun my/toggle-maximize ()
-    "Toggle maximization of current window."
-    (interactive)
-    (let ((register ?w))
-      (if (eq (get-register register) nil)
+(defun my/find-file-in-project ()
+  "Custom find file function."
+  (interactive)
+  (if (projectile-project-p)
+      (helm-ls-git-ls)
+    (helm-for-files)))
+
+(defun my/fold-buffer-when-is-too-big (max-lines)
+  "Fold buffer is max lines if grater than as MAX-LINES."
+  (if (> (count-lines (point-min) (point-max)) max-lines)
+      (hs-hide-all)))
+
+(defun my/setup-eslint ()
+  "If eslint is installed locally configure flycheck to use it."
+  (interactive)
+  (let ((local-eslint (concat (projectile-project-root) "node_modules/.bin/eslint")))
+    (setq flycheck-javascript-eslint-executable (and (file-exists-p local-eslint) local-eslint))))
+
+(defun my/toggle-maximize ()
+  "Toggle maximization of current window."
+  (interactive)
+  (let ((register ?w))
+    (if (eq (get-register register) nil)
         (progn
           (set-register register (current-window-configuration))
           (delete-other-windows))
-        (progn
-          (set-window-configuration (get-register register))
-          (set-register register nil)))))
+      (progn
+        (set-window-configuration (get-register register))
+        (set-register register nil)))))
 
-  (defun my/venv-workon (name)
-    "Active virtualenv NAME only is not setup yet."
-    (unless pyvenv-virtual-env
-      (pyvenv-workon name)))
+(defun my/venv-workon (name)
+  "Active virtualenv NAME only is not setup yet."
+  (unless pyvenv-virtual-env
+    (pyvenv-workon name)))
 
-  (defun my/config-file ()
-    "Open config file."
-    (interactive)
-    (find-file (expand-file-name "~/.emacs.d/bootstrap.org")))
+(defun my/config-file ()
+  "Open config file."
+  (interactive)
+  (find-file (expand-file-name "~/.emacs.d/bootstrap.org")))
 
-  (defun my/toggle-spanish-characters ()
-    "Enable/disable alt key to allow insert spanish characters."
-    (interactive)
-    (if (eq ns-alternate-modifier 'meta)
-        (setq ns-alternate-modifier nil)
-        (setq ns-alternate-modifier 'meta)))
+(defun my/toggle-spanish-characters ()
+  "Enable/disable alt key to allow insert spanish characters."
+  (interactive)
+  (if (eq ns-alternate-modifier 'meta)
+      (setq ns-alternate-modifier nil)
+    (setq ns-alternate-modifier 'meta)))
 
-  (defun my/neotree-open-projectile ()
-    "Open neotree with projectile root folfer."
-    (interactive)
-    (neotree-dir (projectile-project-root)))
+(defun my/neotree-open-projectile ()
+  "Open neotree with projectile root folfer."
+  (interactive)
+  (neotree-dir (projectile-project-root)))
 
-  (defun my/change-font-size()
-    "Change frame font size."
-    (interactive)
-    (let* ((size (read-number "New size: "))
-           (font (format "Monaco %d" size)))
-      (set-frame-font font)))
+(defun my/change-font-size()
+  "Change frame font size."
+  (interactive)
+  (let* ((size (read-number "New size: "))
+         (font (format "Monaco %d" size)))
+    (set-frame-font font)))
 
-  (defun my/find-tag ()
-    "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
-    (interactive)
-    (if (projectile-project-p)
-        (let
-            ((tags-file-path (concat (projectile-project-root) "TAGS")))
-          (if (f-exists-p tags-file-path)
-              (helm-etags-select t)
-            (if (yes-or-no-p "Do you want generate a TAGS file?")
-                (progn
-                  (my/gen-etags-file (projectile-project-root))
-                  (helm-etags-select t)))))
-      (message "You are not in a project.")))
+(defun my/find-tag ()
+  "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
+  (interactive)
+  (if (projectile-project-p)
+      (let
+          ((tags-file-path (concat (projectile-project-root) "TAGS")))
+        (if (f-exists-p tags-file-path)
+            (helm-etags-select t)
+          (if (yes-or-no-p "Do you want generate a TAGS file?")
+              (progn
+                (my/gen-etags-file (projectile-project-root))
+                (helm-etags-select t)))))
+    (message "You are not in a project.")))
 
-  (defun my/force-build-tags ()
-    "Force the build of the TAGS file."
-    (interactive)
-    (if (projectile-project-p)
-        (my/gen-etags-file (projectile-project-root))
-      (message "You are not in a project.")))
+(defun my/force-build-tags ()
+  "Force the build of the TAGS file."
+  (interactive)
+  (if (projectile-project-p)
+      (my/gen-etags-file (projectile-project-root))
+    (message "You are not in a project.")))
 
-  (defun my/gen-etags-file (root-path)
-    "Generate etags file for the ROOT-PATH folder."
-    (let
-        ((pattern (read-string "Enter pattern of files to be used: ")))
-      (cd root-path)
-      (shell-command (format "find . -name \"%s\" | etags -" pattern))))
+(defun my/gen-etags-file (root-path)
+  "Generate etags file for the ROOT-PATH folder."
+  (let
+      ((pattern (read-string "Enter pattern of files to be used: ")))
+    (cd root-path)
+    (shell-command (format "find . -name \"%s\" | etags -" pattern))))
 
 #+END_SRC
 
@@ -2115,29 +2115,29 @@ Function to extract clocks from org buffer and filter them by month
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/collect-clocks ()
-    "Collect all the clocks of current buffer."
-    (org-element-map (org-element-parse-buffer) 'clock
-      (lambda (clock) clock)))
+(defun my/collect-clocks ()
+  "Collect all the clocks of current buffer."
+  (org-element-map (org-element-parse-buffer) 'clock
+    (lambda (clock) clock)))
 
-  (defun my/filter-clocks-by-month (clocks month)
-    "Filter CLOCKS using MONTH value."
-    (seq-filter '(lambda (clock)
-                   (eq (org-element-property :month-end (org-element-property :value clock)) month)) clocks))
+(defun my/filter-clocks-by-month (clocks month)
+  "Filter CLOCKS using MONTH value."
+  (seq-filter '(lambda (clock)
+                 (eq (org-element-property :month-end (org-element-property :value clock)) month)) clocks))
 
-  (defun my/org-filter-clocks-report ()
-    "Create a buffer with the tasks filtered by month."
-    (interactive)
-    (let* ((month (read-number "Insert month: "))
-           (clocks (my/collect-clocks))
-           (filtered-clocks (my/filter-clocks-by-month clocks month))
-           (buffer (get-buffer-create "*clocks report*")))
-      (switch-to-buffer buffer)
-      (org-mode)
-      (insert "* Report\n")
-      (seq-map '(lambda (clock)
-                  (insert (format "CLOCK: %s\n" (org-element-property :raw-value (org-element-property :value clock))))) filtered-clocks)
-      (org-clock-display)))
+(defun my/org-filter-clocks-report ()
+  "Create a buffer with the tasks filtered by month."
+  (interactive)
+  (let* ((month (read-number "Insert month: "))
+         (clocks (my/collect-clocks))
+         (filtered-clocks (my/filter-clocks-by-month clocks month))
+         (buffer (get-buffer-create "*clocks report*")))
+    (switch-to-buffer buffer)
+    (org-mode)
+    (insert "* Report\n")
+    (seq-map '(lambda (clock)
+                (insert (format "CLOCK: %s\n" (org-element-property :raw-value (org-element-property :value clock))))) filtered-clocks)
+    (org-clock-display)))
 
 #+END_SRC
 
@@ -2145,23 +2145,23 @@ Copy absolute and relative path to clipboard
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/copy-abs-path ()
-    "Copy absolute path of the buffer to clipboard"
-    (interactive)
-    (if buffer-file-name
-        (progn
-          (kill-new buffer-file-name)
-          (message (format "%s copied to clipboard" buffer-file-name)))
-      (message "File not saved yet")))
+(defun my/copy-abs-path ()
+  "Copy absolute path of the buffer to clipboard"
+  (interactive)
+  (if buffer-file-name
+      (progn
+        (kill-new buffer-file-name)
+        (message (format "%s copied to clipboard" buffer-file-name)))
+    (message "File not saved yet")))
 
-  (defun my/copy-relative-path ()
-    "Copy relative path of the buffer to clipboard"
-    (interactive)
-    (if (and (projectile-project-p) buffer-file-name)
-        (let ((path (file-relative-name buffer-file-name (projectile-project-root))))
-          (kill-new path)
-          (message (format "%s copied to clipboard" path)))
-      (message "File not saved yet or not inside project")))
+(defun my/copy-relative-path ()
+  "Copy relative path of the buffer to clipboard"
+  (interactive)
+  (if (and (projectile-project-p) buffer-file-name)
+      (let ((path (file-relative-name buffer-file-name (projectile-project-root))))
+        (kill-new path)
+        (message (format "%s copied to clipboard" path)))
+    (message "File not saved yet or not inside project")))
 
 #+END_SRC
 
@@ -2169,14 +2169,14 @@ Create a temp file with the current buffer content and render it with =eww=.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/preview-buffer-in-eww ()
-    "Preview buffer content in EWW."
-    (interactive)
-    (let* ((temp-file (make-temp-name (temporary-file-directory)))
-           (path (concat temp-file ".html")))
-      (write-file path)
-      (kill-buffer)
-      (eww-open-file path)))
+(defun my/preview-buffer-in-eww ()
+  "Preview buffer content in EWW."
+  (interactive)
+  (let* ((temp-file (make-temp-name (temporary-file-directory)))
+         (path (concat temp-file ".html")))
+    (write-file path)
+    (kill-buffer)
+    (eww-open-file path)))
 
 #+END_SRC
 
@@ -2184,22 +2184,22 @@ Resize window: allow create a "resize mode" and use hjkl to increase/decrease wi
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/resize-window ()
-    "Resize window using j k h l keys."
-    (interactive)
-    (let ((keys-map '((?h . evil-window-decrease-width)
-                      (?j . evil-window-decrease-height)
-                      (?k . evil-window-increase-height)
-                      (?l . evil-window-increase-width)))
-          (overlay (make-overlay (point-min) (point-max) (window-buffer))))
-      (let ((is-reading t))
-        (overlay-put overlay 'face '((t (:foreground "gray40"))))
-        (while is-reading
-          (let ((action (alist-get (read-key) keys-map)))
-            (if action
-                (apply action '(1))
-              (setq is-reading nil)
-              (delete-overlay overlay)))))))
+(defun my/resize-window ()
+  "Resize window using j k h l keys."
+  (interactive)
+  (let ((keys-map '((?h . evil-window-decrease-width)
+                    (?j . evil-window-decrease-height)
+                    (?k . evil-window-increase-height)
+                    (?l . evil-window-increase-width)))
+        (overlay (make-overlay (point-min) (point-max) (window-buffer))))
+    (let ((is-reading t))
+      (overlay-put overlay 'face '((t (:foreground "gray40"))))
+      (while is-reading
+        (let ((action (alist-get (read-key) keys-map)))
+          (if action
+              (apply action '(1))
+            (setq is-reading nil)
+            (delete-overlay overlay)))))))
 
 #+END_SRC
 
@@ -2207,12 +2207,12 @@ Kill the current buffer and delete the related file
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/delete-close-file ()
-    "Delete the current file and kill its buffer."
-    (interactive)
-    (when buffer-file-name
-      (delete-file buffer-file-name)
-      (kill-buffer)))
+(defun my/delete-close-file ()
+  "Delete the current file and kill its buffer."
+  (interactive)
+  (when buffer-file-name
+    (delete-file buffer-file-name)
+    (kill-buffer)))
 
 #+END_SRC
 
@@ -2220,15 +2220,15 @@ Generate daily report for work.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/daily-template ()
-    "Create a markdown formatter daily report."
-    (interactive)
-    (let* ((day (format-time-string "%A"))
-           (prev-label-text (if (equal day "Monday") "Viernes" "Ayer"))
-           (prev (read-string (concat prev-label-text ": ")))
-           (today (read-string "Hoy: "))
-           (problems (read-string "Impedimentos: ")))
-      (kill-new (format "*%s*: %s\n*Hoy*: %s\n*Impedimentos*: %s" prev-label-text prev today problems))))
+(defun my/daily-template ()
+  "Create a markdown formatter daily report."
+  (interactive)
+  (let* ((day (format-time-string "%A"))
+         (prev-label-text (if (equal day "Monday") "Viernes" "Ayer"))
+         (prev (read-string (concat prev-label-text ": ")))
+         (today (read-string "Hoy: "))
+         (problems (read-string "Impedimentos: ")))
+    (kill-new (format "*%s*: %s\n*Hoy*: %s\n*Impedimentos*: %s" prev-label-text prev today problems))))
 
 #+END_SRC
 
@@ -2238,26 +2238,26 @@ Functions to open Finder using current file or current project.
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/open-finder-at (path)
-    "Open Finder app with the given PATH."
-    (let* ((finder (executable-find "open"))
-           (command (format "%s %s" finder path)))
-      (shell-command command)))
+(defun my/open-finder-at (path)
+  "Open Finder app with the given PATH."
+  (let* ((finder (executable-find "open"))
+	 (command (format "%s %s" finder path)))
+    (shell-command command)))
 
-  (defun my/open-project-in-finder ()
-    "Open current project in Finder app."
-    (interactive)
-    (if (projectile-project-p)
-        (my/open-finder-at (projectile-project-root))
-      (message "There is no active project.")))
+(defun my/open-project-in-finder ()
+  "Open current project in Finder app."
+  (interactive)
+  (if (projectile-project-p)
+      (my/open-finder-at (projectile-project-root))
+    (message "There is no active project.")))
 
-  (defun my/open-current-file-in-finder ()
-    "Open current file in Finder."
-    (interactive)
-    (let ((file (buffer-file-name)))
-      (if file
-          (my/open-finder-at (file-name-directory file))
-        (message "Buffer has not been saved yet!"))))
+(defun my/open-current-file-in-finder ()
+  "Open current file in Finder."
+  (interactive)
+  (let ((file (buffer-file-name)))
+    (if file
+        (my/open-finder-at (file-name-directory file))
+      (message "Buffer has not been saved yet!"))))
 
 #+END_SRC
 
@@ -2265,12 +2265,12 @@ Open current file with an macOS app. Installed macOS apps will be listed using h
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/macos-open-file-with ()
-    "Open current file with and macOS installed app."
-    (interactive)
-    (let* ((apps-list (directory-files "/Applications" nil "\\.app$"))
-           (selected-app (completing-read "Choose an application: " apps-list)))
-      (shell-command (format "open %s -a '%s'" (buffer-file-name) selected-app))))
+(defun my/macos-open-file-with ()
+  "Open current file with and macOS installed app."
+  (interactive)
+  (let* ((apps-list (directory-files "/Applications" nil "\\.app$"))
+         (selected-app (completing-read "Choose an application: " apps-list)))
+    (shell-command (format "open %s -a '%s'" (buffer-file-name) selected-app))))
 
 #+END_SRC
 
@@ -2278,9 +2278,9 @@ Open the current file with macOS =open= command. This will open the file with th
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun my/macos-open-current-file ()
-    (interactive)
-    (shell-command (format "open %s" (buffer-file-name))))
+(defun my/macos-open-current-file ()
+  (interactive)
+  (shell-command (format "open %s" (buffer-file-name))))
 
 #+END_SRC
 
@@ -2288,14 +2288,14 @@ Save image from clipboard to path.
 
 #+begin_src emacs-lisp
 
-  (defun my/save-image-from-clipboard ()
-    "Save image from clipboard to the given path."
-    (interactive)
-    (unless (executable-find "pngpaste")
-      (user-error "Install pngpaste to continue"))
-    (let* ((path (read-file-name ""))
-           (command (format "pngpaste %s" path)))
-      (shell-command command)
-      (kill-new path)))
+(defun my/save-image-from-clipboard ()
+  "Save image from clipboard to the given path."
+  (interactive)
+  (unless (executable-find "pngpaste")
+    (user-error "Install pngpaste to continue"))
+  (let* ((path (read-file-name ""))
+         (command (format "pngpaste %s" path)))
+    (shell-command command)
+    (kill-new path)))
 
 #+end_src

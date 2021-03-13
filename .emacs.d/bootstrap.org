@@ -435,6 +435,24 @@ Avoid check spelling in markdown code blocks
 
 #+end_src
 
+** Tree sitter
+
+Incremental code parsing for better syntax highlighting
+
+#+begin_src emacs-lisp
+
+(use-package tree-sitter
+  :ensure t
+  :hook
+  (tree-sitter-after-on . tree-sitter-hl-mode)
+  :config
+  (global-tree-sitter-mode))
+
+(use-package tree-sitter-langs
+  :ensure t)
+
+#+end_src
+
 * Evil
 
 #+begin_src emacs-lisp
@@ -1639,7 +1657,7 @@ do
     echo $line >> $tmp
 done < /dev/stdin
 
-prettier $tmp
+npx prettier $tmp
 
 #+END_SRC
 

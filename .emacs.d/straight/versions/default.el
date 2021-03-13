@@ -42,6 +42,7 @@
  ("emacs-memoize" . "c70773e0eb799a17f1f44334d14389c518ec14d4")
  ("emacs-neotree" . "98fe21334affaffe2334bf7c987edaf1980d2d0b")
  ("emacs-racer" . "a0bdf778f01e8c4b8a92591447257422ac0b455b")
+ ("emacs-tree-sitter" . "e1052cb562a178061538397531be8ca6b11e7d15")
  ("emacs-undo-fu" . "f4db4c9b9875134df6f5279281099361ae11c2e9")
  ("emacs-which-key" . "ca268fd313d3fb2bd03a8b5e4bdcca675ce58ca7")
  ("emacsmirror-mirror" . "a65e5ce72299554854f784161006d42ea0d032ab")

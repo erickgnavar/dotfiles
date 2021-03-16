@@ -29,3 +29,5 @@ function fix_emoji_palette {
 function rae {
     open "https://dle.rae.es/$1"
 }
+
+alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"

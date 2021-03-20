@@ -704,20 +704,16 @@ This allow to update environment using =.envrc= file.
 
 #+END_SRC
 
-** persp-mode.el
+** perspective.el
 
 #+begin_src emacs-lisp
 
-(use-package persp-mode
+(use-package perspective
   :ensure t
-  :custom
-  (persp-auto-resume-time 0)
-  (persp-auto-save-opt 0)
-  ;; make possible to add any buffer with a major mode to the current perspective
-  (persp-add-buffer-on-after-change-major-mode t)
-  (persp-auto-save-persps-to-their-file nil)
   :config
   (persp-mode)
+  ;; change default font-face color to be aligned with doom-mode-line
+  (set-face-foreground 'persp-selected-face "green")
   ;; setup vim tab like key-bindings
   (define-key evil-normal-state-map (kbd "gt") 'persp-next)
   (define-key evil-normal-state-map (kbd "gT") 'persp-prev))

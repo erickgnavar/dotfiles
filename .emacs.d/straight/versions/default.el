@@ -129,7 +129,7 @@
  ("peg.el" . "081efeca91d790c7fbc90871ac22c40935f4833b")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
- ("persp-mode.el" . "298df111f081b5925f0aa0126a1b8d334117e0a2")
+ ("perspective-el" . "cbdc3e5dc77ccb681f8719db0a85af8850b757d2")
  ("pos-tip" . "c9ced6c485788a4556161f8e3b7893d230a49db2")
  ("projectile" . "d1cfad008b1719a6bee17fbe9479db414c0dc5d9")
  ("py-isort.el" . "e67306f459c47c53a65604e4eea88a3914596560")

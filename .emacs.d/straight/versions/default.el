@@ -19,7 +19,7 @@
  ("dart-mode" . "04fcd649f19d49390079fbf2920a10bf37f6a634")
  ("dash.el" . "ea7adeb09c13de58336caa16243e192ea6ee88fb")
  ("delight" . "02e73b69708e23053105866a58fe14f75c272dee")
- ("diff-hl" . "a0028d9d3ef28513b0b2cec145199bf088169563")
+ ("diff-hl" . "1af31fe1c177646ef7419c95b5d9c25655187ceb")
  ("diminish.el" . "96b47cf90360e4bd19138fe82dc59bfa86c7bf7d")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
  ("dockerfile-mode" . "ed73e82dcc636dad00d1a8c3b32a49136d25ee60")

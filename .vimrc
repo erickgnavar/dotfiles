@@ -132,10 +132,18 @@ set clipboard=unnamed
 nmap <Leader>a :Ag<space>
 nmap <Leader>b :Buffers<ENTER>
 nmap <Leader>c :ClearCtrlPCache<ENTER>
-nmap <Leader>e :Files<ENTER>
+nmap <leader>e :call MyFindFiles()<ENTER>
 nmap <Leader>g :Git<ENTER>
 nmap <Leader>k :bdelete<space>
 nmap <Leader>n :enew<ENTER>
+
+function MyFindFiles()
+  if len(system('git rev-parse'))
+    :Files
+  else
+    :GFiles --exclude-standard --others --cached
+  endif
+endfunction
 
 " " Autoclose ------------------------------
 " " Fix to let ESC work as espected with Autoclose plugin

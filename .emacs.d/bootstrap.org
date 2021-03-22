@@ -11,6 +11,9 @@
 ;; Hide vertical scroll bar
 (scroll-bar-mode -1)
 
+;; Default font-family, this will used in all the function that manipulates font settings
+(defvar my/font-family "Monaco")
+
 ;; Hide toolbar
 (tool-bar-mode -1)
 
@@ -24,8 +27,8 @@
 (column-number-mode t)
 (global-hl-line-mode 1)
 
-(when (member "Monaco" (font-family-list))
-  (set-frame-font "Monaco 12"))
+(when (member my/font-family (font-family-list))
+  (set-frame-font (format "%s 13" my/font-family)))
 
 (global-set-key (kbd "C-x -") 'my/decrease-font-height)
 (global-set-key (kbd "C-x =") 'my/increase-font-height)
@@ -89,7 +92,7 @@ Adjust font size to screen resolution, increase font size for 4K screens
 #+BEGIN_SRC emacs-lisp
 
 (when (and (display-graphic-p) (>= (x-display-pixel-width) 3840))
-  (set-frame-font "Monaco 16"))
+  (set-frame-font (format "%s 16" my/font-family)))
 
 #+END_SRC
 
@@ -2093,7 +2096,7 @@ Manipulate frame font height.
   "Change frame font size."
   (interactive)
   (let* ((size (read-number "New size: "))
-         (font (format "Monaco %d" size)))
+         (font (format "%s %d" my/font-family size)))
     (set-frame-font font)))
 
 (defun my/find-tag ()

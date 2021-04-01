@@ -78,7 +78,7 @@
  ("graphql-mode" . "2371316a750b807de941184d49ca19d277ecadcd")
  ("haml-mode" . "bf5b6c11b1206759d2b28af48765e04882dd1fc4")
  ("haskell-mode" . "9cb7f862bb50e1596a4b592bd46f53283a26389d")
- ("helm" . "98af298c517148fbb31774a548c85ecdc1bcf8ab")
+ ("helm" . "54e2c05432dfbdd89807f16a38c5a7d3c5dbfe41")
  ("helm-bibtex" . "d4471232be26793fbf56c0ac3690b5f537c378b9")
  ("helm-ls-git" . "48696448e52d266f5b2cb5ee1390071dab4d16e8")
  ("helm-swoop" . "1f7d3cf0d742b199e4ce13fcb8b19c977a44611e")

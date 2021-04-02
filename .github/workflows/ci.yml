@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-emacs-config-page:
+    runs-on: ubuntu-latest
+    container: alpine:3.13.4
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install emacs
+        run: apk --update add emacs
+      - name: Render config into html
+        run: cd scripts && sh render-emacs-config-to-html.sh
+      - name: Pushes to destination repository
+        uses: cpina/github-action-push-to-another-repository@cp_instead_of_deleting
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'scripts/output'
+          destination-github-username: 'erickgnavar'
+          destination-repository-name: 'emacs-config'
+          user-email: bot@emacs.bot

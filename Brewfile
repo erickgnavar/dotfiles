@@ -21,6 +21,7 @@ brew "caddy", restart_service: true
 brew "libffi"
 brew "pkg-config"
 brew "clang-format"
+brew "cloc"
 brew "cmake"
 brew "cocoapods"
 brew "libunistring"

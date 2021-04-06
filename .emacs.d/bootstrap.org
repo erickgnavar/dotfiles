@@ -404,15 +404,20 @@ Disable lock files
 
 ** Toggle terminal
 
-#+BEGIN_SRC emacs-lisp
+='project= use always the same terminal per project, this way we avoid to create a new terminal for each call to =vterm-toggle=.
+='reset-window-configration= yes, it's suppose to be =configration=, for some reason it was defined like this instead of =configuration=
 
-(use-package eshell-toggle
+Also for easy access insert mode is activated right away after vterm is shown
+
+#+begin_src emacs-lisp
+(use-package vterm-toggle
   :ensure t
   :custom
-  (eshell-toggle-init-function #'(lambda (dir)
-                                   (my/goto-term))))
-
-#+END_SRC
+  (vterm-toggle-scope 'project)
+  (vterm-toggle-hide-method 'reset-window-configration)
+  :hook
+  (vterm-toggle-show . evil-insert-state))
+#+end_src
 
 ** iSpell
 
@@ -531,7 +536,7 @@ Incremental code parsing for better syntax highlighting
     "a" 'my/helm-ag-with-default-term
     "A" 'my/helm-ag-without-default-term
     "b" 'helm-buffers-list
-    "c" 'eshell-toggle
+    "c" 'vterm-toggle
     "e" 'my/find-file-in-project
     "f" 'find-file
     "g" 'my/magit-status
@@ -2018,23 +2023,6 @@ Manipulate frame font height.
   "Increase font height by 10."
   (interactive)
   (my/change-font-height +10))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-
-(defun my/goto-term ()
-  "Create a new `vterm` buffer."
-  (interactive)
-  (if (projectile-project-p)
-      (let* ((buffer-name (format "[%s]-vterm" (projectile-project-name)))
-             (buffer-name-for-search (format "*%s*" buffer-name))
-             (default-directory (projectile-project-root))
-             (buffer (get-buffer buffer-name-for-search)))
-        (if buffer
-            (switch-to-buffer buffer)
-          (vterm buffer-name))
-        (evil-insert-state))))
 
 #+END_SRC
 

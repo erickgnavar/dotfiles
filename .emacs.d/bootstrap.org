@@ -432,6 +432,15 @@ Avoid check spelling in markdown code blocks
 
 #+END_SRC
 
+When editing a commit message =ispell= should ignore lines that start with =#=, these lines are diff details about the commit.
+
+#+begin_src emacs-lisp
+(defun my/setup-ispell-for-commit-message ()
+  "Setup `ispell-skip-region-alist' to avoid lines starting with #.
+  This way diff code will be ignored when ispell run."
+  (setq-local ispell-skip-region-alist (cons '("^#" . "$") ispell-skip-region-alist)))
+#+end_src
+
 ** Undo system
 
 #+begin_src emacs-lisp
@@ -1123,6 +1132,7 @@ Open selected region in remote repo page
   :config
   (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
   (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
+  (add-hook 'git-commit-mode-hook 'my/setup-ispell-for-commit-message)
   (add-hook 'magit-blame-mode-hook
             (lambda ()
               (evil-emacs-state))))

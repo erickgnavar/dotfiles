@@ -688,21 +688,22 @@ Used in every major mode
 
 #+END_SRC
 
-** Flycheck
+** Flymake
 
-#+BEGIN_SRC emacs-lisp
+Only activate =flymake= for actual projects and for =prog-mode=
 
-(use-package flycheck
-  :ensure t
-  :diminish ""
-  :bind (:map flycheck-mode-map
-              ("M-p" . flycheck-previous-error)
-              ("M-n" . flycheck-next-error))
-  :config
-  (global-flycheck-mode)
-  (setq flycheck-highlighting-mode 'lines))
+#+begin_src emacs-lisp
+(defun my/setup-flymake ()
+  "Activate flymake only if we are inside a project."
+  (if (projectile-project-p)
+      (flymake-mode-on)))
 
-#+END_SRC
+(add-hook 'prog-mode 'my/setup-flymake)
+
+(with-eval-after-load "flymake"
+  (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
+#+end_src
 
 ** Direnv
 
@@ -1425,9 +1426,6 @@ pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
   :custom
   (elpy-shell-echo-input . nil)
   :config
-  (when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
   (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
   (define-key elpy-mode-map (kbd "C-c C-f") 'my/python-format-code)
   (setq elpy-rpc-python-command "python")
@@ -2049,12 +2047,6 @@ Manipulate frame font height.
   "Fold buffer is max lines if grater than as MAX-LINES."
   (if (> (count-lines (point-min) (point-max)) max-lines)
       (hs-hide-all)))
-
-(defun my/setup-eslint ()
-  "If eslint is installed locally configure flycheck to use it."
-  (interactive)
-  (let ((local-eslint (concat (projectile-project-root) "node_modules/.bin/eslint")))
-    (setq flycheck-javascript-eslint-executable (and (file-exists-p local-eslint) local-eslint))))
 
 (defun my/toggle-maximize ()
   "Toggle maximization of current window."

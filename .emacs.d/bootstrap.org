@@ -256,6 +256,20 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 * Editor enhancements
 
+** Whitespace
+
+Show special markers for tab and endline characters in ~prog-mode~
+
+#+begin_src emacs-lisp
+(use-package whitespace-mode
+  :custom
+  (whitespace-style '(tab-mark newline-mark))
+  (whitespace-display-mappings '((newline-mark ?\n    [?¬ ?\n]  [?$ ?\n])
+                                 (tab-mark     ?\t    [?» ?\t] [?\\ ?\t])))
+  :hook
+  (prog-mode . whitespace-mode))
+#+end_src
+
 ** Deactivate extended region in visual mode
 
 This allow to visual mode work more like vim visual highlighting.

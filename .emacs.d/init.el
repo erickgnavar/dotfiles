@@ -38,12 +38,6 @@
 
 (require 'bind-key)
 
-(use-package diminish
-  :ensure t)
-
-(use-package delight
-  :ensure t)
-
 ;; Always follow symlinks, used to avoid emacs ask when open org conf file
 (setq vc-follow-symlinks t)
 

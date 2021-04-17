@@ -336,7 +336,6 @@ This allow to visual mode work more like vim visual highlighting.
 
 (use-package editorconfig
   :ensure t
-  :diminish ""
   :config
   (editorconfig-mode 1))
 
@@ -348,7 +347,6 @@ This allow to visual mode work more like vim visual highlighting.
 
 (use-package yasnippet
   :ensure t
-  :diminish ""
   :hook ((prog-mode . yas-minor-mode)
          (conf-mode . yas-minor-mode)
          (text-mode . yas-minor-mode)
@@ -594,7 +592,6 @@ Incremental code parsing for better syntax highlighting
 
 (use-package which-key
   :ensure t
-  :diminish ""
   :config
   (which-key-mode)
   (which-key-setup-minibuffer))
@@ -607,7 +604,6 @@ Incremental code parsing for better syntax highlighting
 
 (use-package autopair
   :ensure t
-  :diminish ""
   :config
   (autopair-global-mode))
 
@@ -783,7 +779,6 @@ This allow to update environment using =.envrc= file.
 
 (use-package projectile
   :ensure t
-  :delight '(:eval (format "Proj[%s]" (projectile-project-name)))
   :custom
   (projectile-keymap-prefix (kbd "C-c p"))
   (projectile-switch-project-action 'my/projectile-switch-action)
@@ -802,7 +797,6 @@ This allow to update environment using =.envrc= file.
 
 (use-package helm
   :ensure t
-  :diminish ""
   :custom
   (helm-M-x-use-completion-styles nil)
   (helm-split-window-inside-p t)
@@ -1007,8 +1001,7 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
 
      (add-hook 'org-mode-hook (lambda ()
                                 (org-indent-mode t)
-                                (autopair-mode -1)
-                                (diminish 'org-indent-mode)))
+                                (autopair-mode -1)))
 
      (advice-add 'org-edit-special :before 'my/org-edit-special)
      (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
@@ -1245,8 +1238,7 @@ Open selected region in remote repo page
 #+BEGIN_SRC emacs-lisp
 
 (use-package emmet-mode
-  :ensure t
-  :diminish)
+  :ensure t)
 
 #+END_SRC
 
@@ -1266,7 +1258,6 @@ Open selected region in remote repo page
 
 (use-package rainbow-mode
   :ensure t
-  :diminish ""
   :hook
   ((css-mode . rainbow-mode)
    (sass-mode . rainbow-mode)
@@ -1365,12 +1356,6 @@ Copied from somewhere
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 (global-set-key [escape] 'evil-exit-emacs-state)
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-
-(diminish 'auto-revert-mode)
 
 #+END_SRC
 
@@ -1750,7 +1735,6 @@ cargo install racer
 (use-package racer
   :ensure t
   :if (executable-find "racer")
-  :diminish
   :after rust-mode
   :custom
   (racer-rust-src-path "~/Code/rust/src/src")

@@ -22,6 +22,9 @@ export PATH="$PATH:$HOME/.local/bin"
 # variable used to avoid java as a requirement when installing a version of erlang with asdf
 export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
 
+# Tell kerl to build documentation when compiling erlang
+export KERL_BUILD_DOCS="yes"
+
 # Always save iex session history
 export ERL_AFLAGS="-kernel shell_history enabled"
 

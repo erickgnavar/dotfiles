@@ -705,7 +705,7 @@ Only activate =flymake= for actual projects and for =prog-mode=
 #+begin_src emacs-lisp
 (defun my/setup-flymake ()
   "Activate flymake only if we are inside a project."
-  (if (projectile-project-p)
+  (if (my/project-p)
       (flymake-mode-on)))
 
 (add-hook 'prog-mode 'my/setup-flymake)
@@ -720,11 +720,6 @@ Only activate =flymake= for actual projects and for =prog-mode=
 This allow to update environment using =.envrc= file.
 
 #+BEGIN_SRC emacs-lisp
-
-(defun my/direnv-edit ()
-  "Edit .envrc file for the current project."
-  (interactive)
-  (find-file (concat (projectile-project-root) ".envrc")))
 
 (use-package direnv
   :ensure t
@@ -748,47 +743,86 @@ This allow to update environment using =.envrc= file.
 
 #+end_src
 
-** Projectile
+** Project.el
+
+~project.el~ default prefix is ~C-x~, we need to pull ~project.el~ instead using the included package because emacs 27 ~project.el~ version doesn't have all the functionality I need.
+
+#+begin_src emacs-lisp
+(defun my/project-edit-dir-locals ()
+  "Edit .dir-locals.el file in project root."
+  (interactive)
+  (find-file (expand-file-name ".dir-locals.el" (my/project-root))))
+
+(defun my/project-edit-direnv ()
+  "Edit .envrc file in project root."
+  (interactive)
+  (find-file (expand-file-name ".envrc" (my/project-root))))
+
+(use-package project
+  :ensure t
+  :bind (:map project-prefix-map
+              ("D" . 'my/project-edit-direnv)
+              ("e" . 'my/project-edit-dir-locals)
+              ("k" . 'my/project-kill-buffers)
+              ("n" . 'my/project-open-new-project)
+              ("p" . 'my/project-switch)))
+#+end_src
+
+Define helper functions to be used by other packages
+
+#+begin_src emacs-lisp
+(defun my/project-root ()
+  "Return project root path."
+  (cdr (project-current)))
+
+(defun my/project-p ()
+  (project-current))
+
+(defun my/project-name ()
+  "Get project name extracting latest part of project path."
+  (if (my/project-p)
+      (second (reverse (split-string (my/project-root) "/")))
+    nil))
+#+end_src
+
+~perspective.el~ integration, a new perspective should be "attached" to a project so it's easy to switch between them.
 
 #+BEGIN_SRC emacs-lisp
-
-(defun my/projectile-switch-action ()
-  "Create a new perspective with the opened project name."
+(defun my/project-switch ()
+  "Switch to a project and trigger switch action."
   (interactive)
-  (persp-switch (projectile-project-name))
+  ;; make sure all the projects list is available to be used
+  (project--ensure-read-project-list)
+  (let* ((projects (mapcar 'car project--list))
+         (choice (completing-read "Switch to project: " projects))
+         (default-directory choice))
+    ;; `default-directory' must be defined so `project.el' can know is in a new project
+    (my/project-switch-action)))
+
+(defun my/project-switch-action ()
+  "Switch to a new perspective which name is project's name and open `helm-ls-git-ls'."
+  (interactive)
+  (persp-switch (my/project-name))
   (helm-ls-git-ls))
 
-(defun my/projectile-kill-buffers ()
-  "Delete the current persp when all project related buffers are killed."
+(defun my/project-kill-buffers ()
+  "Kill all the related buffers to the current project and delete its perspective as well."
   (interactive)
-  (let* ((project-name (projectile-project-name)))
-    (projectile-kill-buffers)
-    ;; we delete the persp only when the user accept to kill all the project related buffers,
-    ;; `projectile-kill-buffers' doesn't return a value so to make this validation we compare
-    ;; the current project-name against the value of `project-name' that was computed before
-    (unless (string-equal (projectile-project-name) project-name)
+  (let* ((project-name (my/project-name))
+         (project (project-current))
+         (buffers-to-kill (project--buffers-to-kill project)))
+    (when (yes-or-no-p (format "Kill %d buffers in %s?" (length buffers-to-kill) (my/project-root)))
+      (mapc #'kill-buffer buffers-to-kill)
       (persp-kill project-name))))
 
-(defun my/projectile-open-new-project ()
-  "Open a project for the first time and add it to projectile known projects list."
+(defun my/project-open-new-project ()
+  "Open a project for the first time and add it to `project.el' projects list."
   (interactive)
   (let* ((project-path-abs (read-directory-name "Enter project root: "))
-         (project-path (replace-regexp-in-string (expand-file-name "~") "~" project-path-abs)))
-    (add-to-list 'projectile-known-projects project-path)
-    (projectile-switch-project-by-name project-path)))
-
-(use-package projectile
-  :ensure t
-  :custom
-  (projectile-keymap-prefix (kbd "C-c p"))
-  (projectile-switch-project-action 'my/projectile-switch-action)
-  (projectile-completion-system 'helm)
-  :bind (:map projectile-mode-map
-              ("C-c p n" . 'my/projectile-open-new-project)
-              ("C-c p k" . 'my/projectile-kill-buffers))
-  :hook
-  (after-init . projectile-mode))
-
+         ;; we need to define `default-directory' to be able to get the new project when `project-current' is called
+         (default-directory (replace-regexp-in-string (expand-file-name "~") "~" project-path-abs)))
+    (project-remember-project (project-current))
+    (my/project-switch-action)))
 #+END_SRC
 
 ** Helm
@@ -849,8 +883,8 @@ Helm util packages
 (defun my/neotree-toggle ()
   "Custom function with some tweaks to be aplied when neotree opens."
   (interactive)
-  (if (and (projectile-project-p) (not (neo-global--window-exists-p)))
-      (my/neotree-open-projectile)
+  (if (and (my/project-p) (not (neo-global--window-exists-p)))
+      (neotree-dir (my/project-root))
     (neotree-toggle)))
 
 (use-package neotree
@@ -1125,7 +1159,7 @@ Open selected region in remote repo page
 (defun my/magit-status-exit (&optional kill-buffer)
   "Restore windows configuration after magit status buffer is closed."
   (interactive)
-  (let ((magit-buffer-name (format "magit: %s" (projectile-project-name)))
+  (let ((magit-buffer-name (format "magit: %s" (my/project-name)))
         (register-value (get-register my/magit-register)))
     (if (and register-value (string-equal magit-buffer-name (buffer-name)))
         (set-window-configuration register-value))))
@@ -1456,8 +1490,8 @@ Show a list of the available django commands and run the selected one using a co
   "Run a django command."
   (interactive)
   (let* ((python-bin (concat (getenv "VIRTUAL_ENV") "/bin/python"))
-         (manage-py-file (concat (projectile-project-root) "manage.py"))
-         (default-directory (projectile-project-root))
+         (manage-py-file (concat (my/project-root) "manage.py"))
+         (default-directory (my/project-root))
          (raw-help (shell-command-to-string (concat python-bin " " manage-py-file " help")))
          (splited-lines (split-string raw-help "\n"))
          (options (seq-filter '(lambda (line) (cl-search "    " line)) splited-lines))
@@ -1519,9 +1553,8 @@ Custom functions to run elixir tests.
   (interactive)
   (let* ((current-file (buffer-file-name))
          (current-line (line-number-at-pos))
-
-         (possible-mix-paths `(,(concat (projectile-project-root) "mix.exs")
-                               ,(concat (projectile-project-root) "src/mix.exs")))
+         (possible-mix-paths `(,(concat (my/project-root) "mix.exs")
+                               ,(concat (my/project-root) "src/mix.exs")))
          (mix-file (car (seq-filter 'file-exists-p possible-mix-paths)))
          (default-directory (file-name-directory mix-file))
          (extra-env (if (boundp 'elixir-extra-test-env) elixir-extra-test-env ""))
@@ -1623,14 +1656,14 @@ stack install hindent
 (defun my/run-hlint ()
   "Run  hlint over the current project."
   (interactive)
-  (let ((default-directory (projectile-project-root)))
+  (let ((default-directory (my/project-root)))
     (compile "hlint .")))
 
 (defun my/run-hlint-buffer ()
   "Run  hlint over the current buffer."
   (interactive)
   (let* ((current-file (buffer-file-name))
-         (default-directory (projectile-project-root)))
+         (default-directory (my/project-root)))
     (compile (concat "hlint " current-file))))
 
 #+END_SRC
@@ -1978,7 +2011,7 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
          (splitted (reverse (split-string absolute-path "/")))
          (filename (replace-regexp-in-string ".org" "" (car splitted)))
          (dir (nth 1 splitted))
-         (base-image-path (concat (projectile-project-root) "static/images"))
+         (base-image-path (concat (my/project-root) "static/images"))
          (result-image-dir (format "%s/%s/%s" base-image-path dir filename))
          (result-image-name (read-string "Filename: " "image.png"))
          (full-path-result-image (format "%s/%s" result-image-dir result-image-name)))
@@ -2047,7 +2080,7 @@ Manipulate frame font height.
 (defun my/find-file-in-project ()
   "Custom find file function."
   (interactive)
-  (if (projectile-project-p)
+  (if (my/project-p)
       (helm-ls-git-ls)
     (helm-for-files)))
 
@@ -2085,11 +2118,6 @@ Manipulate frame font height.
       (setq ns-alternate-modifier nil)
     (setq ns-alternate-modifier 'meta)))
 
-(defun my/neotree-open-projectile ()
-  "Open neotree with projectile root folfer."
-  (interactive)
-  (neotree-dir (projectile-project-root)))
-
 (defun my/change-font-size()
   "Change frame font size."
   (interactive)
@@ -2100,22 +2128,22 @@ Manipulate frame font height.
 (defun my/find-tag ()
   "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
   (interactive)
-  (if (projectile-project-p)
+  (if (my/project-p)
       (let
-          ((tags-file-path (concat (projectile-project-root) "TAGS")))
+          ((tags-file-path (concat (my/project-root) "TAGS")))
         (if (f-exists-p tags-file-path)
             (helm-etags-select t)
           (if (yes-or-no-p "Do you want generate a TAGS file?")
               (progn
-                (my/gen-etags-file (projectile-project-root))
+                (my/gen-etags-file (my/project-root))
                 (helm-etags-select t)))))
     (message "You are not in a project.")))
 
 (defun my/force-build-tags ()
   "Force the build of the TAGS file."
   (interactive)
-  (if (projectile-project-p)
-      (my/gen-etags-file (projectile-project-root))
+  (if (my/project-p)
+      (my/gen-etags-file (my/project-root))
     (message "You are not in a project.")))
 
 (defun my/gen-etags-file (root-path)
@@ -2174,8 +2202,8 @@ Copy absolute and relative path to clipboard
 (defun my/copy-relative-path ()
   "Copy relative path of the buffer to clipboard"
   (interactive)
-  (if (and (projectile-project-p) buffer-file-name)
-      (let ((path (file-relative-name buffer-file-name (projectile-project-root))))
+  (if (and (my/project-p) buffer-file-name)
+      (let ((path (file-relative-name buffer-file-name (my/project-root))))
         (kill-new path)
         (message (format "%s copied to clipboard" path)))
     (message "File not saved yet or not inside project")))
@@ -2264,8 +2292,8 @@ Functions to open Finder using current file or current project.
 (defun my/open-project-in-finder ()
   "Open current project in Finder app."
   (interactive)
-  (if (projectile-project-p)
-      (my/open-finder-at (projectile-project-root))
+  (if (my/project-p)
+      (my/open-finder-at (my/project-root))
     (message "There is no active project.")))
 
 (defun my/open-current-file-in-finder ()

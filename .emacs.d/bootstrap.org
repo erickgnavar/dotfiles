@@ -51,7 +51,7 @@
 (setq-default show-trailing-whitespace t)
 
 ;; disable `show-trailing-whitespace' for modes based in comint-mode
-(add-hook 'comint-mode-hook '(lambda () (setq show-trailing-whitespace nil)))
+(add-hook 'comint-mode-hook #'(lambda () (setq-local show-trailing-whitespace nil)))
 
 ;; Avoid close emacs by mistake
 (global-unset-key (kbd "C-x C-c"))

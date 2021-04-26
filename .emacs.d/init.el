@@ -51,13 +51,14 @@
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "~/.emacs.d/bootstrap.org"))
 
+(defun my/restore-gc-params ()
+  ;; a bigger value is required for lsp to work properly
+  (setq gc-cons-threshold (* 100 1024 1024)
+        gc-cons-percentage 0.1
+        file-name-handler-alist last-file-name-handler-alist))
+
 ;; Restore GC previous config
-(add-hook 'emacs-startup-hook
-          '(lambda ()
-             ;; a bigger value is required for lsp to work properly
-             (setq gc-cons-threshold (* 100 1024 1024)
-                   gc-cons-percentage 0.1
-                   file-name-handler-alist last-file-name-handler-alist)))
+(add-hook 'emacs-startup-hook 'my/restore-gc-params)
 
 (provide 'init.el)
 ;;; init.el ends here

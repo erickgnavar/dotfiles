@@ -453,17 +453,6 @@ When editing a commit message =ispell= should ignore lines that start with =#=, 
   (setq-local ispell-skip-region-alist (cons '("^#" . "$") ispell-skip-region-alist)))
 #+end_src
 
-** Undo system
-
-#+begin_src emacs-lisp
-
-(use-package undo-fu
-  :ensure t
-  :config
-  (global-undo-tree-mode -1))
-
-#+end_src
-
 ** Tree sitter
 
 Incremental code parsing for better syntax highlighting
@@ -507,7 +496,8 @@ Incremental code parsing for better syntax highlighting
         evil-normal-state-cursor '("green" box)
         evil-visual-state-cursor '("orange" box)
         evil-insert-state-cursor '("red" bar)
-        evil-undo-system 'undo-fu)
+        ;; use emacs-28 undo system
+        evil-undo-system 'undo-redo)
   :config
   (evil-mode 1)
   (modify-syntax-entry ?_ "w")

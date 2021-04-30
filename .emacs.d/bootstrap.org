@@ -524,7 +524,9 @@ Incremental code parsing for better syntax highlighting
   :after (evil)
   :config
   (evilnc-default-hotkeys)
-  (global-set-key (kbd "C-\-") 'evilnc-comment-operator))
+  (global-set-key (kbd "C-\-") 'evilnc-comment-operator)
+  ;; avoid to auto-setup of keybindings
+  (setq evilnc-use-comment-object-setup nil))
 
 (use-package evil-surround
   :ensure t

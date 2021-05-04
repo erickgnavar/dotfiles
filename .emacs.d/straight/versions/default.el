@@ -74,6 +74,7 @@
  ("haml-mode" . "bf5b6c11b1206759d2b28af48765e04882dd1fc4")
  ("haskell-mode" . "d771202bcb04c04cdfc6c102f99b917f31216390")
  ("helm" . "c8af1952d7f5dc904e6f844b1ede8026a51e3003")
+ ("helm-icons" . "8d2f5e705c8b78a390677cf242024739c932fc95")
  ("helm-bibtex" . "d4471232be26793fbf56c0ac3690b5f537c378b9")
  ("helm-ls-git" . "48696448e52d266f5b2cb5ee1390071dab4d16e8")
  ("helm-swoop" . "1f7d3cf0d742b199e4ce13fcb8b19c977a44611e")

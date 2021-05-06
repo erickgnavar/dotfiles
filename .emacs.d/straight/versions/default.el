@@ -99,7 +99,7 @@
  ("lsp-mode" . "aca0f8372c856f75c3f2fb5295d07c84931275e9")
  ("lua-mode" . "1f596a93b3f1caadd7bba01030f8c179b029600b")
  ("magit" . "e80eff30d24337a75e07f6d2c154f7d82f140d28")
- ("markdown-mode" . "cf6403186119cd3d25adc702845f969071060e20")
+ ("markdown-mode" . "9977753eebe3f5cca7ab85b18a7c719fdb0b7654")
  ("marshal.el" . "f038689cbd5b3680b80b44edd0c7a63ca3038e26")
  ("melpa" . "f4bc75f3f96cfe2709eb77f9c43d0b6d911662bb")
  ("meme" . "d8f1a57c44a300017d542b4c8c29e0386a1c5d7d")

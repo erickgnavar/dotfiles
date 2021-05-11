@@ -23,6 +23,7 @@
  ("dockerfile-mode" . "ad06a41259ff2961d603bf23a3a8fbd22dde2161")
  ("doom-modeline" . "8e1cc53b8c21c0e6b79bcd98a5bcfe223dd8590a")
  ("dumb-jump" . "738d40ceb7e2d6a3a26f7f27a31ba93924baaa2d")
+ ("edit-indirect" . "bdc8f542fe8430ba55f9a24a7910639d4c434422")
  ("editorconfig-emacs" . "65f8244ffbeb9bf2720d922d4b5fc74849b9af82")
  ("edn.el" . "be9e32d1b49e35247b263b0243df7cfdc8d413ab")
  ("eglot" . "b0fdfb02e14f1c3e40b4a601bb7d6abb470ea63b")

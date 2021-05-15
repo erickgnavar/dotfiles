@@ -408,6 +408,9 @@ Disable lock files
 
 (use-package vterm
   :ensure t
+  :hook
+  (vterm-mode . (lambda ()
+                  (setq-local show-trailing-whitespace nil)))
   :custom
   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
   (vterm-always-compile-module t))

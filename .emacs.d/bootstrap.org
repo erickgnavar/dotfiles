@@ -135,8 +135,8 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
 
 #+BEGIN_SRC emacs-lisp
 
-(eval-after-load "term"
-  '(define-key term-raw-map (kbd "M-]") 'next-buffer))
+(with-eval-after-load 'term
+  (define-key term-raw-map (kbd "M-]") 'next-buffer))
 
 #+END_SRC
 
@@ -226,8 +226,8 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
 
-(eval-after-load "dired"
-  '(define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
+(with-eval-after-load "dired"
+  (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
 
 #+END_SRC
 
@@ -646,8 +646,8 @@ Incremental code parsing for better syntax highlighting
   :program "xmlformat"
   :group 'xml)
 
-(eval-after-load "nxml-mode"
-  '(define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
+(with-eval-after-load 'nxml-mode
+  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
 
 #+END_SRC
 
@@ -667,8 +667,8 @@ Install =pgformatter= using homebrew =brew install pgformatter=
       (sql-format-region (region-beginning) (region-end))
     (sql-format-buffer)))
 
-(eval-after-load "sql"
-  '(define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
+(with-eval-after-load 'sql
+  (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
 
 #+END_SRC
 
@@ -1024,34 +1024,33 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
   "Restore the window configuration that was saved before org-edit-special was called."
   (set-window-configuration my/org-src-block-tmp-window-configuration))
 
-(eval-after-load "org"
-  `(progn
-     (setq org-latex-caption-above nil
-           org-clock-persist 'history
-           org-src-fontify-natively t
-           org-src-preserve-indentation t
-           org-log-done t)
-     (org-clock-persistence-insinuate)
+(with-eval-after-load 'org
+  (setq org-latex-caption-above nil
+        org-clock-persist 'history
+        org-src-fontify-natively t
+        org-src-preserve-indentation t
+        org-log-done t)
+  (org-clock-persistence-insinuate)
 
-     ;; this is needed to use shortcuts like <s to create source blocks
-     (unless (version< emacs-version "27")
-       (require 'org-tempo))
+  ;; this is needed to use shortcuts like <s to create source blocks
+  (unless (version< emacs-version "27")
+    (require 'org-tempo))
 
-     (add-hook 'org-mode-hook (lambda ()
-                                (org-indent-mode t)
-                                (autopair-mode -1)))
+  (add-hook 'org-mode-hook (lambda ()
+                             (org-indent-mode t)
+                             (autopair-mode -1)))
 
-     (advice-add 'org-edit-special :before 'my/org-edit-special)
-     (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
+  (advice-add 'org-edit-special :before 'my/org-edit-special)
+  (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
 
-     (org-babel-do-load-languages 'org-babel-load-languages
-                                  '((python . t)
-                                    (shell . t)
-                                    (lisp . t)
-                                    (sql . t)
-                                    (dot . t)
-                                    (plantuml . t)
-                                    (emacs-lisp . t)))))
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((python . t)
+                                 (shell . t)
+                                 (lisp . t)
+                                 (sql . t)
+                                 (dot . t)
+                                 (plantuml . t)
+                                 (emacs-lisp . t))))
 
 (use-package htmlize
   :ensure t
@@ -1388,10 +1387,9 @@ Copied from somewhere
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
 
-(eval-after-load "evil"
-  '(progn
-     (define-key evil-normal-state-map [escape] 'keyboard-quit)
-     (define-key evil-visual-state-map [escape] 'keyboard-quit)))
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map [escape] 'keyboard-quit)
+  (define-key evil-visual-state-map [escape] 'keyboard-quit))
 
 (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)

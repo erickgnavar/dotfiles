@@ -49,3 +49,6 @@ test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 export ASDF_DIR="/usr/local/opt/asdf"
 # shellcheck source=/dev/null
 [ -f "$ASDF_DIR/asdf.sh" ] && source "$ASDF_DIR/asdf.sh"
+
+# Disable telemetry in homebrew
+export HOMEBREW_NO_ANALYTICS=1

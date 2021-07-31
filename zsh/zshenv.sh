@@ -45,8 +45,18 @@ test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" >
 # this will load credentials from a private file what won't be commited
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
-# Setup asdf
-export ASDF_DIR="/usr/local/opt/asdf"
+# setup for intel macOS
+if [ -d "/usr/local/opt/asdf" ]
+then
+    export ASDF_DIR="/usr/local/opt/asdf"
+fi
+
+# setup for arm macOS
+if [ -d "/opt/homebrew/opt/asdf" ]
+then
+    export ASDF_DIR="/opt/homebrew/opt/asdf"
+fi
+
 # shellcheck source=/dev/null
 [ -f "$ASDF_DIR/asdf.sh" ] && source "$ASDF_DIR/asdf.sh"
 

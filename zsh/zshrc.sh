@@ -1,4 +1,17 @@
-source /usr/local/share/antigen/antigen.zsh
+# setup antigen
+MAC_INTEL_PATH="/usr/local/share/antigen/antigen.zsh"
+
+if [ -f "$MAC_INTEL_PATH" ]
+then
+    source "$MAC_INTEL_PATH"
+fi
+
+MAC_ARM_PATH="/opt/homebrew/share/antigen/antigen.zsh"
+
+if [ -f "$MAC_ARM_PATH" ]
+then
+    source "$MAC_ARM_PATH"
+fi
 
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh

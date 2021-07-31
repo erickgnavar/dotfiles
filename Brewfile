@@ -66,6 +66,7 @@ brew "libgccjit"
 brew "libiconv"
 brew "libvterm"
 brew "lorem"
+brew "mackup"
 brew "mailhog", restart_service: true
 brew "mailutils"
 brew "minikube"

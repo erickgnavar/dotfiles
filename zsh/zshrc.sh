@@ -1,27 +1,20 @@
-# setup antigen
-MAC_INTEL_PATH="/usr/local/share/antigen/antigen.zsh"
-
-if [ -f "$MAC_INTEL_PATH" ]
+if [ -z "$HOMEBREW_PREFIX" ]
 then
-    source "$MAC_INTEL_PATH"
+    export HOMEBREW_PREFIX=$(brew --prefix)
 fi
 
-MAC_ARM_PATH="/opt/homebrew/share/antigen/antigen.zsh"
-
-if [ -f "$MAC_ARM_PATH" ]
-then
-    source "$MAC_ARM_PATH"
-fi
+source "$HOMEBREW_PREFIX/share/antigen/antigen.zsh"
 
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
 antigen bundle git
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle mafredri/zsh-async
-antigen bundle sindresorhus/pure
 
 antigen apply
 
+# load plugin from homwbrew installation
+fpath+=("$HOMEBREW_PREFIX/opt/pure/share/zsh/site-functions")
 # setup pure-prompt
 autoload -U promptinit; promptinit
 prompt pure

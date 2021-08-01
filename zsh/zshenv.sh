@@ -29,9 +29,9 @@ export KERL_BUILD_DOCS="yes"
 export ERL_AFLAGS="-kernel shell_history enabled"
 
 # load cargo bin
-if [ -d $HOME/.cargo/bin ]
+if [ -f $HOME/.cargo/env ]
 then
-    export PATH=$PATH:$HOME/.cargo/bin
+    . "$HOME/.cargo/env"
 fi
 
 if [ -d $HOME/.ghcup/ ]

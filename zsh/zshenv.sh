@@ -1,3 +1,4 @@
+#! /bin/env sh
 # This file is always executed, even for non interactive shells so it should only contains environment variables
 # Setup lang
 export LANG="en_US.UTF-8"
@@ -29,20 +30,23 @@ export KERL_BUILD_DOCS="yes"
 export ERL_AFLAGS="-kernel shell_history enabled"
 
 # load cargo bin
-if [ -f $HOME/.cargo/env ]
+if [ -f "$HOME/.cargo/env" ]
 then
+    # shellcheck source=/dev/null
     . "$HOME/.cargo/env"
 fi
 
-if [ -d $HOME/.ghcup/ ]
+if [ -d "$HOME/.ghcup/" ]
 then
     export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 fi
 
 # opam configuration
-test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null || true
+# shellcheck source=/dev/null
+test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
 
 # this will load credentials from a private file what won't be commited
+# shellcheck source=/dev/null
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
 # setup for intel macOS
@@ -58,7 +62,7 @@ then
 fi
 
 # shellcheck source=/dev/null
-[ -f "$ASDF_DIR/asdf.sh" ] && source "$ASDF_DIR/asdf.sh"
+[ -f "$ASDF_DIR/asdf.sh" ] && . "$ASDF_DIR/asdf.sh"
 
 # Disable telemetry in homebrew
 export HOMEBREW_NO_ANALYTICS=1

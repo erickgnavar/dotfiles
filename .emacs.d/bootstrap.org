@@ -1163,23 +1163,16 @@ Open selected region in remote repo page
   (magit-status)
   (delete-other-windows))
 
-(defun my/magit-status-exit (&optional kill-buffer)
-  "Restore windows configuration after magit status buffer is closed."
-  (interactive)
-  (let ((magit-buffer-name (format "magit: %s" (my/project-name)))
-        (register-value (get-register my/magit-register)))
-    (if (and register-value (string-equal magit-buffer-name (buffer-name)))
-        (set-window-configuration register-value))))
-
 (defun my/magit-blame-quit ()
   "Restore evil state after magit blame mode is closed."
   (evil-exit-emacs-state))
 
 (use-package magit
   :ensure t
+  :custom
+  (magit-bury-buffer-function 'magit-restore-window-configuration)
   :defer t
   :config
-  (advice-add 'magit-mode-bury-buffer :after 'my/magit-status-exit)
   (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
   (add-hook 'git-commit-mode-hook 'my/setup-ispell-for-commit-message)
   (add-hook 'magit-blame-mode-hook

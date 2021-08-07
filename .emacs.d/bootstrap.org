@@ -556,7 +556,7 @@ Incremental code parsing for better syntax highlighting
     "c" 'vterm-toggle
     "e" 'my/find-file-in-project
     "f" 'find-file
-    "g" 'my/magit-status
+    "g" 'magit-status
     "G" 'magit-file-dispatch
     "i" 'imenu
     "hk" 'diff-hl-revert-hunk
@@ -1155,14 +1155,6 @@ Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
 
-(defconst my/magit-register ?m)
-
-(defun my/magit-status()
-  (interactive)
-  (set-register my/magit-register (current-window-configuration))
-  (magit-status)
-  (delete-other-windows))
-
 (defun my/magit-blame-quit ()
   "Restore evil state after magit blame mode is closed."
   (evil-exit-emacs-state))
@@ -1170,7 +1162,10 @@ Open selected region in remote repo page
 (use-package magit
   :ensure t
   :custom
+  ;; restore previous window configuration after a buffer is closed
   (magit-bury-buffer-function 'magit-restore-window-configuration)
+  ;; open magit status buffer in the whole frame
+  (magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
   :defer t
   :config
   (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)

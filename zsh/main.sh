@@ -179,3 +179,33 @@ function k8s_change_context {
     echo "Changing to $context"
     kubectl config use-context $context
 }
+
+# my jump, it's a similar concept of jump command but search into ~/Code folder
+# and create a new tmux session with the selected project folder
+function mj {
+    local project_path=`tree ~/Code -L 2 --noreport -d -f -i | fzf`
+    local org=`echo $project_path | awk '{split($0, a, "/"); print a[5]}'`
+    local project=`echo $project_path | awk '{split($0, a, "/"); print a[6]}'`
+    local session_name="$org/$project"
+
+    # prevent tmux complain about being already inside a tmux session
+    TMUX=
+
+    if [ "$session_name" = "" ]
+    then
+         exit 1
+    fi
+
+    tmux has-session -t $session_name
+
+    if [ $? != 0 ]
+    then
+        tmux new-session -s "$session_name" -d
+    fi
+
+    # switch to session
+    tmux switch-client -t $session_name
+
+    window=${session_name}:0
+    tmux send-keys -t "$window" "cd $project_path" Enter
+}

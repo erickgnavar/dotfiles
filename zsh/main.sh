@@ -1,5 +1,9 @@
 ZSH_THEME=""
 
+# ZSH history file config
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=1000000
+export SAVEHIST=1000000
 # Prevent duplicates in bash history
 setopt hist_ignore_all_dups
 

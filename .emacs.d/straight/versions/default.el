@@ -96,7 +96,7 @@
  ("linkode.el" . "376fdc0f990322385534a16ee2cd08df20f76f48")
  ("logito" . "824acb89d2cc18cb47281a4fbddd81ad244a2052")
  ("lsp-dart" . "10e309acc31648ec9bf7ffeef0fc2ad16b2a8584")
- ("lsp-mode" . "aca0f8372c856f75c3f2fb5295d07c84931275e9")
+ ("lsp-mode" . "d9c8ed3a932b568614d9bbf682271cf43bb8ec73")
  ("lua-mode" . "1f596a93b3f1caadd7bba01030f8c179b029600b")
  ("magit" . "93f03389d055fe1f648b37a85fade85e8635b41c")
  ("markdown-mode" . "9977753eebe3f5cca7ab85b18a7c719fdb0b7654")

@@ -144,7 +144,7 @@ function video_to_gif {
 
 function pod_shell {
     local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '/Running/ {print $1}' | fzf`
     echo "Connecting to $pod"
 
     if [ -z $1 ]
@@ -168,7 +168,7 @@ function pod_proxy {
 
 function pod_logs {
     local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '/Running/ {print $1}' | fzf`
     echo "Showing logs for $pod"
 
     kubectl -n $namespace logs -f $pod

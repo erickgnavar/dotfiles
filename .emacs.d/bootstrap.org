@@ -2275,6 +2275,20 @@ Generate daily report for work.
 
 #+END_SRC
 
+Copy json text from clipboard in a new buffer and format it
+
+#+begin_src emacs-lisp
+(defun my/copy-and-format-json-from-clipboard ()
+  "Copy content from clipboard and format it in a new buffer."
+  (interactive)
+  (let ((buffer (generate-new-buffer "tmp.json")))
+    (with-current-buffer buffer
+      (yank)
+      (json-mode)
+      (json-mode-beautify))
+    (set-window-buffer nil buffer)))
+#+end_src
+
 ** MacOS
 
 Functions to open Finder using current file or current project.

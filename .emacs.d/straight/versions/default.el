@@ -127,7 +127,6 @@
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
  ("perspective-el" . "cbdc3e5dc77ccb681f8719db0a85af8850b757d2")
  ("pos-tip" . "c9ced6c485788a4556161f8e3b7893d230a49db2")
- ("py-isort.el" . "e67306f459c47c53a65604e4eea88a3914596560")
  ("pyvenv" . "861998b6d157ae73b829f02a5a6c8a9118310831")
  ("queue" . "52206c0f78afc0dfb9a287cb928c1e725103336d")
  ("rainbow-delimiters" . "5125f4e47604ad36c3eb4706310fcafac729ca8c")

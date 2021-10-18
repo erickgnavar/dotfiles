@@ -33,7 +33,7 @@ function t () {
 }
 
 function elpy_install () {
-    pip install elpy jedi flake8 yapf epc isort pdbpp importmagic
+    pip install elpy jedi flake8 epc isort pdbpp
 }
 
 function docker_remove_containers() {

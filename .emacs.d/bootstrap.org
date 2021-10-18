@@ -1437,7 +1437,7 @@ Emacs Start Up Profiler
   For each virtual environment install the following packages:
 
 #+BEGIN_SRC sh
-pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
+pip install elpy jedi flake8 epc isort
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1452,12 +1452,6 @@ pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
   :args '("-")
   :group 'python)
 
-(defun my/python-format-code ()
-  (interactive)
-  (if (executable-find "black")
-      (python-black-format-buffer)
-    (elpy-format-code)))
-
 (use-package elpy
   :ensure t
   :hook (python-mode . elpy-enable)
@@ -1465,7 +1459,8 @@ pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
   (elpy-shell-echo-input . nil)
   :config
   (evil-leader/set-key-for-mode 'python-mode "d" 'elpy-goto-definition)
-  (define-key elpy-mode-map (kbd "C-c C-f") 'my/python-format-code)
+  ;; we need to "unset" to be able to make the same key-binding in python-mode
+  (define-key elpy-mode-map (kbd "C-c C-f") nil)
   (setq elpy-rpc-python-command "python")
   (add-hook 'elpy-mode-hook
             (lambda ()
@@ -1474,6 +1469,7 @@ pip install elpy jedi flake8 importmagic autopep8 yapf epc isort
 (setq python-shell-completion-native-enable nil)
 
 (with-eval-after-load 'python
+  (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
   (define-key python-mode-map (kbd "C-c C-i") 'python-isort-format-region))
 
 #+END_SRC

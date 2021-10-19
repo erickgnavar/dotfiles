@@ -461,17 +461,21 @@ When editing a commit message =ispell= should ignore lines that start with =#=, 
 
 Incremental code parsing for better syntax highlighting
 
+Only install these packages for ~x86_64~ architecture, ~tree-sitter~ binaries for arm are not available yet.
+
 #+begin_src emacs-lisp
 
 (use-package tree-sitter
   :ensure t
+  :if (string-prefix-p "x86_64" system-configuration)
   :hook
   (tree-sitter-after-on . tree-sitter-hl-mode)
   :config
   (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
-  :ensure t)
+  :ensure t
+  :if (string-prefix-p "x86_64" system-configuration))
 
 #+end_src
 

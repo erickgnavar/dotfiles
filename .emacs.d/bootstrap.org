@@ -1066,13 +1066,13 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
 
 #+END_SRC
 
-Fix error with ~TAB~ in ~evil-mode~ in ~org-mode~ with headings.
+Fix error with ~TAB~ in ~evil-mode~ in ~org-mode~ with org elements.
 
 #+begin_src emacs-lisp
 (defun my/org-tab ()
-  "Run `org-cycle' only at point of a heading."
+  "Run `org-cycle' only at point of an org element."
   (interactive)
-  (if (org-at-heading-p)
+  (if (org-element-at-point)
       (org-cycle)
     (evil-jump-forward)))
 

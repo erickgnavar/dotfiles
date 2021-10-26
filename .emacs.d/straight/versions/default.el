@@ -155,7 +155,7 @@
  ("vterm" . "e63bd65eece7c5de3a534b7e2fdbe58256ec2da0")
  ("vterm-toggle" . "a0429842e6197a6ec83c0de30701127a4edb9e92")
  ("web-mode" . "8ef47935d638902ba35a557cae5edd6ab6ab1346")
- ("wakatime-mode" . "7626678315918bdbb81ede68149f20a7d97a928f")
+ ("wakatime-mode" . "8dfe67c1581a0f3688c572dfdb5f8f71d3f874a0")
  ("with-editor" . "ebcbd3b137154e6c5a2b976bacbb89d48ddfa242")
  ("writeroom-mode" . "fa17eb651102502f60086d62784f1dae15c0630d")
  ("yaml-mode" . "cecf4b106b0c4236931b14919fdf87ff3546e2c9")

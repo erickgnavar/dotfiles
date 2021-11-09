@@ -143,8 +143,8 @@ function video_to_gif {
 # k8s helpers
 
 function pod_shell {
-    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    local pod=`kubectl get pods -n $namespace | sed 1d | awk '/Running/ {print $1}' | fzf`
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace"`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod"`
     echo "Connecting to $pod"
 
     if [ -z $1 ]
@@ -156,8 +156,8 @@ function pod_shell {
 }
 
 function pod_proxy {
-    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace"`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf --header="Select pod"`
     local port_mapping
     echo "Enter port mapping using the form local_port:pod_port"
     read port_mapping
@@ -167,15 +167,15 @@ function pod_proxy {
 }
 
 function pod_logs {
-    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
-    local pod=`kubectl get pods -n $namespace | sed 1d | awk '/Running/ {print $1}' | fzf`
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace"`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod"`
     echo "Showing logs for $pod"
 
     kubectl -n $namespace logs -f $pod
 }
 
 function k8s_change_context {
-    local context=`kubectl config get-contexts --output='name' | fzf`
+    local context=`kubectl config get-contexts --output='name' | fzf --header="Select context"`
     echo "Changing to $context"
     kubectl config use-context $context
 }

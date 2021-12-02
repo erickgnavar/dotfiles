@@ -165,6 +165,19 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
 
 #+END_SRC
 
+Custom function to select a base directory before running compilation. ~M-x compile~ always use the base directory of the buffer from where it was called as ~default-directory~, this is awful when you want to run a project compilation command from a nested file buffer.
+
+#+begin_src emacs-lisp
+(defun my/compile ()
+  "Run compilation process but ask for a `default-directory' before."
+  (interactive)
+  (let ((default-directory (read-directory-name "Base directory: " (my/project-root)))
+        (cmd (read-string "Compile command: ")))
+    ;; we need to "export" this variable to be able to re-run `compile' command
+    (setq compile-command cmd)
+    (compile compile-command)))
+#+end_src
+
 * Theme and styles
 
 ** Dracula

@@ -146,7 +146,7 @@
  ("swiper" . "e7eca371522d96d27bc4b2f7d87f19c1b75e927c")
  ("tablist" . "41a9612f51bad36d6689667c11f42f8143103bb2")
  ("toml-mode.el" . "f6c61817b00f9c4a3cab1bae9c309e0fc45cdd06")
- ("transient" . "a6e4cced303b3febd59412b24a97eaf1e855e6d7")
+ ("transient" . "129c2b1685368757ffe2b6fb2d57da4b06330968")
  ("treepy.el" . "306f7031d26e4ebfc9ff36614acdc6993f3e23c3")
  ("tuareg" . "c12061eb80c1487a1963af7cdae268d709a70ca9")
  ("typescript.el" . "0fc729787007b5111f3584034af0f3ef2389098f")

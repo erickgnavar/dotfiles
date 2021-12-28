@@ -30,6 +30,9 @@ export KERL_BUILD_DOCS="yes"
 # Always save iex session history
 export ERL_AFLAGS="-kernel shell_history enabled"
 
+# enhance man pages using bat
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 # load cargo bin
 if [ -f "$HOME/.cargo/env" ]
 then

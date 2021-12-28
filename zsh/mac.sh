@@ -8,7 +8,11 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 
 # autojump setup
+# intel
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
+# arm
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
 
 # virtualenvwrapper
 export WORKON_HOME=~/.virtualenvs

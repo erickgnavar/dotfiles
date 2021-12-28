@@ -20,8 +20,9 @@ export PATH=$PATH:$HOME/go/bin
 # haskell stack install some binaries here: hindent, hlint, etc
 export PATH="$PATH:$HOME/.local/bin"
 
-# variable used to avoid java as a requirement when installing a version of erlang with asdf
-export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
+# --without-javac will disable java requirement for erlang compilation
+# --enable-m64-build will pass a flag to gcc about how to build 64 bits binaries, fixes an error with make while compiling erlang using asdf/kerl
+export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac --enable-m64-build"
 
 # Tell kerl to build documentation when compiling erlang
 export KERL_BUILD_DOCS="yes"

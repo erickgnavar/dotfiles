@@ -50,19 +50,16 @@ test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" >
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
 # setup for intel macOS
-if [ -d "/usr/local/opt/asdf" ]
+if [ -d "/usr/local/opt/asdf/libexec" ]
 then
-    export ASDF_DIR="/usr/local/opt/asdf"
+    . /usr/local/opt/asdf/libexec/asdf.sh
 fi
 
 # setup for arm macOS
-if [ -d "/opt/homebrew/opt/asdf" ]
+if [ -d "/opt/homebrew/opt/asdf/libexec" ]
 then
-    export ASDF_DIR="/opt/homebrew/opt/asdf"
+    . /opt/homebrew/opt/asdf/libexec/asdf.sh
 fi
-
-# shellcheck source=/dev/null
-[ -f "$ASDF_DIR/asdf.sh" ] && . "$ASDF_DIR/asdf.sh"
 
 # Disable telemetry in homebrew
 export HOMEBREW_NO_ANALYTICS=1

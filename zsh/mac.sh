@@ -38,3 +38,7 @@ function rae {
 }
 
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+
+function reset_cache {
+    sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+}

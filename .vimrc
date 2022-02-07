@@ -166,3 +166,6 @@ nmap <c-n> <Nop>
 nmap <c-p> <Nop>
 nmap <c-n> :GitGutterNextHunk<ENTER>
 nmap <c-p> :GitGutterPrevHunk<ENTER>
+
+" automatically rebalance windows on vim resize
+autocmd VimResized * :wincmd = "

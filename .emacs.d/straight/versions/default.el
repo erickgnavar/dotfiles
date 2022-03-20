@@ -44,7 +44,7 @@
  ("emacs-tree-sitter" . "771239bacecf6c3ba9ee8b9eecec2b9fdd8e2256")
  ("emacs-which-key" . "ca268fd313d3fb2bd03a8b5e4bdcca675ce58ca7")
  ("emacsmirror-mirror" . "cbb3c3c57c522ba97a8793aa8ba471151556e404")
- ("emacsql" . "a118b6c95af1306f0288a383d274b5dd93efbbda")
+ ("emacsql" . "374726060d74df0e2bcb9d0355ff41e2c400ed30")
  ("emmet-mode" . "1acb821e0142136344ccf40c1e5fb664d7db2e70")
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
  ("esup" . "c9c95e245068d15d8e2732098af9a5d2bc8ec931")

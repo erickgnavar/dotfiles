@@ -544,10 +544,13 @@ Incremental code parsing for better syntax highlighting
   :config
   (global-evil-surround-mode 1))
 
-(defun my/replace-word-at-point ()
-  "Setup buffer replace string for word at point using evil ex mode."
+(defun my/replace-at-point-or-region ()
+  "Setup buffer replace string for word at point or active region using evil ex mode."
   (interactive)
-  (evil-ex (concat "%s/" (word-at-point) "/")))
+  (let ((text (if (region-active-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (word-at-point))))
+    (evil-ex (concat "%s/" text "/"))))
 
 (use-package evil-leader
   :ensure t
@@ -572,7 +575,7 @@ Incremental code parsing for better syntax highlighting
     "pa" 'my/copy-abs-path
     "pr" 'my/copy-relative-path
     "q" 'helm-swoop
-    "r" 'my/replace-word-at-point
+    "r" 'my/replace-at-point-or-region
     "R" 'recompile
     "s" 'my/toggle-spanish-characters
     "t" 'persp-switch

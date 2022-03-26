@@ -27,7 +27,7 @@
  ("editorconfig-emacs" . "65f8244ffbeb9bf2720d922d4b5fc74849b9af82")
  ("edn.el" . "be9e32d1b49e35247b263b0243df7cfdc8d413ab")
  ("eglot" . "b0fdfb02e14f1c3e40b4a601bb7d6abb470ea63b")
- ("elm-mode" . "e9fcf9cc2779cf7f5ae7ee4be339164b26755c69")
+ ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
  ("elpy" . "74eb42cce221c6b731ba9735edc595261e156e7e")
  ("emacs" . "95ec96f9d8816f8d16c668336f6a4f383d1a7f1d")
  ("emacs-async" . "11769c189528738f9b4e3ce3ca19d73863045c45")

@@ -722,16 +722,13 @@ Only activate =flymake= for actual projects and for =prog-mode=
 
 ** Direnv
 
-This allow to update environment using =.envrc= file.
+Handle environment variables per buffer usiong a ~.envrc~ file.
 
 #+BEGIN_SRC emacs-lisp
-
-(use-package direnv
+(use-package envrc
   :ensure t
-  :defer t
-  :bind (:map direnv-envrc-mode-map
-              ("C-c C-c" . 'direnv-allow)))
-
+  :config
+  (envrc-global-mode))
 #+END_SRC
 
 ** perspective.el

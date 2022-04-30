@@ -1,3 +1,4 @@
+#!/bin/env bash
 ZSH_THEME=""
 
 # ZSH history file config

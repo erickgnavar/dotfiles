@@ -1206,6 +1206,17 @@ This pacakge includes ~gitignore-mode~, ~gitconfig-mode~ and ~gitattributes-mode
 
 #+END_SRC
 
+** Magit delta
+
+Use ~delta~ tool to show diffs in magit
+
+#+begin_src emacs-lisp
+(use-package magit-delta
+  :ensure t
+  :if (executable-find "delta")
+  :hook (magit-mode . magit-delta-mode))
+#+end_src
+
 ** Forge
 
 #+BEGIN_SRC emacs-lisp

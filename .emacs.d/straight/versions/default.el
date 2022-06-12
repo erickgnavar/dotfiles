@@ -98,6 +98,7 @@
  ("lsp-mode" . "d9c8ed3a932b568614d9bbf682271cf43bb8ec73")
  ("lua-mode" . "5a9bee8d5fc978dc64fcb677167417010321ba65")
  ("magit" . "f84373692767a94e555cc190fd099da4570e1fca")
+ ("magit-delta" . "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
  ("markdown-mode" . "9977753eebe3f5cca7ab85b18a7c719fdb0b7654")
  ("marshal.el" . "f038689cbd5b3680b80b44edd0c7a63ca3038e26")
  ("melpa" . "6e0f64b768c13fb873dc1dcb849770b7b401603d")

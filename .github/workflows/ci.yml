@@ -15,7 +15,7 @@ jobs:
       - name: Render config into html
         run: cd scripts && sh render-emacs-config-to-html.sh
       - name: Pushes to destination repository
-        uses: cpina/github-action-push-to-another-repository@cp_instead_of_deleting
+        uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
@@ -23,3 +23,4 @@ jobs:
           destination-github-username: 'erickgnavar'
           destination-repository-name: 'emacs-config'
           user-email: bot@emacs.bot
+          target-branch: master

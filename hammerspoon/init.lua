@@ -5,5 +5,9 @@ hs.hotkey.bind(leader, "R", function()
   hs.reload()
 end)
 
+hs.hotkey.bind(leader, "T", function()
+  hs.application.open "Terminal.app"
+end)
+
 -- windows management config
 require "windows"

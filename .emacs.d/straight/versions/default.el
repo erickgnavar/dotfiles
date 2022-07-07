@@ -58,6 +58,7 @@
  ("flutter" . "b44aff1a5f332ec1b030ca91a4d65d715b3c0431")
  ("forge" . "6738256931b043a1ed36c31b8b6fd4dd962d8ec9")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
+ ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")
  ("gh.el" . "f029fc11f345ef04ab62ee91c38657e29c462fea")
  ("ghub" . "192eff9da2c0f61813f3bc9c00913985c1804180")
  ("gist.el" . "314fe6ab80fae35b95f0734eceb82f72813b6f41")

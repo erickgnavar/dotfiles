@@ -93,6 +93,20 @@ Adjust font size to screen resolution, increase font size for 4K screens
 
 #+END_SRC
 
+#+begin_src emacs-lisp
+(define-minor-mode big-font-mode
+  "Switch between a regular font size and a presentation font size."
+  :init-value nil
+  :global t
+  (if big-font-mode
+      (progn
+        ;; save current font size in a temp variable to be able to restore it
+        ;; after this minor mode is disabled
+        (setq big-font-mode--tmp (/ (face-attribute 'default :height) 10))
+        (set-frame-font (format "%s %d" my/font-family 20)))
+    (set-frame-font (format "%s %d" my/font-family big-font-mode--tmp))))
+#+end_src
+
 Parrot mode FTW!
 
 #+BEGIN_SRC emacs-lisp

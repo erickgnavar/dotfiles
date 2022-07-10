@@ -1628,13 +1628,30 @@ git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
   :args '("format" "-")
   :group 'elixir)
 
+(defun my/elixir-format-buffer ()
+  "Format elixir buffers using lsp when is active otherwise use reformatter function."
+  (interactive)
+  (if lsp-mode
+      (lsp-format-buffer)
+    (elixir-format-buffer)))
+
+(defun my/elixir-goto-definition ()
+  "Go to definition using lsp when is active otherwise use dumb-jump"
+  (interactive)
+  (if lsp-mode
+      (lsp-find-definition)
+    (dumb-jump-go)))
+
 (use-package elixir-mode
   :ensure t
   :bind (:map elixir-mode-map
               ("C-c C-t" . 'my/mix-run-test-at-point)
-              ("C-c C-f" . elixir-format-buffer))
+              ("C-c C-f" . 'my/elixir-format-buffer))
+
+  :hook
+  (elixir-mode . lsp)
   :config
-  (evil-leader/set-key-for-mode 'elixir-mode "d" 'dumb-jump-go))
+  (evil-leader/set-key-for-mode 'elixir-mode "d" 'my/elixir-goto-definition))
 
 #+END_SRC
 

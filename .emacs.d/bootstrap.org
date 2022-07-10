@@ -1496,11 +1496,28 @@ Emacs Start Up Profiler
 (use-package lsp-mode
   :ensure t
   :defer t
+  :bind (:map lsp-mode-map
+              ("C-c C-s" . 'lsp-find-references))
+  :custom
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-lens-enable nil)
   :init
   (setq lsp-prefer-capf t)
   ;; 10Mb LSP consume large payloads so a higher value is required
   (setq read-process-output-max (* 10 1024 1024)))
 
+#+end_src
+
+lsp-ui
+
+#+begin_src emacs-lisp
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :bind (:map lsp-ui-doc-mode-map
+              ("C-c C-d" . 'lsp-ui-doc-show))
+  :custom
+  (lsp-ui-doc-position 'at-point))
 #+end_src
 
 * Programming languages

@@ -151,6 +151,15 @@ For some reason ansi-term doesn't respect the global keybinding for =M-]= so thi
 
 #+END_SRC
 
+** xref
+
+Enable evil emacs state when entering a xref buffer
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'xref
+  (add-hook 'xref-after-update-hook '(lambda () (evil-emacs-state))))
+#+end_src
+
 ** Compilation
 
 Disable =h= key-binding, this has a conflict with evil-mode left navigation key-binding.

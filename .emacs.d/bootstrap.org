@@ -169,6 +169,8 @@ Disable =h= key-binding, this has a conflict with evil-mode left navigation key-
 (with-eval-after-load 'compile
   ;; set cursor to follow compilation output
   (setq compilation-scroll-output t)
+  ;; for elixir testing output test filename use black color which makes it ineligible
+  (set-face-foreground 'ansi-color-bold "magenta")
   (define-key compilation-mode-map (kbd "g") nil)
   (define-key compilation-mode-map (kbd "r") 'recompile)
   (define-key compilation-mode-map (kbd "h") nil))

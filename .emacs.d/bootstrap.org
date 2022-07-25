@@ -157,7 +157,7 @@ Enable evil emacs state when entering a xref buffer
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'xref
-  (add-hook 'xref-after-update-hook '(lambda () (evil-emacs-state))))
+  (add-hook 'xref-after-update-hook #'(lambda () (evil-emacs-state))))
 #+end_src
 
 ** Compilation
@@ -526,8 +526,7 @@ Run ispell in text nodes
   (let ((file-path (thing-at-point 'filename t)))
     (if (file-name-absolute-p file-path)
         (find-file-at-point file-path)
-      (minibuffer-with-setup-hook (lambda ()
-                                    (insert file-path))
+      (minibuffer-with-setup-hook #'(lambda () (insert file-path))
         (helm-ls-git-ls)))))
 
 #+end_src
@@ -1086,9 +1085,9 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
   (unless (version< emacs-version "27")
     (require 'org-tempo))
 
-  (add-hook 'org-mode-hook (lambda ()
-                             (org-indent-mode t)
-                             (autopair-mode -1)))
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (org-indent-mode t)
+                               (autopair-mode -1)))
 
   (advice-add 'org-edit-special :before 'my/org-edit-special)
   (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
@@ -1233,9 +1232,7 @@ This pacakge includes ~gitignore-mode~, ~gitconfig-mode~ and ~gitattributes-mode
   :config
   (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
   (add-hook 'git-commit-mode-hook 'my/setup-ispell-for-commit-message)
-  (add-hook 'magit-blame-mode-hook
-            (lambda ()
-              (evil-emacs-state))))
+  (add-hook 'magit-blame-mode-hook #'(lambda () (evil-emacs-state))))
 
 #+END_SRC
 
@@ -1258,8 +1255,7 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :after magit
   :config
-  (add-hook 'forge-topic-mode-hook (lambda ()
-                                     (evil-emacs-state))))
+  (add-hook 'forge-topic-mode-hook #'(lambda () (evil-emacs-state))))
 
 #+END_SRC
 
@@ -1286,8 +1282,7 @@ Use ~delta~ tool to show diffs in magit
 (use-package git-timemachine
   :ensure t
   :config
-  (add-hook 'git-timemachine-mode-hook (lambda ()
-                                         (evil-emacs-state))))
+  (add-hook 'git-timemachine-mode-hook #'(lambda () (evil-emacs-state))))
 
 #+END_SRC
 
@@ -1568,9 +1563,8 @@ pip install elpy jedi flake8 epc isort
   ;; we need to "unset" to be able to make the same key-binding in python-mode
   (define-key elpy-mode-map (kbd "C-c C-f") nil)
   (setq elpy-rpc-python-command "python3")
-  (add-hook 'elpy-mode-hook
-            (lambda ()
-              (highlight-indentation-mode -1)))) ; Remove vertical line
+  ;; Remove vertical line
+  (add-hook 'elpy-mode-hook #'(lambda () (highlight-indentation-mode -1))))
 
 (setq python-shell-completion-native-enable nil)
 
@@ -1592,7 +1586,7 @@ Show a list of the available django commands and run the selected one using a co
          (default-directory (my/project-root))
          (raw-help (shell-command-to-string (concat python-bin " " manage-py-file " help")))
          (splited-lines (split-string raw-help "\n"))
-         (options (seq-filter '(lambda (line) (cl-search "    " line)) splited-lines))
+         (options (seq-filter #'(lambda (line) (cl-search "    " line)) splited-lines))
          (selection (completing-read "Pick django command: " (mapcar 'string-trim options)))
          (command (concat python-bin " " manage-py-file " " selection)))
     (compile command)))
@@ -2293,13 +2287,12 @@ Function to extract clocks from org buffer and filter them by month
 
 (defun my/collect-clocks ()
   "Collect all the clocks of current buffer."
-  (org-element-map (org-element-parse-buffer) 'clock
-    (lambda (clock) clock)))
+  (org-element-map (org-element-parse-buffer) 'clock #'(lambda (clock) clock)))
 
 (defun my/filter-clocks-by-month (clocks month)
   "Filter CLOCKS using MONTH value."
-  (seq-filter '(lambda (clock)
-                 (eq (org-element-property :month-end (org-element-property :value clock)) month)) clocks))
+  (seq-filter #'(lambda (clock)
+                  (eq (org-element-property :month-end (org-element-property :value clock)) month)) clocks))
 
 (defun my/org-filter-clocks-report ()
   "Create a buffer with the tasks filtered by month."
@@ -2311,8 +2304,8 @@ Function to extract clocks from org buffer and filter them by month
     (switch-to-buffer buffer)
     (org-mode)
     (insert "* Report\n")
-    (seq-map '(lambda (clock)
-                (insert (format "CLOCK: %s\n" (org-element-property :raw-value (org-element-property :value clock))))) filtered-clocks)
+    (seq-map #'(lambda (clock)
+                 (insert (format "CLOCK: %s\n" (org-element-property :raw-value (org-element-property :value clock))))) filtered-clocks)
     (org-clock-display)))
 
 #+END_SRC

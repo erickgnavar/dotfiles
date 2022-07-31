@@ -206,6 +206,19 @@ Custom function to select a base directory before running compilation. ~M-x comp
     (compile compile-command)))
 #+end_src
 
+** Narrowing
+
+#+begin_src emacs-lisp
+(defun my/toggle-narrowing ()
+  "Toggle narrow on the selected region."
+  (interactive)
+  (if (buffer-narrowed-p)
+      (widen)
+    (if (region-active-p)
+        (narrow-to-region (region-beginning) (region-end))
+      (user-error "No active selection"))))
+#+end_src
+
 * Theme and styles
 
 ** Dracula
@@ -608,6 +621,7 @@ Run ispell in text nodes
     "k" 'kill-buffer
     "l" 'display-line-numbers-mode
     "n" 'evil-buffer-new
+    "N" 'my/toggle-narrowing
     "pa" 'my/copy-abs-path
     "pr" 'my/copy-relative-path
     "q" 'helm-swoop

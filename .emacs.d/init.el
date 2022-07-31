@@ -52,7 +52,7 @@
 (org-babel-load-file (expand-file-name "~/.emacs.d/bootstrap.org"))
 
 (defun my/restore-gc-params ()
-  ;; a bigger value is required for lsp to work properly
+  "Setup GC with a bigger value which is required for lsp to work properly."
   (setq gc-cons-threshold (* 100 1024 1024)
         gc-cons-percentage 0.1
         file-name-handler-alist last-file-name-handler-alist))

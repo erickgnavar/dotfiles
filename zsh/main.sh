@@ -67,18 +67,18 @@ function download_video_best_quality() {
 }
 
 function mkvenv() {
-    local python_path="${HOME}/.pyenv/versions/$2/bin/python"
+    local python_path="${HOME}/.pyenv/versions/$1/bin/python"
 
     if [ -f $python_path ]; then
-        mkvirtualenv $1 --python=$python_path
+        poetry env use $python_path
     else
         echo "Python version doesn't exist"
-        echo "Installing python $2"
+        echo "Installing python $1"
 
-        pyenv install $2
+        pyenv install $1
 
         if [ $? -eq 0 ]; then
-            mkvirtualenv $1 --python=$python_path
+            poetry env use $python_path
         fi
     fi
 }

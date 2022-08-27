@@ -542,7 +542,7 @@ Run ispell in text nodes
     (if (file-name-absolute-p file-path)
         (find-file-at-point file-path)
       (minibuffer-with-setup-hook #'(lambda () (insert file-path))
-        (helm-ls-git-ls)))))
+        (helm-ls-git)))))
 
 #+end_src
 
@@ -858,10 +858,10 @@ Define helper functions to be used by other packages
     (my/project-switch-action)))
 
 (defun my/project-switch-action ()
-  "Switch to a new perspective which name is project's name and open `helm-ls-git-ls'."
+  "Switch to a new perspective which name is project's name and open `helm-ls-git'."
   (interactive)
   (persp-switch (my/project-name))
-  (helm-ls-git-ls))
+  (helm-ls-git))
 
 (defun my/project-kill-buffers ()
   "Kill all the related buffers to the current project and delete its perspective as well."
@@ -2222,7 +2222,7 @@ Manipulate frame font height.
   "Custom find file function."
   (interactive)
   (if (my/project-p)
-      (helm-ls-git-ls)
+      (helm-ls-git)
     (helm-for-files)))
 
 (defun my/fold-buffer-when-is-too-big (max-lines)

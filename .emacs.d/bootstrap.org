@@ -924,9 +924,13 @@ Helm util packages
   :ensure t
   :defer t)
 
+;; `helm-source-ls-git-status' will show fiels with changes
+;; `helm-c-source-ls-git' will will show all project files
 (use-package helm-ls-git
   :ensure t
-  :defer t)
+  :defer t
+  :custom ((helm-ls-git-default-sources '(helm-source-ls-git-status
+                                          helm-source-ls-git))))
 
 (use-package helm-swoop
   :ensure t

@@ -60,6 +60,7 @@
  ("forge" . "6a820a424465900b0cc7bc54ccdad6491764e581")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
  ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")
+ ("hidepw" . "73f099da79d73fe4087472df3469d8b9b20a59f2")
  ("gh.el" . "f029fc11f345ef04ab62ee91c38657e29c462fea")
  ("ghub" . "4e5bb75305a763ef9ccfc1971b3cba4520f290d7")
  ("gist.el" . "314fe6ab80fae35b95f0734eceb82f72813b6f41")

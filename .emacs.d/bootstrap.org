@@ -786,9 +786,16 @@ Handle environment variables per buffer usiong a ~.envrc~ file.
 Hide values that match regex patterns in ~.envrc~ files
 
 #+begin_src emacs-lisp
+(defun my/enable-envrc-with-hidepw ()
+  "Enable envrc and hidepw modes."
+  (envrc-mode)
+  (hidepw-mode))
+
 (use-package hidepw
   :ensure t
-  :mode (("\\.envrc\\'" . hidepw-mode))
+  ;; this can be done by using :hook but for some reason using that
+  ;; will break font locking in helm
+  :mode (("\\.envrc\\'" . my/enable-envrc-with-hidepw))
   :custom
   ;; envrc value pattern
   (hidepw-patterns '("[a-zA-Z0-9_]+[ \t]*=[ \t]*\\(.*+\\)$"))

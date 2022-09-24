@@ -728,9 +728,21 @@ Install =pgformatter= using homebrew =brew install pgformatter=
     (sql-format-buffer)))
 
 (with-eval-after-load 'sql
+  (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
+  (add-hook 'sql-mode-hook 'flymake-mode)
   (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
 
 #+END_SRC
+
+** SQL linter using [[https://www.sqlfluff.com][sqlfluff]]
+
+#+begin_src emacs-lisp
+(use-package flymake-sqlfluff
+  :straight (flymake-sqlfluff
+             :type git
+             :host github
+             :repo "erickgnavar/flymake-sqlfluff"))
+#+end_src
 
 * Common packages
 

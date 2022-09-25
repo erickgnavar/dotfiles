@@ -772,7 +772,7 @@ Only activate =flymake= for actual projects and for =prog-mode=
   (if (my/project-p)
       (flymake-mode-on)))
 
-(add-hook 'prog-mode 'my/setup-flymake)
+(add-hook 'prog-mode-hook 'my/setup-flymake)
 
 (with-eval-after-load "flymake"
   (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)

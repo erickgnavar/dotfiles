@@ -57,6 +57,7 @@
  ("exec-path-from-shell" . "4ea306a76f0f8371053dd12d77a3b5b4438974d3")
  ("f.el" . "1814209e2ff43cf2e6d38c4cd476218915f550fb")
  ("flutter" . "b4148db1e6e6822a6a0da1eda3c58affe562d1dc")
+ ("flymake-shellcheck" . "688638177b4e23ecc192975e3062274ca904ada1")
  ("forge" . "6a820a424465900b0cc7bc54ccdad6491764e581")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
  ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")

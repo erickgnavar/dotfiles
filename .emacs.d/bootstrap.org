@@ -1571,6 +1571,18 @@ lsp-ui
 
 * Programming languages
 
+** Shell scripts
+
+#+begin_src emacs-lisp
+(use-package flymake-shellcheck
+  :ensure t
+  :defer t
+  :if (executable-find "shellcheck")
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+#+end_src
+
 ** C
 
 =clang-format= is required for this, we can install it with =brew install clang-format=

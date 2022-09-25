@@ -106,7 +106,7 @@
  ("magit-delta" . "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
  ("markdown-mode" . "9977753eebe3f5cca7ab85b18a7c719fdb0b7654")
  ("marshal.el" . "f038689cbd5b3680b80b44edd0c7a63ca3038e26")
- ("melpa" . "ac9c075545ec797103516a6dd62ea3d51f72bf7e")
+ ("melpa" . "a24b706cdc277fec9d3998574430882f318e26f8")
  ("meme" . "d8f1a57c44a300017d542b4c8c29e0386a1c5d7d")
  ("merlin" . "a451081bf0b0c5e86c4ee61ea0ea0cc0f03a4a0f")
  ("merlin-eldoc" . "db7fab1eddfe34781b7e79694f8923b285698032")

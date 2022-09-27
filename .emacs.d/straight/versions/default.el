@@ -30,6 +30,7 @@
  ("elisp-tree-sitter" . "c3fe96a103a766256ba62120eb638eef8e9a9802")
  ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
  ("elpy" . "74eb42cce221c6b731ba9735edc595261e156e7e")
+ ;; this is dracula theme, github repo is dracula/emacs, that's way is called emacs here
  ("emacs" . "95ec96f9d8816f8d16c668336f6a4f383d1a7f1d")
  ("emacs-async" . "11769c189528738f9b4e3ce3ca19d73863045c45")
  ("emacs-elixir" . "907ef434a0ce0f94dbd0c77f09bdfcdc779bca73")

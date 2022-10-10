@@ -674,6 +674,7 @@ Run ispell in text nodes
   :defer t
   :mode (("\\.http\\'" . restclient-mode))
   :bind (:map restclient-mode-map
+              ("C-c C-h" . 'cloak-mode)
               ("C-c C-f" . json-mode-beautify))) ;TODO: change to only apply json formatting when the content-type is application/json
 
 (use-package restclient-helm
@@ -788,30 +789,28 @@ Handle environment variables per buffer usiong a ~.envrc~ file.
 (use-package envrc
   :ensure t
   :config
-  (envrc-global-mode))
+  (envrc-global-mode)
+  :bind (:map envrc-mode-map
+              ("C-c C-h" . 'cloak-mode)))
 #+END_SRC
 
-** Hide password mode
+** Cloak mode
 
-Hide values that match regex patterns in ~.envrc~ files
+Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
 
 #+begin_src emacs-lisp
-(defun my/enable-envrc-with-hidepw ()
-  "Enable envrc and hidepw modes."
-  (envrc-mode)
-  (hidepw-mode))
-
-(use-package hidepw
-  :ensure t
-  ;; this can be done by using :hook but for some reason using that
-  ;; will break font locking in helm
-  :mode (("\\.envrc\\'" . my/enable-envrc-with-hidepw))
-  :custom
-  ;; envrc value pattern
-  (hidepw-patterns '("[a-zA-Z0-9_]+[ \t]*=[ \t]*\\(.*+\\)$"))
-  (hidepw-mask "🙈🙈🙈")
-  :bind (:map envrc-mode-map
-              ("C-c C-h" . 'hidepw-mode)))
+(use-package cloak-mode
+ :ensure t
+ :straight (cloak-mode
+            :type git
+            :host github
+            :repo "erickgnavar/cloak-mode")
+ :custom
+ (cloak-mode-patterns '((envrc-file-mode . "[a-zA-Z0-9_]+[ \t]*=[ \t]*\\(.*+\\)$")
+                        (restclient-mode . "^:[^: ]+[ \t]*=[ \t]*\\(.+?\\)$")))
+ (cloak-mode-mask "🙈🙈🙈")
+ :config
+ (global-cloak-mode))
 #+end_src
 
 ** perspective.el

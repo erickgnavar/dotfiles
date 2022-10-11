@@ -1869,34 +1869,18 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
 
 We use default =js-mode= because it has been improved in emacs 27.
 
-Formattter
+*** Formattter
 
-Put this script in some =$PATH= location like =~/.local/bin=. This script is needed because prettier can't read code from stdin :/
-
-#+BEGIN_SRC bash
-
-#!/bin/bash -
-
-tmp="$(mktemp).js"
-while read line
-do
-    echo $line >> $tmp
-done < /dev/stdin
-
-npx prettier $tmp
-
-#+END_SRC
+We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define js-format
-  :program "fixprettier.sh")
+  :program "npx"
+  :args '("prettier" "--stdin-filepath" "a.js"))
 
 (with-eval-after-load 'js
   (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
   (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
-
-
 #+END_SRC
 
 ** Typescript

@@ -900,6 +900,9 @@ Define helper functions to be used by other packages
          (project (project-current))
          (buffers-to-kill (project--buffers-to-kill project)))
     (when (yes-or-no-p (format "Kill %d buffers in %s?" (length buffers-to-kill) (my/project-root)))
+      ;; in case we're using eglot we shutdown its server
+      (if (eglot-managed-p)
+          (eglot-shutdown (eglot-current-server)))
       (mapc #'kill-buffer buffers-to-kill)
       (persp-kill project-name))))
 

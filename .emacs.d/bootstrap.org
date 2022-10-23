@@ -975,8 +975,8 @@ Create backups of edited files using a git repitory. Backup folder is located in
 #+begin_src emacs-lisp
 (use-package helm-backup
   :ensure t
-  :config
-  (add-hook 'after-save-hook 'helm-backup-versioning))
+  :defer t
+  :hook (after-save . helm-backup-versioning))
 #+end_src
 
 ** Neotree

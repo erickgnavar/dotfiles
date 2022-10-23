@@ -840,14 +840,16 @@ Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
   (interactive)
   (find-file (expand-file-name ".envrc" (my/project-root))))
 
-(use-package project
-  :bind (:map project-prefix-map
-              ("D" . 'my/project-edit-direnv)
-              ("d" . 'project-dired)
-              ("e" . 'my/project-edit-dir-locals)
-              ("k" . 'my/project-kill-buffers)
-              ("n" . 'my/project-open-new-project)
-              ("p" . 'my/project-switch)))
+;; we tell straight.el that project is a builtin package so it won't be downloaded
+(straight-use-package '(project :type built-in))
+
+(with-eval-after-load 'project
+  (define-key project-prefix-map (kbd "D") 'my/project-edit-direnv)
+  (define-key project-prefix-map (kbd "d") 'project-dired)
+  (define-key project-prefix-map (kbd "e") 'my/project-edit-dir-locals)
+  (define-key project-prefix-map (kbd "k") 'my/project-kill-buffers)
+  (define-key project-prefix-map (kbd "n") 'my/project-open-new-project)
+  (define-key project-prefix-map (kbd "p") 'my/project-switch))
 #+end_src
 
 Define helper functions to be used by other packages
@@ -1535,12 +1537,12 @@ Emacs Start Up Profiler
 * LSP
 
 #+begin_src emacs-lisp
-(use-package eglot
-  :ensure nil
-  :bind (:map eglot-mode-map
-              ("C-c C-d" . 'eldoc-doc-buffer)
-              ("C-c C-s" . 'xref-find-references))
-  :config
+;; we tell straight.el that eglot is a builtin package so it won't be downloaded
+(straight-use-package '(eglot :type built-in))
+
+(with-eval-after-load 'eglot
+  (define-key eglot-mode-map (kbd "C-c C-d") 'eldoc-doc-buffer)
+  (define-key eglot-mode-map (kbd "C-c C-s") 'xref-find-references)
   (setf (alist-get 'elixir-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/elixir-ls/release/language_server.sh"))))
 #+end_src
 

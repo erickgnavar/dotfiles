@@ -1681,6 +1681,12 @@ To have support for LSP we need to compile [[https://github.com/elixir-lsp/elixi
 mix elixir_ls.release
 #+end_src
 
+In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ where is the correct location using a ~.dir-locals.el~ file.
+
+#+begin_src emacs-lisp :tangle no
+((elixir-mode . ((eglot-workspace-configuration . ((:elixirLS . (:projectDir "mix.exs dir/")))))))
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 
 (reformatter-define elixir-format

@@ -144,7 +144,7 @@
  ("tablist" . "41a9612f51bad36d6689667c11f42f8143103bb2")
  ("toml-mode.el" . "f6c61817b00f9c4a3cab1bae9c309e0fc45cdd06")
  ("transient" . "129c2b1685368757ffe2b6fb2d57da4b06330968")
- ("tree-sitter-langs" . "5c6900a66a6b3a5d4ae6bde5199b5288c09af43b")
+ ("tree-sitter-langs" . "aaa81234ddabc85f4316ac50e99f21cc1e9cc40b")
  ("tree-sitter-ispell.el" . "2efe943dd62096a819b7c2d6b61c93a4f18aeb22")
  ("treepy.el" . "306f7031d26e4ebfc9ff36614acdc6993f3e23c3")
  ("tuareg" . "c12061eb80c1487a1963af7cdae268d709a70ca9")

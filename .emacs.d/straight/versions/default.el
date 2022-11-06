@@ -28,7 +28,7 @@
  ("edn.el" . "be9e32d1b49e35247b263b0243df7cfdc8d413ab")
  ("elisp-tree-sitter" . "c3fe96a103a766256ba62120eb638eef8e9a9802")
  ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
- ("elpy" . "74eb42cce221c6b731ba9735edc595261e156e7e")
+ ("elpy" . "ae7919d94659eb26d4146d4c3422c5f4c3610837")
  ;; this is dracula theme, github repo is dracula/emacs, that's way is called emacs here
  ("emacs" . "fdf057f5e80037814098dc8bb67888886c89a761")
  ("emacs-async" . "11769c189528738f9b4e3ce3ca19d73863045c45")

@@ -1615,23 +1615,18 @@ pip python-language-server
   :args '("-")
   :group 'python)
 
+;; we use elpy just to have `elpy-test'
 (use-package elpy
   :ensure t
-  :hook (python-mode . elpy-enable)
   :custom
-  (elpy-shell-echo-input . nil)
-  :config
-  (evil-leader/set-key-for-mode 'python-mode "d" 'my/goto-definition-dumb-jump-fallback)
-  ;; we need to "unset" to be able to make the same key-binding in python-mode
-  (define-key elpy-mode-map (kbd "C-c C-f") nil)
-  (setq elpy-rpc-python-command "python3")
-  ;; Remove vertical line
-  (add-hook 'elpy-mode-hook #'(lambda () (highlight-indentation-mode -1))))
+  (elpy-shell-echo-input . nil))
 
 (setq python-shell-completion-native-enable nil)
 
 (with-eval-after-load 'python
+  (evil-leader/set-key-for-mode 'python-mode "d" 'my/goto-definition-dumb-jump-fallback)
   (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
+  (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
   (define-key python-mode-map (kbd "C-c C-i") 'python-isort-format-region))
 
 #+END_SRC

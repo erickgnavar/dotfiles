@@ -880,6 +880,9 @@ Define helper functions to be used by other packages
   (interactive)
   ;; make sure all the projects list is available to be used
   (project--ensure-read-project-list)
+  ;; helm loading is deferred so we need to check if is available to be able to use it to select a project
+  (unless (featurep 'helm)
+    (require 'helm))
   (let* ((projects (mapcar 'car project--list))
          (choice (completing-read "Switch to project: " projects))
          (default-directory choice))
@@ -921,6 +924,7 @@ Define helper functions to be used by other packages
 
 (use-package helm
   :ensure t
+  :defer t
   :custom
   (helm-M-x-use-completion-styles nil)
   (helm-split-window-inside-p t)

@@ -1619,16 +1619,23 @@ pip python-language-server
 ;; we use elpy just to have `elpy-test'
 (use-package elpy
   :ensure t
+  :defer t
   :custom
   (elpy-shell-echo-input . nil))
 
 (setq python-shell-completion-native-enable nil)
 
+(defun my/ensure-elpy-is-loaded ()
+  "Check if `elpy' is loaded otherwise load it."
+  (unless (featurep 'elpy)
+    (require 'elpy)))
+
 (with-eval-after-load 'python
   (evil-leader/set-key-for-mode 'python-mode "d" 'my/goto-definition-dumb-jump-fallback)
   (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
   (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
-  (define-key python-mode-map (kbd "C-c C-i") 'python-isort-format-region))
+  (define-key python-mode-map (kbd "C-c C-i") 'python-isort-format-region)
+  (add-hook 'python-mode-hook 'my/ensure-elpy-is-loaded))
 
 #+END_SRC
 

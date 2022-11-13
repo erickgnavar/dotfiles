@@ -11,7 +11,6 @@
  ("clj-refactor.el" . "bfd83d142f1a05bad779fa7ccbaec8bd24dae177")
  ("clojure-mode" . "e31186843d06ea86f3771244d1cde0112f9e2079")
  ("closql" . "c864c1fadfea4a05fff29cb60891b7a32ac88c78")
- ("company-lua" . "29f6819de4d691e5fd0b62893a9f4fbc1c6fcb52")
  ("company-mode" . "48fea7a905b3bcc6d97609316beced666da89b1f")
  ("company-restclient" . "e5a3ec54edb44776738c13e13e34c85b3085277b")
  ("csv-mode" . "fbf942e127e68ac8cfcd08a53500ca554fcac079")

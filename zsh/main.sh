@@ -1,5 +1,6 @@
 #!/bin/env bash
-ZSH_THEME=""
+# disable oh my zsh theme so pure prompt can work properly
+export ZSH_THEME=""
 
 # ZSH history file config
 export HISTFILE="$HOME/.zsh_history"

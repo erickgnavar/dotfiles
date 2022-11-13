@@ -321,13 +321,10 @@ Show special markers for tab and endline characters in ~prog-mode~
 
 ** Deactivate extended region in visual mode
 
-This allow to visual mode work more like vim visual highlighting.
+Allow to visual mode work more like vim visual highlighting.
 
 #+begin_src emacs-lisp
-
-(unless (version< emacs-version "27")
-  (set-face-attribute 'region nil :extend nil))
-
+(set-face-attribute 'region nil :extend nil)
 #+end_src
 
 ** Dark and transparent title bar in macOS
@@ -1140,11 +1137,10 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
         org-log-done t)
   (org-clock-persistence-insinuate)
 
-  ;; this is needed to use shortcuts like <s to create source blocks
-  (unless (version< emacs-version "27")
-    (require 'org-tempo))
-
   (add-hook 'org-mode-hook #'(lambda ()
+                               ;; Since emacs 27 this is needed to use shortcuts like <s to create source blocks
+                               (unless (featurep 'org-tempo)
+                                 (require 'org-tempo))
                                (org-indent-mode t)
                                (autopair-mode -1)))
 

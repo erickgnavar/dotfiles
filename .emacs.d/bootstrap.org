@@ -619,6 +619,7 @@ Run ispell in text nodes
     "g" 'magit-status
     "G" 'magit-file-dispatch
     "i" 'imenu
+    "hs" 'diff-hl-stage-current-hunk
     "hk" 'diff-hl-revert-hunk
     "k" 'kill-buffer
     "l" 'display-line-numbers-mode
@@ -1323,6 +1324,8 @@ Use ~delta~ tool to show diffs in magit
 
 (use-package diff-hl
   :ensure t
+  :custom
+  (diff-hl-show-staged-changes nil)
   ;; for some reason the :hook form doesn't work so we have to use :init
   :init
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)

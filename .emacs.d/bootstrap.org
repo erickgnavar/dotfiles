@@ -1498,10 +1498,13 @@ helpful, enhance help functions
 #+begin_src emacs-lisp
 (use-package helpful
   :ensure t
-  :config
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key))
+  :defer t)
+
+;; these function have autoload annotation so they will load `helpful' package when they are called
+;; because we're defined just keybindings we can just use the symbol even the function is not loaded yet
+(global-set-key (kbd "C-h f") #'helpful-callable)
+(global-set-key (kbd "C-h v") #'helpful-variable)
+(global-set-key (kbd "C-h k") #'helpful-key)
 #+end_src
 
 Use ESC key instead C-g to close and abort

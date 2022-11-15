@@ -1628,7 +1628,9 @@ pip python-language-server
   :ensure t
   :defer t
   :custom
-  (elpy-shell-echo-input . nil))
+  ;; always print stdout when running tests with pytest
+  (elpy-test-pytest-runner-command '("pytest" "-s"))
+  (elpy-shell-echo-input nil))
 
 (setq python-shell-completion-native-enable nil)
 

@@ -517,7 +517,8 @@ Incremental code parsing for better syntax highlighting
   (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
-  :ensure t)
+  :ensure t
+  :defer t)
 
 #+end_src
 
@@ -526,8 +527,8 @@ Run ispell in text nodes
 #+begin_src emacs-lisp
 (use-package tree-sitter-ispell
   :ensure t
-  :config
-  (global-set-key (kbd "C-x C-s") 'tree-sitter-ispell-run-at-point))
+  :defer t
+  :bind (("C-x C-s" . tree-sitter-ispell-run-at-point)))
 #+end_src
 
 * Evil

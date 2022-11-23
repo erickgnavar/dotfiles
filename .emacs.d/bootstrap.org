@@ -48,7 +48,10 @@
 (setq-default show-trailing-whitespace t)
 
 ;; disable `show-trailing-whitespace' for modes based in comint-mode
-(add-hook 'comint-mode-hook #'(lambda () (setq-local show-trailing-whitespace nil)))
+;; make prompt readonly
+(add-hook 'comint-mode-hook #'(lambda ()
+                                (setq-local show-trailing-whitespace nil)
+                                (setq-local comint-prompt-read-only t)))
 
 ;; Avoid close emacs by mistake
 (global-unset-key (kbd "C-x C-c"))

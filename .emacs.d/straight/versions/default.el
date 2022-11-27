@@ -20,7 +20,7 @@
  ("diff-hl" . "68fb280b300c5d8460cc7b9183e29fb3ec604136")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
  ("dockerfile-mode" . "ad06a41259ff2961d603bf23a3a8fbd22dde2161")
- ("doom-modeline" . "b66d5e5006df4cedb1119da3d83fd6c08965b830")
+ ("doom-modeline" . "986e9e0ab14aaab2e3f3dc82d4c76f2def6c099f")
  ("dumb-jump" . "542e72d3feba986a12119f6def515ef1347cb4ca")
  ("edit-indirect" . "bdc8f542fe8430ba55f9a24a7910639d4c434422")
  ("editorconfig-emacs" . "65f8244ffbeb9bf2720d922d4b5fc74849b9af82")

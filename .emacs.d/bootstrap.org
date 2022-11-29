@@ -678,7 +678,7 @@ Run ispell in text nodes
   :mode (("\\.http\\'" . restclient-mode))
   :bind (:map restclient-mode-map
               ("C-c C-h" . 'cloak-mode)
-              ("C-c C-f" . json-mode-beautify))) ;TODO: change to only apply json formatting when the content-type is application/json
+              ("C-c C-f" . 'json-pretty-print))) ;TODO: change to only apply json formatting when the content-type is application/json
 
 (use-package restclient-helm
   :ensure t
@@ -1436,7 +1436,7 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :defer t)
 
-(use-package json-mode
+(use-package jsonian
   :ensure t
   :defer t)
 
@@ -2459,8 +2459,8 @@ Copy json text from clipboard in a new buffer and format it
   (let ((buffer (generate-new-buffer "tmp.json")))
     (with-current-buffer buffer
       (yank)
-      (json-mode)
-      (json-mode-beautify))
+      (jsonian-mode)
+      (json-pretty-print-buffer))
     (set-window-buffer nil buffer)))
 #+end_src
 

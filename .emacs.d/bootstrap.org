@@ -774,8 +774,8 @@ Only activate =flymake= for actual projects and for =prog-mode=
 #+begin_src emacs-lisp
 (defun my/setup-flymake ()
   "Activate flymake only if we are inside a project."
-  (if (my/project-p)
-      (flymake-mode-on)))
+  (when (functionp 'my/project-p)
+    (flymake-mode 1)))
 
 (add-hook 'prog-mode-hook 'my/setup-flymake)
 

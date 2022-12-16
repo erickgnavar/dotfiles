@@ -1,7 +1,6 @@
 ;;; init.el --- bootstrap file to load config from bootstrap.org
 ;;; Commentary:
 ;;; Code:
-(require 'package)
 
 ;; Avoid to show a message about deprecation of cl package
 (setq byte-compile-warnings '(cl-functions))

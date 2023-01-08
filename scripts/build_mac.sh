@@ -37,7 +37,7 @@ PKG_CONFIG_PATH="$(brew --prefix libxml2)/lib/pkgconfig"
 export ${"$PKG_CONFIG_PATH"}
 
 make configure
-./configure --with-ns --with-xwidgets
+./configure --with-ns --with-xwidgets --with-tree-sitter
 make -j install
 
 echo "Done!"

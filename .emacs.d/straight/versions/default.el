@@ -95,7 +95,7 @@
  ("linkode.el" . "376fdc0f990322385534a16ee2cd08df20f76f48")
  ("logito" . "d5934ce10ba3a70d3fcfb94d742ce3b9136ce124")
  ("lua-mode" . "5a9bee8d5fc978dc64fcb677167417010321ba65")
- ("magit" . "010fec9cdedb2cbe40fc92b0385823e9a21f9842")
+ ("magit" . "b908c79b44f5c282eec44f19fc1d9967f041dd5c")
  ("magit-delta" . "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
  ("markdown-mode" . "9977753eebe3f5cca7ab85b18a7c719fdb0b7654")
  ("marshal.el" . "bc00044d9073482f589aad959e34d563598f682a")

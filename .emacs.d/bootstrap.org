@@ -2403,6 +2403,14 @@ Create a temp file with the current buffer content and render it with =eww=.
     (kill-buffer)
     (eww-open-file path)))
 
+(defun my/preview-buffer-in-xwidget-browser ()
+  "Preview buffer content in EWW."
+  (interactive)
+  (let* ((temp-file (make-temp-name (temporary-file-directory)))
+         (path (concat temp-file ".html")))
+    (write-file path)
+    (kill-buffer)
+    (xwidget-webkit-browse-url (format "file://%s" path))))
 #+END_SRC
 
 Resize window: allow create a "resize mode" and use hjkl to increase/decrease width/height of the current window

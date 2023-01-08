@@ -156,6 +156,7 @@
  ("with-editor" . "ebcbd3b137154e6c5a2b976bacbb89d48ddfa242")
  ("writeroom-mode" . "fa17eb651102502f60086d62784f1dae15c0630d")
  ("yaml-mode" . "cecf4b106b0c4236931b14919fdf87ff3546e2c9")
+ ("yaml-pro" . "391e67b6ebebd804fdc0497cba0ae31ffac0b891")
  ("flymake-yamllint" . "f269e6614993f3c56d545e7d7b225ca2ba1da342")
  ("yasnippet" . "4046f61588dbd63b1b579bbf6eb6977ad605d262")
  ("yasnippet-snippets" . "281752335ec797cfb2f8ab17d01e9293eab3f137"))

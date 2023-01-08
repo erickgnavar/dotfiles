@@ -108,7 +108,7 @@
  ("nix-mode" . "0023fc5b100ec0c939ffe699d1a7d1afcf1f417a")
  ("org-ref" . "e64d5b15c1667bcff817940191a45c5ff074a6fb")
  ("org-tree-slide" . "7126a4365072a32898f169ead8fb59265dabc605")
- ("otp" . "7ed659fd1144b455883eef18dab38cddc904a065")
+ ("otp" . "c553bfc9e3aa3e8d4ca5b624afdc61d5749d2b1d")
  ("package-lint" . "4ea8318c1bf79ccb1b4658d58917bbd9f990c432")
  ("paredit" . "814999bb320e6d5aaa9c8ff663b1933157129571")
  ("parrot" . "13757524f1c708b866f4aaab5a9fb3599a1c4f56")

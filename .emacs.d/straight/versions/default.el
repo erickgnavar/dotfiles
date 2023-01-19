@@ -42,7 +42,7 @@
  ("emacs-reformatter" . "84cff54b0873fcca6fc0314d7584284e86708e8d")
  ("emacs-which-key" . "ca268fd313d3fb2bd03a8b5e4bdcca675ce58ca7")
  ("emacsmirror-mirror" . "6c7277786c761cd01fa3b8a8729472ea4ed90b2b")
- ("emacsql" . "e318a6c8f65371e2ab667d811205a0d9a98dacbb")
+ ("emacsql" . "2e6056df110e76da4eabb413f8781c4f1edddf20")
  ("emmet-mode" . "0d03a59201383f37632f718012bd835222d11a8d")
  ("envrc" . "4730b31ff1479b6d822ccc7517251dcb52de45b3")
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")

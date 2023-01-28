@@ -1628,6 +1628,16 @@ For LSP support ~python-language-server~ is required
 pip python-language-server
 #+end_src
 
+Install ~flymake-ruff~
+
+#+begin_src emacs-lisp
+(use-package flymake-ruff
+  :straight (flymake-ruff
+             :type git
+             :host github
+             :repo "erickgnavar/flymake-ruff"))
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 
 (reformatter-define python-black-format
@@ -1661,6 +1671,7 @@ pip python-language-server
   (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
   (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
   (define-key python-mode-map (kbd "C-c C-i") 'python-isort-format-region)
+  (add-hook 'python-mode-hook #'flymake-ruff-load)
   (add-hook 'python-mode-hook 'my/ensure-elpy-is-loaded))
 
 #+END_SRC

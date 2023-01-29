@@ -88,6 +88,7 @@ brew "pure"
 brew "pyenv"
 brew "raylib"
 brew "redis", restart_service: true
+brew "ruff"
 brew "rustup-init"
 brew "sbcl"
 brew "shellcheck"

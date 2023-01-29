@@ -1619,7 +1619,7 @@ In case we don't have eglot running we can relay on dump-jump
   For each virtual environment install the following packages:
 
 #+BEGIN_SRC sh
-pip install elpy jedi flake8 epc isort
+pip install elpy jedi flake8 epc
 #+END_SRC
 
 For LSP support ~python-language-server~ is required
@@ -1645,9 +1645,9 @@ Install ~flymake-ruff~
   :args '("-")
   :group 'python)
 
-(reformatter-define python-isort-format
-  :program "isort"
-  :args '("-")
+(reformatter-define python-sort-imports
+  :program "ruff"
+  :args '("--fix" "--select" "I001" "-")
   :group 'python)
 
 ;; we use elpy just to have `elpy-test'
@@ -1670,7 +1670,7 @@ Install ~flymake-ruff~
   (evil-leader/set-key-for-mode 'python-mode "d" 'my/goto-definition-dumb-jump-fallback)
   (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
   (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
-  (define-key python-mode-map (kbd "C-c C-i") 'python-isort-format-region)
+  (define-key python-mode-map (kbd "C-c C-i") 'python-sort-imports-region)
   (add-hook 'python-mode-hook #'flymake-ruff-load)
   (add-hook 'python-mode-hook 'my/ensure-elpy-is-loaded))
 

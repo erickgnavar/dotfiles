@@ -1932,28 +1932,25 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
 
 ** Rust
 
-Clone rust source code into =~/Code/rust/src/=
+Install rust analyzer, this should be installed when ~rustup-init~ is executed but in case is not we can execute:
 
 #+BEGIN_SRC sh
-
-git clone https://github.com/rust-lang/rust.git ~/Code/rust/src/
-
+rustup component add rust-analyzer
 #+END_SRC
 
-Install dependencies
+Install rust source code, it is required by ~rust-analyzer~, in case it's not installed automatically
 
-#+BEGIN_SRC sh
-
-cargo install rustfmt
-cargo install racer
-
-#+END_SRC
+#+begin_src shell
+rustup component add rust-src
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
 
 (use-package rust-mode
   :ensure t
-  :if (executable-find "rustc"))
+  :if (executable-find "rustc")
+  :config
+  (evil-leader/set-key-for-mode 'rust-mode "d" 'my/goto-definition-dumb-jump-fallback))
 
 (use-package cargo
   :ensure t
@@ -1965,18 +1962,6 @@ cargo install racer
               ("C-c C-c" . cargo-process-run))
   :config
   (add-hook 'rust-mode-hook 'cargo-minor-mode))
-
-(use-package racer
-  :ensure t
-  :if (executable-find "racer")
-  :after rust-mode
-  :custom
-  (racer-rust-src-path "~/Code/rust/src/src")
-  :hook ((rust-mode . racer-mode)
-         (racer-mode . eldoc-mode)
-         (racer-mode . company-mode))
-  :config
-  (evil-leader/set-key-for-mode 'rust-mode "d" 'racer-find-definition))
 
 #+END_SRC
 

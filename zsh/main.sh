@@ -211,3 +211,11 @@ function mj {
     window=${session_name}:0
     tmux send-keys -t "$window" "cd $project_path" Enter
 }
+
+function setup_rust_analyzer {
+    local toolchain=$(echo "stable\nnightly" | fzf)
+
+    echo "Creating symlink rust-analyzer for $toolchain toolchain"
+
+    ln -sf "$(rustup which --toolchain $toolchain rust-analyzer)" "$HOME/.cargo/bin/rust-analyzer"
+}

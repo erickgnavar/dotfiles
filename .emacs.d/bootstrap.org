@@ -1232,6 +1232,23 @@ Some tweaks to have a better looking while presenting slides
 
 #+end_src
 
+* Denote
+
+Note taking using ~denote~
+
+#+begin_src emacs-lisp
+(use-package denote
+  :ensure t
+  :custom (denote-directory "~/Documents/wiki")
+  :hook ((dired-mode . denote-dired-mode)))
+
+(defun my/wiki ()
+  "Open personal wiki and launch Dired."
+  (interactive)
+  (dired (expand-file-name "~/Documents/wiki"))
+  (dired-hide-details-mode t))
+#+end_src
+
 * Latex
 
 #+BEGIN_SRC emacs-lisp

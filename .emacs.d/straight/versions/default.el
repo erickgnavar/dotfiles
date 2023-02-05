@@ -17,6 +17,7 @@
  ("cucumber.el" . "11ae1671629bfedaa553c7b819676d64eb320992")
  ("dart-mode" . "9c846769abd37f7fdc7ba8388d1f3a2b844b75e3")
  ("dash.el" . "b9286a84975874b10493f1cb4ea051c501f51273")
+ ("denote" . "f606d4f5ac126dae07eed89d348f6cbc422bc683")
  ("diff-hl" . "68fb280b300c5d8460cc7b9183e29fb3ec604136")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
  ("dockerfile-mode" . "ad06a41259ff2961d603bf23a3a8fbd22dde2161")

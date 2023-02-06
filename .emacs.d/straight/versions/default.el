@@ -6,7 +6,6 @@
  ("autopair" . "2b6d72bccb0ebba6e7e711528872b898b0c65b0a")
  ("biblio.el" . "efeeab720cb8e3f95ddb4298d0cc62393cf237e9")
  ("caml-mode" . "38ebde12d3d529e6ef8078967997d32226e69e82")
- ("cargo.el" . "225fdb846c702a193e58a98c1585bb3586a9aa86")
  ("cider" . "8bb67174ffa0cd7ae01f544926b4ed5a17965d76")
  ("clj-refactor.el" . "bfd83d142f1a05bad779fa7ccbaec8bd24dae177")
  ("clojure-mode" . "e31186843d06ea86f3771244d1cde0112f9e2079")

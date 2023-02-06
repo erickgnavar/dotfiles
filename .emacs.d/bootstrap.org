@@ -1969,17 +1969,6 @@ rustup component add rust-src
   :config
   (evil-leader/set-key-for-mode 'rust-mode "d" 'my/goto-definition-dumb-jump-fallback))
 
-(use-package cargo
-  :ensure t
-  :if (executable-find "cargo")
-  :after rust-mode
-  :bind (:map cargo-minor-mode-map
-              ("C-c C-t" . cargo-process-test)
-              ("C-c C-b" . cargo-process-build)
-              ("C-c C-c" . cargo-process-run))
-  :config
-  (add-hook 'rust-mode-hook 'cargo-minor-mode))
-
 #+END_SRC
 
 ** Golang

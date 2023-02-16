@@ -9,7 +9,6 @@ tap "homebrew/services"
 tap "stripe/stripe-cli"
 tap "teamookla/speedtest"
 tap "twitchdev/twitch"
-brew "act"
 brew "antigen"
 brew "jpeg", link: true
 brew "libtiff"

@@ -1972,6 +1972,19 @@ rustup component add rust-src
 
 #+END_SRC
 
+#+begin_src emacs-lisp
+(defun my/rust-run-file ()
+  "Compile and rust current file."
+  (interactive)
+  (unless (buffer-file-name)
+    (user-error "Save file before"))
+  (let* ((path (buffer-file-name))
+         (default-directory (file-name-directory path))
+         (filename (buffer-name))
+         (command (format "rustc %s && ./%s" filename (string-replace ".rs" "" filename))))
+    (compile command)))
+#+end_src
+
 ** Golang
 
 Install dependencies: goimports

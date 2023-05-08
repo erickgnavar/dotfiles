@@ -9,7 +9,7 @@ source "$HOMEBREW_PREFIX/share/antigen/antigen.zsh"
 antigen use oh-my-zsh
 antigen bundle git
 antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle mafredri/zsh-async
+antigen bundle mafredri/zsh-async@main
 
 antigen apply
 

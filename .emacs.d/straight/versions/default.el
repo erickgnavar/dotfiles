@@ -37,7 +37,6 @@
  ("emacs-htmlize" . "dd27bc3f26efd728f2b1f01f9e4ac4f61f2ffbf9")
  ("emacs-libvterm" . "3155a477b43c1567d754768f5be79296440ebaf8")
  ("emacs-memoize" . "c70773e0eb799a17f1f44334d14389c518ec14d4")
- ("emacs-neotree" . "98fe21334affaffe2334bf7c987edaf1980d2d0b")
  ("emacs-reformatter" . "84cff54b0873fcca6fc0314d7584284e86708e8d")
  ("emacs-which-key" . "ca268fd313d3fb2bd03a8b5e4bdcca675ce58ca7")
  ("emacsmirror-mirror" . "9a3385bc3ce33374df188f694e5e7f001d599db3")

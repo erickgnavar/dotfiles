@@ -989,41 +989,6 @@ Create backups of edited files using a git repitory. Backup folder is located in
   :hook (after-save . helm-backup-versioning))
 #+end_src
 
-** Neotree
-
-#+BEGIN_SRC emacs-lisp
-
-(defun my/neotree-toggle ()
-  "Custom function with some tweaks to be aplied when neotree opens."
-  (interactive)
-  (if (and (my/project-p) (not (neo-global--window-exists-p)))
-      (neotree-dir (my/project-root))
-    (neotree-toggle)))
-
-(use-package neotree
-  :ensure t
-  :straight (neotree
-             :type git
-             :host github
-             :repo "jaypei/emacs-neotree"
-             :branch "dev")
-  :custom
-  (neo-window-fixed-size nil)
-  (neo-fit-to-contents t)
-  (neo-theme 'icons)
-  (neo-autorefresh nil)
-  (neo-vc-integration '(face))
-  :bind (([f3] . 'my/neotree-toggle)
-         :map neotree-mode-map
-         ("C-w l" . 'evil-window-right)
-         ("C-c C-h" . 'neotree-hidden-file-toggle)
-         ("C-c C-r" . 'neotree-rename-node)))
-
-(with-eval-after-load 'evil
-  (evil-set-initial-state 'neotree-mode 'emacs))
-
-#+END_SRC
-
 * Meme
 
 This package requires to have svg support in emacs, this feature relies on =librsvg= at compilation time

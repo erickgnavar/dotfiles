@@ -45,6 +45,17 @@ echo "Done!"
 # copy better icons that fits Big Sur design
 cp "$CWD/Emacs.icns" nextstep/Emacs.app/Contents/Resources/
 
-open -R nextstep/Emacs.app
+echo "Move compiled application into Applications folder?"
+read -r answer
+
+# we ask for confirmation so we can check compilation stdout before replacing a working version of emacs
+if [ "$answer" != "${answer#[Yy]}" ] ; then
+    echo "Compiled application was moved into Applications folder"
+    # Copy app in Applications folder
+    cp -rf nextstep/Emacs.app /Applications/
+else
+    echo "Compiled application wasn't moved"
+    exit 1
+fi
 
 cd - || exit

@@ -4,7 +4,7 @@
  ("autopair" . "2b6d72bccb0ebba6e7e711528872b898b0c65b0a")
  ("biblio.el" . "efeeab720cb8e3f95ddb4298d0cc62393cf237e9")
  ("caml-mode" . "38ebde12d3d529e6ef8078967997d32226e69e82")
- ("cider" . "8bb67174ffa0cd7ae01f544926b4ed5a17965d76")
+ ("cider" . "eedbab26684cb1ce01a940b5b0da9ff78aeb4eac")
  ("clj-refactor.el" . "bfd83d142f1a05bad779fa7ccbaec8bd24dae177")
  ("clojure-mode" . "e31186843d06ea86f3771244d1cde0112f9e2079")
  ("closql" . "85ac7b8a894a4e259439d79eb6bd6f5129770905")

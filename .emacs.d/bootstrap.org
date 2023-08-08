@@ -352,6 +352,17 @@ Allow to visual mode work more like vim visual highlighting.
 
 #+END_SRC
 
+** Auto fill mode
+
+Use ~auto-fill-mode~ only for comments and only with programming buffers
+
+#+begin_src emacs-lisp
+(setq comment-auto-fill-only-comments t)
+
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (auto-fill-mode 1)))
+#+end_src
+
 ** Load PATH environment
 
 =exec-path-from-shell= by default uses =("-l" "-i")= when starts a new shell to get the =PATH=, =-i= option was removed to open a non interactive shell so it can be faster at startup.

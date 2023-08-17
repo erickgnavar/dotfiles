@@ -28,7 +28,7 @@ make clean
 echo "Making sure all requirements are installed..."
 
 # harfbuzz adds support for ligatures, this is required by ligature.el package
-brew install autoconf automake libxml2 jansson gnutls cmake librsvg texinfo
+brew install autoconf automake libxml2 jansson gnutls cmake librsvg texinfo libgccjit
 
 echo "Seting up variables..."
 
@@ -37,7 +37,7 @@ PKG_CONFIG_PATH="$(brew --prefix libxml2)/lib/pkgconfig"
 export ${"$PKG_CONFIG_PATH"}
 
 make configure
-./configure --with-ns --with-xwidgets --with-tree-sitter
+./configure --with-ns --with-xwidgets --with-tree-sitter --with-native-compilation=aot
 make -j install
 
 echo "Done!"

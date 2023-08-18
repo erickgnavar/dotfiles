@@ -78,8 +78,6 @@ set number "show line numbers
 set showcmd "show last command
 set wildmenu "visual autocomplete for command menu
 set showmatch "highlight match [{}]
-set foldenable "enable folding
-set foldmethod=indent
 set encoding=utf-8
 nnoremap <space> za
 

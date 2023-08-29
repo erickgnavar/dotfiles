@@ -613,7 +613,9 @@ Run ispell in text nodes
     "SPC" 'helm-M-x
     "a" 'my/helm-ag-with-default-term
     "A" 'my/helm-ag-without-default-term
-    "b" 'helm-buffers-list
+    "ba" 'my/add-bookmark
+    "bb" 'my/bookmark-switch
+    "B" 'helm-buffers-list
     "c" 'vterm-toggle
     "e" 'my/find-file-in-project
     "f" 'find-file
@@ -2188,6 +2190,28 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
 #+end_src
 
 * Custom functions
+
+Simple bookmarks management
+
+#+begin_src emacs-lisp
+(defvar my/bookmarks '())
+
+(defun my/bookmark-switch ()
+  "Switch to selected bookmark."
+  (interactive)
+  (let* ((options (mapcar 'car my/bookmarks))
+         (selected (completing-read "Pick buffer: " options))
+         (selected-buffer (cdr (assoc selected my/bookmarks))))
+    (when selected-buffer
+
+      (switch-to-buffer selected-buffer))))
+
+(defun my/add-bookmark ()
+  "Add current buffer to bookmark list."
+  (interactive)
+  (setf (alist-get (buffer-name) my/bookmarks ) (current-buffer))
+  (message "%s added to bookmarks" (buffer-name)))
+#+end_src
 
 Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".
 

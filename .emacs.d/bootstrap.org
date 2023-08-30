@@ -2313,37 +2313,7 @@ Manipulate frame font height.
   (let* ((size (read-number "New size: "))
          (font (format "%s %d" my/font-family size)))
     (set-frame-font font)))
-
-(defun my/find-tag ()
-  "Allow find a tag if the TAGS file exists, otherwise ask for create the file."
-  (interactive)
-  (if (my/project-p)
-      (let
-          ((tags-file-path (concat (my/project-root) "TAGS")))
-        (if (f-exists-p tags-file-path)
-            (helm-etags-select t)
-          (if (yes-or-no-p "Do you want generate a TAGS file?")
-              (progn
-                (my/gen-etags-file (my/project-root))
-                (helm-etags-select t)))))
-    (message "You are not in a project.")))
-
-(defun my/force-build-tags ()
-  "Force the build of the TAGS file."
-  (interactive)
-  (if (my/project-p)
-      (my/gen-etags-file (my/project-root))
-    (message "You are not in a project.")))
-
-(defun my/gen-etags-file (root-path)
-  "Generate etags file for the ROOT-PATH folder."
-  (let
-      ((pattern (read-string "Enter pattern of files to be used: ")))
-    (cd root-path)
-    (shell-command (format "find . -name \"%s\" | etags -" pattern))))
-
 #+END_SRC
-
 
 Function to extract clocks from org buffer and filter them by month
 

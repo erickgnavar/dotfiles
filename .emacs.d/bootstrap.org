@@ -995,12 +995,6 @@ If TERM is not nil it will be used as initial value."
 Integration with ~embark~
 
 #+begin_src emacs-lisp
-(defun my/after-embark-export ()
-  "Enable `wgrep-mode' only for exported grep results."
-  (when (cl-search "Exported grep results" (buffer-string))
-    (wgrep-change-to-wgrep-mode)
-    (evil-normal-state)))
-
 (use-package embark
   :ensure t
   :bind
@@ -1008,10 +1002,7 @@ Integration with ~embark~
   :config
   ;; grep exported data can have a lot of white spaces so we don't want
   ;; them to be shown while editing their content
-  (setq-mode-local embark-collect-mode show-trailing-whitespace nil)
-  ;; we need to setup this hook because `embark-export' will
-  ;; run it after the new buffer(with the exported data) is created
-  (add-hook 'embark-after-export-hook 'my/after-embark-export))
+  (setq-mode-local embark-collect-mode show-trailing-whitespace nil))
 
 (use-package embark-consult
   :ensure t)
@@ -1021,7 +1012,11 @@ Integration with ~embark~
 This only runs for ripgrep results"
   (interactive)
   (when (cl-search "Ripgrep" (buffer-string))
-    (embark-export)))
+    ;; we use `run-at-time' to ensure all of these steps
+    ;; will be executed in order
+    (run-at-time 0 nil #'embark-export)
+    (run-at-time 0 nil #'wgrep-change-to-wgrep-mode)
+    (run-at-time 0 nil #'evil-normal-state)))
 
 (define-key minibuffer-mode-map (kbd "C-c C-e") #'my/grep-edit-results)
 #+end_src

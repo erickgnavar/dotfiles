@@ -539,13 +539,13 @@ Run ispell in text nodes
 #+begin_src emacs-lisp
 
 (defun my/find-file-under-cursor ()
-  "Check it the filepath under cursor is an absolute path otherwise open helm and insert the filepath."
+  "Check it the filepath under cursor is an absolute path otherwise open `project-find-file' and insert the filepath."
   (interactive)
   (let ((file-path (thing-at-point 'filename t)))
     (if (file-name-absolute-p file-path)
         (find-file-at-point file-path)
       (minibuffer-with-setup-hook #'(lambda () (insert file-path))
-        (helm-ls-git)))))
+        (project-find-file)))))
 
 #+end_src
 
@@ -610,12 +610,19 @@ Run ispell in text nodes
   :config
   (global-evil-leader-mode)
   (evil-leader/set-key
-    "SPC" 'helm-M-x
-    "a" 'my/helm-ag-with-default-term
-    "A" 'my/helm-ag-without-default-term
+    "SPC" '(lambda ()
+             (interactive)
+             (execute-extended-command ""))
+    "a" '(lambda ()
+           (interactive)
+           (message "THING: %s" (thing-at-point 'symbol))
+           (my/grep-in-project (thing-at-point 'symbol)))
+    "A" 'my/grep-in-project
     "ba" 'my/add-bookmark
     "bb" 'my/bookmark-switch
-    "B" 'helm-buffers-list
+    "B" '(lambda ()
+           (interactive)
+           (call-interactively #'switch-to-buffer))
     "c" 'vterm-toggle
     "e" 'my/find-file-in-project
     "f" 'find-file
@@ -630,14 +637,14 @@ Run ispell in text nodes
     "N" 'my/toggle-narrowing
     "pa" 'my/copy-abs-path
     "pr" 'my/copy-relative-path
-    "q" 'helm-swoop
+    "q" 'consult-line
     "r" 'my/replace-at-point-or-region
     "R" 'recompile
     "s" 'my/toggle-spanish-characters
     "t" 'persp-switch
     "w" 'my/toggle-maximize
     "x" 'my/resize-window
-    "y" 'helm-show-kill-ring))
+    "y" 'consult-yank-from-kill-ring))
 
 (use-package evil-matchit
   :ensure t
@@ -681,10 +688,6 @@ Run ispell in text nodes
   :bind (:map restclient-mode-map
               ("C-c C-h" . 'cloak-mode)
               ("C-c C-f" . 'json-pretty-print))) ;TODO: change to only apply json formatting when the content-type is application/json
-
-(use-package restclient-helm
-  :ensure t
-  :after (restclient))
 
 (use-package company-restclient
   :ensure t
@@ -885,9 +888,6 @@ Define helper functions to be used by other packages
   (interactive)
   ;; make sure all the projects list is available to be used
   (project--ensure-read-project-list)
-  ;; helm loading is deferred so we need to check if is available to be able to use it to select a project
-  (unless (featurep 'helm)
-    (require 'helm))
   (let* ((projects (mapcar 'car project--list))
          (choice (completing-read "Switch to project: " projects))
          (default-directory choice))
@@ -895,10 +895,10 @@ Define helper functions to be used by other packages
     (my/project-switch-action)))
 
 (defun my/project-switch-action ()
-  "Switch to a new perspective which name is project's name and open `helm-ls-git'."
+  "Switch to a new perspective which name is project's name and open `project-find-file'."
   (interactive)
   (persp-switch (my/project-name))
-  (helm-ls-git))
+  (project-find-file))
 
 (defun my/project-kill-buffers ()
   "Kill all the related buffers to the current project and delete its perspective as well."
@@ -923,72 +923,158 @@ Define helper functions to be used by other packages
     (my/project-switch-action)))
 #+END_SRC
 
-** Helm
+** Completion
+
+UI for completion
 
 #+begin_src emacs-lisp
-
-(use-package helm
+(use-package vertico
   :ensure t
-  :defer t
+  :init
+  (vertico-mode)
   :custom
-  (helm-M-x-use-completion-styles nil)
-  (helm-split-window-inside-p t)
-  (helm-follow-mode-persistent t)
-  (helm-buffers-show-icons t)
-  :bind (:map helm-map
-              ("<tab>" . 'helm-execute-persistent-action))
+  ;; fixed height
+  (vertico-resize nil)
+  ;; show max 15 elements
+  (vertico-count 15))
+#+end_src
+
+Add annotations to results shown by vertico
+
+#+begin_src emacs-lisp
+(use-package marginalia
+  :ensure
+  :init
+  (marginalia-mode))
+#+end_src
+
+Enable better completion styles
+
+#+begin_src emacs-lisp
+(use-package orderless
+  :ensure t
   :config
-  (helm-mode 1))
-
-(with-eval-after-load 'helm
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*helm.*\\*\\'"
-                 (display-buffer-in-side-window)
-                 (inhibit-same-window . t)
-                 (window-height . 0.4))))
+  (setq completion-styles '(orderless basic)
+        completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
-Helm util packages
+Disable orderless completion style in company to keep previous behaviour which I like, this was copied from ~orderless~ documentation.
 
 #+begin_src emacs-lisp
+;; We follow a suggestion by company maintainer u/hvis:
+;; https://www.reddit.com/r/emacs/comments/nichkl/comment/gz1jr3s/
+(defun company-completion-styles (capf-fn &rest args)
+  (let ((completion-styles '(basic partial-completion)))
+    (apply capf-fn args)))
 
-(defun my/helm-ag-with-default-term ()
-  (interactive)
-  (let ((helm-ag-insert-at-point 'word))
-    (helm-ag-project-root)))
-
-(defun my/helm-ag-without-default-term ()
-  (interactive)
-  (let ((helm-ag-insert-at-point nil))
-    (helm-ag-project-root)))
-
-(use-package helm-ag
-  :ensure t
-  :defer t)
-
-;; `helm-source-ls-git-status' will show fiels with changes
-;; `helm-c-source-ls-git' will will show all project files
-(use-package helm-ls-git
-  :ensure t
-  :defer t
-  :custom ((helm-ls-git-default-sources '(helm-source-ls-git-status
-                                          helm-source-ls-git))))
-
-(use-package helm-swoop
-  :ensure t
-  :defer t)
-
+(advice-add 'company-capf :around #'company-completion-styles)
 #+end_src
 
-** Helm backup
-
-Create backups of edited files using a git repitory. Backup folder is located in =~/.helm-backup=
+Search into project source
 
 #+begin_src emacs-lisp
-(use-package helm-backup
+(use-package consult
+  :ensure t)
+#+end_src
+
+Helpers to search term at point and general search into project
+
+#+begin_src emacs-lisp
+(defun my/grep-in-project (&optional term)
+  "Run grep in current project.
+If TERM is not nil it will be used as initial value."
+  (interactive)
+  (let* ((pattern (read-string "Pattern: " (or term "")))
+         ;; add an extra space to be able to start typing more filters
+         (pattern (concat pattern " ")))
+    (call-interactively #'(lambda ()
+                            (interactive)
+                            (consult-ripgrep (my/project-root) pattern)))))
+#+end_src
+
+Integration with ~embark~
+
+#+begin_src emacs-lisp
+(defun my/after-embark-export ()
+  "Enable `wgrep-mode' only for exported grep results."
+  (when (cl-search "Exported grep results" (buffer-string))
+    (wgrep-change-to-wgrep-mode)
+    (evil-normal-state)))
+
+(use-package embark
   :ensure t
-  :defer t
-  :hook (after-save . helm-backup-versioning))
+  :bind
+  ("C-;" . embark-act)
+  :config
+  ;; grep exported data can have a lot of white spaces so we don't want
+  ;; them to be shown while editing their content
+  (setq-mode-local embark-collect-mode show-trailing-whitespace nil)
+  ;; we need to setup this hook because `embark-export' will
+  ;; run it after the new buffer(with the exported data) is created
+  (add-hook 'embark-after-export-hook 'my/after-embark-export))
+
+(use-package embark-consult
+  :ensure t)
+
+(defun my/grep-edit-results ()
+  "Export results using `embark-export' and activate `wgrep'.
+This only runs for ripgrep results"
+  (interactive)
+  (when (cl-search "Ripgrep" (buffer-string))
+    (embark-export)))
+
+(define-key minibuffer-mode-map (kbd "C-c C-e") #'my/grep-edit-results)
+#+end_src
+
+Edit grep buffer
+
+#+begin_src emacs-lisp
+(use-package wgrep
+  :ensure t
+  :custom
+  (wgrep-auto-save-buffer t)
+  :bind
+  ("C-c C-c" . 'wgrep-finish-edit)
+  ("C-c C-k" . 'wgrep-abort-changes))
+#+end_src
+
+* Git backup
+
+Save a backup on every save, also allow to recover any version of a file
+
+#+begin_src emacs-lisp
+(defvar my/backup-dir (expand-file-name "~/.git-backup"))
+
+(defun my/git-backup-versioning ()
+  "Save a version of the current file."
+  (unless (featurep 'git-backup)
+    (require 'git-backup))
+  (git-backup-version-file (executable-find "git") my/backup-dir '() (buffer-file-name)))
+
+(defun my/git-backup-run-action (command commit-hash)
+  "Execute COMMAND with COMMIT-HASH using another defaults arguments."
+  (apply command `(,(executable-find "git") ,my/backup-dir ,commit-hash ,(buffer-file-name))))
+
+;TODO: fix order in results
+(defun my/git-backup ()
+  "Navigate in verisons of the current file."
+  (interactive)
+  (unless (featurep 'git-backup)
+    (require 'git-backup))
+  ;; for some reason an extra space after `%h|' is required to avoid an error when
+  ;; the shell command is executed
+  (let* ((candidates (git-backup-list-file-change-time (executable-find "git") my/backup-dir "%cI|%h| %ar" (buffer-file-name)))
+         (selection (completing-read "Pick revision: " candidates))
+         (commit-hash (nth 1 (string-split selection "|")))
+         (action (completing-read "Choose action: " '("diff" "new buffer" "replace current buffer"))))
+    (cond ((string-equal action "diff") (my/git-backup-run-action 'git-backup-create-ediff commit-hash))
+          ((string-equal action "new buffer") (my/git-backup-run-action 'git-backup-open-in-new-buffer commit-hash))
+          ((string-equal action "replace current buffer") (my/git-backup-run-action 'git-backup-replace-current-buffer commit-hash))
+          (t (message "Not valid option")))))
+
+(use-package git-backup
+  :ensure t
+  :hook (after-save . my/git-backup-versioning))
 #+end_src
 
 * Meme
@@ -1489,7 +1575,8 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :defer t
   :custom
-  (dumb-jump-selector 'helm))
+  (dumb-jump-prefer-searcher 'rg)
+  (dumb-jump-selector 'completing-read))
 
 #+END_SRC
 
@@ -2270,8 +2357,8 @@ Manipulate frame font height.
   "Custom find file function."
   (interactive)
   (if (my/project-p)
-      (helm-ls-git)
-    (helm-for-files)))
+      (project-find-file)
+    (find-file)))
 
 (defun my/fold-buffer-when-is-too-big (max-lines)
   "Fold buffer is max lines if grater than as MAX-LINES."
@@ -2486,7 +2573,7 @@ Functions to open Finder using current file or current project.
 
 #+END_SRC
 
-Open current file with an macOS app. Installed macOS apps will be listed using helm
+Open current file with an macOS app. Installed macOS apps will be listed using ~completing-read~
 
 #+BEGIN_SRC emacs-lisp
 

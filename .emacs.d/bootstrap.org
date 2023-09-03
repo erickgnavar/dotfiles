@@ -1033,6 +1033,21 @@ Edit grep buffer
   ("C-c C-k" . 'wgrep-abort-changes))
 #+end_src
 
+
+* Emacs process list
+
+#+begin_src emacs-lisp
+(defun my/kill-emacs-process ()
+  "Show a list of current Emacs processes and kill the selected one."
+  (interactive)
+  (let* ((names (mapcar #'process-name (process-list)))
+         (process-name (completing-read "Choose process: " names)))
+    (delete-process (get-process process-name))
+    (message "%s process killed" (propertize process-name 'face '(:foreground "magenta")))))
+
+(global-set-key (kbd "C-x c p") 'my/kill-emacs-process)
+#+end_src
+
 * Git backup
 
 Save a backup on every save, also allow to recover any version of a file

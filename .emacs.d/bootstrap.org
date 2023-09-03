@@ -1007,10 +1007,15 @@ Integration with ~embark~
 (use-package embark-consult
   :ensure t)
 
-(defun my/grep-edit-results ()
-  "Export results using `embark-export' and activate `wgrep'.
-This only runs for ripgrep results"
+(defun my/edit-completing-results ()
+  "Use results origin to execute an action after export them with `embark-export'."
   (interactive)
+  ;; call of `project-find-file'
+  (when (cl-search "Find file in" (buffer-string))
+    (run-at-time 0 nil #'embark-export)
+    (run-at-time 0 nil #'wdired-change-to-wdired-mode)
+    (run-at-time 0 nil #'evil-normal-state))
+  ;; call of `consult-ripgrep'
   (when (cl-search "Ripgrep" (buffer-string))
     ;; we use `run-at-time' to ensure all of these steps
     ;; will be executed in order
@@ -1018,7 +1023,7 @@ This only runs for ripgrep results"
     (run-at-time 0 nil #'wgrep-change-to-wgrep-mode)
     (run-at-time 0 nil #'evil-normal-state)))
 
-(define-key minibuffer-mode-map (kbd "C-c C-e") #'my/grep-edit-results)
+(define-key minibuffer-mode-map (kbd "C-c C-e") #'my/edit-completing-results)
 #+end_src
 
 Edit grep buffer

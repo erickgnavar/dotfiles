@@ -103,6 +103,7 @@
  ("merlin" . "a451081bf0b0c5e86c4ee61ea0ea0cc0f03a4a0f")
  ("merlin-eldoc" . "db7fab1eddfe34781b7e79694f8923b285698032")
  ("multiple-cursors.el" . "b880554d04b8f61165afba7d4de19ac9e39bb7ab")
+ ("nerd-icons-completion" . "c2db8557a3c1a9588d111f8c8e91cae96ee85010")
  ("nerd-icons-dired" . "39c9ec722ab356fdf3eaa6ab39618b717e060efb")
  ("nerd-icons.el" . "93185612749c74a99a9b2c0934b4625eb34e1ff6")
  ("nix-mode" . "0023fc5b100ec0c939ffe699d1a7d1afcf1f417a")

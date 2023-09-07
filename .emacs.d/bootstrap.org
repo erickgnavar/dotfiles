@@ -948,6 +948,17 @@ Add annotations to results shown by vertico
   (marginalia-mode))
 #+end_src
 
+Icons support
+
+#+begin_src emacs-lisp
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+#+end_src
+
 Enable better completion styles
 
 #+begin_src emacs-lisp

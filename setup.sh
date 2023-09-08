@@ -23,3 +23,9 @@ do
 	echo "symlink created: $config_file -> $path"
     fi
 done < placements.txt
+
+if [ ! -d "$HOME/.tmuxifier/" ]
+then
+    echo "tmuxifier not installing, cloning..."
+    git clone https://github.com/jimeh/tmuxifier.git ~/.tmuxifier
+fi

@@ -66,5 +66,10 @@ then
     . /opt/homebrew/opt/asdf/libexec/asdf.sh
 fi
 
+if [ -d "$HOME/.tmuxifier/" ]
+then
+    export PATH="$HOME/.tmuxifier/bin:$PATH"
+fi
+
 # Disable telemetry in homebrew
 export HOMEBREW_NO_ANALYTICS=1

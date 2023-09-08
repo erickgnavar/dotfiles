@@ -182,6 +182,18 @@ function k8s_change_context {
     kubectl config use-context $context
 }
 
+alias tn="tmuxifier new-session"
+
+function tl {
+    local selection=$(ls ~/.tmuxifier/layouts | fzf --header="Select session")
+    if [[ $selection != "" ]]
+    then
+    local session_name=$(echo "$selection" | awk '{split($0, a, "."); print a[1]}')
+
+    tmuxifier load-session "$session_name"
+    fi
+}
+
 # my jump, it's a similar concept of jump command but search into ~/Code folder
 # and create a new tmux session with the selected project folder
 function mj {

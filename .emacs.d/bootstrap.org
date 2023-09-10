@@ -666,15 +666,12 @@ Run ispell in text nodes
 
 #+END_SRC
 
-** Autopair
+** Auto pair
+
+Complete parenthesis, square brackets, etc
 
 #+BEGIN_SRC emacs-lisp
-
-(use-package autopair
-  :ensure t
-  :config
-  (autopair-global-mode))
-
+(add-hook 'prog-mode-hook 'electric-pair-mode)
 #+END_SRC
 
 ** Restclient
@@ -1225,8 +1222,7 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
                                ;; Since emacs 27 this is needed to use shortcuts like <s to create source blocks
                                (unless (featurep 'org-tempo)
                                  (require 'org-tempo))
-                               (org-indent-mode t)
-                               (autopair-mode -1)))
+                               (org-indent-mode t)))
 
   (advice-add 'org-edit-special :before 'my/org-edit-special)
   (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
@@ -1460,8 +1456,7 @@ Use ~delta~ tool to show diffs in magit
 
 (defun my/web-mode-hook ()
   (emmet-mode)
-  (rainbow-delimiters-mode-disable)
-  (autopair-mode -1))
+  (rainbow-delimiters-mode-disable))
 
 (use-package web-mode
   :ensure t

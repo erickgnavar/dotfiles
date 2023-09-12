@@ -615,8 +615,9 @@ Run ispell in text nodes
              (call-interactively #'execute-extended-command))
     "a" '(lambda ()
            (interactive)
-           (message "THING: %s" (thing-at-point 'symbol))
-           (my/grep-in-project (thing-at-point 'symbol)))
+           (if (region-active-p)
+               (my/grep-in-project (buffer-substring-no-properties (region-beginning) (region-end)))
+             (my/grep-in-project (thing-at-point 'symbol))))
     "A" 'my/grep-in-project
     "ba" 'my/add-bookmark
     "bb" 'my/bookmark-switch

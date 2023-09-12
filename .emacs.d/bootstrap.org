@@ -671,11 +671,16 @@ Run ispell in text nodes
 
 Complete parenthesis, square brackets, etc
 
-Only enable for the current buffer, we don't use ~electric-pair-mode~ because that will enable it globally.
+Enable it globally and disable it just for ~org-mode~ to avoid having a conflict with ~<s~
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'electric-pair-local-mode)
+(electric-pair-mode)
 #+END_SRC
+
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook #'(lambda ()
+                             (electric-pair-local-mode -1)))
+#+end_src
 
 ** Restclient
 

@@ -13,6 +13,7 @@
  ("company-restclient" . "e5a3ec54edb44776738c13e13e34c85b3085277b")
  ("compat" . "9428a64eb8a579f35d57bc4d4cdb6c5cf10806c1")
  ("consult" . "922faa4c683491e42dd749eac77bb389d66bba85")
+ ("consult-yasnippet" . "ae0450889484f23dc4ec37518852a2c61b89f184")
  ("csv-mode" . "fbf942e127e68ac8cfcd08a53500ca554fcac079")
  ("cucumber.el" . "11ae1671629bfedaa553c7b819676d64eb320992")
  ("dart-mode" . "9c846769abd37f7fdc7ba8388d1f3a2b844b75e3")

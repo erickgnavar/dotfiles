@@ -670,8 +670,10 @@ Run ispell in text nodes
 
 Complete parenthesis, square brackets, etc
 
+Only enable for the current buffer, we don't use ~electric-pair-mode~ because that will enable it globally.
+
 #+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook 'electric-pair-mode)
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
 #+END_SRC
 
 ** Restclient

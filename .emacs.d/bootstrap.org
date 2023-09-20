@@ -868,11 +868,7 @@ Define helper functions to be used by other packages
 #+begin_src emacs-lisp
 (defun my/project-root ()
   "Return project root path."
-  (project-current)
-  ;; We need to extract third element because `project-current'
-  ;; returns project's information as a list of 3 element,
-  ;; for example (vc Git "project-path")
-  (nth 2 (project-current)))
+  (project-root (project-current)))
 
 (defun my/project-p ()
   (project-current))

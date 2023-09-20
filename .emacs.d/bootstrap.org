@@ -4,7 +4,6 @@
 * Vanilla Emacs setup
 
 #+BEGIN_SRC emacs-lisp
-
 (setq inhibit-startup-message t)
 (setq default-directory (expand-file-name "~/"))
 
@@ -62,7 +61,6 @@
 ;; place custom code generated for emacs in a separate file
 (defconst custom-file (expand-file-name ".customize.el" user-emacs-directory))
 (load custom-file :noerror)
-
 #+END_SRC
 
 Show a message with emacs startup time
@@ -79,21 +77,17 @@ Show a message with emacs startup time
 Setup fira code symbols mode.
 
 #+BEGIN_SRC emacs-lisp
-
 (when (member "Fira Code" (font-family-list))
   (load-file (expand-file-name "~/.emacs.d/fira-code-mode.el"))
   (require 'fira-code-mode)
   (add-hook 'prog-mode-hook 'fira-code-mode))
-
 #+END_SRC
 
 Adjust font size to screen resolution, increase font size for 4K screens
 
 #+BEGIN_SRC emacs-lisp
-
 (when (and (display-graphic-p) (>= (x-display-pixel-width) 3840))
   (set-frame-font (format "%s 14" my/font-family)))
-
 #+END_SRC
 
 #+begin_src emacs-lisp
@@ -113,7 +107,6 @@ Adjust font size to screen resolution, increase font size for 4K screens
 Parrot mode FTW!
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/parrot-animate-when-compile-success (buffer result)
   (if (string-match "^finished" result)
       (parrot-start-animation)))
@@ -124,13 +117,11 @@ Parrot mode FTW!
   (parrot-mode)
   (add-hook 'before-save-hook 'parrot-start-animation)
   (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
-
 #+END_SRC
 
 Open scratch buffer
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/scratch-buffer()
   "Switch to scratch buffer."
   (interactive)
@@ -140,7 +131,6 @@ Open scratch buffer
       (switch-to-buffer (get-buffer-create "*scratch*"))
       (insert (substitute-command-keys initial-scratch-message)))
     (lisp-interaction-mode)))
-
 #+END_SRC
 
 ** Ansi term
@@ -148,10 +138,8 @@ Open scratch buffer
 For some reason ansi-term doesn't respect the global keybinding for =M-]= so this have to be setup in =term-raw-map= as well.
 
 #+BEGIN_SRC emacs-lisp
-
 (with-eval-after-load 'term
   (define-key term-raw-map (kbd "M-]") 'next-buffer))
-
 #+END_SRC
 
 ** xref
@@ -168,7 +156,6 @@ Enable evil emacs state when entering a xref buffer
 Disable =h= key-binding, this has a conflict with evil-mode left navigation key-binding.
 
 #+BEGIN_SRC emacs-lisp
-
 (with-eval-after-load 'compile
   ;; set cursor to follow compilation output
   (setq compilation-scroll-output t)
@@ -177,7 +164,6 @@ Disable =h= key-binding, this has a conflict with evil-mode left navigation key-
   (define-key compilation-mode-map (kbd "g") nil)
   (define-key compilation-mode-map (kbd "r") 'recompile)
   (define-key compilation-mode-map (kbd "h") nil))
-
 #+END_SRC
 
 Allow to show color characters in the compilation buffer.
@@ -185,7 +171,6 @@ Allow to show color characters in the compilation buffer.
 copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer/3072831#3072831
 
 #+BEGIN_SRC emacs-lisp
-
 (require 'ansi-color)
 
 (defun colorize-compilation-buffer ()
@@ -193,7 +178,6 @@ copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-me
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-
 #+END_SRC
 
 Custom function to select a base directory before running compilation. ~M-x compile~ always use the base directory of the buffer from where it was called as ~default-directory~, this is awful when you want to run a project compilation command from a nested file buffer.
@@ -227,13 +211,11 @@ Custom function to select a base directory before running compilation. ~M-x comp
 ** Dracula
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package dracula-theme
   :ensure t
   :config
   (load-theme 'dracula t)
   (set-face-foreground 'font-lock-variable-name-face "gray"))
-
 #+END_SRC
 
 ** Doom modeline
@@ -241,7 +223,6 @@ Custom function to select a base directory before running compilation. ~M-x comp
 Enable =display-battery-mode= after =doom-modeline= is loaded.
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package doom-modeline
   :ensure t
   :defer t
@@ -251,27 +232,22 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
   :hook
   (after-init . doom-modeline-mode)
   (doom-modeline-mode . display-battery-mode))
-
 #+END_SRC
 
 ** Emoji support
 
 #+begin_src emacs-lisp
-
 (use-package unicode-fonts
   :ensure t
   :config
   (unicode-fonts-setup))
-
 #+end_src
 
 * Dired
 
 #+BEGIN_SRC emacs-lisp
-
 (with-eval-after-load "dired"
   (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
-
 #+END_SRC
 
 ** Nerd icons dired
@@ -287,13 +263,11 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
 ** Dired subtree
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package dired-subtree
   :ensure t
   :after dired
   :config
   (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle))
-
 #+END_SRC
 
 * Editor enhancements
@@ -323,33 +297,27 @@ Allow to visual mode work more like vim visual highlighting.
 ** Dark and transparent title bar in macOS
 
 #+BEGIN_SRC emacs-lisp
-
 (when (memq window-system '(mac ns))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
-
 #+END_SRC
 
 ** Share clipoard with OS
 
 #+BEGIN_SRC emacs-lisp
-
-  (use-package pbcopy
-    :ensure t)
-
+(use-package pbcopy
+  :ensure t)
 #+END_SRC
 
 ** Highlight TODO, FIXME, etc
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/highlight-todo-like-words ()
   (font-lock-add-keywords
    nil `(("\\<\\(FIXME\\|TODO\\)"
           1 font-lock-warning-face t))))
 
 (add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
-
 #+END_SRC
 
 ** Auto fill mode
@@ -368,7 +336,6 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 =exec-path-from-shell= by default uses =("-l" "-i")= when starts a new shell to get the =PATH=, =-i= option was removed to open a non interactive shell so it can be faster at startup.
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package exec-path-from-shell
   :ensure t
   :custom
@@ -377,24 +344,20 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
   :config
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)))
-
 #+END_SRC
 
 ** Editorconfig
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package editorconfig
   :ensure t
   :config
   (editorconfig-mode 1))
-
 #+END_SRC
 
 ** Snippets
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package yasnippet
   :ensure t
   :hook ((prog-mode . yas-minor-mode)
@@ -405,13 +368,11 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 (use-package yasnippet-snippets
   :ensure t
   :after (yasnippet))
-
 #+END_SRC
 
 ** Wakatime
 
 #+begin_src emacs-lisp
-
 (use-package wakatime-mode
   :ensure t
   :if (executable-find "wakatime-cli")
@@ -419,18 +380,15 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
   (setq wakatime-cli-path (executable-find "wakatime-cli"))
   :config
   (global-wakatime-mode))
-
 #+end_src
 
 ** Highlight thing
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package highlight-thing
   :ensure t
   :hook
   (prog-mode . highlight-thing-mode))
-
 #+END_SRC
 
 ** Various changes
@@ -438,24 +396,19 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 Disable lock files
 
 #+BEGIN_SRC emacs-lisp
-
 (setq create-lockfiles nil)
-
 #+END_SRC
 
 ** Reformatter
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package reformatter
   :ensure t)
-
 #+END_SRC
 
 ** Vterm
 
 #+begin_src emacs-lisp
-
 (use-package vterm
   :ensure t
   :defer t
@@ -465,7 +418,6 @@ Disable lock files
   :custom
   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
   (vterm-always-compile-module t))
-
 #+end_src
 
 ** Toggle terminal
@@ -490,12 +442,10 @@ Also for easy access insert mode is activated right away after vterm is shown
 Avoid check spelling in markdown code blocks
 
 #+BEGIN_SRC emacs-lisp
-
 (with-eval-after-load 'ispell
   (setq ispell-program-name "aspell")
   (add-to-list 'ispell-skip-region-alist
                '("^```" . "^```")))
-
 #+END_SRC
 
 When editing a commit message =ispell= should ignore lines that start with =#=, these lines are diff details about the commit.
@@ -512,7 +462,6 @@ When editing a commit message =ispell= should ignore lines that start with =#=, 
 Incremental code parsing for better syntax highlighting
 
 #+begin_src emacs-lisp
-
 (use-package tree-sitter
   :ensure t
   :hook
@@ -522,7 +471,6 @@ Incremental code parsing for better syntax highlighting
 
 (use-package tree-sitter-langs
   :ensure t)
-
 #+end_src
 
 Run ispell in text nodes
@@ -537,7 +485,6 @@ Run ispell in text nodes
 * Evil
 
 #+begin_src emacs-lisp
-
 (defun my/find-file-under-cursor ()
   "Check it the filepath under cursor is an absolute path otherwise open `project-find-file' and insert the filepath."
   (interactive)
@@ -546,11 +493,9 @@ Run ispell in text nodes
         (find-file-at-point file-path)
       (minibuffer-with-setup-hook #'(lambda () (insert file-path))
         (project-find-file)))))
-
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package evil
   :ensure t
   :init
@@ -649,7 +594,6 @@ Run ispell in text nodes
 (use-package evil-matchit
   :ensure t
   :config (global-evil-matchit-mode 1))
-
 #+END_SRC
 
 * Utils
@@ -657,13 +601,11 @@ Run ispell in text nodes
 ** Which-key
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package which-key
   :ensure t
   :config
   (which-key-mode)
   (which-key-setup-minibuffer))
-
 #+END_SRC
 
 ** Auto pair
@@ -684,7 +626,6 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
 ** Restclient
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package restclient
   :ensure t
   :defer t
@@ -698,31 +639,26 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
   :after (restclient)
   :config
   (add-to-list 'company-backends 'company-restclient))
-
 #+END_SRC
 
 ** Rainbow delimiters
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package rainbow-delimiters
   :ensure t
   :hook
   (prog-mode . rainbow-delimiters-mode))
-
 #+END_SRC
 
 ** XML formatter
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define xml-format
   :program "xmlformat"
   :group 'xml)
 
 (with-eval-after-load 'nxml-mode
   (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
-
 #+END_SRC
 
 ** SQL formatter
@@ -730,7 +666,6 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
 Install =pgformatter= using homebrew =brew install pgformatter=
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define sql-format
   :program "pg_format")
 
@@ -745,7 +680,6 @@ Install =pgformatter= using homebrew =brew install pgformatter=
   (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
   (add-hook 'sql-mode-hook 'flymake-mode)
   (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
-
 #+END_SRC
 
 ** SQL linter using [[https://www.sqlfluff.com][sqlfluff]]
@@ -762,7 +696,6 @@ Used in every major mode
 ** Company
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package company
   :ensure t
   :init
@@ -773,7 +706,6 @@ Used in every major mode
   :config
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous))
-
 #+END_SRC
 
 ** Flymake
@@ -824,7 +756,6 @@ Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
 ** perspective.el
 
 #+begin_src emacs-lisp
-
 (use-package perspective
   :ensure t
   :config
@@ -834,7 +765,6 @@ Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
   ;; setup vim tab like key-bindings
   (define-key evil-normal-state-map (kbd "gt") 'persp-next)
   (define-key evil-normal-state-map (kbd "gT") 'persp-prev))
-
 #+end_src
 
 ** Project.el
@@ -1117,7 +1047,6 @@ Save a backup on every save, also allow to recover any version of a file
 This package requires to have svg support in emacs, this feature relies on =librsvg= at compilation time
 
 #+begin_src emacs-lisp
-
 (defun my/meme-from-clipboard ()
   "Create a meme using an image from clipboard"
   (interactive)
@@ -1134,11 +1063,9 @@ This package requires to have svg support in emacs, this feature relies on =libr
     (switch-to-buffer (get-buffer-create "*meme*"))
     (meme-mode)
     (meme--setup-image filepath)))
-
 #+end_src
 
 #+begin_src emacs-lisp
-
 (use-package imgur
   :ensure t
   :defer t
@@ -1162,7 +1089,6 @@ This package requires to have svg support in emacs, this feature relies on =libr
         (images-source-dir (concat user-emacs-directory "straight/repos/meme/images")))
     (unless (file-directory-p images-dest-dir)
       (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
-
 #+end_src
 
 * Orgmode
@@ -1195,7 +1121,6 @@ Configured variables:
 When I read books on Apple Books and I want to insert some quote Apple Books insert some text I don't want in my notes, this function delete that and just insert the meaning part using org quote syntax.
 
 #+begin_src emacs-lisp
-
 (defun my/org-insert-quote-from-apple-books ()
   "Take quote from clipboard and remove all the unnecesary text and insert
     an org quote in the current position"
@@ -1206,11 +1131,9 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
     (insert "#+begin_quote\n")
     (insert (concat quote-value "\n"))
     (insert "#+end_quote\n")))
-
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-
 (defvar my/org-src-block-tmp-window-configuration nil)
 
 (defun my/org-edit-special (&optional arg)
@@ -1250,7 +1173,6 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
 (use-package htmlize
   :ensure t
   :after (org))
-
 #+END_SRC
 
 Fix error with ~TAB~ in ~evil-mode~ in ~org-mode~ with org elements.
@@ -1274,16 +1196,13 @@ A tool to show org file as an slideshow
 =hide-mode-line= hide the modeline to allow to have a clean screen while using =org-tree-slide-mode=
 
 #+begin_src emacs-lisp
-
 (use-package hide-mode-line
   :ensure t)
-
 #+end_src
 
 Some tweaks to have a better looking while presenting slides
 
 #+begin_src emacs-lisp
-
 (defun my/org-tree-slide-setup ()
   (org-display-inline-images)
   (hide-mode-line-mode 1))
@@ -1304,7 +1223,6 @@ Some tweaks to have a better looking while presenting slides
   :bind (:map org-tree-slide-mode-map
               ("C-<" . org-tree-slide-move-previous-tree)
               ("C->" . org-tree-slide-move-next-tree)))
-
 #+end_src
 
 * Denote
@@ -1327,7 +1245,6 @@ Note taking using ~denote~
 * Latex
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package auctex
   :ensure t
   :defer t)
@@ -1335,7 +1252,6 @@ Note taking using ~denote~
 (use-package latex-preview-pane
   :ensure t
   :defer t)
-
 #+END_SRC
 
 * Git
@@ -1345,11 +1261,9 @@ Note taking using ~denote~
 Open selected region in remote repo page
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package git-link
   :ensure t
   :defer t)
-
 #+END_SRC
 
 ** Git modes
@@ -1357,17 +1271,14 @@ Open selected region in remote repo page
 This pacakge includes ~gitignore-mode~, ~gitconfig-mode~ and ~gitattributes-mode~
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package git-modes
   :defer t
   :ensure t)
-
 #+END_SRC
 
 ** Magit
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/magit-blame-quit ()
   "Restore evil state after magit blame mode is closed."
   (evil-exit-emacs-state))
@@ -1384,7 +1295,6 @@ This pacakge includes ~gitignore-mode~, ~gitconfig-mode~ and ~gitattributes-mode
   (advice-add 'magit-blame-quit :after 'my/magit-blame-quit)
   (add-hook 'git-commit-mode-hook 'my/setup-ispell-for-commit-message)
   (add-hook 'magit-blame-mode-hook #'(lambda () (evil-emacs-state))))
-
 #+END_SRC
 
 ** Magit delta
@@ -1401,19 +1311,16 @@ Use ~delta~ tool to show diffs in magit
 ** Forge
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package forge
   :ensure t
   :after (magit closql)
   :config
   (add-hook 'forge-topic-mode-hook #'(lambda () (evil-emacs-state))))
-
 #+END_SRC
 
 ** Git diff-hl
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package diff-hl
   :ensure t
   :custom
@@ -1425,38 +1332,31 @@ Use ~delta~ tool to show diffs in magit
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
   :config
   (global-diff-hl-mode))
-
 #+END_SRC
 
 ** Timemachine
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package git-timemachine
   :ensure t
   :config
   (add-hook 'git-timemachine-mode-hook #'(lambda () (evil-emacs-state))))
-
 #+END_SRC
 
 ** Gist
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package gist
   :ensure t
   :defer t)
-
 #+END_SRC
 
 ** Linkode
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package linkode
   :ensure t
   :defer t)
-
 #+END_SRC
 
 * Web
@@ -1464,7 +1364,6 @@ Use ~delta~ tool to show diffs in magit
 ** Web mode
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/web-mode-hook ()
   (emmet-mode)
   (rainbow-delimiters-mode-disable))
@@ -1481,45 +1380,37 @@ Use ~delta~ tool to show diffs in magit
          ("\\.hbs\\'" . web-mode))
   :config
   (add-hook 'web-mode-hook 'my/web-mode-hook))
-
 #+END_SRC
 
 ** Emmet
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package emmet-mode
   :ensure t)
-
 #+END_SRC
 
 ** Sass
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package sass-mode
   :ensure t
   :defer t)
-
 #+END_SRC
 
 ** Rainbow
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package rainbow-mode
   :ensure t
   :hook
   ((css-mode . rainbow-mode)
    (sass-mode . rainbow-mode)
    (scss-mode . rainbow-mode)))
-
 #+END_SRC
 
 * Miscellaneous
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package writeroom-mode
   :ensure t)
 
@@ -1598,7 +1489,6 @@ Use ~delta~ tool to show diffs in magit
   :custom
   (dumb-jump-prefer-searcher 'rg)
   (dumb-jump-selector 'completing-read))
-
 #+END_SRC
 
 helpful, enhance help functions
@@ -1620,7 +1510,6 @@ Use ESC key instead C-g to close and abort
 Copied from somewhere
 
 #+BEGIN_SRC emacs-lisp
-
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
   In Delete Selection mode, if the mark is active, just deactivate it;
@@ -1641,16 +1530,13 @@ Copied from somewhere
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 (global-set-key [escape] 'evil-exit-emacs-state)
-
 #+END_SRC
 
 Emacs Start Up Profiler
 
 #+begin_src emacs-lisp
-
 (use-package esup
   :ensure t)
-
 #+end_src
 
 * LSP
@@ -1697,13 +1583,11 @@ In case we don't have eglot running we can relay on dump-jump
 =clang-format= is required for this, we can install it with =brew install clang-format=
 
 #+begin_src emacs-lisp
-
 (reformatter-define c-format
   :program "clang-format")
 
 (with-eval-after-load 'cc-mode
   (define-key c-mode-map (kbd "C-c C-f") 'c-format-buffer))
-
 #+end_src
 
 ** Python
@@ -1728,7 +1612,6 @@ Install ~flymake-ruff~
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define python-black-format
   :program "black"
   :args '("-")
@@ -1762,13 +1645,11 @@ Install ~flymake-ruff~
   (define-key python-mode-map (kbd "C-c C-i") 'python-sort-imports-region)
   (add-hook 'python-mode-hook #'flymake-ruff-load)
   (add-hook 'python-mode-hook 'my/ensure-elpy-is-loaded))
-
 #+END_SRC
 
 Show a list of the available django commands and run the selected one using a compilation buffer.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/run-django-command ()
   "Run a django command."
   (interactive)
@@ -1781,7 +1662,6 @@ Show a list of the available django commands and run the selected one using a co
          (selection (completing-read "Pick django command: " (mapcar 'string-trim options)))
          (command (concat python-bin " " manage-py-file " " selection)))
     (compile command)))
-
 #+END_SRC
 
 ** Erlang
@@ -1789,13 +1669,10 @@ Show a list of the available django commands and run the selected one using a co
 Clone erlang source code into =~/Code/erlang/src/=
 
 #+BEGIN_SRC sh
-
 git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package erlang
   :ensure t
   :defer t
@@ -1803,7 +1680,6 @@ git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
   :config
   (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
   (require 'erlang-start))
-
 #+END_SRC
 
 ** Elixir
@@ -1821,7 +1697,6 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define elixir-format
   :program "mix"
   :args '("format" "-")
@@ -1844,7 +1719,6 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
 
   :config
   (evil-leader/set-key-for-mode 'elixir-mode "d" 'my/goto-definition-dumb-jump-fallback))
-
 #+END_SRC
 
 Custom functions to run elixir tests.
@@ -1852,7 +1726,6 @@ Custom functions to run elixir tests.
 =elixir-extra-test-env= can be set up on =.dir-locals.el=
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/mix-run-test (&optional scope)
   "Run elixir test for the given SCOPE."
   (interactive)
@@ -1888,13 +1761,11 @@ Custom functions to run elixir tests.
   "Run mix test at point."
   (interactive)
   (my/mix-run-test))
-
 #+END_SRC
 
 ** LFE
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package lfe-mode
   :ensure t
   :if (executable-find "lfe")
@@ -1907,7 +1778,6 @@ Custom functions to run elixir tests.
     (if (eq (get-buffer-window "*inferior-lfe*") nil)
         (run-lfe nil))
     (lfe-eval-region (point-min) (point-max) nil)))
-
 #+END_SRC
 
 ** Elm
@@ -1915,9 +1785,7 @@ Custom functions to run elixir tests.
 Install Elm
 
 #+BEGIN_SRC sh
-
 npm -g install elm elm-format elm-oracle
-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1938,14 +1806,11 @@ npm -g install elm elm-format elm-oracle
 Install haskell binaries =hlint= and =hindent= and make sure =~/.local/bin/= is loaded in =PATH=.
 
 #+BEGIN_SRC shell
-
 stack install hlint
 stack install hindent
-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define haskell-format
   :program "hindent"
   :group 'haskell)
@@ -1968,19 +1833,16 @@ stack install hindent
   (let* ((current-file (buffer-file-name))
          (default-directory (my/project-root)))
     (compile (concat "hlint " current-file))))
-
 #+END_SRC
 
 ** Lua
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package lua-mode
   :ensure t
   :bind (:map lua-mode-map
               ("C-c C-b" . compile)
               ("C-c C-f" . lua-format-buffer)))
-
 #+END_SRC
 
 Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
@@ -2013,14 +1875,12 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
 ** Typescript
 
 #+begin_src emacs-lisp
-
 (use-package typescript-mode
   :ensure t
   :defer t
   :mode "\\.tsx?\\'"
   :config
   (evil-leader/set-key-for-mode 'typescript-mode "d" 'dumb-jump-go))
-
 #+end_src
 
 ** Rust
@@ -2038,13 +1898,11 @@ rustup component add rust-src
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package rust-mode
   :ensure t
   :if (executable-find "rustc")
   :config
   (evil-leader/set-key-for-mode 'rust-mode "d" 'my/goto-definition-dumb-jump-fallback))
-
 #+END_SRC
 
 #+begin_src emacs-lisp
@@ -2075,7 +1933,6 @@ brew install gopls
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package go-mode
   :ensure t
   :if (executable-find "go")
@@ -2094,25 +1951,21 @@ brew install gopls
   :after go-mode
   :config
   (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
-
 #+END_SRC
 
 ** Common lisp
 
 #+BEGIN_SRC emacs-lisp
-
 (defconst inferior-lisp-program (executable-find "sbcl"))
 
 (use-package sly
   :ensure t
   :defer t)
-
 #+END_SRC
 
 ** Clojure
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/clj-format-code ()
   "Format clojure code using cider commands."
   (interactive)
@@ -2136,18 +1989,15 @@ brew install gopls
 
 (with-eval-after-load 'evil
   (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
-
 #+END_SRC
 
 #+begin_src emacs-lisp
-
 (use-package clj-refactor
   :ensure t
   :after cider
   :bind (:map clojure-mode-map
               ("C-c C-a" . cljr-add-project-dependency))
   :hook (clojure . clj-refactor))
-
 #+end_src
 
 ** Emacs lisp
@@ -2155,10 +2005,8 @@ brew install gopls
 Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
-
 (evil-leader/set-key-for-mode 'emacs-lisp-mode "d" 'xref-find-definitions)
 (evil-leader/set-key-for-mode 'lisp-interaction-mode "d" 'xref-find-definitions)
-
 #+END_SRC
 
 Disable indentation with tabs for =emacs-lisp-mode=
@@ -2187,7 +2035,6 @@ Enable flymake
 ** OCaml
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package tuareg
   :ensure t
   :defer t)
@@ -2199,13 +2046,11 @@ Enable flymake
 (use-package merlin-eldoc
   :ensure t
   :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup))
-
 #+END_SRC
 
 ** Dart
 
 #+BEGIN_SRC emacs-lisp
-
 (reformatter-define dart-format
   :program "dart"
   :args '("format")
@@ -2224,13 +2069,11 @@ Enable flymake
               ("C-c C-c" . my/dart-run-file))
   :config
   (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
-
 #+END_SRC
 
 *** Flutter
 
 #+begin_src emacs-lisp
-
 (defun my/flutter-goto-logs-buffer()
   "Go to buffer logs buffer."
   (interactive)
@@ -2253,20 +2096,17 @@ Enable flymake
                      (file-name-directory
                       (directory-file-name
                        (file-name-directory (executable-find "flutter")))))))
-
 #+end_src
 
 ** F-sharp
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package fsharp-mode
   :ensure t
   :defer t
   :if (executable-find "dotnet")
   :config
   (evil-leader/set-key-for-mode 'fsharp-mode "d" 'fsharp-ac/gotodefn-at-point))
-
 #+END_SRC
 
 * Writing
@@ -2278,7 +2118,6 @@ Custom functions to speed up writing process
 Insert =org-link= image using clipboard value, if the current file is =blog/demo.org= it will place the resulting image into =static/images/blog/demo/image.png=.
 
 #+begin_src emacs-lisp
-
 (defun my/hugo-insert-image-from-clipboard ()
   "Use clipoard image and put it in a generated images folder for the current file."
   (interactive)
@@ -2294,7 +2133,6 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
     (shell-command (format "mkdir -p %s" result-image-dir))
     (shell-command (format "pngpaste %s" full-path-result-image))
     (insert (format "[[file:%s]]" (car (cdr (split-string full-path-result-image "static")))))))
-
 #+end_src
 
 * Custom functions
@@ -2324,7 +2162,6 @@ Simple bookmarks management
 Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".
 
 #+BEGIN_SRC emacs-lisp
-
 (defvar my/window-snapshots '())
 
 (defun my/save-window-snapshot ()
@@ -2347,13 +2184,11 @@ Manage window configurations, allows to save a "snapshot" of the current windows
     (if snapshot
         (set-window-configuration snapshot)
       (message "Snapshot %s not found" snapshot-name))))
-
 #+END_SRC
 
 Manipulate frame font height.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/change-font-height (delta)
   "Use DELTA to increase/decrease the frame font height."
   (let* ((current-height (face-attribute 'default :height))
@@ -2369,11 +2204,9 @@ Manipulate frame font height.
   "Increase font height by 10."
   (interactive)
   (my/change-font-height +10))
-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/find-file-in-project ()
   "Custom find file function."
   (interactive)
@@ -2426,7 +2259,6 @@ Manipulate frame font height.
 Function to extract clocks from org buffer and filter them by month
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/collect-clocks ()
   "Collect all the clocks of current buffer."
   (org-element-map (org-element-parse-buffer) 'clock #'(lambda (clock) clock)))
@@ -2449,13 +2281,11 @@ Function to extract clocks from org buffer and filter them by month
     (seq-map #'(lambda (clock)
                  (insert (format "CLOCK: %s\n" (org-element-property :raw-value (org-element-property :value clock))))) filtered-clocks)
     (org-clock-display)))
-
 #+END_SRC
 
 Copy absolute and relative path to clipboard
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/copy-abs-path ()
   "Copy absolute path of the buffer to clipboard"
   (interactive)
@@ -2473,13 +2303,11 @@ Copy absolute and relative path to clipboard
         (kill-new path)
         (message (format "%s copied to clipboard" path)))
     (message "File not saved yet or not inside project")))
-
 #+END_SRC
 
 Create a temp file with the current buffer content and render it with =eww=.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/preview-buffer-in-eww ()
   "Preview buffer content in EWW."
   (interactive)
@@ -2502,7 +2330,6 @@ Create a temp file with the current buffer content and render it with =eww=.
 Resize window: allow create a "resize mode" and use hjkl to increase/decrease width/height of the current window
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/resize-window ()
   "Resize window using j k h l keys."
   (interactive)
@@ -2519,26 +2346,22 @@ Resize window: allow create a "resize mode" and use hjkl to increase/decrease wi
               (apply action '(1))
             (setq is-reading nil)
             (delete-overlay overlay)))))))
-
 #+END_SRC
 
 Kill the current buffer and delete the related file
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/delete-close-file ()
   "Delete the current file and kill its buffer."
   (interactive)
   (when buffer-file-name
     (delete-file buffer-file-name)
     (kill-buffer)))
-
 #+END_SRC
 
 Generate daily report for work.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/daily-template ()
   "Create a markdown formatter daily report."
   (interactive)
@@ -2548,7 +2371,6 @@ Generate daily report for work.
          (today (read-string "Hoy: "))
          (problems (read-string "Impedimentos: ")))
     (kill-new (format "*%s*: %s\n*Hoy*: %s\n*Impedimentos*: %s" prev-label-text prev today problems))))
-
 #+END_SRC
 
 Copy json text from clipboard in a new buffer and format it
@@ -2570,7 +2392,6 @@ Copy json text from clipboard in a new buffer and format it
 Functions to open Finder using current file or current project.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/open-finder-at (path)
   "Open Finder app with the given PATH."
   (let* ((finder (executable-find "open"))
@@ -2591,36 +2412,30 @@ Functions to open Finder using current file or current project.
     (if file
         (my/open-finder-at (file-name-directory file))
       (message "Buffer has not been saved yet!"))))
-
 #+END_SRC
 
 Open current file with an macOS app. Installed macOS apps will be listed using ~completing-read~
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/macos-open-file-with ()
   "Open current file with and macOS installed app."
   (interactive)
   (let* ((apps-list (directory-files "/Applications" nil "\\.app$"))
          (selected-app (completing-read "Choose an application: " apps-list)))
     (shell-command (format "open %s -a '%s'" (buffer-file-name) selected-app))))
-
 #+END_SRC
 
 Open the current file with macOS =open= command. This will open the file with the default app configured for the type of file.
 
 #+BEGIN_SRC emacs-lisp
-
 (defun my/macos-open-current-file ()
   (interactive)
   (shell-command (format "open %s" (buffer-file-name))))
-
 #+END_SRC
 
 Save image from clipboard to path.
 
 #+begin_src emacs-lisp
-
 (defun my/save-image-from-clipboard ()
   "Save image from clipboard to the given path."
   (interactive)
@@ -2630,5 +2445,4 @@ Save image from clipboard to path.
          (command (format "pngpaste %s" path)))
     (shell-command command)
     (kill-new path)))
-
 #+end_src

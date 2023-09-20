@@ -48,7 +48,6 @@
  ("envrc" . "4730b31ff1479b6d822ccc7517251dcb52de45b3")
  ("esup" . "c9c95e245068d15d8e2732098af9a5d2bc8ec931")
  ("evil" . "5fc16776c5eb00c956ec7e9d83facb6a38dd868d")
- ("evil-leader" . "39f7014bcf8b36463e0c7512c638bda4bac6c2cf")
  ("evil-matchit" . "296cc6580b990dec41893bdb08d8294ded4cb91b")
  ("evil-nerd-commenter" . "b1a92221c9735c2681806a3d5a86c7258e73089f")
  ("evil-surround" . "c9e1449bf3f740b5e9b99e7820df4eca7fc7cf02")

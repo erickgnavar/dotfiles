@@ -514,6 +514,46 @@ Run ispell in text nodes
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (modify-syntax-entry ?_ "w")))
 
+  ;; Setup leader key only for `normal' and `visual' modes
+  (evil-set-leader '(normal visual) (kbd "\\"))
+
+  (evil-define-key nil 'global (kbd "<leader>SPC") #'(lambda ()
+                                                       (interactive)
+                                                       (call-interactively #'execute-extended-command)))
+  (evil-define-key nil 'global (kbd "<leader>a") #'(lambda ()
+                                                     (interactive)
+                                                     (if (region-active-p)
+                                                         (my/grep-in-project (buffer-substring-no-properties (region-beginning) (region-end)))
+                                                       (my/grep-in-project (thing-at-point 'symbol)))))
+  (evil-define-key nil 'global (kbd "<leader>A") 'my/grep-in-project)
+  (evil-define-key nil 'global (kbd "<leader>ba") 'my/add-bookmark)
+  (evil-define-key nil 'global (kbd "<leader>bb") 'my/bookmark-switch)
+  (evil-define-key nil 'global (kbd "<leader>B") #'(lambda ()
+                                                     (interactive)
+                                                     (call-interactively #'switch-to-buffer)))
+  (evil-define-key nil 'global (kbd "<leader>c") 'vterm-toggle)
+  (evil-define-key nil 'global (kbd "<leader>e") 'my/find-file-in-project)
+  (evil-define-key nil 'global (kbd "<leader>f") 'find-file)
+  (evil-define-key nil 'global (kbd "<leader>g") 'magit-status)
+  (evil-define-key nil 'global (kbd "<leader>G") 'magit-file-dispatch)
+  (evil-define-key nil 'global (kbd "<leader>i") 'consult-imenu)
+  (evil-define-key nil 'global (kbd "<leader>hs") 'diff-hl-stage-current-hunk)
+  (evil-define-key nil 'global (kbd "<leader>hk") 'diff-hl-revert-hunk)
+  (evil-define-key nil 'global (kbd "<leader>k") 'kill-buffer)
+  (evil-define-key nil 'global (kbd "<leader>l") 'display-line-numbers-mode)
+  (evil-define-key nil 'global (kbd "<leader>n") 'evil-buffer-new)
+  (evil-define-key nil 'global (kbd "<leader>N") 'my/toggle-narrowing)
+  (evil-define-key nil 'global (kbd "<leader>pa") 'my/copy-abs-path)
+  (evil-define-key nil 'global (kbd "<leader>pr") 'my/copy-relative-path)
+  (evil-define-key nil 'global (kbd "<leader>q") 'consult-line)
+  (evil-define-key nil 'global (kbd "<leader>r") 'my/replace-at-point-or-region)
+  (evil-define-key nil 'global (kbd "<leader>R") 'recompile)
+  (evil-define-key nil 'global (kbd "<leader>s") 'my/toggle-spanish-characters)
+  (evil-define-key nil 'global (kbd "<leader>t") 'persp-switch)
+  (evil-define-key nil 'global (kbd "<leader>w") 'my/resize-window)
+  (evil-define-key nil 'global (kbd "<leader>x") 'my/resize-window)
+  (evil-define-key nil 'global (kbd "<leader>y") 'consult-yank-from-kill-ring)
+
   (face-spec-set
    'evil-ex-substitute-matches
    '((t :foreground "red"
@@ -547,49 +587,6 @@ Run ispell in text nodes
                   (buffer-substring-no-properties (region-beginning) (region-end))
                 (word-at-point))))
     (evil-ex (concat "%s/" text "/"))))
-
-(use-package evil-leader
-  :ensure t
-  :after (evil)
-  :config
-  (global-evil-leader-mode)
-  (evil-leader/set-key
-    "SPC" '(lambda ()
-             (interactive)
-             (call-interactively #'execute-extended-command))
-    "a" '(lambda ()
-           (interactive)
-           (if (region-active-p)
-               (my/grep-in-project (buffer-substring-no-properties (region-beginning) (region-end)))
-             (my/grep-in-project (thing-at-point 'symbol))))
-    "A" 'my/grep-in-project
-    "ba" 'my/add-bookmark
-    "bb" 'my/bookmark-switch
-    "B" '(lambda ()
-           (interactive)
-           (call-interactively #'switch-to-buffer))
-    "c" 'vterm-toggle
-    "e" 'my/find-file-in-project
-    "f" 'find-file
-    "g" 'magit-status
-    "G" 'magit-file-dispatch
-    "i" 'consult-imenu
-    "hs" 'diff-hl-stage-current-hunk
-    "hk" 'diff-hl-revert-hunk
-    "k" 'kill-buffer
-    "l" 'display-line-numbers-mode
-    "n" 'evil-buffer-new
-    "N" 'my/toggle-narrowing
-    "pa" 'my/copy-abs-path
-    "pr" 'my/copy-relative-path
-    "q" 'consult-line
-    "r" 'my/replace-at-point-or-region
-    "R" 'recompile
-    "s" 'my/toggle-spanish-characters
-    "t" 'persp-switch
-    "w" 'my/toggle-maximize
-    "x" 'my/resize-window
-    "y" 'consult-yank-from-kill-ring))
 
 (use-package evil-matchit
   :ensure t
@@ -1114,7 +1111,7 @@ Configured variables:
     (shell-command (format "pngpaste %s" image-path))
     (insert (format "[[file:%s]]" image-path))))
 
-(evil-leader/set-key-for-mode 'org-mode "mii" 'my/org-insert-image-from-clipboard)
+(evil-define-key nil org-mode-map (kbd "<leader>mii") 'my/org-insert-image-from-clipboard)
 
 #+end_src
 
@@ -1639,7 +1636,7 @@ Install ~flymake-ruff~
     (require 'elpy)))
 
 (with-eval-after-load 'python
-  (evil-leader/set-key-for-mode 'python-mode "d" 'my/goto-definition-dumb-jump-fallback)
+  (evil-define-key nil python-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
   (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
   (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
   (define-key python-mode-map (kbd "C-c C-i") 'python-sort-imports-region)
@@ -1718,7 +1715,7 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
               ("C-c C-f" . 'my/elixir-format-buffer))
 
   :config
-  (evil-leader/set-key-for-mode 'elixir-mode "d" 'my/goto-definition-dumb-jump-fallback))
+  (evil-define-key nil elixir-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 #+END_SRC
 
 Custom functions to run elixir tests.
@@ -1868,7 +1865,7 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
   :args '("prettier" "--stdin-filepath" "a.js"))
 
 (with-eval-after-load 'js
-  (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
+  (evil-define-key nil js-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
   (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
 #+END_SRC
 
@@ -1880,7 +1877,7 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
   :defer t
   :mode "\\.tsx?\\'"
   :config
-  (evil-leader/set-key-for-mode 'typescript-mode "d" 'dumb-jump-go))
+  (evil-define-key nil typescript-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 #+end_src
 
 ** Rust
@@ -1902,7 +1899,7 @@ rustup component add rust-src
   :ensure t
   :if (executable-find "rustc")
   :config
-  (evil-leader/set-key-for-mode 'rust-mode "d" 'my/goto-definition-dumb-jump-fallback))
+  (evil-define-key nil rust-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 #+END_SRC
 
 #+begin_src emacs-lisp
@@ -1943,7 +1940,7 @@ brew install gopls
   :hook (go-mode . eglot-ensure)
   :config
   (setq gofmt-command "goimports")
-  (evil-leader/set-key-for-mode 'go-mode "d" 'xref-find-definitions))
+  (evil-define-key nil go-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 
 (use-package go-playground
   :ensure t
@@ -1985,7 +1982,7 @@ brew install gopls
               ("C-c C-f" . my/clj-format-code)
               ("C-c C-r" . my/cider-repl-reset)))
 
-(evil-leader/set-key-for-mode 'clojure-mode "d" 'cider-find-var)
+(evil-define-key nil clojure-mode-map (kbd "<leader>d") 'cider-find-var)
 
 (with-eval-after-load 'evil
   (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
@@ -2005,8 +2002,8 @@ brew install gopls
 Enable go to definition with \ d keybinding
 
 #+BEGIN_SRC emacs-lisp
-(evil-leader/set-key-for-mode 'emacs-lisp-mode "d" 'xref-find-definitions)
-(evil-leader/set-key-for-mode 'lisp-interaction-mode "d" 'xref-find-definitions)
+(evil-define-key nil emacs-lisp-mode-map (kbd "<leader>d") 'xref-find-definitions)
+(evil-define-key nil lisp-interaction-mode-map (kbd "<leader>d") 'xref-find-definitions)
 #+END_SRC
 
 Disable indentation with tabs for =emacs-lisp-mode=
@@ -2068,7 +2065,7 @@ Enable flymake
               ("C-c C-f" . dart-format-buffer)
               ("C-c C-c" . my/dart-run-file))
   :config
-  (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
+  (evil-define-key nil dart-mode-map (kbd "<leader>d") 'xref-find-definitions))
 #+END_SRC
 
 *** Flutter
@@ -2106,7 +2103,7 @@ Enable flymake
   :defer t
   :if (executable-find "dotnet")
   :config
-  (evil-leader/set-key-for-mode 'fsharp-mode "d" 'fsharp-ac/gotodefn-at-point))
+  (evil-define-key nil fsharp-mode-map (kbd "<leader>d") 'fsharp-ac/gotodefn-at-point))
 #+END_SRC
 
 * Writing

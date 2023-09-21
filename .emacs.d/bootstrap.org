@@ -1010,7 +1010,7 @@ Edit grep buffer
 
 Save a backup on every save, also allow to recover any version of a file
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :lexical t
 (defvar my/backup-dir (expand-file-name "~/.git-backup"))
 
 (defun my/git-backup-versioning ()
@@ -1023,7 +1023,13 @@ Save a backup on every save, also allow to recover any version of a file
   "Execute COMMAND with COMMIT-HASH using another defaults arguments."
   (apply command `(,(executable-find "git") ,my/backup-dir ,commit-hash ,(buffer-file-name))))
 
-;TODO: fix order in results
+(defun my/git-backup-sort (completions)
+  "Given COMPLETIONS define a custom sort function."
+  (lambda (string pred action)
+    (if (eq action 'metadata)
+        '(metadata (display-sort-function . identity))
+      (complete-with-action action completions string pred))))
+
 (defun my/git-backup ()
   "Navigate in versions of the current file."
   (interactive)
@@ -1032,7 +1038,7 @@ Save a backup on every save, also allow to recover any version of a file
   ;; for some reason an extra space after `%h|' is required to avoid an error when
   ;; the shell command is executed
   (let* ((candidates (git-backup-list-file-change-time (executable-find "git") my/backup-dir "%cI|%h| %ar" (buffer-file-name)))
-         (selection (completing-read "Pick revision: " candidates))
+         (selection (completing-read "Pick revision: " (my/git-backup-sort candidates)))
          (commit-hash (nth 1 (string-split selection "|")))
          (action (completing-read "Choose action: " '("diff" "new buffer" "replace current buffer"))))
     (cond ((string-equal action "diff") (my/git-backup-run-action 'git-backup-create-ediff commit-hash))

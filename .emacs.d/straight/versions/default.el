@@ -145,6 +145,7 @@
  ("unicode-fonts" . "e3942fe40b418bfb2dc4e73633e09195437fef01")
  ("use-package" . "7d925367ef0857d513d62eab4cb57b7436b9ffe9")
  ("vertico" . "2dcb8c6c6da6ff3628dd31d0b4b2f61f27c0412f")
+ ("vertico-posframe" . "7d435708a332befde3ff53b0d1a8cf24685174c7")
  ("visual-fill-column" . "772d4b25ba19f57409cd03524be0f5bfdc2e8da1")
  ("vterm-toggle" . "a0429842e6197a6ec83c0de30701127a4edb9e92")
  ("wakatime-mode" . "8dfe67c1581a0f3688c572dfdb5f8f71d3f874a0")

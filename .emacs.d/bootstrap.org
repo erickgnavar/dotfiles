@@ -872,6 +872,25 @@ UI for completion
   (vertico-count 15))
 #+end_src
 
+Load ~vertico-multiform~ which is required for ~vertico-posframe~
+
+#+begin_src emacs-lisp
+(use-package vertico-multiform
+  :after vertico
+  :straight nil
+  :load-path "straight/repos/vertico/extensions/")
+#+end_src
+
+Vertico posframe, show all the candidates in a child-frame, it will activated only for GUI version.
+
+#+begin_src emacs-lisp
+(use-package vertico-posframe
+  :ensure t
+  :if (display-graphic-p)
+  :init
+  (vertico-posframe-mode 1))
+#+end_src
+
 Add annotations to results shown by vertico
 
 #+begin_src emacs-lisp

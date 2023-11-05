@@ -58,7 +58,7 @@
  ("flutter.el" . "285eb8646cd37eb4ed997124d1ad71fea2cbe6b7")
  ("flymake-ruff" . "7e3f88068b75d797e1efe0fc194f9725469f126e")
  ("flymake-shellcheck" . "688638177b4e23ecc192975e3062274ca904ada1")
- ("flymake-sqlfluff" . "f7921a5b762eb0675b8fca7cfb00273a76eaee5b")
+ ("flymake-sqlfluff" . "598dff268231f74ba902e2c607c85dd014fbee28")
  ("flymake-yamllint" . "f269e6614993f3c56d545e7d7b225ca2ba1da342")
  ("font-utils" . "abc572eb0dc30a26584c0058c3fe6c7273a10003")
  ("forge" . "ec68fcd778f6b3dc6100498aea790457d2fc98f6")

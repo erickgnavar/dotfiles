@@ -608,6 +608,30 @@ Run ispell in text nodes
   :config (global-evil-matchit-mode 1))
 #+END_SRC
 
+* IA models integration
+
+Integration with different "backends", ~ollama~, ~openai~, and so on.
+
+#+begin_src emacs-lisp
+(use-package llm
+  :ensure t)
+#+end_src
+
+UI to interact with models, relies on ~llm~
+
+#+begin_src emacs-lisp
+(use-package ellama
+  :ensure t
+  :custom
+  (ellama-language "English")
+  :config
+  (require 'llm-ollama)
+  (with-eval-after-load 'llm-ollama)
+  (setopt ellama-provider (make-llm-ollama
+                           :host "localhost"
+                           :chat-model "llama2")))
+#+end_src
+
 * Utils
 
 ** Which-key

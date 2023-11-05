@@ -29,6 +29,7 @@
  ("el-get" . "a5ba5852648a90ee0cde9fb5d72e69497d260eec")
  ("elisp-refs" . "bf3cca8f74065b1b31036f461e3a093b162311bd")
  ("elisp-tree-sitter" . "d3eab879e9b0ccc9582113d81a93ad06f3c6bfb1")
+ ("ellama" . "702042c0bf79a4e81133fb2acb9031f5eae817b0")
  ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
  ("elpy" . "7ff8ffa918411887d165764f7a5a12bc46646e73")
  ;; this is dracula theme, github repo is dracula/emacs, that's why is called emacs here
@@ -91,6 +92,7 @@
  ("lfe" . "d8337516ab09edd4b281a27ac85684b81cdeb8bd")
  ("linkode.el" . "675e612e30b74764c57de4117d950ea803b15f74")
  ("list-utils" . "f02dcef36330871855346f9eab97eef58d323d9a")
+ ("llm" . "551f17040c5d9a423eca90d9bd103589f9142e3c")
  ("logito" . "d5934ce10ba3a70d3fcfb94d742ce3b9136ce124")
  ("lua-mode" . "5a9bee8d5fc978dc64fcb677167417010321ba65")
  ("magit" . "ae7f5e9fb4fa5253ec0ee64e06f7b3afc0cbee7f")

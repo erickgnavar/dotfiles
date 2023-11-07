@@ -632,6 +632,20 @@ UI to interact with models, relies on ~llm~
                            :chat-model "llama2")))
 #+end_src
 
+Custom functions to better management of models
+
+#+begin_src emacs-lisp
+(defun my/switch-ollama-provider ()
+  "Switch ollama provider by using the installed local models."
+  (interactive)
+  (let* ((raw-result (shell-command-to-string "ollama list | awk '{print $1}' | tail -n+2"))
+         (choices (string-split (string-trim raw-result) "\n"))
+         (choices (mapcar (lambda (choice) (car (string-split choice ":"))) choices))
+         (model (completing-read "Choose model" choices)))
+    (setopt ellama-provider (make-llm-ollama :host "localhost" :chat-model model))
+    (message "Model %s configured as ollama provider." (propertize model 'face '(:foreground "magenta")))))
+#+end_src
+
 * Utils
 
 ** Which-key

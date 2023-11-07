@@ -1673,9 +1673,9 @@ Install ~flymake-ruff~
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define python-black-format
-  :program "black"
-  :args '("-")
+(reformatter-define python-ruff-format
+  :program "ruff"
+  :args '("format" "-")
   :group 'python)
 
 (reformatter-define python-sort-imports
@@ -1701,7 +1701,7 @@ Install ~flymake-ruff~
 
 (with-eval-after-load 'python
   (evil-define-key nil python-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
-  (define-key python-mode-map (kbd "C-c C-f") 'python-black-format-buffer)
+  (define-key python-mode-map (kbd "C-c C-f") 'python-ruff-format-buffer)
   (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
   (define-key python-mode-map (kbd "C-c C-i") 'python-sort-imports-region)
   (add-hook 'python-mode-hook #'flymake-ruff-load)

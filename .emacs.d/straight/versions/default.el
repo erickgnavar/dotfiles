@@ -39,7 +39,7 @@
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
  ("emacs-hide-mode-line" . "88888825b5b27b300683e662fa3be88d954b1cea")
  ("emacs-htmlize" . "dd27bc3f26efd728f2b1f01f9e4ac4f61f2ffbf9")
- ("emacs-libvterm" . "3155a477b43c1567d754768f5be79296440ebaf8")
+ ("emacs-libvterm" . "94e2b0b2b4a750e7907dacd5b4c0584900846dd1")
  ("emacs-reformatter" . "84cff54b0873fcca6fc0314d7584284e86708e8d")
  ("emacs-request" . "01e338c335c07e4407239619e57361944a82cb8a")
  ("emacs-which-key" . "ca268fd313d3fb2bd03a8b5e4bdcca675ce58ca7")

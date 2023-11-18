@@ -212,6 +212,15 @@ Custom function to select a base directory before running compilation. ~M-x comp
       (user-error "No active selection"))))
 #+end_src
 
+** Ediff
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'ediff
+  (setq ediff-split-window-function 'split-window-horizontally)
+  ;; put ediff buffer in a buffer at the bottom instead of in a new frame
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain))
+#+end_src
+
 * Theme and styles
 
 ** Dracula

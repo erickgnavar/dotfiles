@@ -2224,14 +2224,16 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
 Simple bookmarks management
 
 #+begin_src emacs-lisp
-(defvar my/bookmarks '())
+(defvar my/bookmarks (make-hash-table :test 'equal))
 
 (defun my/bookmark-switch ()
   "Switch to selected bookmark."
   (interactive)
-  (let* ((options (mapcar 'car my/bookmarks))
+  (let* ((key (my/project-name))
+         (items (gethash key my/bookmarks (make-hash-table :test 'equal)))
+         (options (hash-table-keys items))
          (selected (completing-read "Pick buffer: " options))
-         (selected-buffer (cdr (assoc selected my/bookmarks))))
+         (selected-buffer (gethash selected items)))
     (when selected-buffer
 
       (switch-to-buffer selected-buffer))))
@@ -2239,8 +2241,12 @@ Simple bookmarks management
 (defun my/add-bookmark ()
   "Add current buffer to bookmark list."
   (interactive)
-  (setf (alist-get (buffer-name) my/bookmarks ) (current-buffer))
-  (message "%s added to bookmarks" (buffer-name)))
+  (let* ((project-key (my/project-name))
+         (buffer-key (buffer-name))
+         (items (gethash project-key my/bookmarks (make-hash-table :test 'equal))))
+    (puthash buffer-key (current-buffer) items)
+    (puthash project-key items my/bookmarks)
+    (message "%s added to bookmarks" buffer-key)))
 #+end_src
 
 Manage window configurations, allows to save a "snapshot" of the current windows configuration. Also allows to restore a saved "snapshot".

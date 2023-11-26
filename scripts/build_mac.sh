@@ -40,10 +40,7 @@ make configure
 ./configure --with-ns --with-xwidgets --with-tree-sitter --with-native-compilation=aot
 make -j install
 
-echo "Done!"
-
-# copy better icons that fits Big Sur design
-cp "$CWD/Emacs.icns" nextstep/Emacs.app/Contents/Resources/
+echo "Compilation done!"
 
 echo "Move compiled application into Applications folder?"
 read -r answer
@@ -53,6 +50,18 @@ if [ "$answer" != "${answer#[Yy]}" ] ; then
     echo "Compiled application was moved into Applications folder"
     # Copy app in Applications folder
     cp -rf nextstep/Emacs.app /Applications/
+
+    # Set custom icon that fits Bug Sur design
+    # copied from https://github.com/mklement0/fileicon/blob/master/bin/fileicon
+    osascript <<EOF
+    use framework "Cocoa"
+
+    set sourcePath to "$CWD/Emacs.icns"
+    set destPath to "/Applications/Emacs.app"
+
+    set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:sourcePath)
+    (current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:destPath options:2)
+EOF
 else
     echo "Compiled application wasn't moved"
     exit 1

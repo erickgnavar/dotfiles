@@ -1662,6 +1662,18 @@ In case we don't have eglot running we can relay on dump-jump
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 #+end_src
 
+Bash formatter using ~shfmt~
+
+#+begin_src emacs-lisp
+(reformatter-define sh-format
+  :program "shfmt"
+  :args '("-i" "2" "-")
+  :group 'sh)
+
+(with-eval-after-load 'sh-script
+  (define-key sh-mode-map (kbd "C-c C-f") 'sh-format-buffer))
+#+end_src
+
 ** C
 
 =clang-format= is required for this, we can install it with =brew install clang-format=

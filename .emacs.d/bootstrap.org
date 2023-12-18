@@ -2042,6 +2042,10 @@ brew install gopls
               ("C-c C-f" . gofmt))
   :hook (go-mode . eglot-ensure)
   :config
+  ;; by default tab width is 8, that's too much space so we define 4
+  ;; only for go buffers
+  (add-hook 'go-mode-hook #'(lambda ()
+                              (setq-local tab-width 4)))
   (setq gofmt-command "goimports")
   (evil-define-key nil go-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 

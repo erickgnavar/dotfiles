@@ -26,6 +26,6 @@ done < placements.txt
 
 if [ ! -d "$HOME/.tmuxifier/" ]
 then
-    echo "tmuxifier not installing, cloning..."
+    echo "tmuxifier not installed, cloning..."
     git clone https://github.com/jimeh/tmuxifier.git ~/.tmuxifier
 fi

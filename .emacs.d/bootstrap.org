@@ -1561,7 +1561,11 @@ Use ~delta~ tool to show diffs in magit
 
 (use-package markdown-mode
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (add-hook 'markdown-mode-hook #'(lambda ()
+                                    (setq-local fill-column 120)
+                                    (auto-fill-mode 1))))
 
 (use-package edit-indirect
   :ensure t

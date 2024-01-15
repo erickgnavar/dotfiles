@@ -2243,6 +2243,18 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
     (insert (format "[[file:%s]]" (car (cdr (split-string full-path-result-image "static")))))))
 #+end_src
 
+Insert docsy link
+
+#+begin_src emacs-lisp
+(defun my/docsy-insert-ref ()
+  "Insert a link using docsy ref helper."
+  (interactive)
+  (let* ((filename (read-file-name "Select file: " (my/project-root)))
+         (prefix-to-remove (concat (my/project-root) "content/"))
+         (relative-path (string-replace prefix-to-remove "" filename)))
+    (insert (format "{{< ref \"%s\" >}}" relative-path))))
+#+end_src
+
 * Custom functions
 
 Simple bookmarks management

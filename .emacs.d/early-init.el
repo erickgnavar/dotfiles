@@ -1,3 +1,7 @@
+;;; early-init.el --- early init code
+;;; Commentary:
+
+;;; Code:
 ;; Hide vertical scroll bar
 (scroll-bar-mode -1)
 
@@ -6,3 +10,6 @@
 
 ;; Hide toolbar
 (tool-bar-mode -1)
+
+(provide 'early-init)
+;;; early-init.el ends here

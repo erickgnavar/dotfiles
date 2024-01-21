@@ -993,7 +993,11 @@ Search into project source
 
 #+begin_src emacs-lisp
 (use-package consult
-  :ensure t)
+  :ensure t
+  :config
+  ;; Use consult for completion inside minibuffer, for example when
+  ;; searching for a file.
+  (setq completion-in-region-function #'consult-completion-in-region))
 #+end_src
 
 Integration with yasnippets

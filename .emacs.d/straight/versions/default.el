@@ -137,6 +137,7 @@
  ("sly" . "36aea9aad7ec730cebcf88818a61a905bef7d300")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
+ ("terraform-mode" . "e8b57df8c2a3d3171f3768f60eb84067f553289c")
  ("toml-mode.el" . "f6c61817b00f9c4a3cab1bae9c309e0fc45cdd06")
  ("transient" . "04f87b4ab3c7448a78f452cadaaf5d9e7a216d1d")
  ("tree-sitter-ispell.el" . "d8c33c05f689c2cab36b8a9856811f18a4ab7c59")

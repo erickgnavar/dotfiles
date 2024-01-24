@@ -2493,20 +2493,6 @@ Kill the current buffer and delete the related file
     (kill-buffer)))
 #+END_SRC
 
-Generate daily report for work.
-
-#+BEGIN_SRC emacs-lisp
-(defun my/daily-template ()
-  "Create a markdown formatter daily report."
-  (interactive)
-  (let* ((day (format-time-string "%A"))
-         (prev-label-text (if (equal day "Monday") "Viernes" "Ayer"))
-         (prev (read-string (concat prev-label-text ": ")))
-         (today (read-string "Hoy: "))
-         (problems (read-string "Impedimentos: ")))
-    (kill-new (format "*%s*: %s\n*Hoy*: %s\n*Impedimentos*: %s" prev-label-text prev today problems))))
-#+END_SRC
-
 Copy json text from clipboard in a new buffer and format it
 
 #+begin_src emacs-lisp

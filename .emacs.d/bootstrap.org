@@ -1518,9 +1518,16 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :defer t)
 
+(reformatter-define terraform-format
+  :program "terraform"
+  :args '("fmt" "-")
+  :group 'terraform)
+
 (use-package terraform-mode
   :ensure t
-  :defer t)
+  :defer t
+  :bind (:map terraform-mode-map
+              ("C-c C-f" . 'terraform-format-buffer)))
 
 (defun my/k8s-apply ()
   "Apply current yaml file to the current kubernetes context."

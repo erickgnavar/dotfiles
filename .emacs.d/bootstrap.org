@@ -30,7 +30,7 @@ This is required to enable lexical binding in the resulting ~.el~ file, which wi
 (global-hl-line-mode 1)
 
 (when (member my/font-family (font-family-list))
-  (set-frame-font (format "%s 13" my/font-family)))
+  (set-face-attribute 'default nil :font (format "%s 13" my/font-family)))
 
 (global-set-key (kbd "C-x -") 'my/decrease-font-height)
 (global-set-key (kbd "C-x =") 'my/increase-font-height)
@@ -93,7 +93,7 @@ Adjust font size to screen resolution, increase font size for 4K screens
 
 #+BEGIN_SRC emacs-lisp
 (when (and (display-graphic-p) (>= (x-display-pixel-width) 3840))
-  (set-frame-font (format "%s 14" my/font-family)))
+  (set-face-attribute 'default nil :font (format "%s 14" my/font-family)))
 #+END_SRC
 
 #+begin_src emacs-lisp
@@ -106,8 +106,8 @@ Adjust font size to screen resolution, increase font size for 4K screens
         ;; save current font size in a temp variable to be able to restore it
         ;; after this minor mode is disabled
         (setq big-font-mode--tmp (/ (face-attribute 'default :height) 10))
-        (set-frame-font (format "%s %d" my/font-family 26)))
-    (set-frame-font (format "%s %d" my/font-family big-font-mode--tmp))))
+        (set-face-attribute 'default nil :font (format "%s 26" my/font-family)))
+    (set-face-attribute 'default nil :font (format "%s %d" my/font-family big-font-mode--tmp))))
 #+end_src
 
 Parrot mode FTW!
@@ -2334,7 +2334,7 @@ Manipulate frame font height.
   "Use DELTA to increase/decrease the frame font height."
   (let* ((current-height (face-attribute 'default :height))
          (new-height (+ current-height delta)))
-    (set-face-attribute 'default (selected-frame) :height new-height)))
+    (set-face-attribute 'default nil :height new-height)))
 
 (defun my/decrease-font-height ()
   "Decrease font height by 10."
@@ -2392,9 +2392,8 @@ Manipulate frame font height.
 (defun my/change-font-size()
   "Change frame font size."
   (interactive)
-  (let* ((size (read-number "New size: "))
-         (font (format "%s %d" my/font-family size)))
-    (set-frame-font font)))
+  (let* ((size (read-number "New size: ")))
+    (set-face-attribute 'default nil :font (format "%s %d" my/font-family size))))
 #+END_SRC
 
 Function to extract clocks from org buffer and filter them by month

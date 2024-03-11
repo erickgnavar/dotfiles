@@ -432,6 +432,25 @@ Disable lock files
 
 ** Vterm
 
+Function to search into zsh history
+
+#+begin_src emacs-lisp
+(defun my/select-from-zsh-history ()
+  "Selectt one option from ~/.zsh_history file."
+  (with-temp-buffer
+    (insert-file-contents (expand-file-name "~/.zsh_history"))
+    (let* ((raw-content (buffer-substring-no-properties (point-min) (point-max)))
+           (lines (string-split raw-content "\n"))
+           (choices (mapcar (lambda (line) (second (string-split line ";"))) lines)))
+      (completing-read "Select command: " choices))))
+
+(defun my/insert-from-zsh-history ()
+  "Search into zsh history and insert the selected choice into buffer."
+  (interactive)
+  (when-let ((selected-choice (my/select-from-zsh-history)))
+    (vterm-insert selected-choice)))
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package vterm
   :ensure t

@@ -56,7 +56,7 @@
  ("exec-path-from-shell" . "4ea306a76f0f8371053dd12d77a3b5b4438974d3")
  ("f.el" . "1814209e2ff43cf2e6d38c4cd476218915f550fb")
  ("flutter.el" . "285eb8646cd37eb4ed997124d1ad71fea2cbe6b7")
- ("flymake-ruff" . "1355c72cd216ca4a18d3d3a065aa4a7ed1b2871c")
+ ("flymake-ruff" . "b7a26e5121b64804174a0abcba55e96d514acf5f")
  ("flymake-shellcheck" . "688638177b4e23ecc192975e3062274ca904ada1")
  ("flymake-sqlfluff" . "598dff268231f74ba902e2c607c85dd014fbee28")
  ("flymake-yamllint" . "f269e6614993f3c56d545e7d7b225ca2ba1da342")

@@ -1554,10 +1554,17 @@ Use ~delta~ tool to show diffs in magit
   (let ((default-directory (file-name-directory buffer-file-name)))
     (compile (format "kubectl apply -f %s" buffer-file-name))))
 
+(defun my/k8s-delete ()
+  "Delete current yaml file to the current kubernetes context."
+  (interactive)
+  (let ((default-directory (file-name-directory buffer-file-name)))
+    (compile (format "kubectl delete -f %s" buffer-file-name))))
+
 (use-package yaml-mode
   :ensure t
   :bind (:map yaml-mode-map
-              ("C-c C-c" . 'my/k8s-apply)))
+              ("C-c C-c" . 'my/k8s-apply)
+              ("C-c C-d" . 'my/k8s-delete)))
 
 (use-package flymake-yamllint
   :ensure t

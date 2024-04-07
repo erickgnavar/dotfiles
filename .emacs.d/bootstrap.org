@@ -944,7 +944,10 @@ UI for completion
   ;; fixed height
   (vertico-resize nil)
   ;; show max 15 elements
-  (vertico-count 15))
+  (vertico-count 15)
+  :config
+  ;; `C-;' will open embark and `o' with execute `find-file-other-window'
+  (define-key vertico-map (kbd "C-<return>") (kbd "C-; o")))
 #+end_src
 
 Load ~vertico-multiform~ which is required for ~vertico-posframe~

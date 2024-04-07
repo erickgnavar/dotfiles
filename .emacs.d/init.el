@@ -1,3 +1,4 @@
+;;; Package --- init file -*- lexical-binding: t -*-
 ;;; init.el --- bootstrap file to load config from bootstrap.org
 ;;; Commentary:
 ;;; Code:

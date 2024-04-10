@@ -78,6 +78,7 @@
  ("haml-mode" . "bf5b6c11b1206759d2b28af48765e04882dd1fc4")
  ("haskell-mode" . "53d26263dbe2c607471048646d94788c0d232f98")
  ("hcl-mode" . "e4d9eef631e8a386341ae8f94f7c2579586e65b5")
+ ("heex-ts-mode" . "90142df2929956536dc1eaae3bb5ca04dc4232ab")
  ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")
  ("highlight-thing.el" . "cdf429c41c13c22d25fe43493cc5d85cc480dba6")
  ("ht.el" . "66c5f9131242697fabaede5566d87ecda4c14b1f")

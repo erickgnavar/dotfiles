@@ -1486,7 +1486,6 @@ Use ~delta~ tool to show diffs in magit
   :mode (("\\.html\\'" . web-mode)
          ("\\.html.eex\\'" . web-mode)
          ("\\.html.leex\\'" . web-mode)
-         ("\\.html.heex\\'" . web-mode)
          ("\\.hbs\\'" . web-mode))
   :config
   (add-hook 'web-mode-hook 'my/web-mode-hook))
@@ -1871,6 +1870,14 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
   :config
   (evil-define-key nil elixir-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 #+END_SRC
+
+~heex~ templates support
+
+#+begin_src emacs-lisp
+(use-package heex-ts-mode
+  :ensure t
+  :hook (heex-ts-mode . emmet-mode))
+#+end_src
 
 Custom functions to run elixir tests.
 

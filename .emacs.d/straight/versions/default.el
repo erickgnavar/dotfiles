@@ -33,7 +33,7 @@
  ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
  ("elpy" . "7ff8ffa918411887d165764f7a5a12bc46646e73")
  ;; this is dracula theme, github repo is dracula/emacs, that's why is called emacs here
- ("emacs" . "8e73c675816faadcf4d052b1ba09dc1b00aa1509")
+ ("emacs" . "f0d764444fd47f7791d8afa9811732a7b9d49c46")
  ("emacs-async" . "bb0509060ddc9c94bc7db7bddb12995acb3b53e4")
  ("emacs-elixir" . "907ef434a0ce0f94dbd0c77f09bdfcdc779bca73")
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")

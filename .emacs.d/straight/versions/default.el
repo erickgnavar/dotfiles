@@ -91,6 +91,7 @@
  ("latex-preview-pane" . "5297668a89996b50b2b62f99cba01cc544dbed2e")
  ("let-alist" . "021fc10df2e44faba4728d849ee767cf890aa51a")
  ("lfe" . "d8337516ab09edd4b281a27ac85684b81cdeb8bd")
+ ("ligature.el" . "6ac1634612dbd42f7eb81ecaf022bd239aabb954")
  ("linkode.el" . "675e612e30b74764c57de4117d950ea803b15f74")
  ("list-utils" . "f02dcef36330871855346f9eab97eef58d323d9a")
  ("llm" . "551f17040c5d9a423eca90d9bd103589f9142e3c")

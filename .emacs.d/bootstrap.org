@@ -843,6 +843,16 @@ Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
  (global-cloak-mode))
 #+end_src
 
+** Avy
+
+#+begin_src emacs-lisp
+(use-package avy
+  :ensure t
+  :config
+  (with-eval-after-load 'evil
+    (define-key evil-normal-state-map (kbd "SPC SPC") 'avy-goto-char-2)))
+#+end_src
+
 ** perspective.el
 
 #+begin_src emacs-lisp

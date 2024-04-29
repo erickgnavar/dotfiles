@@ -3,6 +3,7 @@
  ("a.el" . "18966975db7110d0aac726be95b593e2fc3d44ed")
  ("anything-config" . "9e2259fc779eef1a3e947e74cc7d301d1cea0ca6")
  ("auctex" . "fafa28d54276a73604e696b51c6a1a36d727d3fb")
+ ("avy" . "be612110cb116a38b8603df367942e2bb3d9bdbe")
  ("caml-mode" . "38ebde12d3d529e6ef8078967997d32226e69e82")
  ("cider" . "eedbab26684cb1ce01a940b5b0da9ff78aeb4eac")
  ("clj-refactor.el" . "bfd83d142f1a05bad779fa7ccbaec8bd24dae177")

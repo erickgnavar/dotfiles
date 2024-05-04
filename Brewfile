@@ -74,7 +74,7 @@ brew "mailhog", restart_service: true
 brew "mailutils"
 brew "minikube"
 brew "minio", restart_service: true
-brew "neofetch"
+brew "fastfetch"
 brew "nmap"
 brew "openssl@3"
 brew "pandoc"

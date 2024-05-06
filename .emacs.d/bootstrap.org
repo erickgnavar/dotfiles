@@ -527,6 +527,18 @@ Incremental code parsing for better syntax highlighting
   :ensure t)
 #+end_src
 
+Function to copy grammar =~/.emacs.d/tree-sitter=
+
+#+begin_src emacs-lisp
+(defun my/copy-grammars-to-emacs-tree-sitter-dir ()
+  "Copy tree-sitter grammar files to native Emacs dir."
+  (interactive)
+  (let* ((files (directory-files (tree-sitter-langs--bin-dir) nil "\\.dylib$")))
+    (dolist (grammar-file files)
+      (copy-file (concat (tree-sitter-langs--bin-dir) grammar-file) (concat (expand-file-name user-emacs-directory) "tree-sitter/" "libtree-sitter-" grammar-file) t)
+      (message "%s grammar files copied" (length files)))))
+#+end_src
+
 Run ispell in text nodes
 
 #+begin_src emacs-lisp

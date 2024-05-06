@@ -536,6 +536,25 @@ Run ispell in text nodes
   :bind (("C-x C-s" . tree-sitter-ispell-run-at-point)))
 #+end_src
 
+** Hydra for major modes
+
+#+begin_src emacs-lisp
+(use-package major-mode-hydra
+  :ensure t
+  :config
+  (with-eval-after-load 'evil
+    (evil-define-key nil 'global (kbd "<leader>\\") #'(lambda ()
+                                                        (interactive)
+                                                        (major-mode-hydra)))))
+
+(use-package hydra-posframe
+  :straight (hydra-posframe
+             :type git
+             :host github
+             :repo "Ladicle/hydra-posframe")
+  :hook (after-init . hydra-posframe-mode))
+#+end_src
+
 * Evil
 
 #+begin_src emacs-lisp
@@ -1946,6 +1965,21 @@ Custom functions to run elixir tests.
   (interactive)
   (my/mix-run-test))
 #+END_SRC
+
+Set up hydra commands
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'major-mode-hydra
+  (major-mode-hydra-define elixir-mode
+    (:title (concat (nerd-icons-icon-for-buffer) " Elixir Commands"))
+    ("Format"
+     (("f" my/elixir-format-buffer))
+     "Testing"
+     (("tt" my/mix-run-test-at-point)
+      ("tf" my/mix-run-test-file)
+      ("ta" my/mix-run-test-all)))
+    ))
+#+end_src
 
 ** LFE
 

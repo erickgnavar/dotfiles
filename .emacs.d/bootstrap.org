@@ -859,6 +859,16 @@ Handle environment variables per buffer using a ~.envrc~ file.
               ("C-c C-h" . 'cloak-mode)))
 #+END_SRC
 
+hydra commands
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'major-mode-hydra
+  (major-mode-hydra-define envrc-file-mode
+    (:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
+    ("Secrets"
+     (("h" cloak-mode "Toggle cloak" :toggle t)))))
+#+end_src
+
 ** Cloak mode
 
 Hide values that match regex patterns in ~.envrc~ and ~restclient~ files

@@ -165,7 +165,7 @@
  ("writeroom-mode" . "fa17eb651102502f60086d62784f1dae15c0630d")
  ("xterm-color" . "2ad407c651e90fff2ea85d17bf074cee2c022912")
  ("yaml-mode" . "cecf4b106b0c4236931b14919fdf87ff3546e2c9")
- ("yaml-pro" . "775c0a4b82c79da0eb91620fb0cbbf6c8642815b")
+ ("yaml-pro" . "565765e3f6f1484eb824d2b83c8ad07b253eba1b")
  ("yaml.el" . "ee86566af1ed4975531ab3aa4eb4dba770c227f6")
  ("yasnippet" . "4046f61588dbd63b1b579bbf6eb6977ad605d262")
  ("yasnippet-snippets" . "281752335ec797cfb2f8ab17d01e9293eab3f137"))

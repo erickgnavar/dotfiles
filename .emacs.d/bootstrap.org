@@ -2174,10 +2174,6 @@ brew install gopls
 (use-package go-mode
   :ensure t
   :if (executable-find "go")
-  :bind (:map go-mode-map
-              ("C-c C-t" . go-test-current-file)
-              ("C-c C-c" . go-run)
-              ("C-c C-f" . gofmt))
   :hook (go-mode . eglot-ensure)
   :config
   ;; by default tab width is 8, that's too much space so we define 4
@@ -2194,6 +2190,22 @@ brew install gopls
   :config
   (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
 #+END_SRC
+
+Setup hydra
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'major-mode-hydra
+  (major-mode-hydra-define go-mode
+    (:title (concat (nerd-icons-icon-for-buffer) " Go Commands"))
+    ("Format"
+     (("f" gofmt))
+     "Execute"
+     (("r" go-run))
+     "Testing"
+     (("tt" go-test-current-test)
+      ("tf" go-test-current-file)
+      ("ta" go-test-current-project)))))
+#+end_src
 
 ** Common lisp
 

@@ -168,5 +168,5 @@
  ("yaml-pro" . "565765e3f6f1484eb824d2b83c8ad07b253eba1b")
  ("yaml.el" . "ee86566af1ed4975531ab3aa4eb4dba770c227f6")
  ("yasnippet" . "4046f61588dbd63b1b579bbf6eb6977ad605d262")
- ("yasnippet-snippets" . "281752335ec797cfb2f8ab17d01e9293eab3f137"))
+ ("yasnippet-snippets" . "6fafad13bb4689600285d9e38c61958dd63c356d"))
 :gamma

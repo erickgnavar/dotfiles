@@ -1685,9 +1685,11 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :defer t)
 
-(use-package dockerfile-mode
-  :ensure t
-  :defer t)
+(use-package dockerfile-ts-mode
+  :straight (:type built-in)
+  :defer t
+  :mode (("\\Dockerfile\\'" . dockerfile-ts-mode)
+         ("\\.dockerignore\\'" . dockerfile-ts-mode)))
 
 (use-package dumb-jump
   :ensure t

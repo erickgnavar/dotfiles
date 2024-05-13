@@ -145,7 +145,7 @@
  ("toml-mode.el" . "f6c61817b00f9c4a3cab1bae9c309e0fc45cdd06")
  ("transient" . "04f87b4ab3c7448a78f452cadaaf5d9e7a216d1d")
  ("tree-sitter-ispell.el" . "d8c33c05f689c2cab36b8a9856811f18a4ab7c59")
- ("tree-sitter-langs" . "1076cf2366be8ef1bd6fd7239f92f16cc0890fce")
+ ("tree-sitter-langs" . "5c18599c371af14deda2a0ff12706ffbbfe171ca")
  ("treepy.el" . "de1a2ddc3fd7152d0bfbd9e14312ff8a4864ab2b")
  ("tuareg" . "c12061eb80c1487a1963af7cdae268d709a70ca9")
  ("typescript.el" . "0fc729787007b5111f3584034af0f3ef2389098f")

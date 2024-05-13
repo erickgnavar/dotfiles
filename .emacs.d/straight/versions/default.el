@@ -36,7 +36,6 @@
  ;; this is dracula theme, github repo is dracula/emacs, that's why is called emacs here
  ("emacs" . "f0d764444fd47f7791d8afa9811732a7b9d49c46")
  ("emacs-async" . "bb0509060ddc9c94bc7db7bddb12995acb3b53e4")
- ("emacs-elixir" . "907ef434a0ce0f94dbd0c77f09bdfcdc779bca73")
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
  ("emacs-hide-mode-line" . "88888825b5b27b300683e662fa3be88d954b1cea")
  ("emacs-htmlize" . "dd27bc3f26efd728f2b1f01f9e4ac4f61f2ffbf9")

@@ -1757,7 +1757,7 @@ Emacs Start Up Profiler
               ("<M-return>" . 'eglot-code-actions)
               ("C-c C-s" . 'xref-find-references))
   :config
-  (setf (alist-get 'elixir-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/elixir-ls/release/language_server.sh"))))
+  (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/elixir-ls/release/language_server.sh"))))
 #+end_src
 
 In case we don't have eglot running we can relay on dump-jump
@@ -1912,7 +1912,7 @@ mix elixir_ls.release
 In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ where is the correct location using a ~.dir-locals.el~ file.
 
 #+begin_src emacs-lisp :tangle no
-((elixir-mode . ((eglot-workspace-configuration . ((:elixirLS . (:projectDir "mix.exs dir/")))))))
+((elixir-ts-mode . ((eglot-workspace-configuration . ((:elixirLS . (:projectDir "mix.exs dir/")))))))
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
@@ -1930,10 +1930,14 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
       (eglot-format-buffer)
     (elixir-format-buffer)))
 
-(use-package elixir-mode
-  :ensure t
+(use-package elixir-ts-mode
+  :straight (:type built-in)
+  :mode (("\\.ex\\'" . elixir-ts-mode)
+         ("\\.exs\\'" . elixir-ts-mode)
+         ("\\mix.lock\\'" . elixir-ts-mode))
   :config
-  (evil-define-key nil elixir-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
+  ;; for some reason there is not map already defined
+  (evil-define-key nil elixir-ts-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
 #+END_SRC
 
 ~heex~ templates support
@@ -1990,7 +1994,7 @@ Set up hydra commands
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'major-mode-hydra
-  (major-mode-hydra-define elixir-mode
+  (major-mode-hydra-define elixir-ts-mode
     (:title (concat (nerd-icons-icon-for-buffer) " Elixir Commands"))
     ("Format"
      (("f" my/elixir-format-buffer))

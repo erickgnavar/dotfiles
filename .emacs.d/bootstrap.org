@@ -441,6 +441,25 @@ Disable lock files
   :ensure t)
 #+END_SRC
 
+** Hydra for major modes
+
+#+begin_src emacs-lisp
+(use-package major-mode-hydra
+  :ensure t
+  :config
+  (with-eval-after-load 'evil
+    (evil-define-key nil 'global (kbd "<leader>\\") #'(lambda ()
+                                                        (interactive)
+                                                        (major-mode-hydra)))))
+
+(use-package hydra-posframe
+  :straight (hydra-posframe
+             :type git
+             :host github
+             :repo "Ladicle/hydra-posframe")
+  :hook (after-init . hydra-posframe-mode))
+#+end_src
+
 ** Vterm
 
 Function to search into zsh history
@@ -469,6 +488,11 @@ Function to search into zsh history
   :hook
   (vterm-mode . (lambda ()
                   (setq-local show-trailing-whitespace nil)))
+  :mode-hydra
+  (vterm-mode
+   (:title (concat (nerd-icons-icon-for-buffer) " Vterm commands"))
+   ("History"
+    (("i" my/insert-from-zsh-history "Insert command from history"))))
   :custom
   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
   (vterm-always-compile-module t))
@@ -546,25 +570,6 @@ Run ispell in text nodes
   :ensure t
   :defer t
   :bind (("C-x C-s" . tree-sitter-ispell-run-at-point)))
-#+end_src
-
-** Hydra for major modes
-
-#+begin_src emacs-lisp
-(use-package major-mode-hydra
-  :ensure t
-  :config
-  (with-eval-after-load 'evil
-    (evil-define-key nil 'global (kbd "<leader>\\") #'(lambda ()
-                                                        (interactive)
-                                                        (major-mode-hydra)))))
-
-(use-package hydra-posframe
-  :straight (hydra-posframe
-             :type git
-             :host github
-             :repo "Ladicle/hydra-posframe")
-  :hook (after-init . hydra-posframe-mode))
 #+end_src
 
 * Evil

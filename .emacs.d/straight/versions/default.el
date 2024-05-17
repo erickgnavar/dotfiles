@@ -85,7 +85,7 @@
  ("hydra-posframe" . "142a04dd588af6c725e331863c3ca7bd5dda13ec")
  ("imgur.el" . "ed952eb8f556c6fc0d982e2a689083504558cffb")
  ("inheritenv" . "00106bb208d06e5f1ec25d0c2f41c000cbb25076")
- ("jsonian" . "1d226db4da79d48427b623c2825e499030a6d50f")
+ ("jsonian" . "f200035b847d6dd10bd7987f4540cff9edd3b881")
  ("jump.el" . "55caa66a7cc6e0b1a76143fd40eff38416928941")
  ("know-your-http-well" . "3cc5ab6d2764ab7aacb1b6e026abaccbeb6c37f2")
  ("latex-preview-pane" . "5297668a89996b50b2b62f99cba01cc544dbed2e")

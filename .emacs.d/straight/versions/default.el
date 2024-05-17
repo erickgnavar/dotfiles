@@ -147,7 +147,6 @@
  ("tree-sitter-langs" . "5c18599c371af14deda2a0ff12706ffbbfe171ca")
  ("treepy.el" . "de1a2ddc3fd7152d0bfbd9e14312ff8a4864ab2b")
  ("tuareg" . "c12061eb80c1487a1963af7cdae268d709a70ca9")
- ("typescript.el" . "0fc729787007b5111f3584034af0f3ef2389098f")
  ("ucs-utils" . "91b9e0207fff5883383fd39c45ad5522e9b90e65")
  ("undo-tree" . "16f4121032d09ef44b3d7d02c4d02c3c2f18041f")
  ("unicode-fonts" . "e3942fe40b418bfb2dc4e73633e09195437fef01")

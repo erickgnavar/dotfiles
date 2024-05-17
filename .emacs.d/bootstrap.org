@@ -854,12 +854,19 @@ Handle environment variables per buffer using a ~.envrc~ file.
 (use-package envrc
   :ensure t
   :config
-  (envrc-global-mode)
-  :mode-hydra
-  ((:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
-   ("Secrets"
-    (("h" cloak-mode "Toggle cloak" :toggle t)))))
+  (envrc-global-mode))
 #+END_SRC
+
+Hydra commands, this have to be defined this way instead of using ~:mode-hydra~ inside ~use-package~ because
+for some reason it mess up with environment variables loading
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'major-mode-hydra
+  (major-mode-hydra-define envrc-file-mode
+    (:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
+    ("Secrets"
+     (("h" cloak-mode "Toggle cloak" :toggle t)))))
+#+end_src
 
 ** Cloak mode
 

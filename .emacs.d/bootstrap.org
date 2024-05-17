@@ -638,7 +638,11 @@ Run ispell in text nodes
   (evil-define-key nil 'global (kbd "<leader>pr") 'my/copy-relative-path)
   (evil-define-key nil 'global (kbd "<leader>q") 'consult-line)
   (evil-define-key nil 'global (kbd "<leader>r") 'my/replace-at-point-or-region)
-  (evil-define-key nil 'global (kbd "<leader>R") 'recompile)
+  (evil-define-key nil 'global (kbd "<leader>R") '(lambda ()
+                                                    (interactive)
+                                                    (save-excursion)
+                                                    (with-current-buffer "*compilation*"
+                                                      (recompile))))
   (evil-define-key nil 'global (kbd "<leader>s") 'my/toggle-spanish-characters)
   (evil-define-key nil 'global (kbd "<leader>t") 'persp-switch)
   (evil-define-key nil 'global (kbd "<leader>w") 'my/toggle-maximize)

@@ -855,19 +855,11 @@ Handle environment variables per buffer using a ~.envrc~ file.
   :ensure t
   :config
   (envrc-global-mode)
-  :bind (:map envrc-mode-map
-              ("C-c C-h" . 'cloak-mode)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
+   ("Secrets"
+    (("h" cloak-mode "Toggle cloak" :toggle t)))))
 #+END_SRC
-
-hydra commands
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'major-mode-hydra
-  (major-mode-hydra-define envrc-file-mode
-    (:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
-    ("Secrets"
-     (("h" cloak-mode "Toggle cloak" :toggle t)))))
-#+end_src
 
 ** Cloak mode
 
@@ -1995,6 +1987,9 @@ Custom functions to run elixir tests.
 
 Set up hydra commands
 
+For some reason using ~:mode-hydra~ inside ~use-package~ doesn't load environment variables so we can run mix commands properly,
+that's why we need to define this ~hydra~ this way.
+
 #+begin_src emacs-lisp
 (with-eval-after-load 'major-mode-hydra
   (major-mode-hydra-define elixir-ts-mode
@@ -2182,6 +2177,16 @@ brew install gopls
   :ensure t
   :if (executable-find "go")
   :hook (go-mode . eglot-ensure)
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Go Commands"))
+   ("Format"
+    (("f" gofmt))
+    "Execute"
+    (("r" go-run))
+    "Testing"
+    (("tt" go-test-current-test)
+     ("tf" go-test-current-file)
+     ("ta" go-test-current-project))))
   :config
   ;; by default tab width is 8, that's too much space so we define 4
   ;; only for go buffers
@@ -2197,22 +2202,6 @@ brew install gopls
   :config
   (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
 #+END_SRC
-
-Setup hydra
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'major-mode-hydra
-  (major-mode-hydra-define go-mode
-    (:title (concat (nerd-icons-icon-for-buffer) " Go Commands"))
-    ("Format"
-     (("f" gofmt))
-     "Execute"
-     (("r" go-run))
-     "Testing"
-     (("tt" go-test-current-test)
-      ("tf" go-test-current-file)
-      ("ta" go-test-current-project)))))
-#+end_src
 
 ** Common lisp
 

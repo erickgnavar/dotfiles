@@ -1949,6 +1949,14 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
   :mode (("\\.ex\\'" . elixir-ts-mode)
          ("\\.exs\\'" . elixir-ts-mode)
          ("\\mix.lock\\'" . elixir-ts-mode))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Elixir Commands"))
+   ("Format"
+    (("f" my/elixir-format-buffer))
+    "Testing"
+    (("tt" my/mix-run-test-at-point)
+     ("tf" my/mix-run-test-file)
+     ("ta" my/mix-run-test-all))))
   :config
   ;; for some reason there is not map already defined
   (evil-define-key nil elixir-ts-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
@@ -2003,24 +2011,6 @@ Custom functions to run elixir tests.
   (interactive)
   (my/mix-run-test))
 #+END_SRC
-
-Set up hydra commands
-
-For some reason using ~:mode-hydra~ inside ~use-package~ doesn't load environment variables so we can run mix commands properly,
-that's why we need to define this ~hydra~ this way.
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'major-mode-hydra
-  (major-mode-hydra-define elixir-ts-mode
-    (:title (concat (nerd-icons-icon-for-buffer) " Elixir Commands"))
-    ("Format"
-     (("f" my/elixir-format-buffer))
-     "Testing"
-     (("tt" my/mix-run-test-at-point)
-      ("tf" my/mix-run-test-file)
-      ("ta" my/mix-run-test-all)))
-    ))
-#+end_src
 
 ** LFE
 

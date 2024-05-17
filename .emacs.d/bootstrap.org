@@ -756,9 +756,17 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
   :ensure t
   :defer t
   :mode (("\\.http\\'" . restclient-mode))
-  :bind (:map restclient-mode-map
-              ("C-c C-h" . 'cloak-mode)
-              ("C-c C-f" . 'jsonian-format-region))) ;TODO: change to only apply json formatting when the content-type is application/json
+  :mode-hydra
+  (restclient-mode
+   (:title (concat (nerd-icons-icon-for-buffer) " restclient commands"))
+   ("Format"
+    ;; TODO: change to only apply json formatting when the content-type is application/json
+    (("f" jsonian-format-region))
+    "Secrets"
+    (("h" cloak-mode "Toggle cloak" :toggle t))
+    "Request"
+    (("r" restclient-http-send-current-stay-in-window "Execute request")
+     ("c" restclient-copy-curl-command "Copy CURL command")))))
 
 (use-package company-restclient
   :ensure t

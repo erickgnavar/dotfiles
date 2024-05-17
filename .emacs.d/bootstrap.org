@@ -1586,10 +1586,22 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :defer t)
 
+(defun my/json-format ()
+  "Format region or buffer."
+  (interactive)
+  (if (region-active-p)
+      (jsonian-format-region (region-beginning) (region-end))
+    (jsonian-format-region (point-min) (point-max))))
+
 (use-package jsonian
   :ensure t
   :defer t
-  :mode (("\\.json\\'" . jsonian-mode)))
+  :mode (("\\.json\\'" . jsonian-mode))
+  :mode-hydra
+  (jsonian-mode
+   (:title (concat (nerd-icons-icon-for-buffer) " JSON commands"))
+   ("Format"
+    (("f" my/json-format)))))
 
 (use-package request
   :ensure t

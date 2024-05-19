@@ -623,6 +623,7 @@ Run ispell in text nodes
                                                      (interactive)
                                                      (call-interactively #'switch-to-buffer)))
   (evil-define-key nil 'global (kbd "<leader>c") 'vterm-toggle)
+  (evil-define-key nil 'global (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
   (evil-define-key nil 'global (kbd "<leader>e") 'my/find-file-in-project)
   (evil-define-key nil 'global (kbd "<leader>f") 'find-file)
   (evil-define-key nil 'global (kbd "<leader>g") 'magit-status)
@@ -1891,7 +1892,6 @@ Install ~flymake-ruff~
     (require 'elpy)))
 
 (with-eval-after-load 'python
-  (evil-define-key nil python-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
   (define-key python-mode-map (kbd "C-c C-f") 'python-ruff-format-buffer)
   (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
   (define-key python-mode-map (kbd "C-c C-i") 'python-sort-imports-region)
@@ -1975,10 +1975,7 @@ In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ wher
     "Testing"
     (("tt" my/mix-run-test-at-point)
      ("tf" my/mix-run-test-file)
-     ("ta" my/mix-run-test-all))))
-  :config
-  ;; for some reason there is not map already defined
-  (evil-define-key nil elixir-ts-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
+     ("ta" my/mix-run-test-all)))))
 #+END_SRC
 
 ~heex~ templates support
@@ -2136,7 +2133,6 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
   :args '("prettier" "--stdin-filepath" "a.js"))
 
 (with-eval-after-load 'js
-  (evil-define-key nil js-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
   (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
 #+END_SRC
 
@@ -2146,9 +2142,7 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
 (use-package typescript-ts-mode
   :straight (:type built-in)
   :defer t
-  :mode "\\.tsx?\\'"
-  :config
-  (evil-define-key nil typescript-ts-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
+  :mode "\\.tsx?\\'")
 #+end_src
 
 ** Rust
@@ -2168,9 +2162,7 @@ rustup component add rust-src
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
   :ensure t
-  :if (executable-find "rustc")
-  :config
-  (evil-define-key nil rust-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
+  :if (executable-find "rustc"))
 #+END_SRC
 
 #+begin_src emacs-lisp
@@ -2220,8 +2212,7 @@ brew install gopls
   ;; only for go buffers
   (add-hook 'go-mode-hook #'(lambda ()
                               (setq-local tab-width 4)))
-  (setq gofmt-command "goimports")
-  (evil-define-key nil go-mode-map (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback))
+  (setq gofmt-command "goimports"))
 
 (use-package go-playground
   :ensure t

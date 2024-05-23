@@ -140,6 +140,7 @@
  ("sly" . "36aea9aad7ec730cebcf88818a61a905bef7d300")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
+ ("telega.el" . "b423b249ec460ab6f986bb5672a5ed5b952d6e87")
  ("terraform-mode" . "e8b57df8c2a3d3171f3768f60eb84067f553289c")
  ("transient" . "04f87b4ab3c7448a78f452cadaaf5d9e7a216d1d")
  ("tree-sitter-langs" . "5c18599c371af14deda2a0ff12706ffbbfe171ca")

@@ -1601,6 +1601,32 @@ Use ~delta~ tool to show diffs in magit
    (scss-mode . rainbow-mode)))
 #+END_SRC
 
+* Telegram
+
+#+begin_src emacs-lisp
+(use-package telega
+  :ensure t
+  :defer t
+  :custom
+  ;; enable markdown for code snippets
+  (telega-chat-input-markups '("markdown2" "org" nil))
+  ;; use vertico for completion
+  (telega-completing-read-function 'completing-read)
+  :config
+  ;; use shift enter to make multi line messages and enter to send it
+  (define-key telega-chat-mode-map (kbd "S-<return>") #'newline)
+  ;; avoid showing blank spaces highlighted
+  (add-hook 'telega-chat-mode-hook #'(lambda ()
+                                       (setq-local show-trailing-whitespace nil))))
+
+(defun my/start-telega ()
+  "Start `telega' inside a new perspective and activate 'telega-mode-line-mode'"
+  (interactive)
+  (persp-switch "*telega*")
+  (telega)
+  (telega-mode-line-mode))
+#+end_src
+
 * Miscellaneous
 
 #+BEGIN_SRC emacs-lisp

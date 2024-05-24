@@ -1342,6 +1342,8 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
         org-clock-persist 'history
         org-src-fontify-natively t
         org-src-preserve-indentation t
+        ;; use tectonic for export to PDF
+        org-latex-pdf-process '("tectonic -X compile --outdir=%o -Z shell-escape -Z continue-on-errors %f")
         org-log-done t)
   (org-clock-persistence-insinuate)
 

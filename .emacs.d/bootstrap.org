@@ -1615,6 +1615,8 @@ Use ~delta~ tool to show diffs in magit
   :config
   ;; use shift enter to make multi line messages and enter to send it
   (define-key telega-chat-mode-map (kbd "S-<return>") #'newline)
+  ;; disable copy message link when moving over text with evil-mode
+  (define-key telega-msg-button-map (kbd "l") nil)
   ;; avoid showing blank spaces highlighted
   (add-hook 'telega-chat-mode-hook #'(lambda ()
                                        (setq-local show-trailing-whitespace nil))))

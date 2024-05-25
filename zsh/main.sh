@@ -119,7 +119,7 @@ alias weather="curl http://wttr.in/Lima"
 alias wow="git status"
 alias ipython='fades -d ipython -x ipython'
 alias cat="bat"
-alias ls="eza"
+alias ls="eza --icons"
 alias k="kubectl"
 
 # direnv conf

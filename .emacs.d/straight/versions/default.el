@@ -48,7 +48,7 @@
  ("emmet-mode" . "0d03a59201383f37632f718012bd835222d11a8d")
  ("envrc" . "4730b31ff1479b6d822ccc7517251dcb52de45b3")
  ("esup" . "c9c95e245068d15d8e2732098af9a5d2bc8ec931")
- ("evil" . "5fc16776c5eb00c956ec7e9d83facb6a38dd868d")
+ ("evil" . "0b134d3bbf73c93f5fed2bb89a35f408a9d627ed")
  ("evil-matchit" . "296cc6580b990dec41893bdb08d8294ded4cb91b")
  ("evil-nerd-commenter" . "b1a92221c9735c2681806a3d5a86c7258e73089f")
  ("evil-surround" . "c9e1449bf3f740b5e9b99e7820df4eca7fc7cf02")

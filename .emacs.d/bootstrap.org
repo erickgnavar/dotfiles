@@ -1907,29 +1907,33 @@ Install ~flymake-ruff~
   :args '("--fix" "--select" "I001" "-")
   :group 'python)
 
-;; we use elpy just to have `elpy-test'
-(use-package elpy
+(setq python-shell-completion-native-enable nil)
+
+(use-package python-ts-mode
+  :straight (:type built-in)
+  :defer t
+  :mode "\\.py\\'"
+  :bind
+  (:map python-ts-mode-map
+        ("C-c C-f" . python-ruff-format-buffer)
+        ("C-c C-i" . python-sort-imports-region)
+        ("C-c C-t" . pythontest-test-at-point))
+  :hook (python-ts-mode . flymake-ruff-load))
+#+END_SRC
+
+Testing package
+
+#+begin_src emacs-lisp
+(use-package pythontest
   :ensure t
   :defer t
   :custom
-  ;; always print stdout when running tests with pytest
-  (elpy-test-pytest-runner-command '("pytest" "-s" "-vv"))
-  (elpy-shell-echo-input nil))
-
-(setq python-shell-completion-native-enable nil)
-
-(defun my/ensure-elpy-is-loaded ()
-  "Check if `elpy' is loaded otherwise load it."
-  (unless (featurep 'elpy)
-    (require 'elpy)))
-
-(with-eval-after-load 'python
-  (define-key python-mode-map (kbd "C-c C-f") 'python-ruff-format-buffer)
-  (define-key python-mode-map (kbd "C-c C-t") 'elpy-test)
-  (define-key python-mode-map (kbd "C-c C-i") 'python-sort-imports-region)
-  (add-hook 'python-mode-hook #'flymake-ruff-load)
-  (add-hook 'python-mode-hook 'my/ensure-elpy-is-loaded))
-#+END_SRC
+  (pythontest-pytest-command "pytest -s -vv")
+  :straight (pythontest
+             :type git
+             :host github
+             :repo "erickgnavar/pythontest.el"))
+#+end_src
 
 Show a list of the available django commands and run the selected one using a compilation buffer.
 

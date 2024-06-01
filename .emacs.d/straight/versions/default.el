@@ -10,7 +10,7 @@
  ("cloak-mode" . "ca0896dfd0a0ee549150233ebd96aa0f65b56afb")
  ("clojure-mode" . "e31186843d06ea86f3771244d1cde0112f9e2079")
  ("closql" . "85ac7b8a894a4e259439d79eb6bd6f5129770905")
- ("company-mode" . "e5c7432607d8978ec10942c99ba636e7e2cd79df")
+ ("company-mode" . "6c7731d4ec1e43199ea328e1691999b4fe8967a8")
  ("company-restclient" . "e5a3ec54edb44776738c13e13e34c85b3085277b")
  ("compat" . "605f224633eb28efbe62252605515ce3d557e19f")
  ("consult" . "9c7dbbe4d626987e40d7a157430021e13a6906bd")

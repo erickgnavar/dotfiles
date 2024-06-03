@@ -1829,7 +1829,8 @@ Emacs Start Up Profiler
               ("<M-return>" . 'eglot-code-actions)
               ("C-c C-s" . 'xref-find-references))
   :config
-  (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/elixir-ls/release/language_server.sh"))))
+  ;; elixir LSP server
+  (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/lexical/release/bin/start_lexical.sh"))))
 #+end_src
 
 In case we don't have eglot running we can relay on dump-jump
@@ -1972,17 +1973,22 @@ git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
 
 ** Elixir
 
-To have support for LSP we need to compile [[https://github.com/elixir-lsp/elixir-ls][elixir-ls]] and setup the generated release into ~eglot-server-programs~
+*** LSP server building
 
-#+begin_src shell
-mix elixir_ls.release
-#+end_src
-
-In case project ~mix.exs~ is not in root folder we need to tell ~elixir_ls~ where is the correct location using a ~.dir-locals.el~ file.
+To have support for LSP we need to compile [[https://github.com/lexical-lsp/lexical][lexical]] and setup the generated release into ~eglot-server-programs~. lexical must use minimal versions so it can be used by more types of projects, recommended versions are:
 
 #+begin_src emacs-lisp :tangle no
-((elixir-ts-mode . ((eglot-workspace-configuration . ((:elixirLS . (:projectDir "mix.exs dir/")))))))
+elixir: 1.13.4-otp-24
+erlang: 24.3.4.12
 #+end_src
+
+Prepare release of ~lexical~
+
+#+begin_src shell
+MIX_ENV=prod mix package --path release
+#+end_src
+
+*** Config
 
 #+BEGIN_SRC emacs-lisp
 (reformatter-define elixir-format

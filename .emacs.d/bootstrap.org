@@ -1371,7 +1371,6 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
                                  (sql . t)
                                  (dot . t)
                                  (plantuml . t)
-                                 (d2 . t)
                                  (emacs-lisp . t))))
 
 (use-package htmlize
@@ -1747,7 +1746,12 @@ Use ~delta~ tool to show diffs in magit
 
 (use-package ob-d2
   :defer t
-  :ensure t)
+  :ensure t
+  :config
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((d2 . t)))))
 
 (use-package mermaid-mode
   :ensure t

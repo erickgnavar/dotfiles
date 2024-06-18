@@ -70,6 +70,7 @@ brew "libvterm"
 brew "libxml2"
 brew "lorem"
 brew "lsusb"
+brew "lua-language-server"
 brew "mailhog", restart_service: true
 brew "mailutils"
 brew "minikube"

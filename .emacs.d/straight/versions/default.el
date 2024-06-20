@@ -30,8 +30,6 @@
  ("elisp-tree-sitter" . "d3eab879e9b0ccc9582113d81a93ad06f3c6bfb1")
  ("ellama" . "702042c0bf79a4e81133fb2acb9031f5eae817b0")
  ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
- ;; this is dracula theme, github repo is dracula/emacs, that's why is called emacs here
- ("emacs" . "f0d764444fd47f7791d8afa9811732a7b9d49c46")
  ("emacs-async" . "bb0509060ddc9c94bc7db7bddb12995acb3b53e4")
  ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
  ("emacs-hide-mode-line" . "88888825b5b27b300683e662fa3be88d954b1cea")
@@ -135,6 +133,8 @@
  ("sly" . "36aea9aad7ec730cebcf88818a61a905bef7d300")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
+ ;; this is `doom-themes', github repo is `doomemacs/themes' that's why is called `themes' here
+ ("themes" . "816fb54d60a7012b9b12cd995831d4226982b487")
  ("telega.el" . "b423b249ec460ab6f986bb5672a5ed5b952d6e87")
  ("terraform-mode" . "e8b57df8c2a3d3171f3768f60eb84067f553289c")
  ("transient" . "04f87b4ab3c7448a78f452cadaaf5d9e7a216d1d")

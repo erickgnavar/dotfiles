@@ -25,7 +25,6 @@
  ("doom-modeline" . "29a4bfc99962ec0d55c48ff5a503a6d722dc80a8")
  ("dumb-jump" . "542e72d3feba986a12119f6def515ef1347cb4ca")
  ("edit-indirect" . "bdc8f542fe8430ba55f9a24a7910639d4c434422")
- ("editorconfig-emacs" . "65f8244ffbeb9bf2720d922d4b5fc74849b9af82")
  ("el-get" . "a5ba5852648a90ee0cde9fb5d72e69497d260eec")
  ("elisp-refs" . "bf3cca8f74065b1b31036f461e3a093b162311bd")
  ("elisp-tree-sitter" . "d3eab879e9b0ccc9582113d81a93ad06f3c6bfb1")

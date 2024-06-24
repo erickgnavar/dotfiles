@@ -89,6 +89,7 @@
     vim
     rofi-wayland
     pavucontrol
+    killall
     fzf
     tectonic
     wayland

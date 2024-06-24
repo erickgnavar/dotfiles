@@ -37,7 +37,7 @@
     xkbVariant = "";
   };
 
-  services.keyd {
+  services.keyd = {
     enable = true;
     keyboards = {
       default = {

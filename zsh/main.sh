@@ -122,8 +122,9 @@ alias cat="bat"
 alias ls="eza --icons"
 alias k="kubectl"
 
-# direnv conf
-eval "$(direnv hook zsh)"
+# direnv conf, load configuration only if the binary is already
+# installed, silence stdout and stderr
+which direnv 1>/dev/null 2>&1 && eval "$(direnv hook zsh)"
 
 # load custom OS code
 if [ $(uname -s) = "Darwin" ]

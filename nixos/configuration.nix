@@ -88,6 +88,8 @@
     wget
     vim
     rofi-wayland
+    pavucontrol
+    fzf
     tectonic
     wayland
     wl-clipboard

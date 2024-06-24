@@ -37,6 +37,20 @@
     xkbVariant = "";
   };
 
+  services.keyd {
+    enable = true;
+    keyboards = {
+      default = {
+        ids = ["*"];
+        settings = {
+          main = {
+            capslock = "esc";
+          };
+        };
+      };
+    };
+  }
+
   hardware.pulseaudio.enable = false;
 
   services.pipewire = {

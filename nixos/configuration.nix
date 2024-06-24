@@ -31,6 +31,7 @@
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # TODO: maybe we don't need this
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
@@ -49,7 +50,7 @@
         };
       };
     };
-  }
+  };
 
   hardware.pulseaudio.enable = false;
 

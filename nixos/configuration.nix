@@ -74,7 +74,6 @@
 
   fonts.packages = with pkgs; [
     jetbrains-mono
-    fira-code-symbols
     nerdfonts
   ];
 
@@ -102,7 +101,6 @@
     antigen
     bat
     eza
-    kitty
     unzip
     zsh
     git

@@ -669,13 +669,11 @@ Set maximum value for ~font-locking~ in ~treesit~ native syntax highlighting
       :foreground "green"
       :weight bold))))
 
-(use-package evil-nerd-commenter
+(use-package evil-commentary
   :ensure t
   :after (evil)
   :config
-  (global-set-key (kbd "C-\-") 'evilnc-comment-operator)
-  ;; avoid to auto-setup of keybindings
-  (setq evilnc-use-comment-object-setup nil))
+  (evil-commentary-mode))
 
 (use-package evil-surround
   :ensure t

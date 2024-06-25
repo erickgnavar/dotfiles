@@ -1,8 +1,3 @@
-if [ -z "$HOMEBREW_PREFIX" ]
-then
-    export HOMEBREW_PREFIX=$(brew --prefix)
-fi
-
 mkdir -p ~/.config/zsh
 
 function load_zsh_plugin() {
@@ -20,9 +15,9 @@ function load_zsh_plugin() {
 load_zsh_plugin "https://github.com/ohmyzsh/ohmyzsh.git" "oh-my-zsh.sh"
 load_zsh_plugin "https://github.com/zsh-users/zsh-syntax-highlighting.git" "zsh-syntax-highlighting.zsh"
 load_zsh_plugin "https://github.com/mafredri/zsh-async.git" "async.zsh"
+load_zsh_plugin "https://github.com/sindresorhus/pure.git" "pure.zsh"
 
-# load plugin from homwbrew installation
-fpath+=("$HOMEBREW_PREFIX/opt/pure/share/zsh/site-functions")
+fpath+=("$HOME/.config/zsh/pure")
 # setup pure-prompt
 autoload -U promptinit; promptinit
 prompt pure

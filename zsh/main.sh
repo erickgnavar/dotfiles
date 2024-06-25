@@ -116,6 +116,7 @@ alias py3="python3"
 alias py="python"
 alias vi="vim"
 alias weather="curl http://wttr.in/Lima"
+alias g="git"
 alias wow="git status"
 alias ipython='fades -d ipython -x ipython'
 alias cat="bat"

@@ -385,7 +385,14 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 
 #+BEGIN_SRC emacs-lisp
 (use-package editorconfig
+  :if (>= emacs-major-version 30)
   :straight (:type built-in)
+  :config
+  (editorconfig-mode 1))
+
+(use-package editorconfig
+  :if (< emacs-major-version 30)
+  :ensure t
   :config
   (editorconfig-mode 1))
 #+END_SRC
@@ -738,7 +745,15 @@ Custom functions to better management of models
 
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
+  :if (>= emacs-major-version 30)
   :straight (:type built-in)
+  :config
+  (which-key-mode)
+  (which-key-setup-minibuffer))
+
+(use-package which-key
+  :if (< emacs-major-version 30)
+  :ensure t
   :config
   (which-key-mode)
   (which-key-setup-minibuffer))

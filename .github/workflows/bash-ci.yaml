@@ -13,7 +13,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install shellcheck
-        run: sudo apt update && sudo apt install shellcheck --yes
+        run: sudo apt update && sudo apt install shellcheck shfmt --yes
+
+      - name: Run formatter using shfmt
+        run: shfmt -l -i 2 .
 
       - name: Run shellcheck
         run: find . -name "*.sh" -type f -exec shellcheck {} \;

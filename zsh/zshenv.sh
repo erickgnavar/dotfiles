@@ -36,11 +36,11 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # load cargo bin
 if [ -f "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
+  . "$HOME/.cargo/env"
 fi
 
 if [ -d "$HOME/.ghcup/" ]; then
-    export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
+  export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 fi
 
 # opam configuration
@@ -51,16 +51,16 @@ test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
 # setup for intel macOS
 if [ -d "/usr/local/opt/asdf/libexec" ]; then
-    . /usr/local/opt/asdf/libexec/asdf.sh
+  . /usr/local/opt/asdf/libexec/asdf.sh
 fi
 
 # setup for arm macOS
 if [ -d "/opt/homebrew/opt/asdf/libexec" ]; then
-    . /opt/homebrew/opt/asdf/libexec/asdf.sh
+  . /opt/homebrew/opt/asdf/libexec/asdf.sh
 fi
 
 if [ -d "$HOME/.tmuxifier/" ]; then
-    export PATH="$HOME/.tmuxifier/bin:$PATH"
+  export PATH="$HOME/.tmuxifier/bin:$PATH"
 fi
 
 # Disable telemetry in homebrew

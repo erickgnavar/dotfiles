@@ -17,20 +17,20 @@ export PATH="/usr/local/opt/gettext/bin:$PATH"
 
 # fix emoji and symbol pallete when it doesn't show up
 fix_emoji_palette() {
-    preferences_path="$HOME/Library/Preferences/com.apple.HIToolbox.plist"
+  preferences_path="$HOME/Library/Preferences/com.apple.HIToolbox.plist"
 
-    if [ -e "$preferences_path" ]; then
-        rm "$preferences_path"
-    fi
+  if [ -e "$preferences_path" ]; then
+    rm "$preferences_path"
+  fi
 }
 
 function rae() {
-    open "https://dle.rae.es/$1"
+  open "https://dle.rae.es/$1"
 }
 
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
 
 function reset_cache {
-    sudo dscacheutil -flushcache
-    sudo killall -HUP mDNSResponder
+  sudo dscacheutil -flushcache
+  sudo killall -HUP mDNSResponder
 }

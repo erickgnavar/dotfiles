@@ -12,10 +12,10 @@ export LC_ALL=
 export EDITOR=vim
 
 # Add homebrew binaries PATH
-export PATH=$PATH:/usr/local/bin/
+export PATH="$PATH":/usr/local/bin/
 
 # Go binaries
-export PATH=$PATH:$HOME/go/bin
+export PATH="$PATH":"$HOME/go/bin"
 
 # Use binaries from ~/.local/bin
 # haskell stack install some binaries here: hindent, hlint, etc
@@ -35,39 +35,31 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # load cargo bin
-if [ -f "$HOME/.cargo/env" ]
-then
-    # shellcheck source=/dev/null
+if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
 
-if [ -d "$HOME/.ghcup/" ]
-then
+if [ -d "$HOME/.ghcup/" ]; then
     export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 fi
 
 # opam configuration
-# shellcheck source=/dev/null
-test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
+test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>/dev/null
 
 # this will load credentials from a private file what won't be commited
-# shellcheck source=/dev/null
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
 # setup for intel macOS
-if [ -d "/usr/local/opt/asdf/libexec" ]
-then
+if [ -d "/usr/local/opt/asdf/libexec" ]; then
     . /usr/local/opt/asdf/libexec/asdf.sh
 fi
 
 # setup for arm macOS
-if [ -d "/opt/homebrew/opt/asdf/libexec" ]
-then
+if [ -d "/opt/homebrew/opt/asdf/libexec" ]; then
     . /opt/homebrew/opt/asdf/libexec/asdf.sh
 fi
 
-if [ -d "$HOME/.tmuxifier/" ]
-then
+if [ -d "$HOME/.tmuxifier/" ]; then
     export PATH="$HOME/.tmuxifier/bin:$PATH"
 fi
 

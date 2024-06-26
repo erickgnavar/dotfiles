@@ -2,16 +2,14 @@
 
 CWD=$(pwd)
 
-if [ -z "$1" ]
-then
+if [ -z "$1" ]; then
     echo "Please provide the directory where emacs source is located"
     exit 1
 fi
 
 EMACS_REPO_DIR=$1
 
-if [ ! -d "$EMACS_REPO_DIR" ]
-then
+if [ ! -d "$EMACS_REPO_DIR" ]; then
     echo "$EMACS_REPO_DIR is not a valid directory"
     exit 1
 fi
@@ -42,7 +40,7 @@ echo "Move compiled application into Applications folder?"
 read -r answer
 
 # we ask for confirmation so we can check compilation stdout before replacing a working version of emacs
-if [ "$answer" != "${answer#[Yy]}" ] ; then
+if [ "$answer" != "${answer#[Yy]}" ]; then
     echo "Compiled application was moved into Applications folder"
     # Copy app in Applications folder
     cp -rf nextstep/Emacs.app /Applications/

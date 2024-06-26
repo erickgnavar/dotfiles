@@ -1,3 +1,4 @@
+#!/bin/env bash
 mkdir -p ~/.config/zsh
 
 function load_zsh_plugin() {
@@ -19,5 +20,6 @@ load_zsh_plugin "https://github.com/sindresorhus/pure.git" "pure.zsh"
 
 fpath+=("$HOME/.config/zsh/pure")
 # setup pure-prompt
-autoload -U promptinit; promptinit
+autoload -U promptinit
+promptinit
 prompt pure

@@ -32,10 +32,6 @@ brew install autoconf automake libxml2 jansson gnutls cmake librsvg texinfo libg
 
 echo "Seting up variables..."
 
-PKG_CONFIG_PATH="$(brew --prefix libxml2)/lib/pkgconfig"
-
-export ${"$PKG_CONFIG_PATH"}
-
 make configure
 ./configure --with-ns --with-xwidgets --with-tree-sitter --with-native-compilation=aot
 make -j install

@@ -134,11 +134,19 @@ function video_to_gif {
 
 # k8s helpers
 
+function pick_namespace() {
+  kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace"
+}
+
+function pick_pod() {
+  kubectl get pods -n "$1" | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod"
+}
+
 function pod_shell {
   local namespace
-  namespace=$(kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace")
+  namespace=$(pick_namespace)
   local pod
-  pod=$(kubectl get pods -n "$namespace" | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod")
+  pod=$(pick_pod "$namespace")
   echo "Connecting to $pod"
 
   if [ -z "$1" ]; then
@@ -150,9 +158,9 @@ function pod_shell {
 
 function pod_proxy {
   local namespace
-  namespace=$(kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace")
+  namespace=$(pick_namespace)
   local pod
-  pod=$(kubectl get pods -n "$namespace" | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod")
+  pod=$(pick_pod "$namespace")
   local port_mapping
   echo "Enter port mapping using the form local_port:pod_port"
   read -r port_mapping
@@ -163,9 +171,9 @@ function pod_proxy {
 
 function pod_logs {
   local namespace
-  namespace=$(kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace")
+  namespace=$(pick_namespace)
   local pod
-  pod=$(kubectl get pods -n "$namespace" | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod")
+  pod=$(pick_pod "$namespace")
   echo "Showing logs for $pod"
 
   kubectl -n "$namespace" logs -f "$pod"

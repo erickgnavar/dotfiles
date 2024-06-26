@@ -102,7 +102,6 @@
     keyd
     emacs-gtk
     direnv
-    antigen
     bat
     eza
     unzip

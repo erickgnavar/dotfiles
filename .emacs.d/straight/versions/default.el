@@ -37,6 +37,7 @@
  ("emacs-libvterm" . "94e2b0b2b4a750e7907dacd5b4c0584900846dd1")
  ("emacs-reformatter" . "84cff54b0873fcca6fc0314d7584284e86708e8d")
  ("emacs-request" . "01e338c335c07e4407239619e57361944a82cb8a")
+ ("emacs-websocket" . "40c208eaab99999d7c1e4bea883648da24c03be3")
  ("emacsmirror-mirror" . "59f19a8ce2e20d8b66f7171739bd01b6d2fc9675")
  ("emacsql" . "64012261f65fcdd7ea137d1973ef051af1dced42")
  ("embark" . "b9f2b3b9a5b9c72cf1416097b9941c4f275dae94")

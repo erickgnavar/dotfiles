@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: action
+# key: action
+# group: Odoo
+# --
+<record id="$1_action$2" model="${3:$$(yas-choose-value '("ir.actions.act_window" "ir.actions.act_url" "ir.actions.act_server" "ir.actions.act_report_xml" "ir.actions.act_client"))}">
+    <field name="name">$4</field>
+    <field name="res_model">${1:$(replace-regexp-in-string "_" "." yas-text)}</field>
+    <field name="view_mode">${5:form}</field>
+    <field name="view_id" ref="$1_view_form"/>
+</record>

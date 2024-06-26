@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: formview
+# key: formview
+# --
+<record id="$1_view_form" model="ir.ui.view">
+    <field name="name">${1:$(replace-regexp-in-string "_" "." yas-text)}.form</field>
+    <field name="model">${1:$(replace-regexp-in-string "_" "." yas-text)}</field>
+    <field name="arch" type="xml">
+        <form>
+            $0
+        </form>
+    </field>
+</record>

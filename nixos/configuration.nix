@@ -96,6 +96,7 @@
     tectonic
     wayland
     wl-clipboard
+    swaylock-effects
     fastfetch
     firefox
     alacritty

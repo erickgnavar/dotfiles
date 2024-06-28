@@ -34,8 +34,10 @@
   # TODO: maybe we don't need this
   # Configure keymap in X11
   services.xserver = {
-    layout = "us";
-    xkbVariant = "";
+    xkb = {
+      variant = "";
+      layout = "us";
+    };
   };
 
   services.keyd = {

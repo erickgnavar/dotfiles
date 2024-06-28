@@ -98,6 +98,7 @@
     wl-clipboard
     swaylock-effects
     fastfetch
+    hyprshot
     telegram-desktop
     firefox
     alacritty

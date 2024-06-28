@@ -98,6 +98,7 @@
     wl-clipboard
     swaylock-effects
     fastfetch
+    telegram-desktop
     firefox
     alacritty
     tmux

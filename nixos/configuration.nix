@@ -95,6 +95,7 @@
     fzf
     tectonic
     wayland
+    wlogout
     wl-clipboard
     swaylock-effects
     fastfetch

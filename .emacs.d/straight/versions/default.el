@@ -96,7 +96,7 @@
  ("marginalia" . "27ccfd2213bb9432883427cf058c63af10196aa6")
  ("markdown-mode" . "9977753eebe3f5cca7ab85b18a7c719fdb0b7654")
  ("marshal.el" . "bc00044d9073482f589aad959e34d563598f682a")
- ("melpa" . "08692fd0e799bbe2afe086e5fa146628cd97bdc1")
+ ("melpa" . "e995f6ce91c578a14966092246b6f48729500c10")
  ("meme" . "d8f1a57c44a300017d542b4c8c29e0386a1c5d7d")
  ("merlin" . "a451081bf0b0c5e86c4ee61ea0ea0cc0f03a4a0f")
  ("merlin-eldoc" . "db7fab1eddfe34781b7e79694f8923b285698032")

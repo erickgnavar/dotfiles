@@ -182,6 +182,20 @@ Enable evil emacs state when entering a xref buffer
                        (evil-normal-state))))
 #+end_src
 
+** Popper.el
+
+Display some special buffers in a little window always at bottom
+
+#+begin_src emacs-lisp
+(use-package popper
+  :ensure t
+  :init
+  (setq popper-reference-buffers
+        '("\\*eldoc\\*"
+          help-mode))
+  (popper-mode +1))
+#+end_src
+
 ** Compilation
 
 Disable =h= key-binding, this has a conflict with evil-mode left navigation key-binding.

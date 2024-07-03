@@ -120,6 +120,7 @@
  ("pcache" . "507230d094cc4a5025fe09b62569ad60c71c4226")
  ("persistent-soft" . "a1e0ddf2a12a6f18cab565dee250f070384cbe02")
  ("perspective-el" . "cbdc3e5dc77ccb681f8719db0a85af8850b757d2")
+ ("popper" . "66b47699975fd47541c50959af47a48bb4f938cf")
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
  ("pyvenv" . "861998b6d157ae73b829f02a5a6c8a9118310831")
  ("queue" . "52206c0f78afc0dfb9a287cb928c1e725103336d")

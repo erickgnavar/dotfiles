@@ -169,6 +169,19 @@ Enable evil emacs state when entering a xref buffer
   (add-hook 'xref-after-update-hook #'(lambda () (evil-emacs-state))))
 #+end_src
 
+** Occur
+
+#+begin_src emacs-lisp
+;; occur is part of replace.el file
+(with-eval-after-load 'replace
+  (define-key occur-mode-map (kbd "C-c C-e") 'occur-edit-mode)
+  ;; this will run every time search results are shown
+  (setq occur-hook #'(lambda ()
+                       (window-buffer)
+                       (select-window (get-buffer-window "*Occur*"))
+                       (evil-normal-state))))
+#+end_src
+
 ** Compilation
 
 Disable =h= key-binding, this has a conflict with evil-mode left navigation key-binding.

@@ -95,6 +95,7 @@
     pavucontrol
     killall
     ripgrep
+    tree-sitter
     fzf
     tectonic
     wayland

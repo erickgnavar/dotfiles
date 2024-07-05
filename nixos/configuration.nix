@@ -97,6 +97,7 @@
     ripgrep
     tree-sitter
     fzf
+    pcmanfm
     tectonic
     wayland
     wlogout

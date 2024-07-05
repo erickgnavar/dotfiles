@@ -48,6 +48,8 @@
         settings = {
           main = {
             capslock = "esc";
+            leftmeta = "layer(alt)";
+            leftalt = "layer(meta)";
           };
         };
       };

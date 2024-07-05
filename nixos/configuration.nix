@@ -92,6 +92,7 @@
     rofi-wayland
     pavucontrol
     killall
+    ripgrep
     fzf
     tectonic
     wayland

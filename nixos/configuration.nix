@@ -95,6 +95,7 @@
     pavucontrol
     killall
     ripgrep
+    aspell
     tree-sitter
     fzf
     pcmanfm

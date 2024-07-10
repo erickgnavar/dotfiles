@@ -113,6 +113,7 @@
     waybar
     keyd
     emacs-gtk
+    localsend
     direnv
     bat
     eza

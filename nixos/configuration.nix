@@ -103,6 +103,7 @@
     wayland
     wlogout
     wl-clipboard
+    networkmanagerapplet
     swaylock-effects
     fastfetch
     hyprshot

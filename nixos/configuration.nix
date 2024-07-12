@@ -68,7 +68,7 @@
   users.users.erick = {
     isNormalUser = true;
     description = "Erick Navarro";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [ ];
   };
 
@@ -85,6 +85,8 @@
   nixpkgs.config.allowUnfree = true;
 
   programs.hyprland.enable = true;
+
+  virtualisation.docker.enable = true;
 
   environment.systemPackages = with pkgs; [
     nixpkgs-fmt

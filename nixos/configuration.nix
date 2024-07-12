@@ -124,6 +124,11 @@
     gtk3
     zathura
     dolphin
+    gnumake
+    gcc
+    cmake
+    libtool
+    libvterm
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

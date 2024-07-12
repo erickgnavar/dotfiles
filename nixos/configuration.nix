@@ -96,6 +96,8 @@
     killall
     ripgrep
     aspell
+    aspellDicts.en
+    aspellDicts.es
     tree-sitter
     fzf
     pcmanfm

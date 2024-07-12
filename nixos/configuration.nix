@@ -126,7 +126,6 @@
     git
     gtk3
     zathura
-    dolphin
     gnumake
     gcc
     cmake

@@ -133,6 +133,8 @@
     cmake
     libtool
     libvterm
+    clang-tools
+    pyright
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

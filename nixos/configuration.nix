@@ -101,6 +101,8 @@
     aspellDicts.es
     tree-sitter
     fzf
+    shfmt
+    shellcheck
     pcmanfm
     tectonic
     wayland

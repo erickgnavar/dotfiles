@@ -68,6 +68,11 @@ This is required to enable lexical binding in the resulting ~.el~ file, which wi
 ;; place custom code generated for emacs in a separate file
 (defconst custom-file (expand-file-name ".customize.el" user-emacs-directory))
 (load custom-file :noerror)
+
+;; disable mouse gestures to avoid scaling text by mistake
+(global-set-key (kbd "<pinch>") 'ignore)
+(global-set-key (kbd "<C-wheel-up>") 'ignore)
+(global-set-key (kbd "<C-wheel-down>") 'ignore)
 #+END_SRC
 
 Show a message with emacs startup time

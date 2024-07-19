@@ -89,6 +89,8 @@
   virtualisation.docker.enable = true;
 
   environment.systemPackages = with pkgs; [
+    i3lock-fancy
+    polybar
     nixpkgs-fmt
     wget
     vim

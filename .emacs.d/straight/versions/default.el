@@ -109,6 +109,7 @@
  ("nongnu-elpa" . "e5adab3409abfa69ecbaeb07bb88d48f78e03d3f")
  ("ob-d2" . "5d197f8225a9fb4da997235b231abe30049c6825")
  ("orderless" . "6936fe46ef07df168a423f04efeda130b4e69753")
+ ("org-modern" . "96cd1dc2c8f523f1f4f02b927375deaa924368b4")
  ("org-tree-slide" . "7126a4365072a32898f169ead8fb59265dabc605")
  ("otp" . "c553bfc9e3aa3e8d4ca5b624afdc61d5749d2b1d")
  ("package-lint" . "4ea8318c1bf79ccb1b4658d58917bbd9f990c432")

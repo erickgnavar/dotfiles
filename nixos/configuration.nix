@@ -136,6 +136,7 @@
     libtool
     libvterm
     clang-tools
+    ruff
     pyright
     zig
     zls

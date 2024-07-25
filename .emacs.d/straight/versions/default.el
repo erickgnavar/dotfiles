@@ -31,7 +31,6 @@
  ("ellama" . "702042c0bf79a4e81133fb2acb9031f5eae817b0")
  ("elm-mode" . "d4e434fa1857ba2f58d27c7520ebeac0515cd140")
  ("emacs-async" . "bb0509060ddc9c94bc7db7bddb12995acb3b53e4")
- ("emacs-fsharp-mode" . "0415c45489fa7d83e9a7c94530aa1943682aabf9")
  ("emacs-hide-mode-line" . "88888825b5b27b300683e662fa3be88d954b1cea")
  ("emacs-htmlize" . "dd27bc3f26efd728f2b1f01f9e4ac4f61f2ffbf9")
  ("emacs-libvterm" . "94e2b0b2b4a750e7907dacd5b4c0584900846dd1")

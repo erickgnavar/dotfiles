@@ -681,7 +681,6 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
                                                      (interactive)
                                                      (call-interactively #'switch-to-buffer)))
   (evil-define-key nil 'global (kbd "<leader>c") 'vterm-toggle)
-  (evil-define-key nil 'global (kbd "<leader>d") 'my/goto-definition-dumb-jump-fallback)
   (evil-define-key nil 'global (kbd "<leader>e") 'my/find-file-in-project)
   (evil-define-key nil 'global (kbd "<leader>f") 'find-file)
   (evil-define-key nil 'global (kbd "<leader>g") 'magit-status)
@@ -1971,7 +1970,9 @@ In case we don't have eglot running we can relay on dump-jump
   (interactive)
   (if (and (featurep 'eglot) (eglot-managed-p))
       (xref-find-definitions (thing-at-point 'symbol))
-    (dumb-jump-go)))
+    (if (member major-mode '(emacs-lisp-mode lisp-interaction-mode))
+        (xref-find-definitions (thing-at-point 'symbol))
+      (dump-jump-go))))
 #+end_src
 
 * Programming languages
@@ -2431,8 +2432,6 @@ brew install gopls
               ("C-c C-f" . my/clj-format-code)
               ("C-c C-r" . my/cider-repl-reset)))
 
-(evil-define-key nil clojure-mode-map (kbd "<leader>d") 'cider-find-var)
-
 (with-eval-after-load 'evil
   (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
 #+END_SRC
@@ -2447,13 +2446,6 @@ brew install gopls
 #+end_src
 
 ** Emacs lisp
-
-Enable go to definition with \ d keybinding
-
-#+BEGIN_SRC emacs-lisp
-(evil-define-key nil emacs-lisp-mode-map (kbd "<leader>d") 'xref-find-definitions)
-(evil-define-key nil lisp-interaction-mode-map (kbd "<leader>d") 'xref-find-definitions)
-#+END_SRC
 
 Disable indentation with tabs for =emacs-lisp-mode=
 

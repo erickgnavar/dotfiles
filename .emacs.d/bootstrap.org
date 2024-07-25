@@ -594,8 +594,8 @@ Function to copy grammar =~/.emacs.d/tree-sitter=
 (defun my/copy-grammars-to-emacs-tree-sitter-dir ()
   "Copy tree-sitter grammar files to native Emacs dir."
   (interactive)
-  (let* ((extension (if (string-equal system-type "darwin") "dylb" "so"))
-         (files (directory-files (tree-sitter-langs--bin-dir) nil (format "\\.%s$" "so")))
+  (let* ((extension (if (string-equal system-type "darwin") "dylib" "so"))
+         (files (directory-files (tree-sitter-langs--bin-dir) nil (format "\\.%s$" extension)))
          (tree-sitter-dir (concat (expand-file-name user-emacs-directory) "tree-sitter")))
     (unless (file-directory-p tree-sitter-dir)
       (mkdir tree-sitter-dir))

@@ -33,7 +33,7 @@
  ("emacs-async" . "bb0509060ddc9c94bc7db7bddb12995acb3b53e4")
  ("emacs-hide-mode-line" . "88888825b5b27b300683e662fa3be88d954b1cea")
  ("emacs-htmlize" . "dd27bc3f26efd728f2b1f01f9e4ac4f61f2ffbf9")
- ("emacs-libvterm" . "94e2b0b2b4a750e7907dacd5b4c0584900846dd1")
+ ("emacs-libvterm" . "d9ea29fb10aed20512bd95dc5b8c1a01684044b1")
  ("emacs-reformatter" . "84cff54b0873fcca6fc0314d7584284e86708e8d")
  ("emacs-request" . "01e338c335c07e4407239619e57361944a82cb8a")
  ("emacs-websocket" . "40c208eaab99999d7c1e4bea883648da24c03be3")

@@ -2310,7 +2310,14 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
 
 ** Javascript
 
-We use default =js-mode= because it has been improved in emacs 27.
+#+begin_src emacs-lisp
+(use-package js-ts-mode
+  :straight (:type built-in)
+  :defer t
+  :mode "\\.jsx?\\'"
+  :bind (:map js-ts-mode-map
+              ("C-c C-f" . js-format-buffer)))
+#+end_src
 
 *** Formattter
 
@@ -2320,9 +2327,6 @@ We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
 (reformatter-define js-format
   :program "npx"
   :args '("prettier" "--stdin-filepath" "a.js"))
-
-(with-eval-after-load 'js
-  (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
 #+END_SRC
 
 ** Typescript

@@ -2315,8 +2315,10 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
   :straight (:type built-in)
   :defer t
   :mode "\\.jsx?\\'"
-  :bind (:map js-ts-mode-map
-              ("C-c C-f" . js-format-buffer)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Javascript Commands"))
+   ("Format"
+    (("f" js-format-buffer)))))
 #+end_src
 
 *** Formattter

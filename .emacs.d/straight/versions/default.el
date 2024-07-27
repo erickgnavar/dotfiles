@@ -68,7 +68,7 @@
  ("goto-chg" . "1829a13026c597e358f716d2c7793202458120b5")
  ("graphql-mode" . "2371316a750b807de941184d49ca19d277ecadcd")
  ("haml-mode" . "bf5b6c11b1206759d2b28af48765e04882dd1fc4")
- ("haskell-mode" . "53d26263dbe2c607471048646d94788c0d232f98")
+ ("haskell-mode" . "727f72a2a4b8e4fd0a7b62129668baea55a2c3e0")
  ("hcl-mode" . "e4d9eef631e8a386341ae8f94f7c2579586e65b5")
  ("heex-ts-mode" . "90142df2929956536dc1eaae3bb5ca04dc4232ab")
  ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")

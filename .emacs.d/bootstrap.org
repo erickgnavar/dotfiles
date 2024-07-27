@@ -243,6 +243,22 @@ Custom function to select a base directory before running compilation. ~M-x comp
     (compile compile-command)))
 #+end_src
 
+** Async shell commands
+
+Helper function to run ~async-shell-command~ with some tweaks.
+
+#+begin_src emacs-lisp
+(defun my/async-shell-command ()
+  "Run `async-shell-command' but at any location.
+By default it will use project root but this can be changed"
+  (interactive)
+  (let* ((default-directory (read-directory-name "Base directory: " (my/project-root)))
+         (action-name (read-string "Action name: "))
+         (command (read-string "shell command: "))
+         (buffer-name (format "(%s)*%s*" (my/project-name) action-name)))
+    (async-shell-command command (get-buffer-create buffer-name))))
+#+end_src
+
 ** Narrowing
 
 #+begin_src emacs-lisp

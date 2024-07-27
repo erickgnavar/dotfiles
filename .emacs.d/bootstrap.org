@@ -2125,6 +2125,16 @@ Prepare release of ~lexical~
 MIX_ENV=prod mix package --path release
 #+end_src
 
+*** Compilation integration
+
+Add regex to match ~mix test~ execution output and be able to navigate between errors.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'compile
+  (push 'mix compilation-error-regexp-alist)
+  (push '(mix "^\\ \\ \\ \\ \\ \\([a-zA-Z/_/.]+\\):\\([0-9]+\\)$" 1 2) compilation-error-regexp-alist-alist))
+#+end_src
+
 *** Config
 
 #+BEGIN_SRC emacs-lisp

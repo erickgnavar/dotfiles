@@ -216,18 +216,12 @@ Disable =h= key-binding, this has a conflict with evil-mode left navigation key-
   (define-key compilation-mode-map (kbd "h") nil))
 #+END_SRC
 
-Allow to show color characters in the compilation buffer.
-
-copied from https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer/3072831#3072831
+Translate ANSI escape sequences into faces, for example to show colors.
 
 #+BEGIN_SRC emacs-lisp
 (require 'ansi-color)
 
-(defun colorize-compilation-buffer ()
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region (point-min) (point-max))))
-
-(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 #+END_SRC
 
 Custom function to select a base directory before running compilation. ~M-x compile~ always use the base directory of the buffer from where it was called as ~default-directory~, this is awful when you want to run a project compilation command from a nested file buffer.

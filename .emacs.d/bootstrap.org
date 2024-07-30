@@ -1974,7 +1974,7 @@ websockets client
   (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/lexical/release/bin/start_lexical.sh"))))
 #+end_src
 
-In case we don't have eglot running we can relay on dump-jump
+In case we don't have eglot running we can relay on dumb-jump
 
 #+begin_src emacs-lisp
 (defun my/goto-definition-dumb-jump-fallback ()
@@ -1984,7 +1984,7 @@ In case we don't have eglot running we can relay on dump-jump
       (xref-find-definitions (thing-at-point 'symbol))
     (if (member major-mode '(emacs-lisp-mode lisp-interaction-mode))
         (xref-find-definitions (thing-at-point 'symbol))
-      (dump-jump-go))))
+      (dumb-jump-go))))
 #+end_src
 
 * Programming languages

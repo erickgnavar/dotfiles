@@ -144,6 +144,8 @@
     zig
     zls
     brightnessctl
+    libnotify
+    dunst
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

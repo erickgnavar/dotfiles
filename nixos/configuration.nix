@@ -91,6 +91,7 @@
   virtualisation.docker.enable = true;
 
   environment.systemPackages = with pkgs; [
+    pamixer
     i3lock-fancy
     polybar
     nixpkgs-fmt

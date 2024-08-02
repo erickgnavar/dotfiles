@@ -87,3 +87,9 @@ hs.hotkey.bind(leader, "\\", function()
   frame.h = (max.h / 5) * 3
   window:setFrame(frame)
 end)
+
+-- move application between screens
+hs.hotkey.bind(leader, "M", function()
+  local app = hs.window.focusedWindow()
+  app:moveToScreen(app:screen():next())
+end)

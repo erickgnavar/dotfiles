@@ -2690,17 +2690,21 @@ Manipulate frame font height.
   (if (> (count-lines (point-min) (point-max)) max-lines)
       (hs-hide-all)))
 
+;; used to store all the configuration per perspective
+(defvar my/toggle-window-configurations (make-hash-table))
+
 (defun my/toggle-maximize ()
   "Toggle maximization of current window."
   (interactive)
-  (let ((register ?w))
-    (if (eq (get-register register) nil)
+  (let* ((key (persp-name (persp-curr)))
+         (value (gethash key my/toggle-window-configurations)))
+    (if (eq value nil)
         (progn
-          (set-register register (current-window-configuration))
+          (puthash key (current-window-configuration) my/toggle-window-configurations)
           (delete-other-windows))
       (progn
-        (set-window-configuration (get-register register))
-        (set-register register nil)))))
+        (set-window-configuration value)
+        (puthash key nil my/toggle-window-configurations)))))
 
 (defun my/venv-workon (name)
   "Active virtualenv NAME only is not setup yet."

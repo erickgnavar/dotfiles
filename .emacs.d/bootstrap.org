@@ -1644,9 +1644,61 @@ Use ~delta~ tool to show diffs in magit
 ** Gist
 
 #+BEGIN_SRC emacs-lisp
-(use-package gist
-  :ensure t
-  :defer t)
+(defun my/gist ()
+  "Create a public gist."
+  (interactive)
+  (my/create-gist t))
+
+(defun my/private-gist ()
+  "Create a private gist."
+  (interactive)
+  (my/create-gist :false))
+
+(defun my/create-gist (public)
+  "Create a gist, given PUBLIC value it will set as private or public."
+  (let* ((oauth-token (my/gist-get-oauth-token))
+         (content (my/gist-get-content))
+         (payload (make-hash-table))
+         (filename (or (and (buffer-file-name) (file-name-nondirectory (buffer-file-name))) (buffer-name)))
+         (files (make-hash-table))
+         (file (make-hash-table)))
+    (puthash "description" "" payload)
+    (puthash "public" public payload)
+    (puthash "content" content file)
+    (puthash filename file files)
+    (puthash "files" files payload)
+    (let ((url-request-method "POST")
+          (url-request-extra-headers `(("Content-Type" . "application/json") ("User-Agent" . "gist.el") ("Authorization" . ,(concat "Bearer " oauth-token))))
+          (url-request-data (json-encode payload)))
+      (url-retrieve "https://api.github.com/gists" 'my/gist-handle-response))))
+
+(defun my/gist-handle-response (response)
+  "Process content of RESPONSE and extract link."
+  (let* ((status-line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+         (status-code (nth 1 (split-string status-line " "))))
+
+    (unless (string-equal status-code "201")
+      (user-error "There was a problem with GitHub API, try again later"))
+
+    (search-forward "\n\n")
+    (let* ((raw-response (buffer-substring-no-properties (point) (point-max)))
+           (data (json-parse-string raw-response))
+           (gist-link (gethash "html_url" data)))
+      (kill-new gist-link)
+      (message "Paste created: %s" gist-link))))
+
+(defun my/gist-get-oauth-token ()
+  "Fetch oauth token from ~/.authinfo."
+  (let ((entry (car (auth-source-search :host "gist"))))
+    (unless entry
+      (user-error "GitHub oauth token must be in ~/.authinfo using 'gist' as host"))
+    (funcall (plist-get entry :secret))))
+
+(defun my/gist-get-content ()
+  "Create payload using current region or the whole buffer."
+  (if (region-active-p)
+      (buffer-substring-no-properties (region-beginning) (region-end))
+    (buffer-substring-no-properties (point-min) (point-max))))
 #+END_SRC
 
 ** Linkode

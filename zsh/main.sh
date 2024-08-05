@@ -24,18 +24,8 @@ function reload {
   source "$HOME/.zshrc"
 }
 
-function run() {
-  if [ -f ".run" ]; then
-    bash .run "$@"
-  fi
-}
-
 function t() {
   tree -I '.git|node_modules|bower_components|.DS_store' --dirsfirst -L "${1:-3}" -aC "$2"
-}
-
-function elpy_install() {
-  pip install elpy jedi flake8 epc isort pdbpp
 }
 
 function docker_remove_containers() {
@@ -107,7 +97,6 @@ alias vi="vim"
 alias weather="curl http://wttr.in/Lima"
 alias g="git"
 alias wow="git status"
-alias ipython='fades -d ipython -x ipython'
 alias cat="bat"
 alias ls="eza --icons"
 alias k="kubectl"

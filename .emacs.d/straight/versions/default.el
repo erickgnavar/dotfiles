@@ -22,7 +22,7 @@
  ("denote" . "f606d4f5ac126dae07eed89d348f6cbc422bc683")
  ("diff-hl" . "d9e34f7b8110b7f753c237d0d0b3f267f3ca4779")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
- ("doom-modeline" . "29a4bfc99962ec0d55c48ff5a503a6d722dc80a8")
+ ("doom-modeline" . "9920ef511620e9fa5599cb357e48487f758b1bb1")
  ("dumb-jump" . "542e72d3feba986a12119f6def515ef1347cb4ca")
  ("edit-indirect" . "bdc8f542fe8430ba55f9a24a7910639d4c434422")
  ("el-get" . "a5ba5852648a90ee0cde9fb5d72e69497d260eec")
@@ -134,7 +134,7 @@
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
  ;; this is `doom-themes', github repo is `doomemacs/themes' that's why is called `themes' here
- ("themes" . "816fb54d60a7012b9b12cd995831d4226982b487")
+ ("themes" . "b6872fa0963cd4ae2e87938563429e82599bb6d4")
  ("telega.el" . "b423b249ec460ab6f986bb5672a5ed5b952d6e87")
  ("terraform-mode" . "e8b57df8c2a3d3171f3768f60eb84067f553289c")
  ("transient" . "04f87b4ab3c7448a78f452cadaaf5d9e7a216d1d")

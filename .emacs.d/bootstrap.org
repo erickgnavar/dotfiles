@@ -1847,9 +1847,11 @@ Use ~delta~ tool to show diffs in magit
 (use-package yaml-ts-mode
   :straight (:type built-in)
   :mode "\\.ya?ml\\'"
-  :bind (:map yaml-ts-mode-map
-              ("C-c C-c" . 'my/k8s-apply)
-              ("C-c C-d" . 'my/k8s-delete)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " YAML Commands"))
+   ("Kubernetes"
+    (("a" my/k8s-apply)
+     ("k" my/k8s-delete)))))
 
 (use-package flymake-yamllint
   :ensure t

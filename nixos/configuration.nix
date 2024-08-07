@@ -143,6 +143,7 @@
     pyright
     zig
     zls
+    nil
     brightnessctl
     libnotify
     dunst

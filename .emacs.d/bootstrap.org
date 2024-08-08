@@ -2242,7 +2242,25 @@ Add regex to match ~mix test~ execution output and be able to navigate between e
 #+begin_src emacs-lisp
 (use-package heex-ts-mode
   :ensure t
-  :hook (heex-ts-mode . emmet-mode))
+  :hook (heex-ts-mode . emmet-mode)
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Heex Commands"))
+   ("Format"
+    (("f" my/heex-format-file)))))
+#+end_src
+
+Set up hydra commands
+
+#+begin_src emacs-lisp
+(defun my/heex-format-file ()
+  "Format heex file using mix command."
+  (interactive)
+  ;; avoid to show *Async-Shell-Command* buffer
+  (let* ((display-buffer-alist (list (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil))))
+         (mix-file (expand-file-name (concat (locate-dominating-file (buffer-file-name) "mix.exs") "mix.exs")))
+         (default-directory (file-name-directory mix-file)))
+    (async-shell-command (format "mix format %s" (buffer-file-name)) nil)
+    (revert-buffer (current-buffer) :ignore-auto :no-confirm)))
 #+end_src
 
 Custom functions to run elixir tests.

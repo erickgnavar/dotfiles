@@ -324,6 +324,7 @@ This is required for GitHub notifications segment
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load "dired"
+  (add-hook 'dired-mode-hook 'evil-emacs-state)
   (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
 #+END_SRC
 
@@ -661,6 +662,7 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
         evil-normal-state-cursor '("green" box)
         evil-visual-state-cursor '("orange" box)
         evil-insert-state-cursor '("red" bar)
+        evil-want-keybinding nil
         ;; use emacs-28 undo system
         evil-undo-system 'undo-redo)
   :config
@@ -753,6 +755,18 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
   :ensure t
   :config (global-evil-matchit-mode 1))
 #+END_SRC
+
+** Evil collection
+
+Allow to use default terminal keybinding in ~vterm~ without losing evil features
+
+#+begin_src emacs-lisp
+(use-package evil-collection
+  :ensure t
+  :config
+  (evil-collection-init '(vterm)))
+#+end_src
+
 
 * IA models integration
 

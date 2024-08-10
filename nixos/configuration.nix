@@ -121,6 +121,7 @@
     hyprshot
     telegram-desktop
     firefox
+    brave
     alacritty
     tmux
     waybar

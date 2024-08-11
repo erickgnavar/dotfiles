@@ -131,6 +131,7 @@
  ("sass-mode" . "247a0d4b509f10b28e4687cd8763492bca03599b")
  ("sesman" . "edee869c209c016e5f0c5cbb8abb9f3ccd2d1e05")
  ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
+ ("slint-mode" . "1ef68ca9cf0cffd2c863c3135f96202a19cf8182")
  ("sly" . "36aea9aad7ec730cebcf88818a61a905bef7d300")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")

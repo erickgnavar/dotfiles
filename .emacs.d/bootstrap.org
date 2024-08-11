@@ -1897,6 +1897,19 @@ Use ~delta~ tool to show diffs in magit
   :mode "\\.toml\\'"
   :defer t)
 
+(use-package slint-mode
+  :ensure t
+  :hook (slint-mode . eglot-ensure)
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Slint Commands"))
+   ("Format"
+    (("f" eglot-format-buffer))
+    "Testing"))
+  :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(slint-mode . ("slint-lsp")))))
+
 (use-package nix-mode
   :ensure t
   :defer t

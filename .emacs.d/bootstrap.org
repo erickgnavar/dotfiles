@@ -2466,7 +2466,13 @@ rustup component add rust-src
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
   :ensure t
-  :if (executable-find "rustc"))
+  :if (executable-find "rustc")
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Rust Commands"))
+   ("Format"
+    (("f" rust-format-buffer))
+    "Build"
+    (("c" rust-compile)))))
 #+END_SRC
 
 #+begin_src emacs-lisp

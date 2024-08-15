@@ -126,7 +126,6 @@
  ("rainbow-delimiters" . "7919681b0d883502155d5b26e791fec15da6aeca")
  ("rainbow-mode" . "170d06e5599c6ae27975282e574f02cbd1da2f9f")
  ("restclient.el" . "e8ca809ace13549a1ddffb4e4aaa5d5fce750f3d")
- ("rust-mode" . "22fff6a049402584e7120146c3db141c6f530bf6")
  ("s.el" . "03410e6a7a2b11e47e1fea3b7d9899c7df26435e")
  ("sass-mode" . "247a0d4b509f10b28e4687cd8763492bca03599b")
  ("sesman" . "edee869c209c016e5f0c5cbb8abb9f3ccd2d1e05")

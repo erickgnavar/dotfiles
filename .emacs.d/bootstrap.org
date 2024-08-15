@@ -2464,15 +2464,16 @@ rustup component add rust-src
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(use-package rust-mode
-  :ensure t
-  :if (executable-find "rustc")
+(reformatter-define rust-format
+  :program "rustfmt")
+
+(use-package rust-ts-mode
+  :straight (:type built-in)
+  :mode "\\.rs\\'"
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Rust Commands"))
    ("Format"
-    (("f" rust-format-buffer))
-    "Build"
-    (("c" rust-compile)))))
+    (("f" rust-format-buffer)))))
 #+END_SRC
 
 #+begin_src emacs-lisp

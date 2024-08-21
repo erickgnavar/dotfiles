@@ -109,7 +109,7 @@
  ("orderless" . "6936fe46ef07df168a423f04efeda130b4e69753")
  ("org-modern" . "96cd1dc2c8f523f1f4f02b927375deaa924368b4")
  ("org-tree-slide" . "7126a4365072a32898f169ead8fb59265dabc605")
- ("otp" . "c553bfc9e3aa3e8d4ca5b624afdc61d5749d2b1d")
+ ("otp" . "44a56d6759b162a0f99e5cd92e2b1398604accac")
  ("package-lint" . "4ea8318c1bf79ccb1b4658d58917bbd9f990c432")
  ("paredit" . "814999bb320e6d5aaa9c8ff663b1933157129571")
  ("parrot" . "13757524f1c708b866f4aaab5a9fb3599a1c4f56")

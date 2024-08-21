@@ -127,7 +127,6 @@
  ("rainbow-mode" . "170d06e5599c6ae27975282e574f02cbd1da2f9f")
  ("restclient.el" . "e8ca809ace13549a1ddffb4e4aaa5d5fce750f3d")
  ("s.el" . "03410e6a7a2b11e47e1fea3b7d9899c7df26435e")
- ("sass-mode" . "247a0d4b509f10b28e4687cd8763492bca03599b")
  ("sesman" . "edee869c209c016e5f0c5cbb8abb9f3ccd2d1e05")
  ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
  ("slint-mode" . "168a6cfb90b5e36360074c83f80d5bbac2f0287e")

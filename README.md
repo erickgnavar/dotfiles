@@ -23,9 +23,3 @@ A terminal multiplexer, easy to handle panes, splitted windows, sessions, etc.
 ## ZSH
 
 Go to `zsh` folder to check the config.
-
-For enabling fzf fuzzy history search with `C-r` on macOS run the following command:
-
-```shell
-$(brew --prefix)/opt/fzf/install
-```

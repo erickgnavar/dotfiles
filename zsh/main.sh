@@ -18,7 +18,7 @@ setopt SHARE_HISTORY
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
 
 # setup fzf
-[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
+source <(fzf --zsh)
 
 # load poetry
 [[ -f "$HOME/.poetry/env" ]] && source "$HOME/.poetry/env"

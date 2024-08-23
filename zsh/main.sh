@@ -6,8 +6,13 @@ export ZSH_THEME=""
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=1000000
 export SAVEHIST=1000000
-# Prevent duplicates in bash history
-setopt hist_ignore_all_dups
+
+# Ignore duplicates
+setopt HIST_IGNORE_ALL_DUPS
+# Ignore when prefixed with space
+setopt HIST_IGNORE_SPACE
+# Share history between sessions
+setopt SHARE_HISTORY
 
 # Load the default .profile
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile"

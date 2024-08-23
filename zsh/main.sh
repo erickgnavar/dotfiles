@@ -19,6 +19,9 @@ setopt SHARE_HISTORY
 
 # setup fzf
 source <(fzf --zsh)
+# Disable C-t which search into all files for the current folder to
+# avoid press it by mistake
+bindkey -r "^T"
 
 # load poetry
 [[ -f "$HOME/.poetry/env" ]] && source "$HOME/.poetry/env"

@@ -2322,6 +2322,17 @@ Custom functions to run elixir tests.
   (my/mix-run-test))
 #+END_SRC
 
+#+begin_src emacs-lisp
+(defun my/phx-insert-hero-icon ()
+  "Insert icon component in a Elixir Phoenix application."
+  (interactive)
+  (let* ((base-dir (expand-file-name (locate-dominating-file (buffer-file-name) "assets")))
+         (icons-dir (format "%sassets/vendor/heroicons/optimized/20/solid/" base-dir))
+         (option (completing-read "Select icon: " (directory-files icons-dir nil "svg")))
+         (no-extension (string-replace ".svg" "" (string-trim option) )))
+    (insert (format "<.icon name=\"hero-%s\" />" no-extension))))
+#+end_src
+
 ** LFE
 
 #+BEGIN_SRC emacs-lisp

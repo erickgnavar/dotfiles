@@ -2138,11 +2138,15 @@ Install ~flymake-ruff~
   :straight (:type built-in)
   :defer t
   :mode "\\.py\\'"
-  :bind
-  (:map python-ts-mode-map
-        ("C-c C-f" . python-ruff-format-buffer)
-        ("C-c C-i" . python-sort-imports-region)
-        ("C-c C-t" . pythontest-test-at-point))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Python commands"))
+   ("Format"
+    (("f" python-ruff-format-buffer)
+     ("si" python-sort-imports-region))
+    "Testing"
+    (("tt" pythontest-test-at-point)
+     ("tf" pythontest-test-file)
+     ("ta" pythontest-test-all))))
   :hook (python-ts-mode . flymake-ruff-load))
 #+END_SRC
 

@@ -117,6 +117,7 @@
     wl-clipboard
     networkmanagerapplet
     swaylock-effects
+    nerdfetch
     fastfetch
     hyprshot
     telegram-desktop

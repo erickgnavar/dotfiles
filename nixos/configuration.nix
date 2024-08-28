@@ -135,6 +135,7 @@
     unzip
     zsh
     git
+    delta
     gtk3
     zathura
     gnumake

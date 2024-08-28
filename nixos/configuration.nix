@@ -10,6 +10,15 @@
       ./hardware-configuration.nix
     ];
 
+  nix.gc = {
+    # Enable the automatic garbage collector
+    automatic = true;
+    # When to run the garbage collector
+    dates = "00:00";
+    # Delete old files
+    options = "-d";
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

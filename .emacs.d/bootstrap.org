@@ -328,6 +328,18 @@ This is required for GitHub notifications segment
   (define-key dired-mode-map (kbd "C-c C-e") 'wdired-change-to-wdired-mode))
 #+END_SRC
 
+** Dired preview
+
+#+begin_src emacs-lisp
+(use-package dired-preview
+  :ensure t
+  :after dired
+  :config
+  (define-key dired-mode-map (kbd "P") #'(lambda ()
+                                           (interactive)
+                                           (dired-preview-display-file (dired-file-name-at-point)))))
+#+end_src
+
 ** Nerd icons dired
 
 #+begin_src emacs-lisp

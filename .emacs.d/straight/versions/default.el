@@ -22,6 +22,7 @@
  ("denote" . "f606d4f5ac126dae07eed89d348f6cbc422bc683")
  ("diff-hl" . "d9e34f7b8110b7f753c237d0d0b3f267f3ca4779")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
+ ("dired-preview" . "0b5218ec57bd398c4bae82a2e5bd2089dcdfc2d0")
  ("doom-modeline" . "aa5a4a60e525b9c269205f9062fb33cee335ffe2")
  ("dumb-jump" . "542e72d3feba986a12119f6def515ef1347cb4ca")
  ("edit-indirect" . "bdc8f542fe8430ba55f9a24a7910639d4c434422")

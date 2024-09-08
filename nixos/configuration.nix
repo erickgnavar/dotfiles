@@ -112,6 +112,7 @@
     pavucontrol
     killall
     ripgrep
+    enchant
     aspell
     aspellDicts.en
     aspellDicts.es

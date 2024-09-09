@@ -899,9 +899,10 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
 ** XML formatter
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define xml-format
-  :program "xmlformat"
-  :group 'xml)
+(with-eval-after-load 'reformatter
+  (reformatter-define xml-format
+    :program "xmlformat"
+    :group 'xml))
 
 (with-eval-after-load 'nxml-mode
   (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
@@ -912,8 +913,9 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
 Install =pgformatter= using homebrew =brew install pgformatter=
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define sql-format
-  :program "pg_format")
+(with-eval-after-load 'reformatter
+  (reformatter-define sql-format
+    :program "pg_format"))
 
 (defun my/format-sql ()
   "Format active region otherwise format the entire buffer."
@@ -1435,7 +1437,8 @@ Configured variables:
     (shell-command (format "pngpaste %s" image-path))
     (insert (format "[[file:%s]]" image-path))))
 
-(evil-define-key nil org-mode-map (kbd "<leader>mii") 'my/org-insert-image-from-clipboard)
+(with-eval-after-load 'evil
+  (evil-define-key nil org-mode-map (kbd "<leader>mii") 'my/org-insert-image-from-clipboard))
 
 #+end_src
 
@@ -1858,10 +1861,11 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :defer t)
 
-(reformatter-define terraform-format
-  :program "terraform"
-  :args '("fmt" "-")
-  :group 'terraform)
+(with-eval-after-load 'reformatter
+  (reformatter-define terraform-format
+    :program "terraform"
+    :args '("fmt" "-")
+    :group 'terraform))
 
 (use-package terraform-mode
   :ensure t
@@ -2107,10 +2111,11 @@ In case we don't have eglot running we can relay on dumb-jump
 Bash formatter using ~shfmt~
 
 #+begin_src emacs-lisp
-(reformatter-define sh-format
-  :program "shfmt"
-  :args '("-i" "2" "-")
-  :group 'sh)
+(with-eval-after-load 'reformatter
+  (reformatter-define sh-format
+    :program "shfmt"
+    :args '("-i" "2" "-")
+    :group 'sh))
 
 (with-eval-after-load 'sh-script
   (define-key sh-mode-map (kbd "C-c C-f") 'sh-format-buffer))
@@ -2121,8 +2126,9 @@ Bash formatter using ~shfmt~
 =clang-format= is required for this, we can install it with =brew install clang-format=
 
 #+begin_src emacs-lisp
-(reformatter-define c-format
-  :program "clang-format")
+(with-eval-after-load 'reformatter
+  (reformatter-define c-format
+    :program "clang-format"))
 
 (with-eval-after-load 'cc-mode
   (define-key c-mode-map (kbd "C-c C-f") 'c-format-buffer))
@@ -2144,15 +2150,16 @@ Install ~flymake-ruff~
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define python-ruff-format
-  :program "ruff"
-  :args '("format" "-")
-  :group 'python)
+(with-eval-after-load 'reformatter
+  (reformatter-define python-ruff-format
+    :program "ruff"
+    :args '("format" "-")
+    :group 'python)
 
-(reformatter-define python-sort-imports
-  :program "ruff"
-  :args '("check" "--fix" "--select" "I001" "-")
-  :group 'python)
+  (reformatter-define python-sort-imports
+    :program "ruff"
+    :args '("check" "--fix" "--select" "I001" "-")
+    :group 'python))
 
 (setq python-shell-completion-native-enable nil)
 
@@ -2247,10 +2254,11 @@ Add regex to match ~mix test~ execution output and be able to navigate between e
 *** Config
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define elixir-format
-  :program "mix"
-  :args '("format" "-")
-  :group 'elixir)
+(with-eval-after-load 'reformatter
+  (reformatter-define elixir-format
+    :program "mix"
+    :args '("format" "-")
+    :group 'elixir))
 
 (defun my/elixir-format-buffer ()
   "Format elixir buffers using eglot when is active otherwise use reformatter function."
@@ -2403,9 +2411,10 @@ stack install hindent
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define haskell-format
-  :program "hindent"
-  :group 'haskell)
+(with-eval-after-load 'reformatter
+  (reformatter-define haskell-format
+    :program "hindent"
+    :group 'haskell))
 
 (use-package haskell-mode
   :ensure t
@@ -2440,10 +2449,11 @@ stack install hindent
 Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
 
 #+begin_src emacs-lisp
-(reformatter-define lua-format
-  :program "stylua"
-  :args '("-")
-  :group 'lua)
+(with-eval-after-load 'reformatter
+  (reformatter-define lua-format
+    :program "stylua"
+    :args '("-")
+    :group 'lua))
 #+end_src
 
 ** Javascript
@@ -2464,9 +2474,10 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
 We need to use ~--stdin-filepath a.js~ to tell ~prettier~ to use js parser.
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define js-format
-  :program "npx"
-  :args '("prettier" "--stdin-filepath" "a.js"))
+(with-eval-after-load 'reformatter
+  (reformatter-define js-format
+    :program "npx"
+    :args '("prettier" "--stdin-filepath" "a.js")))
 #+END_SRC
 
 ** Typescript
@@ -2502,8 +2513,9 @@ rustup component add rust-src
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define rust-format
-  :program "rustfmt")
+(with-eval-after-load 'reformatter
+  (reformatter-define rust-format
+    :program "rustfmt"))
 
 (use-package rust-ts-mode
   :straight (:type built-in)
@@ -2660,10 +2672,11 @@ Enable flymake
 ** Dart
 
 #+BEGIN_SRC emacs-lisp
-(reformatter-define dart-format
-  :program "dart"
-  :args '("format")
-  :group 'dart)
+(with-eval-after-load 'reformatter
+  (reformatter-define dart-format
+    :program "dart"
+    :args '("format")
+    :group 'dart))
 
 (defun my/dart-run-file ()
   "Execute the code of the current file."

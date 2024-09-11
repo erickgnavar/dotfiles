@@ -116,6 +116,8 @@
     aspell
     aspellDicts.en
     aspellDicts.es
+    hunspell
+    hunspellDicts.en_US
     tree-sitter
     fzf
     shfmt

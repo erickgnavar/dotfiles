@@ -112,7 +112,7 @@
     pavucontrol
     killall
     ripgrep
-    enchant
+    emacsPackages.jinx
     aspell
     aspellDicts.en
     aspellDicts.es

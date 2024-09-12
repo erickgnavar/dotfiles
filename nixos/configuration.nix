@@ -135,6 +135,7 @@
     swappy
     grim
     slurp
+    cliphist
     telegram-desktop
     firefox
     brave

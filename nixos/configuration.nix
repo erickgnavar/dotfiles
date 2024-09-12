@@ -132,6 +132,7 @@
     nerdfetch
     fastfetch
     hyprshot
+    swappy
     telegram-desktop
     firefox
     brave

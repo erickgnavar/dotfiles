@@ -133,6 +133,8 @@
     fastfetch
     hyprshot
     swappy
+    grim
+    slurp
     telegram-desktop
     firefox
     brave

@@ -8,5 +8,8 @@ nm-applet --indicator &
 
 waybar &
 
+# start clipboard manager
+wl-paste --watch cliphist store &
+
 # notification daemon
 dunst

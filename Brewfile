@@ -73,6 +73,7 @@ brew "lua-language-server"
 brew "mailutils"
 brew "minikube"
 brew "minio", restart_service: true
+brew "nerdfetch"
 brew "nmap"
 brew "ocaml"
 brew "ollama", restart_service: true

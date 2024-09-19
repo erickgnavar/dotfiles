@@ -23,3 +23,8 @@ fpath+=("$HOME/.config/zsh/pure")
 autoload -U promptinit
 promptinit
 prompt pure
+
+# load custom stuff per OS
+source ~/.config/zsh/main.sh
+
+nerdfetch

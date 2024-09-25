@@ -165,6 +165,7 @@
     zig
     zls
     nil
+    biome
     brightnessctl
     libnotify
     dunst

@@ -12,6 +12,7 @@ brew "asdf"
 brew "aspell"
 brew "autojump"
 brew "bat"
+brew "biome"
 brew "btop"
 brew "caddy", restart_service: true
 brew "clang-format"

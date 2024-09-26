@@ -2458,6 +2458,16 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
 
 ** Javascript
 
+Linter using [[https://biomejs.dev][biome]]
+
+#+begin_src emacs-lisp
+(use-package flymake-biome
+  :straight (flymake-biome
+             :type git
+             :host github
+             :repo "erickgnavar/flymake-biome"))
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package js-ts-mode
   :straight (:type built-in)
@@ -2466,7 +2476,8 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Javascript Commands"))
    ("Format"
-    (("f" js-format-buffer)))))
+    (("f" js-format-buffer))))
+  :hook (js-ts-mode . flymake-biome-load))
 #+end_src
 
 *** Formattter

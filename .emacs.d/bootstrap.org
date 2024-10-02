@@ -2287,13 +2287,28 @@ Add regex to match ~mix test~ execution output and be able to navigate between e
 ~heex~ templates support
 
 #+begin_src emacs-lisp
+(defun my/heex-wrap-text-in-get-text ()
+  "Convert region content into a tag using gettext."
+  (interactive)
+  (unless (region-active-p)
+    (user-error "Must select some text first"))
+  (save-excursion
+    (let* ((text (buffer-substring-no-properties (region-beginning) (region-end)))
+           (new-text (concat "<%= " "gettext(\"" text "\") %>")))
+      (kill-region (region-beginning) (region-end))
+      (insert new-text))))
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package heex-ts-mode
   :ensure t
   :hook (heex-ts-mode . emmet-mode)
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Heex Commands"))
    ("Format"
-    (("f" my/heex-format-file)))))
+    (("f" my/heex-format-file))
+    "Text"
+    (("wg" my/heex-wrap-text-in-get-text)))))
 #+end_src
 
 Set up hydra commands

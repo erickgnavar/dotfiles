@@ -68,6 +68,9 @@
     };
   };
 
+  services.displayManager.sddm.wayland.enable = true;
+  services.displayManager.sddm.enable = true;
+
   hardware.pulseaudio.enable = false;
 
   services.pipewire = {

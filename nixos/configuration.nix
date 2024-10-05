@@ -125,7 +125,7 @@
     fzf
     shfmt
     shellcheck
-    pcmanfm
+    cinnamon.nemo-with-extensions
     tectonic
     wayland
     wlogout

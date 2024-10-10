@@ -2149,6 +2149,23 @@ Install ~flymake-ruff~
   :ensure t)
 #+end_src
 
+Generate a ~pyrightconfig.json~ file
+
+#+begin_src emacs-lisp
+(defun my/gen-pyright-config-file ()
+  "Generate a configuration file for PyRight."
+  (interactive)
+  (let* ((input-dir (read-directory-name "Virtualenv directory: "))
+         (venv-path (file-name-parent-directory input-dir))
+         (venv (file-name-base (replace-regexp-in-string "/$" "" input-dir)))
+         (data (make-hash-table)))
+    (puthash "venvPath" venv-path data)
+    (puthash "venv" venv data)
+    (with-temp-buffer
+      (insert (json-encode data))
+      (write-file (file-name-concat venv-path "pyrightconfig.json")))))
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'reformatter
   (reformatter-define python-ruff-format

@@ -171,7 +171,7 @@
     biome
     brightnessctl
     libnotify
-    dunst
+    swaynotificationcenter
     spotify
     tree
     btop

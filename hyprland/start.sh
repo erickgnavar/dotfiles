@@ -12,4 +12,4 @@ waybar &
 wl-paste --watch cliphist store &
 
 # notification daemon
-dunst
+swaync

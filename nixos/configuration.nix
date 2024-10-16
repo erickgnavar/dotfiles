@@ -138,7 +138,7 @@
     swappy
     grim
     slurp
-    cliphist
+    # cliphist
     telegram-desktop
     firefox
     brave
@@ -146,7 +146,7 @@
     tmux
     waybar
     keyd
-    emacs-gtk
+    emacs30-gtk3
     localsend
     direnv
     bat

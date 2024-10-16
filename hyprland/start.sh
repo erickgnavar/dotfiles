@@ -9,7 +9,7 @@ nm-applet --indicator &
 waybar &
 
 # start clipboard manager
-wl-paste --watch cliphist store &
+# wl-paste --watch cliphist store &
 
 # notification daemon
 swaync

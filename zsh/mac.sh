@@ -34,3 +34,10 @@ function reset_cache {
   sudo dscacheutil -flushcache
   sudo killall -HUP mDNSResponder
 }
+
+function homebrew-dump {
+  cd ~/dotfiles/ || exit
+  brew bundle dump --force
+  git diff Brewfile
+  cd - || exit
+}

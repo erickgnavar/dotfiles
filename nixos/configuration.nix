@@ -179,6 +179,7 @@
     spotify
     tree
     btop
+    htop
     obs-studio
   ];
 

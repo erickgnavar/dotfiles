@@ -1,8 +1,8 @@
 ;;; early-init.el --- early init code -*- lexical-binding: t -*-
 ;;; Commentary:
 
-;; Disable menu bar only on linux, because it will be using a tiling window manager
-(when (string-equal system-type "gnu/linux")
+;; only show menu bar when running Emacs with GUI on macOS
+(unless (and (string-equal system-type "darwin") (display-graphic-p))
   (menu-bar-mode -1))
 
 ;;; Code:

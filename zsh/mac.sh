@@ -44,3 +44,14 @@ function homebrew-dump {
   git diff Brewfile
   cd - || exit
 }
+
+function nixdarwnin_run_install {
+  cd ~/dotfiles/nix-darwin/ || exit 1
+  mkdir -p ~/.config/nix-darwin/
+  cp flake.nix ~/.config/nix-darwin/
+  cp flake.lock ~/.config/nix-darwin/
+  darwin-rebuild switch --flake ~/.config/nix-darwin#simple
+  # now we copy lock file back to dotfiles
+  cp ~/.config/nix-darwin/flake.lock .
+  cd - || exit 1
+}

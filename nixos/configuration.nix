@@ -142,7 +142,7 @@
     swappy
     grim
     slurp
-    # cliphist
+    cliphist
     telegram-desktop
     firefox
     brave

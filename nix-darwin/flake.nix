@@ -19,6 +19,8 @@
         environment.systemPackages = with pkgs; [
           vim
           git
+          cmake
+          glibtool
           alacritty
           enchant
           eza
@@ -31,7 +33,6 @@
           tmux
           emacs30
           # emacsPackages.jinx
-          # libvterm
           nixpkgs-fmt
           nixd
           shfmt
@@ -39,6 +40,9 @@
 
         homebrew = {
           enable = true;
+          brews = [
+            "libvterm"
+          ];
           casks = [
             "shortcat"
             "hammerspoon"

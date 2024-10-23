@@ -33,6 +33,7 @@
           # emacsPackages.jinx
           # libvterm
           nixpkgs-fmt
+          nixd
           shfmt
         ];
 

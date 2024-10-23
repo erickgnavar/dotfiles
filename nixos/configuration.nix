@@ -171,7 +171,7 @@
     pyright
     zig
     zls
-    nil
+    nixd
     biome
     brightnessctl
     libnotify

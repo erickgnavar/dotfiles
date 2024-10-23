@@ -36,6 +36,7 @@
           nixpkgs-fmt
           nixd
           shfmt
+          google-cloud-sdk
         ];
 
         homebrew = {
@@ -47,7 +48,6 @@
             "shortcat"
             "hammerspoon"
             "espanso"
-            "google-cloud-sdk"
             "krisp"
             "tunnelblick"
             "spotify"

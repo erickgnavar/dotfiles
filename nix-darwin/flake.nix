@@ -39,7 +39,18 @@
 
         homebrew = {
           enable = true;
-          casks = [ "shortcat" "hammerspoon" ];
+          casks = [
+            "shortcat"
+            "hammerspoon"
+            "espanso"
+            "google-cloud-sdk"
+            "krisp"
+            "tunnelblick"
+            "spotify"
+            "blender"
+            "obs"
+            "bruno"
+          ];
         };
 
         # Auto upgrade nix package and the daemon service.

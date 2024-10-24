@@ -47,6 +47,8 @@
         homebrew = {
           enable = true;
           brews = [
+            # libvterm is not available in nix for aarch64 so we
+            # insall it from homebrew
             "libvterm"
           ];
           casks = [

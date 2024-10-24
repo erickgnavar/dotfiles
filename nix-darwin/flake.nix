@@ -40,6 +40,7 @@
           google-cloud-sdk
           ripgrep
           asdf-vm
+          autojump
         ];
 
         homebrew = {

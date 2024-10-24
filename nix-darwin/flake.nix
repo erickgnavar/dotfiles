@@ -39,6 +39,7 @@
           shfmt
           google-cloud-sdk
           ripgrep
+          asdf-vm
         ];
 
         homebrew = {

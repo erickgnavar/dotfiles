@@ -37,6 +37,7 @@
           nixd
           shfmt
           google-cloud-sdk
+          ripgrep
         ];
 
         homebrew = {

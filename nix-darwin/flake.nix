@@ -24,6 +24,7 @@
           alacritty
           enchant
           eza
+          tree
           go
           bat
           direnv

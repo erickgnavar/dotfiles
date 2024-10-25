@@ -10,6 +10,9 @@
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
     let
       configuration = { pkgs, ... }: {
+        # Allow unfree packages
+        nixpkgs.config.allowUnfree = true;
+
         fonts.packages = with pkgs; [
           jetbrains-mono
           nerdfonts

@@ -69,6 +69,12 @@
 
         system.defaults = {
           dock.autohide = true;
+          dock.persistent-apps = [
+            "/System/Applications/Mail.app"
+            "${pkgs.emacs30}/Applications/Emacs.app"
+          ];
+          NSGlobalDomain.KeyRepeat = 2;
+          NSGlobalDomain.AppleInterfaceStyle = "Dark";
         };
 
         # Auto upgrade nix package and the daemon service.

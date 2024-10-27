@@ -2584,10 +2584,10 @@ brew install gopls
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(use-package go-mode
-  :ensure t
-  :if (executable-find "go")
-  :hook (go-mode . eglot-ensure)
+(use-package go-ts-mode
+  :straight (:type built-in)
+  :hook (go-ts-mode . eglot-ensure)
+  :mode (("\\.go\\'" . go-ts-mode))
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Go Commands"))
    ("Format"
@@ -2601,16 +2601,18 @@ brew install gopls
   :config
   ;; by default tab width is 8, that's too much space so we define 4
   ;; only for go buffers
-  (add-hook 'go-mode-hook #'(lambda ()
+  (add-hook 'go-ts-mode-hook #'(lambda ()
                               (setq-local tab-width 4)))
   (setq gofmt-command "goimports"))
 
-(use-package go-playground
+;; we install this package to have access to their helper functions
+(use-package go-mode
   :ensure t
-  :if (executable-find "go")
-  :after go-mode
-  :config
-  (setq go-playground-basedir (expand-file-name "~/Code/golang/playgrounds")))
+  :after go-ts-mode)
+
+(use-package gotest
+  :ensure t
+  :after go-ts-mode)
 #+END_SRC
 
 ** Common lisp

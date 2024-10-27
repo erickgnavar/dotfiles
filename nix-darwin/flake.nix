@@ -30,6 +30,7 @@
           eza
           tree
           go
+          biome
           bat
           direnv
           nerdfetch

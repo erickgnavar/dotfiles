@@ -74,6 +74,7 @@
             "/System/Applications/Mail.app"
             "${pkgs.emacs30}/Applications/Emacs.app"
           ];
+          finder.AppleShowAllExtensions = true;
           NSGlobalDomain.KeyRepeat = 2;
           NSGlobalDomain.AppleInterfaceStyle = "Dark";
         };

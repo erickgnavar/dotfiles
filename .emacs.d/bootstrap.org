@@ -2215,21 +2215,13 @@ Show a list of the available django commands and run the selected one using a co
 
 ** Erlang
 
-Clone erlang source code into =~/Code/erlang/src/=
-
-#+BEGIN_SRC sh
-git clone https://github.com/erlang/otp.git ~/Code/erlang/src/
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package erlang
-  :ensure t
-  :defer t
-  :if (executable-find "erl")
-  :config
-  (setq erlang-root-dir (expand-file-name "~/Code/erlang/src"))
-  (require 'erlang-start))
-#+END_SRC
+#+begin_src emacs-lisp
+(use-package erlang-ts-mode
+  :straight (erlang-ts-mode
+             :type git
+             :host github
+             :repo "sebastiw/erlang-ts-mode"))
+#+end_src
 
 ** Elixir
 

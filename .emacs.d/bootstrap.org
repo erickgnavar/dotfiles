@@ -2332,7 +2332,10 @@ Custom functions to run elixir tests.
 (defun my/mix-run-test (&optional scope)
   "Run elixir test for the given SCOPE."
   (interactive)
-  (let* ((current-file (buffer-file-name))
+  ;; we need to get absolute path of mix binary because when running
+  ;; on nix this path will be different per project, version, etc
+  (let* ((mix-binary (executable-find "mix"))
+         (current-file (buffer-file-name))
          (current-line (line-number-at-pos))
          (mix-file (expand-file-name (concat (locate-dominating-file (buffer-file-name) "mix.exs") "mix.exs")))
          (default-directory (file-name-directory mix-file))
@@ -2341,14 +2344,13 @@ Custom functions to run elixir tests.
 
     (cond
      ((string-equal scope "file")
-      (compile (format "%s mix test %s" mix-env current-file)))
+      (compile (format "%s %s test %s" mix-env mix-binary current-file)))
 
      ((string-equal scope "at-point")
-      (compile (format "%s mix test %s:%s" mix-env current-file current-line)))
+      (compile (format "%s %s test %s:%s" mix-env mix-binary current-file current-line)))
 
      (t
-      (compile (format "%s mix test" mix-env))))))
-
+      (compile (format "%s %s test" mix-env mix-binary))))))
 
 (defun my/mix-run-test-file ()
   "Run mix test over the current file."

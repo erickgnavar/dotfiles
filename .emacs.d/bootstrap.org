@@ -610,31 +610,11 @@ When editing a commit message =ispell= should ignore lines that start with =#=, 
 Incremental code parsing for better syntax highlighting
 
 #+begin_src emacs-lisp
-(use-package tree-sitter
+(use-package treesit-auto
   :ensure t
-  :hook
-  (tree-sitter-after-on . tree-sitter-hl-mode)
+  :custom (treesit-auto-install t)
   :config
-  (global-tree-sitter-mode))
-
-(use-package tree-sitter-langs
-  :ensure t)
-#+end_src
-
-Function to copy grammar =~/.emacs.d/tree-sitter=
-
-#+begin_src emacs-lisp
-(defun my/copy-grammars-to-emacs-tree-sitter-dir ()
-  "Copy tree-sitter grammar files to native Emacs dir."
-  (interactive)
-  (let* ((extension (if (string-equal system-type "darwin") "dylib" "so"))
-         (files (directory-files (tree-sitter-langs--bin-dir) nil (format "\\.%s$" extension)))
-         (tree-sitter-dir (concat (expand-file-name user-emacs-directory) "tree-sitter")))
-    (unless (file-directory-p tree-sitter-dir)
-      (mkdir tree-sitter-dir))
-    (dolist (grammar-file files)
-      (copy-file (concat (tree-sitter-langs--bin-dir) grammar-file) (concat tree-sitter-dir "/libtree-sitter-" grammar-file) t)
-      (message "%s grammar files copied" (length files)))))
+  (global-treesit-auto-mode))
 #+end_src
 
 Run ispell in text nodes

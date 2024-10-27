@@ -2085,7 +2085,10 @@ websockets client
                '(((heex-ts-mode :language-id "html")
                   (web-mode :language-id "html")) . ("tailwindcss-language-server" "--stdio")))
   ;; elixir LSP server
-  (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(expand-file-name "~/Code/oss/lexical/release/bin/start_lexical.sh"))))
+  ;; we first look up for a lexical binary, this will be in the case
+  ;; we're using nix, otherwise we relay on a cloned repository which
+  ;; previously was compiled
+  (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(if (executable-find "lexical") "lexical" (expand-file-name "~/Code/oss/lexical/release/bin/start_lexical.sh")))))
 #+end_src
 
 In case we don't have eglot running we can relay on dumb-jump

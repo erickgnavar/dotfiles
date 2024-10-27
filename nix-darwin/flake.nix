@@ -70,6 +70,8 @@
 
         system.defaults = {
           dock.autohide = true;
+          # Don't arrange spaces based on most recent use
+          dock.mru-spaces = false;
           dock.persistent-apps = [
             "/System/Applications/Mail.app"
             "${pkgs.emacs30}/Applications/Emacs.app"

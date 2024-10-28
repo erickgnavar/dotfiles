@@ -86,6 +86,10 @@
           NSGlobalDomain.KeyRepeat = 2;
           NSGlobalDomain.AppleInterfaceStyle = "Dark";
         };
+        system.keyboard = {
+          enableKeyMapping = true;
+          remapCapsLockToEscape = true;
+        };
 
         # link nix-apps into /Applications to be indexed by spotlight
         system.activationScripts.applications.text =

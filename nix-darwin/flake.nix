@@ -9,7 +9,7 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
     let
-      configuration = { pkgs, ... }: {
+      configuration = { pkgs, config, ... }: {
         # Allow unfree packages
         nixpkgs.config.allowUnfree = true;
 
@@ -20,6 +20,7 @@
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
         environment.systemPackages = with pkgs; [
+          mkalias
           vim
           git
           # cmake and glibtool are required to compile libvterm in emacs
@@ -81,6 +82,27 @@
           NSGlobalDomain.KeyRepeat = 2;
           NSGlobalDomain.AppleInterfaceStyle = "Dark";
         };
+
+        # link nix-apps into /Applications to be indexed by spotlight
+        system.activationScripts.applications.text =
+          let
+            env = pkgs.buildEnv {
+              name = "system-applications";
+              paths = config.environment.systemPackages;
+              pathsToLink = "/Applications";
+            };
+
+          in
+          pkgs.lib.mkForce ''
+            rm -fr /Applications/Nix\ Apps
+            mkdir -p /Applications/Nix\ Apps
+            find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
+            while read src; do
+              app_name=$(basename "$src")
+              echo "copying $src" >&2
+              ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
+            done
+          '';
 
         # Auto upgrade nix package and the daemon service.
         services.nix-daemon.enable = true;

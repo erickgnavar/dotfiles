@@ -70,25 +70,27 @@
           ];
         };
 
-        system.defaults = {
-          dock.autohide = true;
-          # Don't arrange spaces based on most recent use
-          dock.mru-spaces = false;
-          dock.persistent-apps = [
-            "/System/Applications/Mail.app"
-            "/System/Cryptexes/App/System/Applications/Safari.app"
-            "/System/Applications/Messages.app"
-            "/System/Applications/Notes.app"
-            "/System/Applications/Things.app"
-            "${pkgs.emacs30}/Applications/Emacs.app"
-          ];
-          finder.AppleShowAllExtensions = true;
-          NSGlobalDomain.KeyRepeat = 2;
-          NSGlobalDomain.AppleInterfaceStyle = "Dark";
-        };
-        system.keyboard = {
-          enableKeyMapping = true;
-          remapCapsLockToEscape = true;
+        system = {
+          defaults = {
+            dock.autohide = true;
+            # Don't arrange spaces based on most recent use
+            dock.mru-spaces = false;
+            dock.persistent-apps = [
+              "/System/Applications/Mail.app"
+              "/System/Cryptexes/App/System/Applications/Safari.app"
+              "/System/Applications/Messages.app"
+              "/System/Applications/Notes.app"
+              "/System/Applications/Things.app"
+              "${pkgs.emacs30}/Applications/Emacs.app"
+            ];
+            finder.AppleShowAllExtensions = true;
+            NSGlobalDomain.KeyRepeat = 2;
+            NSGlobalDomain.AppleInterfaceStyle = "Dark";
+          };
+          keyboard = {
+            enableKeyMapping = true;
+            remapCapsLockToEscape = true;
+          };
         };
 
         # link nix-apps into /Applications to be indexed by spotlight

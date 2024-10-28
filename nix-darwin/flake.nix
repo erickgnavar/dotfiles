@@ -76,6 +76,10 @@
           dock.mru-spaces = false;
           dock.persistent-apps = [
             "/System/Applications/Mail.app"
+            "/System/Cryptexes/App/System/Applications/Safari.app"
+            "/System/Applications/Messages.app"
+            "/System/Applications/Notes.app"
+            "/System/Applications/Things.app"
             "${pkgs.emacs30}/Applications/Emacs.app"
           ];
           finder.AppleShowAllExtensions = true;

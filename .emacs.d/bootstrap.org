@@ -2095,7 +2095,7 @@ In case we don't have eglot running we can relay on dumb-jump
   :if (executable-find "shellcheck")
   :commands flymake-shellcheck-load
   :init
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  (add-hook 'bash-ts-mode-hook 'flymake-shellcheck-load))
 #+end_src
 
 Bash formatter using ~shfmt~
@@ -2108,7 +2108,7 @@ Bash formatter using ~shfmt~
     :group 'sh))
 
 (with-eval-after-load 'sh-script
-  (define-key sh-mode-map (kbd "C-c C-f") 'sh-format-buffer))
+  (define-key bash-ts-mode-map (kbd "C-c C-f") 'sh-format-buffer))
 #+end_src
 
 ** C

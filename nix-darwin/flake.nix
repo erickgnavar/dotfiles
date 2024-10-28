@@ -47,6 +47,8 @@
           ripgrep
           asdf-vm
           autojump
+          docker
+          colima
         ];
 
         homebrew = {

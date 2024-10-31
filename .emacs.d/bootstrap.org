@@ -582,7 +582,9 @@ This require to have enchant library to be able to compile and load a module
 #+begin_src emacs-lisp
 (use-package jinx
   :ensure t
-  :hook (emacs-startup . global-jinx-mode))
+  :hook (emacs-startup . global-jinx-mode)
+  :config
+  (define-key jinx-mode-map (kbd "M-\\") 'jinx-correct))
 #+end_src
 
 ** iSpell

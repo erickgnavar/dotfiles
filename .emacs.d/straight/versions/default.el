@@ -19,7 +19,7 @@
  ("d2-mode" . "cbe7b16141bd80fe4344f0403e61fd7ee4e0fd89")
  ("dart-mode" . "9c846769abd37f7fdc7ba8388d1f3a2b844b75e3")
  ("dash.el" . "6db80c711ce947f6c6fa11e5c2257fff2c79d139")
- ("denote" . "f606d4f5ac126dae07eed89d348f6cbc422bc683")
+ ("denote" . "917b64bd4528fa96be8828363fb035fe86f1f23e")
  ("diff-hl" . "d9e34f7b8110b7f753c237d0d0b3f267f3ca4779")
  ("dired-hacks" . "f49a8bbf95f70671a74a24f7f4de453b2686be46")
  ("dired-preview" . "0b5218ec57bd398c4bae82a2e5bd2089dcdfc2d0")

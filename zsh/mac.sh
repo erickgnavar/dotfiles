@@ -30,6 +30,9 @@ function rae() {
 
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
 
+# use native macOS network check tool
+alias speedtest=networkQuality
+
 function reset_cache {
   sudo dscacheutil -flushcache
   sudo killall -HUP mDNSResponder

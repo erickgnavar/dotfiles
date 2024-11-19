@@ -103,6 +103,7 @@ brew "sl"
 brew "sqlfluff"
 brew "stylua"
 brew "tdlib", args: ["HEAD"]
+brew "tealdeer"
 brew "tectonic"
 brew "terraform"
 brew "texinfo"

@@ -134,6 +134,8 @@
     wayland
     wlogout
     wl-clipboard
+    glib
+    nwg-look
     networkmanagerapplet
     swaylock-effects
     nerdfetch

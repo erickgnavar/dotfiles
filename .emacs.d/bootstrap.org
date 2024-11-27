@@ -1624,8 +1624,18 @@ Use ~delta~ tool to show diffs in magit
 #+begin_src emacs-lisp
 (use-package magit-delta
   :ensure t
-  :if (executable-find "delta")
-  :hook (magit-mode . magit-delta-mode))
+  :if (executable-find "delta"))
+
+(defun my/toggle-magit-delta ()
+  "Toggle magit-delta mode."
+  (interactive)
+  (magit-delta-mode
+   (if magit-delta-mode -1 1))
+  (magit-refresh))
+
+(with-eval-after-load 'magit
+  (transient-append-suffix 'magit-diff '(-1 -1 -1)
+    '("D" "Toggle magit-delta" my/toggle-magit-delta)))
 #+end_src
 
 ** Forge

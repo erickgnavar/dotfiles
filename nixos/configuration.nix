@@ -129,7 +129,7 @@
     fzf
     shfmt
     shellcheck
-    cinnamon.nemo-with-extensions
+    nemo-with-extensions
     tectonic
     wayland
     wlogout

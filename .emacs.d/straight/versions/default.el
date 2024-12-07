@@ -130,10 +130,9 @@
  ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
  ("slint-mode" . "168a6cfb90b5e36360074c83f80d5bbac2f0287e")
  ("sly" . "36aea9aad7ec730cebcf88818a61a905bef7d300")
+ ("spaceink-theme" . "5b90e7c66ed20bf2678d2cf8be40d664727d6ca2")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
- ;; this is `doom-themes', github repo is `doomemacs/themes' that's why is called `themes' here
- ("themes" . "3c03f525d5c0ac0859f31231778f97e10a705e0d")
  ("telega.el" . "b423b249ec460ab6f986bb5672a5ed5b952d6e87")
  ("terraform-mode" . "e8b57df8c2a3d3171f3768f60eb84067f553289c")
  ("transient" . "04f87b4ab3c7448a78f452cadaaf5d9e7a216d1d")

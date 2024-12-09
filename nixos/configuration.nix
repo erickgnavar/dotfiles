@@ -183,6 +183,9 @@
     btop
     htop
     obs-studio
+    go
+    gopls # LSP server
+    gotools # includes goimports
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

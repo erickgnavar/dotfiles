@@ -23,9 +23,6 @@ source <(fzf --zsh)
 # avoid press it by mistake
 bindkey -r "^T"
 
-# load poetry
-[[ -f "$HOME/.poetry/env" ]] && source "$HOME/.poetry/env"
-
 # helper functions
 
 function reload {
@@ -63,23 +60,6 @@ function extract_youtube_audio() {
 
 function download_video_best_quality() {
   youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 "$1"
-}
-
-function mkvenv() {
-  local python_path="${HOME}/.pyenv/versions/$1/bin/python"
-
-  if [ -f "$python_path" ]; then
-    poetry env use "$python_path"
-  else
-    echo "Python version doesn't exist"
-    echo "Installing python $1"
-
-    pyenv install "$1"
-
-    if ! pyenv install "$1"; then
-      poetry env use "$python_path"
-    fi
-  fi
 }
 
 function git_search() {

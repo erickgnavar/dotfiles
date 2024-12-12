@@ -49,6 +49,7 @@
           autojump
           docker
           colima
+          uv
         ];
 
         homebrew = {

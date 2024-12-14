@@ -902,7 +902,8 @@ Install =pgformatter= using homebrew =brew install pgformatter=
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'reformatter
   (reformatter-define sql-format
-    :program "pg_format"))
+    :program "sqlfluff"
+    :args '("format" "--dialect" "postgres" "--nocolor" "-")))
 
 (defun my/format-sql ()
   "Format active region otherwise format the entire buffer."

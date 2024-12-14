@@ -82,7 +82,6 @@ brew "ocaml"
 brew "ollama", restart_service: true
 brew "opam"
 brew "pandoc"
-brew "pgformatter"
 brew "pkgconf"
 brew "plantuml"
 brew "pngpaste"

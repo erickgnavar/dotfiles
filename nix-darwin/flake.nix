@@ -36,18 +36,19 @@
           biome
           bat
           direnv
+          tealdeer
           nerdfetch
           fastfetch
           fzf
           tmux
           emacs30
-          # emacsPackages.jinx
+          emacsPackages.jinx
           nixpkgs-fmt
           nixd
           shfmt
           google-cloud-sdk
           ripgrep
-          asdf-vm
+          # asdf-vm
           autojump
           docker
           colima
@@ -55,6 +56,8 @@
           uv
           kubectl
           sqlfluff
+          # for emacs jinx package compilation
+          pkg-config
         ];
 
         homebrew = {

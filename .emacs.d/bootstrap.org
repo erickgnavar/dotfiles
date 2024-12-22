@@ -540,7 +540,7 @@ Function to search into zsh history
 (defun my/insert-from-zsh-history ()
   "Search into zsh history and insert the selected choice into buffer."
   (interactive)
-  (when-let ((selected-choice (my/select-from-zsh-history)))
+  (when-let* ((selected-choice (my/select-from-zsh-history)))
     (vterm-insert selected-choice)))
 #+end_src
 

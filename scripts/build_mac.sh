@@ -31,7 +31,7 @@ brew install autoconf automake libxml2 gnutls cmake librsvg texinfo libgccjit
 echo "Seting up variables..."
 
 make configure
-./configure --with-ns --with-xwidgets --with-tree-sitter --with-native-compilation=aot
+./configure --with-ns --with-xwidgets --with-tree-sitter
 make -j install
 
 echo "Compilation done!"

@@ -2007,6 +2007,14 @@ The last part can change depending of the version installed
                                     (setq-local fill-column 120)
                                     (auto-fill-mode 1))))
 
+(use-package flymake-markdownlint
+  :straight (flymake-markdownlint
+             :type git
+             :host github
+             :repo "erickgnavar/flymake-markdownlint")
+  :hook ((markdown-mode . flymake-markdownlint-load)
+         (markdown-mode . flymake-mode)))
+
 (use-package edit-indirect
   :ensure t
   :defer t)

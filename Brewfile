@@ -74,6 +74,7 @@ brew "lorem"
 brew "lsusb"
 brew "lua-language-server"
 brew "mailutils"
+brew "markdownlint-cli"
 brew "minikube"
 brew "minio", restart_service: true
 brew "nerdfetch"

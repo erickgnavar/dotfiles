@@ -1456,6 +1456,10 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
   (set-window-configuration my/org-src-block-tmp-window-configuration))
 
 (with-eval-after-load 'org
+  ;; do not show trailing spaces in calendar buffer
+  (add-hook 'calendar-mode-hook #'(lambda ()
+                                    (setq-local show-trailing-whitespace nil)))
+
   (setq org-latex-caption-above nil
         org-clock-persist 'history
         org-src-fontify-natively t

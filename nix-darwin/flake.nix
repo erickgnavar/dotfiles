@@ -61,6 +61,15 @@
           # for emacs jinx package compilation
           pkg-config
           localsend
+          defaultbrowser
+          xmlformat
+          yamllint
+          jq
+          pyright
+          exiftool
+          gnused
+          imagemagick
+          librsvg
         ];
 
         homebrew = {

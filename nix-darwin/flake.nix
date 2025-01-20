@@ -105,6 +105,10 @@
             finder.AppleShowAllExtensions = true;
             NSGlobalDomain.KeyRepeat = 2;
             NSGlobalDomain.AppleInterfaceStyle = "Dark";
+            # Use scroll gesture with the Ctrl (^) modifier key to
+            # zoom, this requires to have "Full disk access" in the
+            # program which run nix-darwin command
+            universalaccess.closeViewScrollWheelToggle = true;
           };
           keyboard = {
             enableKeyMapping = true;

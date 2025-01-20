@@ -105,6 +105,8 @@
             finder.AppleShowAllExtensions = true;
             NSGlobalDomain.KeyRepeat = 2;
             NSGlobalDomain.AppleInterfaceStyle = "Dark";
+            # disable natural scrolling
+            NSGlobalDomain."com.apple.swipescrolldirection" = false;
             # Use scroll gesture with the Ctrl (^) modifier key to
             # zoom, this requires to have "Full disk access" in the
             # program which run nix-darwin command

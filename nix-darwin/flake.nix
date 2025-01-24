@@ -91,6 +91,7 @@
           ];
         };
 
+        # all available options are defined here https://daiderd.com/nix-darwin/manual/index.html
         system = {
           defaults = {
             dock.autohide = true;

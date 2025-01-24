@@ -71,6 +71,7 @@
           gnused
           imagemagick
           librsvg
+          pngpaste
         ];
 
         homebrew = {

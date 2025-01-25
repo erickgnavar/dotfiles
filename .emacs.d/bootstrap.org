@@ -794,11 +794,10 @@ UI to interact with models, relies on ~llm~
   :custom
   (ellama-language "English")
   :config
-  (require 'llm-ollama)
-  (with-eval-after-load 'llm-ollama)
-  (setopt ellama-provider (make-llm-ollama
-                           :host "localhost"
-                           :chat-model "deepseek-coder-v2")))
+  (with-eval-after-load 'llm-ollama
+    (setopt ellama-provider (make-llm-ollama
+                             :host "localhost"
+                             :chat-model "deepseek-coder-v2"))))
 #+end_src
 
 Custom functions to better management of models

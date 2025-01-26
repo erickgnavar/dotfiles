@@ -87,7 +87,6 @@
  ("list-utils" . "f02dcef36330871855346f9eab97eef58d323d9a")
  ("llm" . "551f17040c5d9a423eca90d9bd103589f9142e3c")
  ("logito" . "d5934ce10ba3a70d3fcfb94d742ce3b9136ce124")
- ("lua-mode" . "5a9bee8d5fc978dc64fcb677167417010321ba65")
  ("magit" . "ae7f5e9fb4fa5253ec0ee64e06f7b3afc0cbee7f")
  ("magit-delta" . "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
  ("major-mode-hydra.el" . "d0a5dadee97c3752fcdef113cf2ba1923972a480")

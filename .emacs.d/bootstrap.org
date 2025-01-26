@@ -2503,9 +2503,11 @@ stack install hindent
 ** Lua
 
 #+BEGIN_SRC emacs-lisp
-(use-package lua-mode
-  :ensure t
-  :bind (:map lua-mode-map
+(use-package lua-ts-mode
+  :straight (:type built-in)
+  :defer t
+  :mode "\\.lua\\'"
+  :bind (:map lua-ts-mode-map
               ("C-c C-b" . compile)
               ("C-c C-f" . lua-format-buffer)))
 #+END_SRC

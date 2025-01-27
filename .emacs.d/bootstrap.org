@@ -954,6 +954,7 @@ Only activate =flymake= for actual projects and for =prog-mode=
 (add-hook 'prog-mode-hook 'my/setup-flymake)
 
 (with-eval-after-load "flymake"
+  (setq flymake-show-diagnostics-at-end-of-line 'short)
   (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
   (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
 #+end_src

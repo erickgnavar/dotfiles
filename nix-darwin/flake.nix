@@ -59,6 +59,7 @@
           uv
           kubectl
           sqlfluff
+          stylua
           # for emacs jinx package compilation
           pkg-config
           localsend

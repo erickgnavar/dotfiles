@@ -73,6 +73,7 @@
           imagemagick
           librsvg
           pngpaste
+          (aspellWithDicts (dicts: with dicts; [ en en-computers es ]))
         ];
 
         homebrew = {

@@ -49,7 +49,6 @@
           shfmt
           google-cloud-sdk
           ripgrep
-          # asdf-vm
           autojump
           docker
           colima

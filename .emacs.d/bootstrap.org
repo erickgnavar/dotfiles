@@ -578,16 +578,15 @@ Also for easy access insert mode is activated right away after vterm is shown
   (vterm-toggle-show . evil-insert-state))
 #+end_src
 
-** Jinx
-
-This require to have enchant library to be able to compile and load a module
+** Spelling
 
 #+begin_src emacs-lisp
-(use-package jinx
+(use-package jit-spell
   :ensure t
-  :hook (emacs-startup . global-jinx-mode)
+  :hook ((text-mode . jit-spell-mode)
+         (prog-mode . jit-spell-mode))
   :config
-  (define-key jinx-mode-map (kbd "M-\\") 'jinx-correct))
+  (define-key jit-spell-mode-map (kbd "M-\\") 'jit-spell-correct-word))
 #+end_src
 
 ** iSpell

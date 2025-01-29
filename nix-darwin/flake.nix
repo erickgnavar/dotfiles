@@ -29,7 +29,6 @@
           cmake
           glibtool
           alacritty
-          enchant
           eza
           tree
           go
@@ -45,7 +44,6 @@
           tmux
           macvim
           emacs30
-          emacsPackages.jinx
           nixpkgs-fmt
           nixd
           shfmt
@@ -60,8 +58,6 @@
           kubectl
           sqlfluff
           stylua
-          # for emacs jinx package compilation
-          pkg-config
           localsend
           defaultbrowser
           xmlformat

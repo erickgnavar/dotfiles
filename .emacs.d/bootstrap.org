@@ -807,7 +807,6 @@ Custom functions to better management of models
   (interactive)
   (let* ((raw-result (shell-command-to-string "ollama list | awk '{print $1}' | tail -n+2"))
          (choices (string-split (string-trim raw-result) "\n"))
-         (choices (mapcar (lambda (choice) (car (string-split choice ":"))) choices))
          (model (completing-read "Choose model" choices)))
     (setopt ellama-provider (make-llm-ollama :host "localhost" :chat-model model))
     (message "Model %s configured as ollama provider." (propertize model 'face '(:foreground "magenta")))))

@@ -30,8 +30,8 @@ This is required to enable lexical binding in the resulting ~.el~ file, which wi
 (column-number-mode t)
 (global-hl-line-mode 1)
 
-(when (member my/font-family (font-family-list))
-  (set-face-attribute 'default nil :font (format "%s 13" my/font-family)))
+;; in case the font doesn't exit this will raise an error saying that
+(set-face-attribute 'default nil :font (format "%s 13" my/font-family))
 
 (global-set-key (kbd "C-x -") 'my/decrease-font-height)
 (global-set-key (kbd "C-x =") 'my/increase-font-height)

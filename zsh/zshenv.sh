@@ -49,15 +49,8 @@ test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" >
 # this will load credentials from a private file what won't be commited
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
-# setup for intel macOS
-if [ -d "/usr/local/opt/asdf/libexec" ]; then
-  . /usr/local/opt/asdf/libexec/asdf.sh
-fi
-
-# setup for arm macOS
-if [ -d "/opt/homebrew/opt/asdf/libexec" ]; then
-  . /opt/homebrew/opt/asdf/libexec/asdf.sh
-fi
+# PATH configuration for asdf >= 0.16
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 if [ -d "$HOME/.tmuxifier/" ]; then
   export PATH="$HOME/.tmuxifier/bin:$PATH"

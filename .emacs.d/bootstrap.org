@@ -442,15 +442,10 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 ** Editorconfig
 
 #+BEGIN_SRC emacs-lisp
-(if (>= emacs-major-version 30)
-    (use-package editorconfig
-      :straight (:type built-in)
-      :config
-      (editorconfig-mode 1))
-  (use-package editorconfig
-    :ensure t
-    :config
-    (editorconfig-mode 1)))
+(use-package editorconfig
+  :straight (:type built-in)
+  :config
+  (editorconfig-mode 1))
 #+END_SRC
 
 ** Snippets
@@ -818,17 +813,11 @@ Custom functions to better management of models
 ** Which-key
 
 #+BEGIN_SRC emacs-lisp
-(if (>= emacs-major-version 30)
-    (use-package which-key
-      :straight (:type built-in)
-      :config
-      (which-key-mode)
-      (which-key-setup-minibuffer))
-  (use-package which-key
-    :ensure t
-    :config
-    (which-key-mode)
-    (which-key-setup-minibuffer)))
+(use-package which-key
+  :straight (:type built-in)
+  :config
+  (which-key-mode)
+  (which-key-setup-minibuffer))
 #+END_SRC
 
 ** Auto pair

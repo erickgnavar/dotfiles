@@ -9,7 +9,7 @@
 ;; Hide vertical scroll bar
 (scroll-bar-mode -1)
 
-;; Disable package.el in favor of straight.el
+;; Disable package.el in favor of elpaca.el
 (setq package-enable-at-startup nil)
 
 ;; Hide toolbar

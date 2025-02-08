@@ -281,10 +281,7 @@ By default it will use project root but this can be changed"
 
 #+begin_src emacs-lisp
 (use-package spaceink-theme
-  :straight (spaceink-theme
-             :type git
-             :host github
-             :repo "bcardoso/spaceink-theme")
+  :ensure (:host github :repo "bcardoso/spaceink-theme")
   :config
   (load-theme 'spaceink t))
 #+end_src
@@ -310,7 +307,7 @@ This is required for GitHub notifications segment
   (doom-modeline-github t)
   (doom-modeline-github-interval (* 30 60))
   :hook
-  (after-init . doom-modeline-mode)
+  (elpaca-after-init . doom-modeline-mode)
   (doom-modeline-mode . display-battery-mode))
 #+END_SRC
 
@@ -443,7 +440,7 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 
 #+BEGIN_SRC emacs-lisp
 (use-package editorconfig
-  :straight (:type built-in)
+  :ensure nil
   :config
   (editorconfig-mode 1))
 #+END_SRC
@@ -503,7 +500,9 @@ Disable lock files
 
 #+begin_src emacs-lisp
 (use-package major-mode-hydra
-  :ensure t
+  ;; we need to this to be installed before continuing because we need
+  ;; it to configure other packages with :hydra option
+  :ensure (:wait t)
   :config
   (with-eval-after-load 'evil
     (evil-define-key nil 'global (kbd "<leader>\\") #'(lambda ()
@@ -511,11 +510,8 @@ Disable lock files
                                                         (major-mode-hydra)))))
 
 (use-package hydra-posframe
-  :straight (hydra-posframe
-             :type git
-             :host github
-             :repo "Ladicle/hydra-posframe")
-  :hook (after-init . hydra-posframe-mode))
+  :ensure (:host github :repo "Ladicle/hydra-posframe")
+  :hook (elpaca-after-init . hydra-posframe-mode))
 #+end_src
 
 ** Vterm
@@ -636,10 +632,7 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
 
 #+begin_src emacs-lisp
 (use-package combobulate
-  :straight (combobulate
-             :type git
-             :host github
-             :repo "mickeynp/combobulate")
+  :ensure (:host github :repo "mickeynp/combobulate")
   :commands (combobulate-query-builder))
 #+end_src
 
@@ -814,7 +807,7 @@ Custom functions to better management of models
 
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
-  :straight (:type built-in)
+  :ensure nil
   :config
   (which-key-mode)
   (which-key-setup-minibuffer))
@@ -923,7 +916,7 @@ Used in every major mode
   (setq company-idle-delay 0.1
         company-tooltip-limit 10
         company-minimum-prefix-length 3)
-  :hook (after-init . global-company-mode)
+  :hook (elpaca-after-init . global-company-mode)
   :config
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous))
@@ -1026,7 +1019,7 @@ Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
   (find-file (expand-file-name ".envrc" (my/project-root))))
 
 (use-package project
-  :straight (:type built-in)
+  :ensure nil
   :bind (:map project-prefix-map
               ("D" . 'my/project-edit-direnv)
               ("d" . 'project-dired)
@@ -1104,7 +1097,7 @@ UI for completion
 (use-package vertico
   :ensure t
   :hook
-  (after-init . vertico-mode)
+  (elpaca-after-init . vertico-mode)
   :custom
   ;; fixed height
   (vertico-resize nil)
@@ -1113,15 +1106,6 @@ UI for completion
   :config
   ;; `C-;' will open embark and `o' with execute `find-file-other-window'
   (define-key vertico-map (kbd "C-<return>") (kbd "C-; o")))
-#+end_src
-
-Load ~vertico-multiform~ which is required for ~vertico-posframe~
-
-#+begin_src emacs-lisp
-(use-package vertico-multiform
-  :after vertico
-  :straight nil
-  :load-path "straight/repos/vertico/extensions/")
 #+end_src
 
 Vertico posframe, show all the candidates in a child-frame, it will activated only for GUI version.
@@ -1364,29 +1348,25 @@ This package requires to have svg support in emacs, this feature relies on =libr
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package imgur
-  :ensure t
-  :defer t
-  :straight (imgur
-             :type git
-             :host github
-             :repo "myuhe/imgur.el"))
+;; (use-package imgur
+;;  :ensure (:host github :repo "myuhe/imgur.el")
+;;  :defer t)
 
-(use-package meme
-  :ensure t
-  :defer t
-  :commands (meme-mode meme)
-  :straight (meme
-             :type git
-             :host github
-             :repo "larsmagne/meme")
-  :config
-  ;; fix to be able to read images, straight.el put files in a different directory so we have to
-  ;; move them to the right one
-  (let ((images-dest-dir (concat user-emacs-directory "straight/build/meme/images"))
-        (images-source-dir (concat user-emacs-directory "straight/repos/meme/images")))
-    (unless (file-directory-p images-dest-dir)
-      (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
+;; (use-package meme
+;;   :ensure t
+;;   :defer t
+;;   :commands (meme-mode meme)
+;;   :straight (meme
+;;              :type git
+;;              :host github
+;;              :repo "larsmagne/meme")
+;;   :config
+;;   ;; fix to be able to read images, straight.el put files in a different directory so we have to
+;;   ;; move them to the right one
+;;   (let ((images-dest-dir (concat user-emacs-directory "straight/build/meme/images"))
+;;         (images-source-dir (concat user-emacs-directory "straight/repos/meme/images")))
+;;     (unless (file-directory-p images-dest-dir)
+;;       (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
 #+end_src
 
 * Orgmode
@@ -1596,6 +1576,9 @@ This pacakge includes ~gitignore-mode~, ~gitconfig-mode~ and ~gitattributes-mode
 
 #+begin_src emacs-lisp
 (use-package transient
+  ;; use external version so we can use magit with no issues, some
+  ;; features of magit relies on newest versions of the ones packaged
+  ;; inside emacs
   :ensure t
   :custom
   (transient-save-history nil))
@@ -1779,7 +1762,7 @@ Use ~delta~ tool to show diffs in magit
 
 #+BEGIN_SRC emacs-lisp
 (use-package css-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode "\\.css\\'"
   :defer t)
 #+END_SRC
@@ -1890,7 +1873,7 @@ The last part can change depending of the version installed
     (compile (format "kubectl delete -f %s" buffer-file-name))))
 
 (use-package yaml-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode "\\.ya?ml\\'"
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " YAML Commands"))
@@ -1924,7 +1907,7 @@ The last part can change depending of the version installed
   :defer t)
 
 (use-package toml-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode "\\.toml\\'"
   :defer t)
 
@@ -2000,10 +1983,7 @@ The last part can change depending of the version installed
                                     (auto-fill-mode 1))))
 
 (use-package flymake-markdownlint
-  :straight (flymake-markdownlint
-             :type git
-             :host github
-             :repo "erickgnavar/flymake-markdownlint")
+  :ensure (:host github :repo "erickgnavar/flymake-markdownlint")
   :hook ((markdown-mode . flymake-markdownlint-load)
          (markdown-mode . flymake-mode)))
 
@@ -2012,7 +1992,7 @@ The last part can change depending of the version installed
   :defer t)
 
 (use-package dockerfile-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :defer t
   :mode (("\\Dockerfile\\'" . dockerfile-ts-mode)
          ("\\.dockerignore\\'" . dockerfile-ts-mode)))
@@ -2085,9 +2065,8 @@ websockets client
 
 #+begin_src emacs-lisp
 (use-package eglot
-  :ensure nil
   :defer t
-  :straight (:type built-in)
+  :ensure nil
   :bind (:map eglot-mode-map
               ("C-c C-d" . 'eldoc-doc-buffer)
               ("<M-return>" . 'eglot-code-actions)
@@ -2154,7 +2133,7 @@ Bash formatter using ~shfmt~
     :program "clang-format"))
 
 (use-package c-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " C commands"))
    ("Format"
@@ -2208,7 +2187,7 @@ Generate a ~pyrightconfig.json~ file
 (setq python-shell-completion-native-enable nil)
 
 (use-package python-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :defer t
   :mode "\\.py\\'"
   :mode-hydra
@@ -2254,10 +2233,7 @@ Show a list of the available django commands and run the selected one using a co
 
 #+begin_src emacs-lisp
 (use-package erlang-ts-mode
-  :straight (erlang-ts-mode
-             :type git
-             :host github
-             :repo "sebastiw/erlang-ts-mode"))
+  :ensure (:host github :repo "sebastiw/erlang-ts-mode"))
 #+end_src
 
 ** Elixir
@@ -2306,7 +2282,7 @@ Add regex to match ~mix test~ execution output and be able to navigate between e
     (elixir-format-buffer)))
 
 (use-package elixir-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode (("\\.ex\\'" . elixir-ts-mode)
          ("\\.exs\\'" . elixir-ts-mode)
          ("\\mix.lock\\'" . elixir-ts-mode))
@@ -2493,7 +2469,7 @@ stack install hindent
 
 #+BEGIN_SRC emacs-lisp
 (use-package lua-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :defer t
   :mode "\\.lua\\'"
   :bind (:map lua-ts-mode-map
@@ -2522,7 +2498,7 @@ Linter using [[https://biomejs.dev][biome]]
 
 #+begin_src emacs-lisp
 (use-package js-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :defer t
   :mode "\\.jsx?\\'"
   :mode-hydra
@@ -2547,7 +2523,7 @@ We need to use ~--stdin-file-path a.js~ to tell ~biome~ to use ~stdin~.
 
 #+begin_src emacs-lisp
 (use-package typescript-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :defer t
   :mode "\\.tsx?\\'")
 #+end_src
@@ -2581,7 +2557,7 @@ rustup component add rust-src
     :program "rustfmt"))
 
 (use-package rust-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode "\\.rs\\'"
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Rust Commands"))
@@ -2618,7 +2594,7 @@ brew install gopls
 
 #+BEGIN_SRC emacs-lisp
 (use-package go-ts-mode
-  :straight (:type built-in)
+  :ensure nil
   :hook (go-ts-mode . eglot-ensure)
   :mode (("\\.go\\'" . go-ts-mode))
   :mode-hydra

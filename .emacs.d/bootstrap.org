@@ -1348,25 +1348,29 @@ This package requires to have svg support in emacs, this feature relies on =libr
 #+end_src
 
 #+begin_src emacs-lisp
-;; (use-package imgur
-;;  :ensure (:host github :repo "myuhe/imgur.el")
-;;  :defer t)
+;; install directly from source because this is not available in any
+;; packages repositories
+(use-package anything
+  :ensure (:repo "https://repo.or.cz/anything-config.git"))
 
-;; (use-package meme
-;;   :ensure t
-;;   :defer t
-;;   :commands (meme-mode meme)
-;;   :straight (meme
-;;              :type git
-;;              :host github
-;;              :repo "larsmagne/meme")
-;;   :config
-;;   ;; fix to be able to read images, straight.el put files in a different directory so we have to
-;;   ;; move them to the right one
-;;   (let ((images-dest-dir (concat user-emacs-directory "straight/build/meme/images"))
-;;         (images-source-dir (concat user-emacs-directory "straight/repos/meme/images")))
-;;     (unless (file-directory-p images-dest-dir)
-;;       (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
+(use-package imgur
+  ;; skip dependency check because we have installed `anything' in the
+  ;; previous step
+  :ensure (:host github :repo "myuhe/imgur.el" :main nil)
+  :defer t)
+
+(use-package meme
+  :ensure (:host github :repo "larsmagne/meme")
+  :after anything
+  :defer t
+  :commands (meme-mode meme)
+  :config
+  ;; fix to be able to read images, elpaca.el put files in a different directory so we have to
+  ;; move them to the right one
+  (let ((images-dest-dir (concat user-emacs-directory "elpaca/builds/meme/images"))
+        (images-source-dir (concat user-emacs-directory "elpaca/repos/meme/images")))
+    (unless (file-directory-p images-dest-dir)
+      (shell-command (format "cp -r %s %s" images-source-dir images-dest-dir)))))
 #+end_src
 
 * Orgmode

@@ -1640,6 +1640,26 @@ Use ~delta~ tool to show diffs in magit
   (add-hook 'forge-topic-mode-hook #'(lambda () (evil-emacs-state))))
 #+END_SRC
 
+** Pull requests reviews
+
+#+begin_src emacs-lisp
+(use-package pr-review
+  :ensure t
+  :after forge
+  :config
+  (defun my/review-pr-at-point ()
+    "Review PR at point."
+    (interactive)
+    (if-let* ((target (forge--browse-target))
+              (url (if (stringp target) target (forge-get-url target)))
+              (rev-url (pr-review-url-parse url)))
+        (pr-review url)
+      (user-error "No PR to review at point")))
+  (with-eval-after-load 'magit
+    (transient-append-suffix 'forge-dispatch '(-1 -1 -1)
+      '("R" "Review pull request" my/review-pr-at-point))))
+#+end_src
+
 ** Git diff-hl
 
 #+BEGIN_SRC emacs-lisp

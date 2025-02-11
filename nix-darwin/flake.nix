@@ -84,7 +84,6 @@
             "espanso"
             "krisp"
             "spotify"
-            "ghostty"
           ];
         };
 

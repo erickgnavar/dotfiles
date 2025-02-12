@@ -935,9 +935,31 @@ Only activate =flymake= for actual projects and for =prog-mode=
 (add-hook 'prog-mode-hook 'my/setup-flymake)
 
 (with-eval-after-load "flymake"
-  (setq flymake-show-diagnostics-at-end-of-line 'short)
-  (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-  (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
+  (setq flymake-show-diagnostics-at-end-of-line nil)
+  ;; we need to avoid a direct call to `flymake-goto-prev-error' and
+  ;; `flymake-goto-prev-error' to pass `interactive' value as `nil' so
+  ;; the diagnostic won't be shown in minibuffer, which is the default
+  ;; behaviour
+  (define-key flymake-mode-map (kbd "M-n") #'(lambda ()
+                                               (interactive)
+                                               (flymake-goto-next-error 1 nil nil)))
+  (define-key flymake-mode-map (kbd "M-p") #'(lambda ()
+                                               (interactive)
+                                               (flymake-goto-prev-error 1 nil nil))))
+#+end_src
+
+Show diagnostics with ~posframe~
+
+#+begin_src emacs-lisp
+(use-package flymake-posframe
+  :ensure (:host github :repo "Ladicle/flymake-posframe")
+  :after flymake
+  :if (display-graphic-p)
+  :custom
+  (flymake-posframe-error-prefix "🐛")
+  (flymake-posframe-warning-prefix "⚠️")
+  (flymake-posframe-note-prefix "✏️")
+  :hook (flymake-mode . flymake-posframe-mode))
 #+end_src
 
 ** Direnv

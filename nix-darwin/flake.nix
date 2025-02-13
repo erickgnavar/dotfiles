@@ -79,7 +79,7 @@
             "libvterm"
           ];
           casks = [
-            "shortcat"
+            "homerow"
             "hammerspoon"
             "espanso"
             "krisp"

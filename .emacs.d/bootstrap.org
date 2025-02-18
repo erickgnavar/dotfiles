@@ -874,8 +874,12 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
     :program "xmlformat"
     :group 'xml))
 
-(with-eval-after-load 'nxml-mode
-  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
+(use-package nxml-mode
+  :ensure nil
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " XML Commands"))
+   ("Format"
+    (("f" xml-format-buffer)))))
 #+END_SRC
 
 ** SQL formatter
@@ -893,10 +897,15 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
       (sql-format-region (region-beginning) (region-end))
     (sql-format-buffer)))
 
-(with-eval-after-load 'sql
-  (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
-  (add-hook 'sql-mode-hook 'flymake-mode)
-  (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
+(use-package sql
+  :ensure nil
+  :hook ((sql-mode . flymake-sqlfluff-load)
+         (sql-mode . flymake-mode))
+  :mode-hydra
+  (sql-mode
+   (:title (concat (nerd-icons-icon-for-buffer) " SQL Commands"))
+   ("Format"
+    (("f" my/format-sql)))))
 #+END_SRC
 
 ** SQL linter using [[https://www.sqlfluff.com][sqlfluff]]
@@ -1906,8 +1915,10 @@ The last part can change depending of the version installed
 (use-package terraform-mode
   :ensure t
   :defer t
-  :bind (:map terraform-mode-map
-              ("C-c C-f" . 'terraform-format-buffer)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Terraform Commands"))
+   ("Format"
+    (("f" terraform-format-buffer)))))
 
 (defun my/k8s-apply ()
   "Apply current yaml file to the current kubernetes context."
@@ -1926,7 +1937,9 @@ The last part can change depending of the version installed
   :mode "\\.ya?ml\\'"
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " YAML Commands"))
-   ("Kubernetes"
+   ("Format"
+    (("f" yaml-pro-format))
+    "Kubernetes"
     (("a" my/k8s-apply)
      ("k" my/k8s-delete)))))
 
@@ -1943,7 +1956,6 @@ The last part can change depending of the version installed
   :hook
   (yaml-ts-mode . yaml-pro-ts-mode)
   :config
-  (define-key yaml-pro-ts-mode-map (kbd "C-c C-f") 'yaml-pro-format)
   ;; this binding conflicts with org indirect mode
   (define-key yaml-pro-ts-mode-map (kbd "C-c '") nil))
 
@@ -2500,9 +2512,12 @@ stack install hindent
 
 (use-package haskell-mode
   :ensure t
-  :bind (:map haskell-mode-map
-              ("C-c C-f" . haskell-format-buffer)
-              ("C-c C-l" . haskell-process-load-file)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Haskell Commands"))
+   ("Format"
+    (("f" haskell-format-buffer))
+    "Loading"
+    (("l" haskell-process-load-file)))))
 
 (defun my/run-hlint ()
   "Run  hlint over the current project."
@@ -2525,9 +2540,12 @@ stack install hindent
   :ensure nil
   :defer t
   :mode "\\.lua\\'"
-  :bind (:map lua-ts-mode-map
-              ("C-c C-b" . compile)
-              ("C-c C-f" . lua-format-buffer)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Lua Commands"))
+   ("Format"
+    (("f" lua-format-buffer))
+    "Compilation"
+    (("b" compile)))))
 #+END_SRC
 
 Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
@@ -2780,9 +2798,12 @@ Enable flymake
 (use-package dart-mode
   :ensure t
   :if (or (executable-find "dart") (executable-find "flutter"))
-  :bind (:map dart-mode-map
-              ("C-c C-f" . dart-format-buffer)
-              ("C-c C-c" . my/dart-run-file)))
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Dart Commands"))
+   ("Format"
+    (("f" dart-format-buffer))
+    "Execution"
+    (("r" my/dart-run-file)))))
 #+END_SRC
 
 *** Flutter

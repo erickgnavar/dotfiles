@@ -17,6 +17,9 @@ This is required to enable lexical binding in the resulting ~.el~ file, which wi
 ;; Default font-family, this will used in all the function that manipulates font settings
 (defvar my/font-family "JetBrainsMono Nerd Font")
 
+;; Maximize frame at start up
+(add-hook 'after-init-hook 'toggle-frame-maximized)
+
 ;; Change backups directory to emacs folder
 ;; this avoid to save backup files in the same directory of the original files
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory

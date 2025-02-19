@@ -49,7 +49,6 @@
           shfmt
           google-cloud-sdk
           ripgrep
-          autojump
           docker
           colima
           wakatime-cli

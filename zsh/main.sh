@@ -88,6 +88,8 @@ alias wow="git status"
 alias cat="bat"
 alias ls="eza --icons"
 alias k="kubectl"
+# Use z zsh plugin as autojump
+alias j="z"
 
 # direnv conf, load configuration only if the binary is already
 # installed, silence stdout and stderr

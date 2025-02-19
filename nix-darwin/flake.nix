@@ -47,7 +47,7 @@
           nixpkgs-fmt
           nixd
           shfmt
-          google-cloud-sdk
+          (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
           ripgrep
           docker
           colima

@@ -406,9 +406,10 @@ Allow to visual mode work more like vim visual highlighting.
 
 #+BEGIN_SRC emacs-lisp
 (defun my/highlight-todo-like-words ()
+  "Highlight TODO like keywords."
   (font-lock-add-keywords
-   nil `(("\\<\\(FIXME\\|TODO\\)"
-          1 font-lock-warning-face t))))
+   nil `(("\\<\\(FIXME\\|TODO\\|BUG\\)" 1 font-lock-warning-face t)
+         ("\\<\\(NOTE\\|HACK\\)" 1 font-lock-doc-face t))))
 
 (add-hook 'prog-mode-hook 'my/highlight-todo-like-words)
 #+END_SRC

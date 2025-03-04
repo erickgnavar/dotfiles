@@ -2131,7 +2131,7 @@ websockets client
   :defer t
   :ensure nil
   :bind (:map eglot-mode-map
-              ("C-c C-d" . 'eldoc-doc-buffer)
+              ("C-c C-d" . 'eldoc-box-help-at-point)
               ("<M-return>" . 'eglot-code-actions)
               ("C-c C-s" . 'xref-find-references))
   :config
@@ -2157,6 +2157,16 @@ In case we don't have eglot running we can relay on dumb-jump
     (if (member major-mode '(emacs-lisp-mode lisp-interaction-mode))
         (xref-find-definitions (thing-at-point 'symbol))
       (dumb-jump-go))))
+#+end_src
+
+~eldoc~ improvements
+
+#+begin_src emacs-lisp
+(use-package eldoc-box
+  :ensure t
+  :custom
+  ;; remove child frame as soon as cursor moves to another position
+  (eldoc-box-cleanup-interval 0))
 #+end_src
 
 * Programming languages

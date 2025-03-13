@@ -976,38 +976,41 @@ Show diagnostics with ~posframe~
   :hook (flymake-mode . flymake-posframe-mode))
 #+end_src
 
-** Direnv
+** Mise
 
-Handle environment variables per buffer using a ~.envrc~ file.
+Handle environment variables per buffer using a ~mise.toml~ file.
 
 #+BEGIN_SRC emacs-lisp
-(use-package envrc
+(use-package mise
   :ensure t
-  :config
-  (envrc-global-mode))
+  :hook
+  (elpaca-after-init . global-mise-mode))
 #+END_SRC
 
 Hydra commands, this have to be defined this way instead of using ~:mode-hydra~ inside ~use-package~ because
 for some reason it mess up with environment variables loading
 
 #+begin_src emacs-lisp
-(with-eval-after-load 'major-mode-hydra
-  (major-mode-hydra-define envrc-file-mode
-    (:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
-    ("Secrets"
-     (("h" cloak-mode "Toggle cloak" :toggle t)))))
+;TODO: migrate to use a specific major mode for mise.toml files
+;; (with-eval-after-load 'major-mode-hydra
+;;   (major-mode-hydra-define envrc-file-mode
+;;     (:title (concat (nerd-icons-icon-for-buffer) " envrc commands"))
+;;     ("Secrets"
+;;      (("h" cloak-mode "Toggle cloak" :toggle t)))))
 #+end_src
 
 ** Cloak mode
 
-Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
+Hide values that match regex patterns for ~restclient~ files
 
 #+begin_src emacs-lisp
 (use-package cloak-mode
   :ensure t
   :custom
-  (cloak-mode-patterns '((envrc-file-mode . "[a-zA-Z0-9_]+[ \t]*=[ \t]*\\(.*+\\)$")
-                         (restclient-mode . "^:[^: ]+[ \t]*=[ \t]*\\(.+?\\)$")))
+  ;TODO: add configuration for mise.toml files, cloak-mode by now only
+  ;support major mode but it may support filename pattern in the
+  ;future
+  (cloak-mode-patterns '((restclient-mode . "^:[^: ]+[ \t]*=[ \t]*\\(.+?\\)$")))
   (cloak-mode-mask "🙈🙈🙈")
   :config
   (global-cloak-mode))
@@ -1049,15 +1052,15 @@ Hide values that match regex patterns in ~.envrc~ and ~restclient~ files
   (interactive)
   (find-file (expand-file-name ".dir-locals.el" (my/project-root))))
 
-(defun my/project-edit-direnv ()
-  "Edit .envrc file in project root."
+(defun my/project-edit-mise ()
+  "Edit mise.toml file in project root."
   (interactive)
-  (find-file (expand-file-name ".envrc" (my/project-root))))
+  (find-file (expand-file-name "mise.toml" (my/project-root))))
 
 (use-package project
   :ensure nil
   :bind (:map project-prefix-map
-              ("D" . 'my/project-edit-direnv)
+              ("m" . 'my/project-edit-mise)
               ("d" . 'project-dired)
               ("e" . 'my/project-edit-dir-locals)
               ("k" . 'my/project-kill-buffers)

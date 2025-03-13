@@ -198,20 +198,19 @@
 			:source #2# :protocol https :inherit t :depth
 			treeless :ref
 			"2ad407c651e90fff2ea85d17bf074cee2c022912"))
- (with-editor :source #1# :recipe
-	      (:package "with-editor" :fetcher github :repo
-			"magit/with-editor" :files
-			("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			 "*.texinfo" "doc/dir" "doc/*.info"
-			 "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			 "docs/dir" "docs/*.info" "docs/*.texi"
-			 "docs/*.texinfo"
-			 (:exclude ".dir-locals.el" "test.el"
-				   "tests.el" "*-test.el" "*-tests.el"
-				   "LICENSE" "README*" "*-pkg.el"))
-			:source #2# :protocol https :inherit t :depth
-			treeless :ref
-			"ca902ae02972bdd6919a902be2593d8cb6bd991b"))
+ (with-editor :source #1#
+   :recipe
+   (:package "with-editor" :fetcher github :repo "magit/with-editor"
+	     :files
+	     ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
+	      "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
+	      "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
+	      "docs/*.texinfo"
+	      (:exclude ".dir-locals.el" "test.el" "tests.el"
+			"*-test.el" "*-tests.el" "LICENSE" "README*"
+			"*-pkg.el"))
+	     :source #2# :protocol https :inherit t :depth treeless
+	     :ref "ca902ae02972bdd6919a902be2593d8cb6bd991b"))
  (magit-section :source #1# :recipe
 		(:package "magit-section" :fetcher github :repo
 			  "magit/magit" :files
@@ -548,8 +547,8 @@
 		       (:exclude ".dir-locals.el" "test.el" "tests.el"
 				 "*-test.el" "*-tests.el" "LICENSE"
 				 "README*" "*-pkg.el"))
-		      :source "MELPA" :protocol https :inherit t
-		      :depth treeless :ref
+		      :source #2# :protocol https :inherit t :depth
+		      treeless :ref
 		      "ebc0e2c13791f5a22cf81be050b32f0ebf726855"))
  (websocket :source #1# :recipe
 	    (:package "websocket" :repo "ahyatt/emacs-websocket"
@@ -1255,18 +1254,18 @@
 		       :source #2# :protocol https :inherit t :depth
 		       treeless :ref
 		       "ca0896dfd0a0ee549150233ebd96aa0f65b56afb"))
- (envrc :source #1# :recipe
-	(:package "envrc" :fetcher github :repo "purcell/envrc" :files
-		  ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		   "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		   "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		   "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		   (:exclude ".dir-locals.el" "test.el" "tests.el"
-			     "*-test.el" "*-tests.el" "LICENSE"
-			     "README*" "*-pkg.el"))
-		  :source #2# :protocol https :inherit t :depth
-		  treeless :ref
-		  "2b818ca6e4a2f723e7cab70cd0101c2728581c3a"))
+ (mise :source #1# :recipe
+       (:package "mise" :fetcher github :repo "eki3z/mise.el" :files
+		 ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
+		  "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
+		  "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
+		  "docs/*.texinfo"
+		  (:exclude ".dir-locals.el" "test.el" "tests.el"
+			    "*-test.el" "*-tests.el" "LICENSE"
+			    "README*" "*-pkg.el"))
+		 :source "MELPA" :protocol https :inherit t :depth
+		 treeless :ref
+		 "97d244417d28605306f3a98eac0b67564677f277"))
  (flymake-posframe :source #1# :recipe
 		   (:source #2# :protocol https :inherit t :depth
 			    treeless :host github :repo

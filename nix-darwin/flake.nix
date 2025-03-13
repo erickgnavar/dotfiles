@@ -36,7 +36,7 @@
           gotools
           biome
           bat
-          direnv
+          mise
           tealdeer
           nerdfetch
           fastfetch

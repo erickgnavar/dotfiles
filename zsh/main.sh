@@ -91,9 +91,8 @@ alias k="kubectl"
 # Use z zsh plugin as autojump
 alias j="z"
 
-# direnv conf, load configuration only if the binary is already
-# installed, silence stdout and stderr
-which direnv 1>/dev/null 2>&1 && eval "$(direnv hook zsh)"
+# enable mise
+eval "$(mise activate zsh)"
 
 # load custom OS code
 if [ "$(uname -s)" = "Darwin" ]; then

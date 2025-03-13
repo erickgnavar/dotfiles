@@ -22,7 +22,7 @@ export PATH="$PATH":"$HOME/go/bin"
 export PATH="$PATH:$HOME/.local/bin"
 
 # --without-javac will disable java requirement for erlang compilation
-# --enable-m64-build will pass a flag to gcc about how to build 64 bits binaries, fixes an error with make while compiling erlang using asdf/kerl
+# --enable-m64-build will pass a flag to gcc about how to build 64 bits binaries, fixes an error with make while compiling erlang using kerl
 export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac --enable-m64-build"
 
 # Tell kerl to build documentation when compiling erlang
@@ -34,11 +34,6 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 # enhance man pages using bat
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
-# load cargo bin
-if [ -f "$HOME/.cargo/env" ]; then
-  . "$HOME/.cargo/env"
-fi
-
 if [ -d "$HOME/.ghcup/" ]; then
   export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 fi
@@ -48,9 +43,6 @@ test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" >
 
 # this will load credentials from a private file what won't be commited
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
-
-# PATH configuration for asdf >= 0.16
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 if [ -d "$HOME/.tmuxifier/" ]; then
   export PATH="$HOME/.tmuxifier/bin:$PATH"

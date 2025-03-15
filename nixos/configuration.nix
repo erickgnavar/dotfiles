@@ -154,7 +154,7 @@
     keyd
     emacs30-gtk3
     localsend
-    direnv
+    mise
     bat
     eza
     unzip

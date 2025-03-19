@@ -1827,8 +1827,20 @@ Use ~delta~ tool to show diffs in magit
 (use-package css-ts-mode
   :ensure nil
   :mode "\\.css\\'"
-  :defer t)
+  :defer t
+  :hook (css-ts-mode . flymake-biome-load)
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " CSS Commands"))
+   ("Format"
+    (("f" css-format-buffer)))))
 #+END_SRC
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'reformatter
+  (reformatter-define css-format
+    :program "biome"
+    :args '("format" "--stdin-file-path" "a.css" "--css-formatter-indent-style" "space")))
+#+end_src
 
 ** Rainbow
 

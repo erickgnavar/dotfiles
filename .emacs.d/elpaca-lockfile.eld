@@ -1263,7 +1263,7 @@
 		  (:exclude ".dir-locals.el" "test.el" "tests.el"
 			    "*-test.el" "*-tests.el" "LICENSE"
 			    "README*" "*-pkg.el"))
-		 :source "MELPA" :protocol https :inherit t :depth
+		 :source #2# :protocol https :inherit t :depth
 		 treeless :ref
 		 "97d244417d28605306f3a98eac0b67564677f277"))
  (flymake-posframe :source #1# :recipe
@@ -1847,11 +1847,11 @@
 			       :build (:not elpaca--compile-info)
 			       :source #2# :protocol https :inherit t
 			       :depth treeless :ref
-			       "7a68b7dc6b73094e0e3829efd009dbc6bd0fb495"))
+			       "2f6a19b9723c12bfc5e2fdb2a495d93933829213"))
  (elpaca :source
    #1# :recipe
    (:source nil :protocol https :inherit ignore :depth 1 :repo
 	    "https://github.com/progfolio/elpaca.git" :ref
-	    "7a68b7dc6b73094e0e3829efd009dbc6bd0fb495" :files
+	    "2f6a19b9723c12bfc5e2fdb2a495d93933829213" :files
 	    (:defaults "elpaca-test.el" (:exclude "extensions"))
 	    :build (:not elpaca--activate-package) :package "elpaca")))

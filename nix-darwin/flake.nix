@@ -76,6 +76,11 @@
             # libvterm is not available in nix for aarch64 so we
             # install it from homebrew
             "libvterm"
+            # this is required for mise be able to install erlang,
+            # mise cannot identify openssl version installed in nix so
+            # we need to use homebrew version to be able to use erlang
+            # with no issues
+            "openssl@3"
           ];
           casks = [
             "homerow"

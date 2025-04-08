@@ -1805,7 +1805,7 @@
 			  treeless :host github :repo
 			  "bcardoso/spaceink-theme" :package
 			  "spaceink-theme" :ref
-			  "cd63a5b501cc8bf961c1344822d0bc4986bcee91"))
+			  "10bf9b6b8bd811ee97883f7df75f660f596245fd"))
  (popper :source #1# :recipe
 	 (:package "popper" :fetcher github :repo "karthink/popper"
 		   :files

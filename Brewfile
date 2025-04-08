@@ -94,6 +94,7 @@ brew "shellcheck"
 brew "shfmt"
 brew "sl"
 brew "sqlfluff"
+brew "stripe-cli"
 brew "stylua"
 brew "tdlib", args: ["HEAD"]
 brew "tealdeer"

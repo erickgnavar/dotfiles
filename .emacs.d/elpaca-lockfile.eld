@@ -1266,12 +1266,6 @@
 		 :source #2# :protocol https :inherit t :depth
 		 treeless :ref
 		 "97d244417d28605306f3a98eac0b67564677f277"))
- (flymake-posframe :source #1# :recipe
-		   (:source #2# :protocol https :inherit t :depth
-			    treeless :host github :repo
-			    "Ladicle/flymake-posframe" :package
-			    "flymake-posframe" :ref
-			    "1c38f6730442aba91982e1de1a64e37fa075cd9c"))
  (company :source #1# :recipe
 	  (:package "company" :fetcher github :repo
 		    "company-mode/company-mode" :files

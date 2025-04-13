@@ -2465,8 +2465,8 @@ Custom functions to run elixir tests.
 (defun my/phx-insert-hero-icon ()
   "Insert icon component in a Elixir Phoenix application."
   (interactive)
-  (let* ((base-dir (expand-file-name (locate-dominating-file (buffer-file-name) "assets")))
-         (icons-dir (format "%sassets/vendor/heroicons/optimized/20/solid/" base-dir))
+  (let* ((base-dir (expand-file-name (locate-dominating-file (buffer-file-name) "mix.exs")))
+         (icons-dir (format "%s/deps/heroicons/optimized/20/solid/" base-dir))
          (option (completing-read "Select icon: " (directory-files icons-dir nil "svg")))
          (no-extension (string-replace ".svg" "" (string-trim option) )))
     (insert (format "<.icon name=\"hero-%s\" />" no-extension))))

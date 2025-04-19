@@ -76,7 +76,6 @@ brew "mise"
 brew "nerdfetch"
 brew "nmap"
 brew "ocaml"
-brew "ollama", restart_service: :changed
 brew "opam"
 brew "pandoc"
 brew "pkgconf"

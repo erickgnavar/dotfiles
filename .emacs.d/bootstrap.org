@@ -1583,6 +1583,11 @@ Note taking using ~denote~
 (use-package latex-preview-pane
   :ensure t
   :defer t)
+
+(defun my/compile-latex ()
+  "Compile latex file with tectonic."
+  (interactive)
+  (compile (format "tectonic -X compile -Z shell-escape %s" (buffer-file-name))))
 #+END_SRC
 
 * Git

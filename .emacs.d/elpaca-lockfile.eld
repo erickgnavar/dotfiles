@@ -1841,11 +1841,11 @@
 			       :build (:not elpaca--compile-info)
 			       :source #2# :protocol https :inherit t
 			       :depth treeless :ref
-			       "2f6a19b9723c12bfc5e2fdb2a495d93933829213"))
+			       "1d299d7e3dde8a59b9f199d435ac92c16b7719e1"))
  (elpaca :source
    #1# :recipe
    (:source nil :protocol https :inherit ignore :depth 1 :repo
 	    "https://github.com/progfolio/elpaca.git" :ref
-	    "2f6a19b9723c12bfc5e2fdb2a495d93933829213" :files
+	    "1d299d7e3dde8a59b9f199d435ac92c16b7719e1" :files
 	    (:defaults "elpaca-test.el" (:exclude "extensions"))
 	    :build (:not elpaca--activate-package) :package "elpaca")))

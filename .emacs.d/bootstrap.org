@@ -1477,6 +1477,10 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
   (advice-add 'org-edit-special :before 'my/org-edit-special)
   (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)
 
+  ;; setup python executable, it can be installed from homebrew, nix
+  ;; or in another way
+  (setq org-babel-python-command (executable-find "python3"))
+
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((python . t)
                                  (shell . t)

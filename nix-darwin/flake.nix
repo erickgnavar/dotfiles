@@ -37,6 +37,8 @@
           biome
           bat
           mise
+          # LSP for elixir
+          lexical
           tealdeer
           nerdfetch
           fastfetch

@@ -519,7 +519,7 @@
 				    "*-pkg.el"))
 			 :source #2# :protocol https :inherit t :depth
 			 treeless :ref
-			 "b877f47eb9da608a40cc1bc25826d2176494bf6d"))
+			 "970acdac865d5b6ee8541b82a413f3a107b9332e"))
  (flymake-shellcheck :source #1# :recipe
 		     (:package "flymake-shellcheck" :repo
 			       "federicotdn/flymake-shellcheck"

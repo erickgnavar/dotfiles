@@ -469,22 +469,6 @@
 		     :source #2# :protocol https :inherit t :depth
 		     treeless :ref
 		     "2fb4de84f81ac822923ddc60eaccc4a938c9dfdc"))
- (heex-ts-mode :source #1# :recipe
-	       (:package "heex-ts-mode" :repo
-			 "wkirschbaum/heex-ts-mode" :fetcher github
-			 :files
-			 ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			  "*.texinfo" "doc/dir" "doc/*.info"
-			  "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			  "docs/dir" "docs/*.info" "docs/*.texi"
-			  "docs/*.texinfo"
-			  (:exclude ".dir-locals.el" "test.el"
-				    "tests.el" "*-test.el"
-				    "*-tests.el" "LICENSE" "README*"
-				    "*-pkg.el"))
-			 :source #2# :protocol https :inherit t :depth
-			 treeless :ref
-			 "dafed72c254c226cdd28528ac70965ef8efa04ca"))
  (erlang-ts-mode :source #1# :recipe
 		 (:source #2# :protocol https :inherit t :depth
 			  treeless :host github :repo

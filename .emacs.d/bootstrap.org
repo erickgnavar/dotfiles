@@ -2653,13 +2653,20 @@ rustup component add rust-src
   (reformatter-define rust-format
     :program "rustfmt"))
 
+(defun my/rust-format-buffer ()
+  "Format rust buffer with LSP or fallback with rust fmt."
+  (interactive)
+  (if (and (featurep 'eglot) (eglot-managed-p))
+      (eglot-format-buffer)
+    (rust-format-buffer)))
+
 (use-package rust-ts-mode
   :ensure nil
   :mode "\\.rs\\'"
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Rust Commands"))
    ("Format"
-    (("f" rust-format-buffer)))))
+    (("f" my/rust-format-buffer)))))
 #+END_SRC
 
 #+begin_src emacs-lisp

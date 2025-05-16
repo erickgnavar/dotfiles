@@ -504,23 +504,6 @@
 			 :source #2# :protocol https :inherit t :depth
 			 treeless :ref
 			 "970acdac865d5b6ee8541b82a413f3a107b9332e"))
- (flymake-shellcheck :source #1# :recipe
-		     (:package "flymake-shellcheck" :repo
-			       "federicotdn/flymake-shellcheck"
-			       :fetcher github :files
-			       ("*.el" "*.el.in" "dir" "*.info"
-				"*.texi" "*.texinfo" "doc/dir"
-				"doc/*.info" "doc/*.texi"
-				"doc/*.texinfo" "lisp/*.el" "docs/dir"
-				"docs/*.info" "docs/*.texi"
-				"docs/*.texinfo"
-				(:exclude ".dir-locals.el" "test.el"
-					  "tests.el" "*-test.el"
-					  "*-tests.el" "LICENSE"
-					  "README*" "*-pkg.el"))
-			       :source #2# :protocol https :inherit t
-			       :depth treeless :ref
-			       "d55666f55e126f0e861f7e886202c17c6a1cf8f3"))
  (eldoc-box :source #1# :recipe
 	    (:package "eldoc-box" :repo "casouri/eldoc-box" :fetcher
 		      github :files

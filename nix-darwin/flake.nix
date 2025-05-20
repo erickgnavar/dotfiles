@@ -51,7 +51,7 @@
           shfmt
           (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
           ripgrep
-          docker
+          docker-client
           colima
           wakatime-cli
           uv

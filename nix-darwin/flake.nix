@@ -2,9 +2,9 @@
   description = "Darwin system flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.05-darwin";
 
-    nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+    nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -16,7 +16,7 @@
 
         fonts.packages = with pkgs; [
           jetbrains-mono
-          nerdfonts
+          nerd-fonts.jetbrains-mono
           open-dyslexic
         ];
         # List packages installed in system profile. To search by name, run:
@@ -44,8 +44,7 @@
           fastfetch
           fzf
           tmux
-          macvim
-          emacs30
+          emacs
           nixpkgs-fmt
           nixd
           shfmt
@@ -85,6 +84,7 @@
             "openssl@3"
           ];
           casks = [
+            "macvim"
             "homerow"
             "hammerspoon"
             "espanso"
@@ -92,6 +92,9 @@
             "spotify"
           ];
         };
+
+        # we need to specify primary user since nix-darwin 25.05
+        system.primaryUser = "erick";
 
         # all available options are defined here https://daiderd.com/nix-darwin/manual/index.html
         system = {
@@ -104,8 +107,8 @@
               "/System/Cryptexes/App/System/Applications/Safari.app"
               "/System/Applications/Messages.app"
               "/System/Applications/Notes.app"
-              "${pkgs.macvim}/Applications/MacVim.app"
-              "${pkgs.emacs30}/Applications/Emacs.app"
+              "/Applications/MacVim.app"
+              "${pkgs.emacs}/Applications/Emacs.app"
             ];
             finder.AppleShowAllExtensions = true;
             NSGlobalDomain.KeyRepeat = 2;
@@ -145,7 +148,6 @@
           '';
 
         # Auto upgrade nix package and the daemon service.
-        services.nix-daemon.enable = true;
         # nix.package = pkgs.nix;
 
         # Necessary for using flakes on this system.

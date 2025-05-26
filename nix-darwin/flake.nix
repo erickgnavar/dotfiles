@@ -119,6 +119,10 @@
             # zoom, this requires to have "Full disk access" in the
             # program which run nix-darwin command
             universalaccess.closeViewScrollWheelToggle = true;
+            trackpad = {
+              Clicking = true;
+              TrackpadRightClick = true;
+            };
           };
           keyboard = {
             enableKeyMapping = true;

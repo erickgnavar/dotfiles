@@ -73,6 +73,9 @@
 
         homebrew = {
           enable = true;
+          # when removing a brew application from this file it should
+          # deleted from system as well
+          onActivation.cleanup = "uninstall";
           brews = [
             # libvterm is not available in nix for aarch64 so we
             # install it from homebrew

@@ -709,7 +709,7 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
   (evil-define-key nil 'global (kbd "<leader>N") 'my/toggle-narrowing)
   (evil-define-key nil 'global (kbd "<leader>pa") 'my/copy-abs-path)
   (evil-define-key nil 'global (kbd "<leader>pr") 'my/copy-relative-path)
-  (evil-define-key nil 'global (kbd "<leader>q") 'consult-line)
+  (evil-define-key nil 'global (kbd "<leader>q") 'my/consult-line)
   (evil-define-key nil 'global (kbd "<leader>r") 'my/replace-at-point-or-region)
   (evil-define-key nil 'global (kbd "<leader>R") '(lambda ()
                                                     (interactive)
@@ -1196,6 +1196,18 @@ Search into project source
   ;; Use consult for completion inside minibuffer, for example when
   ;; searching for a file.
   (setq completion-in-region-function #'consult-completion-in-region))
+#+end_src
+
+Custom ~consult-line~
+
+#+begin_src emacs-lisp
+(defun my/consult-line ()
+  "Call `consult-line' with current selection if possible."
+  (interactive)
+  (if (region-active-p)
+      (let ((text (buffer-substring-no-properties (region-beginning) (region-end))))
+        (minibuffer-with-setup-hook #'(lambda () (insert text)) (consult-line)))
+    (consult-line)))
 #+end_src
 
 Integration with yasnippets

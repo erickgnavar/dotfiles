@@ -87,7 +87,8 @@
             "openssl@3"
           ];
           casks = [
-            "macvim"
+            "macvim-app"
+            "emacs-app"
             "homerow"
             "hammerspoon"
             "espanso"

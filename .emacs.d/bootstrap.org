@@ -2636,6 +2636,35 @@ We need to use ~--stdin-file-path a.js~ to tell ~biome~ to use ~stdin~.
   (zig-format-on-save nil))
 #+end_src
 
+** Odin
+
+To compile grammar we need to run ~M-x treesit-install-language-grammar~
+
+#+begin_src emacs-lisp
+(defun my/run-odin ()
+  "Run odin program."
+  (interactive)
+  (compile "odin run ."))
+
+(use-package odin-ts-mode
+  :ensure (:host github :repo "Sampie159/odin-ts-mode")
+  :mode "\\.odin\\'"
+  :init
+  (add-to-list 'treesit-language-source-alist '(odin "https://github.com/tree-sitter-grammars/tree-sitter-odin"))
+
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Odin Commands"))
+   ("Format"
+    (("f" eglot-format-buffer))
+    "Run"
+    (("r" my/run-odin))))
+  :config
+  ;; by default tab width is 8, that's too much space so we define 4
+  ;; only for odin buffers
+  (add-hook 'odin-ts-mode-hook #'(lambda ()
+                                   (setq-local tab-width 4))))
+#+end_src
+
 ** Rust
 
 Install rust analyzer, this should be installed when ~rustup-init~ is executed but in case is not we can execute:

@@ -420,6 +420,11 @@
 		    github :files ("go-mode.el") :source #2# :protocol
 		    https :inherit t :depth treeless :ref
 		    "602d73e22646b1b98b2eb97927fd426c0d1d2f92"))
+(odin-ts-mode :source #1# :recipeAdd commentMore actions
+	       (:source nil :protocol https :inherit t :depth treeless
+			:host github :repo "Sampie159/odin-ts-mode"
+			:package "odin-ts-mode" :ref
+			"495f425018531828a8304dc45288779e58d869ad"))
  (zig-mode :source #1# :recipe
 	   (:package "zig-mode" :repo "ziglang/zig-mode" :fetcher
 		     github :files

@@ -55,6 +55,7 @@
           wakatime-cli
           uv
           kubectl
+          kubernetes-helm
           sqlfluff
           stylua
           localsend

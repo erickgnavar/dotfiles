@@ -1585,6 +1585,24 @@ Note taking using ~denote~
   (dired-hide-details-mode t))
 #+end_src
 
+* Typst
+
+#+begin_src emacs-lisp
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"))
+#+end_src
+
+Set up LSP
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'eglot
+  (with-eval-after-load 'typst-ts-mode
+    (add-to-list 'eglot-server-programs
+                 `((typst-ts-mode) .
+                   ,(eglot-alternatives '("tinymist"
+                                          "typst-lsp"))))))
+#+end_src
+
 * Latex
 
 #+BEGIN_SRC emacs-lisp

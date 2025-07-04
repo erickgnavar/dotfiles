@@ -1629,6 +1629,14 @@
 		   :source "elpaca-menu-lock-file" :protocol https
 		   :inherit t :depth treeless :ref
 		   "1d53723e39f22ab4ab76d31f2b188a2879305092"))
+ (typst-ts-mode :source "elpaca-menu-lock-file" :recipe
+		(:package "typst-ts-mode" :repo
+			  "meow_king/typst-ts-mode" :files
+			  ("*" (:exclude ".git")) :source
+			  "NonGNU ELPA" :protocol https :inherit t
+			  :depth treeless :type git :host codeberg
+			  :ref
+			  "972dc69d6b8a3f8983f6b8000654f59c8a8d05ba"))
  (ucs-utils :source "elpaca-menu-lock-file" :recipe
 	    (:package "ucs-utils" :repo "rolandwalker/ucs-utils"
 		      :fetcher github :files

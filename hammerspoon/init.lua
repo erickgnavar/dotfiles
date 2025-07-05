@@ -25,3 +25,7 @@ end)
 hs.hotkey.bind("alt", "3", function()
   hs.application.open "Emacs.app"
 end)
+
+hs.hotkey.bind("alt", "4", function()
+  hs.application.open "Spotify.app"
+end)

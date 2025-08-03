@@ -1528,7 +1528,7 @@
 			  :inherit t :depth treeless :host github
 			  :repo "bcardoso/spaceink-theme" :package
 			  "spaceink-theme" :ref
-			  "10bf9b6b8bd811ee97883f7df75f660f596245fd"))
+			  "35f41be61fa2fb3a2922521673a2c4d6ce1586fb"))
  (spinner :source "elpaca-menu-lock-file" :recipe
 	  (:package "spinner" :repo
 		    ("https://github.com/Malabarba/spinner.el"

@@ -1097,7 +1097,7 @@
 		       :files (:defaults "data") :source
 		       "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
-		       "546ee20caf825e65da4c5435d31f13d269ed2a81"))
+		       "f3e7ba37642455e5627968b1031faeefbcac1245"))
  (nerd-icons-completion :source "elpaca-menu-lock-file" :recipe
 			(:package "nerd-icons-completion" :repo
 				  "rainstormstudio/nerd-icons-completion"

@@ -675,6 +675,9 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
   (define-key evil-normal-state-map "gf" 'my/find-file-under-cursor)
   (define-key evil-motion-state-map "gd" 'my/goto-definition-dumb-jump-fallback)
   (define-key evil-motion-state-map "gr" 'xref-find-references)
+  ;TODO: check if the frame is already open if so open a new buffer
+  ;with documentation, calling `eldoc-display-in-buffer'
+  (define-key evil-motion-state-map "gh" 'eldoc-box-help-at-point)
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (modify-syntax-entry ?_ "w")))
 
@@ -2173,7 +2176,6 @@ websockets client
   :defer t
   :ensure nil
   :bind (:map eglot-mode-map
-              ("C-c C-d" . 'eldoc-box-help-at-point)
               ("<M-return>" . 'eglot-code-actions)
               ("C-c C-s" . 'xref-find-references))
   :config

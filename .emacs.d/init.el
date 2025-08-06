@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq elpaca-lock-file (expand-file-name "elpaca-lockfile.eld" user-emacs-directory))
+(defvar elpaca-lock-file (expand-file-name "elpaca-lockfile.eld" user-emacs-directory))
 
 (defun my/elpaca-write-lock-file ()
   "Write lock file into a fixed path using `elpaca-lock-file'."

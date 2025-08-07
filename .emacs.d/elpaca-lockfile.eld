@@ -111,6 +111,27 @@
 		   :source "elpaca-menu-lock-file" :protocol https
 		   :inherit t :depth treeless :ref
 		   "d925b8c9c1c724b49d7af7806b7ec1d71209d6e3"))
+ (color-theme-sanityinc-tomorrow :source "elpaca-menu-lock-file"
+				 :recipe
+				 (:package
+				  "color-theme-sanityinc-tomorrow"
+				  :repo
+				  "purcell/color-theme-sanityinc-tomorrow"
+				  :fetcher github :files
+				  ("*.el" "*.el.in" "dir" "*.info"
+				   "*.texi" "*.texinfo" "doc/dir"
+				   "doc/*.info" "doc/*.texi"
+				   "doc/*.texinfo" "lisp/*.el"
+				   "docs/dir" "docs/*.info"
+				   "docs/*.texi" "docs/*.texinfo"
+				   (:exclude ".dir-locals.el"
+					     "test.el" "tests.el"
+					     "*-test.el" "*-tests.el"
+					     "LICENSE" "README*"
+					     "*-pkg.el"))
+				  :source "MELPA" :protocol https
+				  :inherit t :depth treeless :ref
+				  "f3a993da26b3b6f778f5943e095e8b2816a6475c"))
  (combobulate :source "elpaca-menu-lock-file" :recipe
 	      (:source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :host github :repo
@@ -346,7 +367,7 @@
    "elpaca-menu-lock-file" :recipe
    (:source nil :protocol https :inherit ignore :depth 1 :repo
 	    "https://github.com/progfolio/elpaca.git" :ref
-	    "029d4b477b13fe675b0cf41099e44b177e5760ff" :files
+	    "f0bbcec414ef7ec7b9ac7caee249dafc0b7c3fd4" :files
 	    (:defaults "elpaca-test.el" (:exclude "extensions"))
 	    :build (:not elpaca--activate-package) :package "elpaca"))
  (elpaca-use-package :source "elpaca-menu-lock-file" :recipe
@@ -360,7 +381,7 @@
 			       :source "elpaca-menu-lock-file"
 			       :protocol https :inherit t :depth
 			       treeless :ref
-			       "029d4b477b13fe675b0cf41099e44b177e5760ff"))
+			       "f0bbcec414ef7ec7b9ac7caee249dafc0b7c3fd4"))
  (emacsql :source "elpaca-menu-lock-file" :recipe
 	  (:package "emacsql" :fetcher github :repo "magit/emacsql"
 		    :files (:defaults "README.md" "sqlite") :source
@@ -1523,12 +1544,6 @@
 		:version-regexp "%v" :source "elpaca-menu-lock-file"
 		:protocol https :inherit t :depth treeless :ref
 		"c48defcf58596e035d473f3a125fdd1485593146"))
- (spaceink-theme :source "elpaca-menu-lock-file" :recipe
-		 (:source "elpaca-menu-lock-file" :protocol https
-			  :inherit t :depth treeless :host github
-			  :repo "bcardoso/spaceink-theme" :package
-			  "spaceink-theme" :ref
-			  "35f41be61fa2fb3a2922521673a2c4d6ce1586fb"))
  (spinner :source "elpaca-menu-lock-file" :recipe
 	  (:package "spinner" :repo
 		    ("https://github.com/Malabarba/spinner.el"
@@ -1633,9 +1648,9 @@
 		(:package "typst-ts-mode" :repo
 			  "meow_king/typst-ts-mode" :files
 			  ("*" (:exclude ".git")) :source
-			  "NonGNU ELPA" :protocol https :inherit t
-			  :depth treeless :type git :host codeberg
-			  :ref
+			  "elpaca-menu-lock-file" :protocol https
+			  :inherit t :depth treeless :type git :host
+			  codeberg :ref
 			  "972dc69d6b8a3f8983f6b8000654f59c8a8d05ba"))
  (ucs-utils :source "elpaca-menu-lock-file" :recipe
 	    (:package "ucs-utils" :repo "rolandwalker/ucs-utils"

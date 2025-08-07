@@ -129,8 +129,9 @@
 					     "*-test.el" "*-tests.el"
 					     "LICENSE" "README*"
 					     "*-pkg.el"))
-				  :source "MELPA" :protocol https
-				  :inherit t :depth treeless :ref
+				  :source "elpaca-menu-lock-file"
+				  :protocol https :inherit t :depth
+				  treeless :ref
 				  "f3a993da26b3b6f778f5943e095e8b2816a6475c"))
  (combobulate :source "elpaca-menu-lock-file" :recipe
 	      (:source "elpaca-menu-lock-file" :protocol https
@@ -421,18 +422,6 @@
 			  :repo "sebastiw/erlang-ts-mode" :package
 			  "erlang-ts-mode" :ref
 			  "ba5a01a2d7731a6fbf6129c6c8556fbceeb7d8a9"))
- (esup :source "elpaca-menu-lock-file" :recipe
-       (:package "esup" :fetcher github :repo "jschaf/esup" :files
-		 ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
-		  "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
-		  "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
-		  "docs/*.texinfo"
-		  (:exclude ".dir-locals.el" "test.el" "tests.el"
-			    "*-test.el" "*-tests.el" "LICENSE"
-			    "README*" "*-pkg.el"))
-		 :source "elpaca-menu-lock-file" :protocol https
-		 :inherit t :depth treeless :ref
-		 "4b49c8d599d4cc0fbf994e9e54a9c78e5ab62a5f"))
  (evil :source "elpaca-menu-lock-file" :recipe
        (:package "evil" :repo "emacs-evil/evil" :fetcher github :files
 		 (:defaults "doc/build/texinfo/evil.texi"

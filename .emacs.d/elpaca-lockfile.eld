@@ -325,19 +325,6 @@
 			  :source "elpaca-menu-lock-file" :protocol
 			  https :inherit t :depth treeless :ref
 			  "82a28d8a85277cfe453af464603ea330eae41c05"))
- (eldoc-box :source "elpaca-menu-lock-file" :recipe
-	    (:package "eldoc-box" :repo "casouri/eldoc-box" :fetcher
-		      github :files
-		      ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		       "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		       "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		       "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		       (:exclude ".dir-locals.el" "test.el" "tests.el"
-				 "*-test.el" "*-tests.el" "LICENSE"
-				 "README*" "*-pkg.el"))
-		      :source "elpaca-menu-lock-file" :protocol https
-		      :inherit t :depth treeless :ref
-		      "ebc0e2c13791f5a22cf81be050b32f0ebf726855"))
  (elisp-refs :source "elpaca-menu-lock-file" :recipe
 	     (:package "elisp-refs" :repo "Wilfred/elisp-refs"
 		       :fetcher github :files
@@ -1773,20 +1760,20 @@
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
 		  "49f09ab9b706d2312cab1199e1eeb1bcd3f27f6f"))
- (with-editor :source "elpaca-menu-lock-file" :recipe
-	      (:package "with-editor" :fetcher github :repo
-			"magit/with-editor" :files
-			("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			 "*.texinfo" "doc/dir" "doc/*.info"
-			 "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			 "docs/dir" "docs/*.info" "docs/*.texi"
-			 "docs/*.texinfo"
-			 (:exclude ".dir-locals.el" "test.el"
-				   "tests.el" "*-test.el" "*-tests.el"
-				   "LICENSE" "README*" "*-pkg.el"))
-			:source "elpaca-menu-lock-file" :protocol
-			https :inherit t :depth treeless :ref
-			"ca902ae02972bdd6919a902be2593d8cb6bd991b"))
+ (with-editor :source "elpaca-menu-lock-file"
+   :recipe
+   (:package "with-editor" :fetcher github :repo "magit/with-editor"
+	     :files
+	     ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
+	      "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
+	      "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
+	      "docs/*.texinfo"
+	      (:exclude ".dir-locals.el" "test.el" "tests.el"
+			"*-test.el" "*-tests.el" "LICENSE" "README*"
+			"*-pkg.el"))
+	     :source "elpaca-menu-lock-file" :protocol https :inherit
+	     t :depth treeless :ref
+	     "ca902ae02972bdd6919a902be2593d8cb6bd991b"))
  (writeroom-mode :source "elpaca-menu-lock-file" :recipe
 		 (:package "writeroom-mode" :fetcher github :repo
 			   "joostkremers/writeroom-mode" :files

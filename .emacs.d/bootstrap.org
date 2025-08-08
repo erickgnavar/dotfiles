@@ -675,9 +675,7 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
   (define-key evil-normal-state-map "gf" 'my/find-file-under-cursor)
   (define-key evil-motion-state-map "gd" 'my/goto-definition-dumb-jump-fallback)
   (define-key evil-motion-state-map "gr" 'xref-find-references)
-  ;TODO: check if the frame is already open if so open a new buffer
-  ;with documentation, calling `eldoc-display-in-buffer'
-  (define-key evil-motion-state-map "gh" 'eldoc-box-help-at-point)
+  (define-key evil-motion-state-map "gh" 'eldoc-doc-buffer)
   (add-hook 'prog-mode-hook #'(lambda ()
                                 (modify-syntax-entry ?_ "w")))
 
@@ -2194,16 +2192,6 @@ In case we don't have eglot running we can relay on dumb-jump
     (if (member major-mode '(emacs-lisp-mode lisp-interaction-mode))
         (xref-find-definitions (thing-at-point 'symbol))
       (dumb-jump-go))))
-#+end_src
-
-~eldoc~ improvements
-
-#+begin_src emacs-lisp
-(use-package eldoc-box
-  :ensure t
-  :custom
-  ;; remove child frame as soon as cursor moves to another position
-  (eldoc-box-cleanup-interval 0))
 #+end_src
 
 * Programming languages

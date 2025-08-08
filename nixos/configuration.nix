@@ -104,7 +104,29 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  programs.hyprland.enable = true;
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true;
+    extraPackages = with pkgs; [
+      swaylock
+      swayidle
+      waybar
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal
+    ];
+  };
+
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+  };
+
+  services.dbus.enable = true;
+
+  # Enable the gnome-keyring secrets vault.
+  # Will be exposed through DBus to programs willing to store secrets.
+  services.gnome.gnome-keyring.enable = true;
 
   virtualisation.docker.enable = true;
 
@@ -150,7 +172,6 @@
     brave
     alacritty
     tmux
-    waybar
     keyd
     emacs30-gtk3
     localsend
@@ -186,6 +207,7 @@
     go
     gopls # LSP server
     gotools # includes goimports
+    autotiling
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

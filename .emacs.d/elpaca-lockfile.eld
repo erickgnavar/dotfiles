@@ -332,19 +332,6 @@
 		       :source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
 		       "541a064c3ce27867872cf708354a65d83baf2a6d"))
- (ellama :source "elpaca-menu-lock-file" :recipe
-	 (:package "ellama" :repo "s-kostyaev/ellama" :fetcher github
-		   :files
-		   ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		    "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		    "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		    "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		    (:exclude ".dir-locals.el" "test.el" "tests.el"
-			      "*-test.el" "*-tests.el" "LICENSE"
-			      "README*" "*-pkg.el"))
-		   :source "elpaca-menu-lock-file" :protocol https
-		   :inherit t :depth treeless :ref
-		   "ed530c7f0d7d0aa9916ca73016034829731ddc54"))
  (elm-mode :source "elpaca-menu-lock-file" :recipe
 	   (:package "elm-mode" :fetcher github :repo
 		     "jcollard/elm-mode" :files (:defaults "elm.tags")
@@ -937,12 +924,6 @@
 		  "elpaca-menu-lock-file" :protocol https :inherit t
 		  :depth treeless :ref
 		  "9802c215a3eea748d9d7f81a1465850388006897"))
- (llm :source "elpaca-menu-lock-file" :recipe
-      (:package "llm" :repo ("https://github.com/ahyatt/llm" . "llm")
-		:files ("*" (:exclude ".git")) :source
-		"elpaca-menu-lock-file" :protocol https :inherit t
-		:depth treeless :ref
-		"874d76211c6933f2f5e41583a495e9b3aee51fb3"))
  (lv :source "elpaca-menu-lock-file" :recipe
      (:package "lv" :repo "abo-abo/hydra" :fetcher github :files
 	       ("lv.el") :source "elpaca-menu-lock-file" :protocol

@@ -771,44 +771,6 @@ Allow to use default terminal keybinding in ~vterm~ without losing evil features
   (evil-collection-init '(vterm)))
 #+end_src
 
-
-* IA models integration
-
-Integration with different "backends", ~ollama~, ~openai~, and so on.
-
-#+begin_src emacs-lisp
-(use-package llm
-  :ensure t)
-#+end_src
-
-UI to interact with models, relies on ~llm~
-
-#+begin_src emacs-lisp
-(use-package ellama
-  :ensure t
-  :defer t
-  :custom
-  (ellama-language "English")
-  :config
-  (with-eval-after-load 'llm-ollama
-    (setopt ellama-provider (make-llm-ollama
-                             :host "localhost"
-                             :chat-model "deepseek-r1:8b"))))
-#+end_src
-
-Custom functions to better management of models
-
-#+begin_src emacs-lisp
-(defun my/switch-ollama-provider ()
-  "Switch ollama provider by using the installed local models."
-  (interactive)
-  (let* ((raw-result (shell-command-to-string "ollama list | awk '{print $1}' | tail -n+2"))
-         (choices (string-split (string-trim raw-result) "\n"))
-         (model (completing-read "Choose model" choices)))
-    (setopt ellama-provider (make-llm-ollama :host "localhost" :chat-model model))
-    (message "Model %s configured as ollama provider." (propertize model 'face '(:foreground "magenta")))))
-#+end_src
-
 * Utils
 
 ** Which-key

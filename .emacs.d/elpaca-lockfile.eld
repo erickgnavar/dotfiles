@@ -50,18 +50,6 @@
 		:source "elpaca-menu-lock-file" :protocol https
 		:inherit t :depth treeless :ref
 		"933d1f36cca0f71e4acb5fac707e9ae26c536264"))
- (caml :source "elpaca-menu-lock-file" :recipe
-       (:package "caml" :repo "ocaml/caml-mode" :fetcher github :files
-		 ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
-		  "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
-		  "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
-		  "docs/*.texinfo"
-		  (:exclude ".dir-locals.el" "test.el" "tests.el"
-			    "*-test.el" "*-tests.el" "LICENSE"
-			    "README*" "*-pkg.el"))
-		 :source "elpaca-menu-lock-file" :protocol https
-		 :inherit t :depth treeless :ref
-		 "47defafa2b08fb680e89bfee9cb9ce82bd9e3bcf"))
  (cider :source "elpaca-menu-lock-file" :recipe
 	(:package "cider" :fetcher github :repo "clojure-emacs/cider"
 		  :files
@@ -1002,31 +990,6 @@
 		:depth treeless :host github :repo "larsmagne/meme"
 		:package "meme" :ref
 		"3850a8dfafa15b3f2f988720fcc63c5a7e507ba6"))
- (merlin :source "elpaca-menu-lock-file" :recipe
-	 (:package "merlin" :fetcher github :repo "ocaml/merlin"
-		   :files
-		   ("emacs/*.el"
-		    (:exclude "emacs/merlin-ac.el"
-			      "emacs/merlin-company.el"
-			      "emacs/merlin-iedit.el"))
-		   :source "elpaca-menu-lock-file" :protocol https
-		   :inherit t :depth treeless :ref
-		   "102eee422ce772174c71a22d97bdc7877918e509"))
- (merlin-eldoc :source "elpaca-menu-lock-file" :recipe
-	       (:package "merlin-eldoc" :fetcher github :repo
-			 "Khady/merlin-eldoc" :files
-			 ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			  "*.texinfo" "doc/dir" "doc/*.info"
-			  "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			  "docs/dir" "docs/*.info" "docs/*.texi"
-			  "docs/*.texinfo"
-			  (:exclude ".dir-locals.el" "test.el"
-				    "tests.el" "*-test.el"
-				    "*-tests.el" "LICENSE" "README*"
-				    "*-pkg.el"))
-			 :source "elpaca-menu-lock-file" :protocol
-			 https :inherit t :depth treeless :ref
-			 "bf8edc63d85b35e4def352fa7ce4ea39f43e1fd8"))
  (mermaid-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "mermaid-mode" :repo "abrochard/mermaid-mode"
 			 :fetcher github :files
@@ -1588,19 +1551,6 @@
 			   :source "elpaca-menu-lock-file" :protocol
 			   https :inherit t :depth treeless :ref
 			   "fd1598fb16fe99dc8d8245974641c3e474dc31d1"))
- (tuareg :source "elpaca-menu-lock-file" :recipe
-	 (:package "tuareg" :fetcher github :repo "ocaml/tuareg"
-		   :files
-		   ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		    "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		    "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		    "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		    (:exclude ".dir-locals.el" "test.el" "tests.el"
-			      "*-test.el" "*-tests.el" "LICENSE"
-			      "README*" "*-pkg.el"))
-		   :source "elpaca-menu-lock-file" :protocol https
-		   :inherit t :depth treeless :ref
-		   "1d53723e39f22ab4ab76d31f2b188a2879305092"))
  (typst-ts-mode :source "elpaca-menu-lock-file" :recipe
 		(:package "typst-ts-mode" :repo
 			  "meow_king/typst-ts-mode" :files

@@ -15,5 +15,8 @@
 ;; Hide toolbar
 (tool-bar-mode -1)
 
+;; Set transparency
+(set-frame-parameter nil 'alpha 95)
+
 (provide 'early-init)
 ;;; early-init.el ends here

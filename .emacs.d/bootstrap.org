@@ -2136,10 +2136,7 @@ websockets client
                '(((heex-ts-mode :language-id "html")
                   (web-mode :language-id "html")) . ("tailwindcss-language-server" "--stdio")))
   ;; elixir LSP server
-  ;; we first look up for a lexical binary, this will be in the case
-  ;; we're using nix, otherwise we relay on a cloned repository which
-  ;; previously was compiled
-  (setf (alist-get 'elixir-ts-mode eglot-server-programs) `(,(if (executable-find "lexical") "lexical" (expand-file-name "~/Code/oss/lexical/release/bin/start_lexical.sh")))))
+  (setf (alist-get '(elixir-ts-mode heex-ts-mode) eglot-server-programs) '("expert")))
 #+end_src
 
 In case we don't have eglot running we can relay on dumb-jump
@@ -2300,18 +2297,18 @@ Show a list of the available django commands and run the selected one using a co
 
 *** LSP server building
 
-To have support for LSP we need to compile [[https://github.com/lexical-lsp/lexical][lexical]] and setup the generated release into ~eglot-server-programs~. lexical must use minimal versions so it can be used by more types of projects, recommended versions are:
+To have support for LSP we need to compile [[https://github.com/elixir-lang/expert][expert]] and setup the generated release into ~eglot-server-programs~.
 
-#+begin_src emacs-lisp :tangle no
-elixir: 1.13.4-otp-24
-erlang: 24.3.4.12
+Recommended versions(using ~mise~) for compiling ~expert~:
+
+#+begin_src toml :tangle no
+[tools]
+elixir = "1.17.3-otp-27"
+erlang = "27.3.4.2"
+zig = "0.14.1"
 #+end_src
 
-Prepare release of ~lexical~
-
-#+begin_src shell
-MIX_ENV=prod mix package --path release
-#+end_src
+Install with ~just install~
 
 *** Compilation integration
 

@@ -475,14 +475,6 @@
 	      :source "elpaca-menu-lock-file" :protocol https :inherit
 	      t :depth treeless :ref
 	      "931b6d0667fe03e7bf1c6c282d6d8d7006143c52"))
- (feature-mode :source "elpaca-menu-lock-file" :recipe
-	       (:package "feature-mode" :repo
-			 "michaelklishin/cucumber.el" :fetcher github
-			 :files
-			 ("*.el" "i18n.yml" "snippets" "support")
-			 :source "elpaca-menu-lock-file" :protocol
-			 https :inherit t :depth treeless :ref
-			 "afd49b8a8504e5874027fc0a46283adb1fea26c0"))
  (flutter :source "elpaca-menu-lock-file" :recipe
 	  (:package "flutter" :repo "amake/flutter.el" :fetcher github
 		    :files

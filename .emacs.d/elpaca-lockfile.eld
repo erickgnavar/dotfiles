@@ -844,6 +844,21 @@
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
 		    "f200035b847d6dd10bd7987f4540cff9edd3b881"))
+ (just-ts-mode :source "elpaca-menu-lock-file" :recipe
+	       (:package "just-ts-mode" :fetcher github :repo
+			 "leon-barrett/just-ts-mode.el" :files
+			 ("*.el" "*.el.in" "dir" "*.info" "*.texi"
+			  "*.texinfo" "doc/dir" "doc/*.info"
+			  "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
+			  "docs/dir" "docs/*.info" "docs/*.texi"
+			  "docs/*.texinfo"
+			  (:exclude ".dir-locals.el" "test.el"
+				    "tests.el" "*-test.el"
+				    "*-tests.el" "LICENSE" "README*"
+				    "*-pkg.el"))
+			 :source "MELPA" :protocol https :inherit t
+			 :depth treeless :ref
+			 "f4fb841f93222fcefccabd641281553b4c8d9d6e"))
  (know-your-http-well :source "elpaca-menu-lock-file" :recipe
 		      (:package "know-your-http-well" :fetcher github
 				:repo "for-GET/know-your-http-well"

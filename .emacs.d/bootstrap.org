@@ -1551,8 +1551,18 @@ Note taking using ~denote~
 * Typst
 
 #+begin_src emacs-lisp
+(defun my/typst-compile-and-preview ()
+  "Compile and preview PDF for the current buffer."
+  (interactive)
+  (typst-ts-compile t))
+
 (use-package typst-ts-mode
-  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode"))
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode")
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Typst Commands"))
+   ("Build"
+    (("b" typst-ts-compile "Compile")
+     ("p" my/typst-compile-and-preview "Compile and preview")))))
 #+end_src
 
 Set up LSP

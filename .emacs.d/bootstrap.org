@@ -1550,6 +1550,13 @@ Note taking using ~denote~
 
 * Typst
 
+Define formatter helpers using ~typstyle~
+
+#+begin_src emacs-lisp
+(reformatter-define typst-format
+  :program "typstyle")
+#+end_src
+
 #+begin_src emacs-lisp
 (defun my/typst-compile-and-preview ()
   "Compile and preview PDF for the current buffer."
@@ -1562,7 +1569,9 @@ Note taking using ~denote~
   ((:title (concat (nerd-icons-icon-for-buffer) " Typst Commands"))
    ("Build"
     (("b" typst-ts-compile "Compile")
-     ("p" my/typst-compile-and-preview "Compile and preview")))))
+     ("p" my/typst-compile-and-preview "Compile and preview"))
+    "Format"
+    (("f" typst-format-buffer "Format")))))
 #+end_src
 
 Set up LSP

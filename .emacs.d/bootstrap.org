@@ -2145,6 +2145,10 @@ websockets client
               ("<M-return>" . 'eglot-code-actions)
               ("C-c C-s" . 'xref-find-references))
   :config
+  ;; only for new(emacs 31 or above) versions of eglot, avoid an error
+  ;; where when cursor is at an error it increase its line height a
+  ;; little bit
+  (setq eglot-code-action-indicator "")
   ;; tailwind LSP support
   (add-to-list 'eglot-server-programs
                '(((heex-ts-mode :language-id "html")

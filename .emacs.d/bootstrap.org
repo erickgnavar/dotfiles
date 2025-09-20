@@ -1695,6 +1695,9 @@ Use ~delta~ tool to show diffs in magit
               (rev-url (pr-review-url-parse url)))
         (pr-review url)
       (user-error "No PR to review at point")))
+
+  (add-hook 'pr-review-input-mode-hook #'flymake-mode-off)
+
   (with-eval-after-load 'magit
     (transient-append-suffix 'forge-dispatch '(-1 -1 -1)
       '("R" "Review pull request" my/review-pr-at-point))))

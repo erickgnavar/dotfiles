@@ -915,16 +915,8 @@ Only activate =flymake= for actual projects and for =prog-mode=
 
 (with-eval-after-load "flymake"
   (setq flymake-show-diagnostics-at-end-of-line nil)
-  ;; we need to avoid a direct call to `flymake-goto-prev-error' and
-  ;; `flymake-goto-prev-error' to pass `interactive' value as `nil' so
-  ;; the diagnostic won't be shown in minibuffer, which is the default
-  ;; behaviour
-  (define-key flymake-mode-map (kbd "M-n") #'(lambda ()
-                                               (interactive)
-                                               (flymake-goto-next-error 1 nil nil)))
-  (define-key flymake-mode-map (kbd "M-p") #'(lambda ()
-                                               (interactive)
-                                               (flymake-goto-prev-error 1 nil nil))))
+  (define-key flymake-mode-map (kbd "C-S-n") 'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd "C-S-p") 'flymake-goto-prev-error))
 #+end_src
 
 ** Mise

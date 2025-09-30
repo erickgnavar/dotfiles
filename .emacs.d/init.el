@@ -74,6 +74,9 @@
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "~/.emacs.d/bootstrap.org"))
 
+;; custom code that will be unique per machine
+(defconst local-config-file (expand-file-name "local.el" user-emacs-directory))
+(load local-config-file :noerror)
 
 (provide 'init.el)
 ;;; init.el ends here

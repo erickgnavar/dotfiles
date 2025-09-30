@@ -30,14 +30,6 @@
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
 		  "b99658e831bc7e7d20ed4bb0a85bdb5c7dd74142"))
- (auctex :source "elpaca-menu-lock-file" :recipe
-	 (:package "auctex" :repo
-		   ("https://git.savannah.gnu.org/git/auctex.git"
-		    . "auctex")
-		   :branch "main" :files ("*" (:exclude ".git"))
-		   :source "elpaca-menu-lock-file" :protocol https
-		   :inherit t :depth treeless :ref
-		   "2b2b91de473c1501692652c7e9a802f103b82ab7"))
  (avy :source "elpaca-menu-lock-file" :recipe
       (:package "avy" :repo "abo-abo/avy" :fetcher github :files
 		("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
@@ -858,13 +850,6 @@
 				"elpaca-menu-lock-file" :protocol
 				https :inherit t :depth treeless :ref
 				"c916e825b0c75c2f2b6ff5ba79c981cff7de5797"))
- (latex-preview-pane :source "elpaca-menu-lock-file" :recipe
-		     (:package "latex-preview-pane" :fetcher github
-			       :repo "jsinglet/latex-preview-pane"
-			       :files ("*.el" "*.txt") :source
-			       "elpaca-menu-lock-file" :protocol https
-			       :inherit t :depth treeless :ref
-			       "5297668a89996b50b2b62f99cba01cc544dbed2e"))
  (lfe-mode :source "elpaca-menu-lock-file" :recipe
 	   (:package "lfe-mode" :fetcher github :repo "rvirding/lfe"
 		     :files

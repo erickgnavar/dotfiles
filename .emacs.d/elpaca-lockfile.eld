@@ -1311,11 +1311,11 @@
 	     :protocol https :inherit t :depth treeless :ref
 	     "01e338c335c07e4407239619e57361944a82cb8a"))
  (restclient :source "elpaca-menu-lock-file" :recipe
-	     (:package "restclient" :repo "pashky/restclient.el"
+	     (:package "restclient" :repo "emacsorphanage/restclient"
 		       :fetcher github :files ("restclient.el")
 		       :source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
-		       "e2a2b13482d72634f8e49864cd9e5c907a5fe137"))
+		       "757d82eacb997f82c84c4e6eea08a338b0b6afa8"))
  (s :source "elpaca-menu-lock-file" :recipe
     (:package "s" :fetcher github :repo "magnars/s.el" :files
 	      ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"

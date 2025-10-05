@@ -793,6 +793,14 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
 ** Restclient
 
 #+BEGIN_SRC emacs-lisp
+(defun my/toggle-restclient-follow-redirect ()
+  "Toggle follow redirect for the current session."
+  (interactive)
+  (setopt restclient-follow-redirects (not restclient-follow-redirects))
+  (if restclient-follow-redirects
+      (message "Follow redirect enabled")
+    (message "Follow redirect disabled")))
+
 (use-package restclient
   :ensure t
   :defer t
@@ -803,6 +811,8 @@ Enable it globally and disable it just for ~org-mode~ to avoid having a conflict
    ("Format"
     ;; TODO: change to only apply json formatting when the content-type is application/json
     (("f" jsonian-format-region))
+    "Customization"
+    (("SPC" my/toggle-restclient-follow-redirect "Toggle follow redirect"))
     "Secrets"
     (("h" cloak-mode "Toggle cloak" :toggle t))
     "Request"

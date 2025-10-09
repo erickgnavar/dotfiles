@@ -2558,6 +2558,30 @@ Define formatter using [[https://github.com/JohnnyMorganz/StyLua][StyLua]]
     :group 'lua))
 #+end_src
 
+** Java
+
+#+begin_src emacs-lisp
+(use-package java-ts-mode
+  :ensure nil
+  :defer t
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Java commands"))
+   ("Format"
+    (("f" eglot-format-buffer))
+    "Testing"
+    (("t" eglot-java-run-test))))
+  :config
+  (add-hook 'java-ts-mode-hook #'(lambda ()
+                                   (setq-local tab-width 4))))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package eglot-java
+  :ensure t
+  :defer t
+  :hook (java-ts-mode . eglot-java-mode))
+#+end_src
+
 ** Javascript
 
 Linter using [[https://biomejs.dev][biome]]

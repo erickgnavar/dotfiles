@@ -316,8 +316,8 @@
 			(:exclude ".dir-locals.el" "test.el"
 				  "tests.el" "*-test.el" "*-tests.el"
 				  "LICENSE" "README*" "*-pkg.el"))
-		       :source "MELPA" :protocol https :inherit t
-		       :depth treeless :ref
+		       :source "elpaca-menu-lock-file" :protocol https
+		       :inherit t :depth treeless :ref
 		       "b42b5190f3f59976d330fcec5fd27fc8e2701336"))
  (elisp-refs :source "elpaca-menu-lock-file" :recipe
 	     (:package "elisp-refs" :repo "Wilfred/elisp-refs"
@@ -1121,6 +1121,19 @@
 			   :source "elpaca-menu-lock-file" :protocol
 			   https :inherit t :depth treeless :ref
 			   "e2599a106a26ce5511095e23df4ea04be6687a8a"))
+ (ox-typst :source "elpaca-menu-lock-file" :recipe
+	   (:package "ox-typst" :fetcher github :repo
+		     "jmpunkt/ox-typst" :files
+		     ("*.el" "*.el.in" "dir" "*.info" "*.texi"
+		      "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
+		      "doc/*.texinfo" "lisp/*.el" "docs/dir"
+		      "docs/*.info" "docs/*.texi" "docs/*.texinfo"
+		      (:exclude ".dir-locals.el" "test.el" "tests.el"
+				"*-test.el" "*-tests.el" "LICENSE"
+				"README*" "*-pkg.el"))
+		     :source "MELPA" :protocol https :inherit t :depth
+		     treeless :ref
+		     "cc7e9665d4eabe0a8e0251408392f9578c7b1dac"))
  (package-lint :source "elpaca-menu-lock-file" :recipe
 	       (:package "package-lint" :fetcher github :repo
 			 "purcell/package-lint" :files

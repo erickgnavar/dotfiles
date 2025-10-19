@@ -2699,13 +2699,28 @@ rustup component add rust-src
       (eglot-format-buffer)
     (rust-format-buffer)))
 
+(defun my/rust-cargo-build ()
+  "Build current project."
+  (interactive)
+  (let ((default-directory (my/project-root)))
+    (compile "cargo build")))
+
+(defun my/rust-cargo-run ()
+  "Run current project."
+  (interactive)
+  (let ((default-directory (my/project-root)))
+    (compile "cargo run")))
+
 (use-package rust-ts-mode
   :ensure nil
   :mode "\\.rs\\'"
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Rust Commands"))
    ("Format"
-    (("f" my/rust-format-buffer)))))
+    (("f" my/rust-format-buffer))
+    "Cargo"
+    (("b" my/rust-cargo-build)
+     ("r" my/rust-cargo-run)))))
 #+END_SRC
 
 #+begin_src emacs-lisp

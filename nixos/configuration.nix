@@ -162,6 +162,8 @@
     swaylock-effects
     nerdfetch
     fastfetch
+    # image annotation tool
+    satty
     hyprshot
     swappy
     grim

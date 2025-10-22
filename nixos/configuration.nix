@@ -74,9 +74,7 @@
 
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.sddm.enable = true;
-
-  hardware.pulseaudio.enable = false;
-
+  services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -98,7 +96,7 @@
 
   fonts.packages = with pkgs; [
     jetbrains-mono
-    nerdfonts
+    nerd-fonts.jetbrains-mono
   ];
 
   # Allow unfree packages

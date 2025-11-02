@@ -107,6 +107,7 @@
             dock.autohide = true;
             # Don't arrange spaces based on most recent use
             dock.mru-spaces = false;
+            dock.orientation = "left";
             dock.persistent-apps = [
               "/System/Applications/Mail.app"
               "/System/Cryptexes/App/System/Applications/Safari.app"

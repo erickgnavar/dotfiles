@@ -136,6 +136,30 @@
           };
         };
 
+        system.defaults.CustomUserPreferences = {
+          "com.apple.finder" = {
+            ShowExternalHardDrivesOnDesktop = true;
+            ShowHardDrivesOnDesktop = true;
+            ShowMountedServersOnDesktop = true;
+            ShowRemovableMediaOnDesktop = true;
+            # When performing a search, search the current folder by default
+            FXDefaultSearchScope = "SCcf";
+            DisableAllAnimations = true;
+            NewWindowTarget = "PfHm";
+            NewWindowTargetPath = "file://$\{HOME\}/";
+            AppleShowAllExtensions = true;
+            FXEnableExtensionChangeWarning = false;
+            ShowStatusBar = true;
+            ShowPathbar = true;
+            WarnOnEmptyTrash = false;
+          };
+          "com.apple.Safari" = {
+            # Privacy: don’t send search queries to Apple
+            UniversalSearchEnabled = false;
+            SuppressSearchSuggestions = true;
+          };
+        };
+
         # link nix-apps into /Applications to be indexed by spotlight
         system.activationScripts.applications.text =
           let

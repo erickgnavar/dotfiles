@@ -37,6 +37,10 @@
           biome
           bat
           mise
+          typst
+          typstyle
+          # LSP for typst
+          tinymist
           # LSP for elixir
           lexical
           tealdeer

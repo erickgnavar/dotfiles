@@ -134,6 +134,8 @@
               Clicking = true;
               TrackpadRightClick = true;
             };
+            controlcenter.Sound = true;
+            controlcenter.Bluetooth = true;
           };
           keyboard = {
             enableKeyMapping = true;

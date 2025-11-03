@@ -93,7 +93,6 @@
           ];
           casks = [
             "macvim-app"
-            "emacs-app"
             "homerow"
             "hammerspoon"
             "espanso"

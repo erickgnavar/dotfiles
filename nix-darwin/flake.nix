@@ -16,6 +16,8 @@
 
         fonts.packages = with pkgs; [
           jetbrains-mono
+          # this is required to show symbols properly
+          nerd-fonts.symbols-only
           nerd-fonts.jetbrains-mono
           open-dyslexic
         ];

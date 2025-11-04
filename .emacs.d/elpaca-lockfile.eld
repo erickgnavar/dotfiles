@@ -994,7 +994,7 @@
 			    "README*" "*-pkg.el"))
 		 :source "elpaca-menu-lock-file" :protocol https
 		 :inherit t :depth treeless :ref
-		 "97d244417d28605306f3a98eac0b67564677f277"))
+		 "60ef63466d07417a9ef956af363baae39c9ddf34"))
  (multiple-cursors :source "elpaca-menu-lock-file" :recipe
 		   (:package "multiple-cursors" :fetcher github :repo
 			     "magnars/multiple-cursors.el" :files

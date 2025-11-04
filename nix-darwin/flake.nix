@@ -125,6 +125,8 @@
             finder.AppleShowAllExtensions = true;
             NSGlobalDomain.KeyRepeat = 2;
             NSGlobalDomain.AppleInterfaceStyle = "Dark";
+            # use fn to access to media keys
+            NSGlobalDomain."com.apple.keyboard.fnState" = true;
             # disable natural scrolling
             NSGlobalDomain."com.apple.swipescrolldirection" = false;
             # Use scroll gesture with the Ctrl (^) modifier key to

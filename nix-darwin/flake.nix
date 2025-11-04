@@ -2,9 +2,9 @@
   description = "Darwin system flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.05-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -113,6 +113,7 @@
             # Don't arrange spaces based on most recent use
             dock.mru-spaces = false;
             dock.orientation = "left";
+            dock.showAppExposeGestureEnabled = true;
             dock.persistent-apps = [
               "/System/Applications/Mail.app"
               "/System/Cryptexes/App/System/Applications/Safari.app"
@@ -133,6 +134,7 @@
             trackpad = {
               Clicking = true;
               TrackpadRightClick = true;
+              TrackpadThreeFingerVertSwipeGesture = 2;
             };
             controlcenter.Sound = true;
             controlcenter.Bluetooth = true;

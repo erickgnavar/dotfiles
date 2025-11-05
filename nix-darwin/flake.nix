@@ -101,6 +101,17 @@
             "krisp"
             "spotify"
           ];
+          masApps = {
+            "Amphetamine" = 937984704;
+            "Tailscale" = 1475387142;
+            "The Unarchiver" = 425424353;
+            "Keynote" = 409183694;
+            "Numbers" = 409203825;
+            "Pages" = 409201541;
+            "Hidden Bar" = 1452453066;
+            "Pixelmator Pro" = 1289583905;
+            "Things 3" = 904280696;
+          };
         };
 
         # we need to specify primary user since nix-darwin 25.05

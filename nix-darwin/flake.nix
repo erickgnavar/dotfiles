@@ -100,6 +100,15 @@
             "espanso"
             "krisp"
             "spotify"
+            "alfred"
+            "1password@7"
+            "obs"
+            "claude"
+            "telegram"
+            "firefox"
+            "google-chrome"
+            "vlc"
+            "utm"
           ];
           masApps = {
             "Amphetamine" = 937984704;

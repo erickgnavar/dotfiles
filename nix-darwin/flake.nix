@@ -43,8 +43,6 @@
           typstyle
           # LSP for typst
           tinymist
-          # LSP for elixir
-          lexical
           tealdeer
           nerdfetch
           fastfetch

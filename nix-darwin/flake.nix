@@ -29,6 +29,7 @@
           git
           # cmake and glibtool are required to compile libvterm in emacs
           cmake
+          just
           glibtool
           alacritty
           eza
@@ -39,6 +40,7 @@
           biome
           bat
           mise
+          xz
           typst
           typstyle
           # LSP for typst

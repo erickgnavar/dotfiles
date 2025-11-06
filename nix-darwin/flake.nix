@@ -109,6 +109,7 @@
             "google-chrome"
             "vlc"
             "utm"
+            "postgres-unofficial"
           ];
           masApps = {
             "Amphetamine" = 937984704;

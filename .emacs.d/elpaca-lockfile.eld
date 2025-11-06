@@ -1503,7 +1503,7 @@
 		    (:defaults "extensions/vertico-*.el") :fetcher
 		    github :source "elpaca-menu-lock-file" :protocol
 		    https :inherit t :depth treeless :ref
-		    "e69ef62ffa4bc42dd42437881c251ecdcae0e0c5"))
+		    "17c629087ea23466b10fd0dd4ecce53e17a810e3"))
  (vertico-posframe :source "elpaca-menu-lock-file" :recipe
 		   (:package "vertico-posframe" :repo
 			     ("https://github.com/tumashu/vertico-posframe"
@@ -1511,7 +1511,7 @@
 			     :files ("*" (:exclude ".git")) :source
 			     "elpaca-menu-lock-file" :protocol https
 			     :inherit t :depth treeless :ref
-			     "cfce055fadf1e96e729d90f86d921bdb6092eba5"))
+			     "d89a70743cfd95b7fcda621679b7555bbef51acb"))
  (visual-fill-column :source "elpaca-menu-lock-file" :recipe
 		     (:package "visual-fill-column" :fetcher codeberg
 			       :repo "joostkremers/visual-fill-column"

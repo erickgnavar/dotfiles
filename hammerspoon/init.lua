@@ -23,7 +23,16 @@ hs.hotkey.bind("alt", "2", function()
 end)
 
 hs.hotkey.bind("alt", "3", function()
-  hs.application.open "Emacs.app"
+  app = hs.application.find "Emacs"
+
+  if app then
+    app:activate()
+  else
+    -- we need to execute Emacs this way to be able to use mise
+    -- properly, otherwise we can't execute stuff like, mix, elixir
+    -- and so on
+    os.execute "/bin/zsh -l -c 'emacs > /dev/null 2>&1 & diwown'"
+  end
 end)
 
 hs.hotkey.bind("alt", "4", function()

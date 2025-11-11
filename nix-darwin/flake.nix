@@ -146,6 +146,7 @@
               "${pkgs.emacs}/Applications/Emacs.app"
             ];
             finder.AppleShowAllExtensions = true;
+            NSGlobalDomain.InitialKeyRepeat = 14;
             NSGlobalDomain.KeyRepeat = 2;
             NSGlobalDomain.AppleInterfaceStyle = "Dark";
             # use fn to access to media keys

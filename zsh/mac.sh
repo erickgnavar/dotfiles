@@ -48,7 +48,7 @@ function homebrew-dump {
 function nixdarwnin_run_install {
   cd ~/dotfiles/nix-darwin/ || exit 1
   mkdir -p ~/.config/nix-darwin/
-  cp flake.nix ~/.config/nix-darwin/
+  cp *.nix ~/.config/nix-darwin/
   cp flake.lock ~/.config/nix-darwin/
   sudo darwin-rebuild switch --flake ~/.config/nix-darwin#simple
   # now we copy lock file back to dotfiles

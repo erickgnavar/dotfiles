@@ -110,6 +110,7 @@
             "vlc"
             "utm"
             "postgres-unofficial"
+            "brave-browser"
           ];
           masApps = {
             "Amphetamine" = 937984704;

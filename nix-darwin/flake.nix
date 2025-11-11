@@ -191,6 +191,10 @@
             UniversalSearchEnabled = false;
             SuppressSearchSuggestions = true;
           };
+          "com.apple.print.PrintingPrefs" = {
+            # Automatically quit printer app once the print jobs complete
+            "Quit When Finished" = true;
+          };
         };
 
         # link nix-apps into /Applications to be indexed by spotlight

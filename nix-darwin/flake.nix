@@ -192,6 +192,10 @@
             # Privacy: don’t send search queries to Apple
             UniversalSearchEnabled = false;
             SuppressSearchSuggestions = true;
+            # Prevent Safari from opening ‘safe’ files automatically after downloading
+            AutoOpenSafeDownloads = false;
+            AutoFillFromAddressBook = false;
+            AutoFillCreditCardData = false;
           };
           "com.apple.print.PrintingPrefs" = {
             # Automatically quit printer app once the print jobs complete

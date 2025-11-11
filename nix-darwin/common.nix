@@ -85,6 +85,7 @@
       "macvim-app"
       "hammerspoon"
       "espanso"
+      "homerow"
     ];
     masApps = {
       "Amphetamine" = 937984704;
@@ -104,14 +105,6 @@
       dock.mru-spaces = false;
       dock.orientation = "left";
       dock.showAppExposeGestureEnabled = true;
-      dock.persistent-apps = [
-        "/System/Applications/Mail.app"
-        "/System/Cryptexes/App/System/Applications/Safari.app"
-        "/System/Applications/Messages.app"
-        "/System/Applications/Notes.app"
-        "/Applications/MacVim.app"
-        "${pkgs.emacs}/Applications/Emacs.app"
-      ];
       finder.AppleShowAllExtensions = true;
       NSGlobalDomain.InitialKeyRepeat = 14;
       NSGlobalDomain.KeyRepeat = 2;

@@ -1,7 +1,6 @@
 { pkgs, config, ... }: {
   homebrew = {
     casks = [
-      "homerow"
       "krisp"
       "spotify"
       "alfred"

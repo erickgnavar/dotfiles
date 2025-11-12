@@ -52,7 +52,6 @@
     kubernetes-helm
     sqlfluff
     stylua
-    localsend
     defaultbrowser
     xmlformat
     yamllint
@@ -86,6 +85,7 @@
       "hammerspoon"
       "espanso"
       "homerow"
+      "localsend"
     ];
     masApps = {
       "Amphetamine" = 937984704;

@@ -2170,6 +2170,22 @@ In case we don't have eglot running we can relay on dumb-jump
       (dumb-jump-go))))
 #+end_src
 
+Start a ~expert~ process and listen on a random port
+
+#+begin_src emacs-lisp
+(defun my/start-elixir-expert-server ()
+  "Start expert LSP server."
+  (interactive)
+  (let* ((port (+ 1024 (random (- 65536 1024))))
+         (default-directory (my/project-root))
+         (command (format "expert --port %s" port))
+         (buffer-name (format "(%s) expert server" (my/project-root))))
+    (async-shell-command command (get-buffer-create buffer-name))
+    (setf (alist-get 'elixir-ts-mode eglot-server-programs nil nil #'equal)
+          `("localhost" ,port))
+    (message "Server running on %d" port)))
+#+end_src
+
 * Programming languages
 
 ** Shell scripts

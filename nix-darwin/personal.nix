@@ -14,6 +14,7 @@
       "utm"
       "postgres-unofficial"
       "brave-browser"
+      "signal"
     ];
     masApps = {
       "Keynote" = 409183694;

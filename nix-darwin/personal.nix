@@ -15,6 +15,8 @@
       "postgres-unofficial"
       "brave-browser"
       "signal"
+      "freecad"
+      "orcaslicer"
     ];
     masApps = {
       "Keynote" = 409183694;

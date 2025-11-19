@@ -1152,6 +1152,9 @@ Search into project source
 (use-package consult
   :ensure t
   :config
+  ;; without --hidden ripgrep avoid hidden files like yaml files
+  ;; inside a .github folder or this file inside .emacs.d
+  (setopt consult-ripgrep-args (concat consult-ripgrep-args " --hidden "))
   ;; Use consult for completion inside minibuffer, for example when
   ;; searching for a file.
   (setq completion-in-region-function #'consult-completion-in-region))

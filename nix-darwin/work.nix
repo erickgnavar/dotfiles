@@ -1,9 +1,16 @@
 { pkgs, config, ... }: {
   environment.systemPackages = with pkgs; [
     terraform
+    (azure-cli.withExtensions [ azure-cli.extensions.aks-preview ])
   ];
 
   homebrew = {
+    taps = [
+      "Azure/kubelogin"
+    ];
+    brews = [
+      "Azure/kubelogin/kubelogin"
+    ];
     casks = [
       "1password"
       "brave-browser"

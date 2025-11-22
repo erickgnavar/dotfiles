@@ -17,6 +17,9 @@ export PATH="$PATH":/usr/local/bin/
 # Go binaries
 export PATH="$PATH":"$HOME/go/bin"
 
+# Homebrew binaries
+export PATH="/opt/homebrew/bin/:$PATH"
+
 # Use binaries from ~/.local/bin
 # haskell stack install some binaries here: hindent, hlint, etc
 export PATH="$PATH:$HOME/.local/bin"

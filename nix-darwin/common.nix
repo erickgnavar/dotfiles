@@ -124,6 +124,7 @@
       };
       controlcenter.Sound = true;
       controlcenter.Bluetooth = true;
+      controlcenter.NowPlaying = false;
     };
     keyboard = {
       enableKeyMapping = true;

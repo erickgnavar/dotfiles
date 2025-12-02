@@ -1,4 +1,9 @@
 { pkgs, config, ... }: {
+  environment.systemPackages = with pkgs; [
+    odin
+    ols
+  ];
+
   homebrew = {
     casks = [
       "krisp"

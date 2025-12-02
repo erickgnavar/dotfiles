@@ -17,7 +17,6 @@
       "google-chrome"
       "vlc"
       "utm"
-      "postgres-unofficial"
       "brave-browser"
       "signal"
       "freecad"

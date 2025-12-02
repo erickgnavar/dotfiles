@@ -86,6 +86,7 @@
       "espanso"
       "homerow"
       "localsend"
+      "postgres-unofficial"
     ];
     masApps = {
       "Amphetamine" = 937984704;

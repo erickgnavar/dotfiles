@@ -1643,7 +1643,7 @@
 				   "LICENSE" "README*" "*-pkg.el"))
 			:source "elpaca-menu-lock-file" :protocol
 			https :inherit t :depth treeless :ref
-			"2ad407c651e90fff2ea85d17bf074cee2c022912"))
+			"7543ed80d0ad07f1044b4d55c9ee7893cd45362c"))
  (yaml :source "elpaca-menu-lock-file" :recipe
        (:package "yaml" :repo "zkry/yaml.el" :fetcher github :files
 		 ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"

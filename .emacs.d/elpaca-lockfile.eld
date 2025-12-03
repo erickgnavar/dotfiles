@@ -1078,7 +1078,7 @@
 			:inherit t :depth treeless :host github :repo
 			"Sampie159/odin-ts-mode" :package
 			"odin-ts-mode" :ref
-			"495f425018531828a8304dc45288779e58d869ad"))
+			"800134c4f104ab48b28ed33c8ebce1c8b8707add"))
  (orderless :source "elpaca-menu-lock-file" :recipe
 	    (:package "orderless" :repo "oantolin/orderless" :fetcher
 		      github :files

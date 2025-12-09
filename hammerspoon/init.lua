@@ -31,7 +31,7 @@ hs.hotkey.bind("alt", "3", function()
     -- we need to execute Emacs this way to be able to use mise
     -- properly, otherwise we can't execute stuff like, mix, elixir
     -- and so on
-    os.execute "/bin/zsh -l -c 'emacs > /dev/null 2>&1 & diwown'"
+    os.execute "/bin/zsh -l -c 'emacs > /dev/null 2>&1 & disown'"
   end
 end)
 

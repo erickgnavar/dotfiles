@@ -235,7 +235,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "65a5de16e21c87b7c12a78a63fc3b57e07c03c86"))
+		    "685ea2d50607a9902f1c6c141ee6268d759b9b25"))
  (dired-hacks-utils :source "elpaca-menu-lock-file" :recipe
 		    (:package "dired-hacks-utils" :fetcher github
 			      :repo "Fuco1/dired-hacks" :files
@@ -396,7 +396,7 @@
 			    (:exclude "evil-test-helpers.el"))
 		 :source "elpaca-menu-lock-file" :protocol https
 		 :inherit t :depth treeless :ref
-		 "c222ce1ea6fbefaed08308c061371ebdf01b078f"))
+		 "729d9a58b387704011a115c9200614e32da3cefc"))
  (evil-collection :source "elpaca-menu-lock-file" :recipe
 		  (:package "evil-collection" :fetcher github :repo
 			    "emacs-evil/evil-collection" :files

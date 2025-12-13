@@ -22,6 +22,7 @@
       "freecad"
       "orcaslicer"
       "blender@lts"
+      "imageoptim"
     ];
     masApps = {
       "Keynote" = 409183694;

@@ -276,7 +276,7 @@
 				     "*-pkg.el"))
 			  :source "elpaca-menu-lock-file" :protocol
 			  https :inherit t :depth treeless :ref
-			  "9d6f0f9635ae722b6bd943a76e996f54443e373f"))
+			  "33edc978783a311479ca8edf3f7437d7e930eb10"))
  (dumb-jump :source "elpaca-menu-lock-file" :recipe
 	    (:package "dumb-jump" :repo "jacktasia/dumb-jump" :fetcher
 		      github :files

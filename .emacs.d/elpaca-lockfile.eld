@@ -962,7 +962,7 @@
 				     "*-pkg.el"))
 			  :source "elpaca-menu-lock-file" :protocol
 			  https :inherit t :depth treeless :ref
-			  "7659bc470d096e7a53285fa246cbabcb07d66a33"))
+			  "92802fae9ebbc8c2e4c281c06dcdbd74b8bca80e"))
  (meme :source "elpaca-menu-lock-file" :recipe
        (:source "elpaca-menu-lock-file" :protocol https :inherit t
 		:depth treeless :host github :repo "larsmagne/meme"

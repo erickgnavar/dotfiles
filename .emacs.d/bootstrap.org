@@ -2001,11 +2001,13 @@ The last part can change depending of the version installed
    ("Format"
     (("f" eglot-format-buffer)))))
 
-(use-package nix-mode
+(reformatter-define nix-format
+  :program "nixpkgs-fmt"
+  :group 'nix)
+
+(use-package nix-ts-mode
   :ensure t
   :defer t
-  :custom
-  (nix-nixfmt-bin "nixpkgs-fmt")
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Nix commands"))
    ("Format"

@@ -1052,14 +1052,20 @@
 			     :source "elpaca-menu-lock-file" :protocol
 			     https :inherit t :depth treeless :ref
 			     "c0b0cda2b92f831d0f764a7e8c0c6728d6a27774"))
- (nix-mode :source "elpaca-menu-lock-file" :recipe
-	   (:package "nix-mode" :fetcher github :repo "NixOS/nix-mode"
-		     :files
-		     (:defaults
-		      (:exclude "nix-company.el" "nix-mode-mmm.el"))
-		     :source "elpaca-menu-lock-file" :protocol https
-		     :inherit t :depth treeless :ref
-		     "719feb7868fb567ecfe5578f6119892c771ac5e5"))
+ (nix-ts-mode :source "elpaca-menu-lock-file" :recipe
+	      (:package "nix-ts-mode" :fetcher github :repo
+			"nix-community/nix-ts-mode" :files
+			("*.el" "*.el.in" "dir" "*.info" "*.texi"
+			 "*.texinfo" "doc/dir" "doc/*.info"
+			 "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
+			 "docs/dir" "docs/*.info" "docs/*.texi"
+			 "docs/*.texinfo"
+			 (:exclude ".dir-locals.el" "test.el"
+				   "tests.el" "*-test.el" "*-tests.el"
+				   "LICENSE" "README*" "*-pkg.el"))
+			:source "MELPA" :protocol https :inherit t
+			:depth treeless :ref
+			"706bbfaf7f344d7c5914bf7aa5beb2d904eb53b3"))
  (ob-d2 :source "elpaca-menu-lock-file" :recipe
 	(:package "ob-d2" :repo "xcapaldi/ob-d2" :fetcher github
 		  :files

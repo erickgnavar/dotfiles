@@ -605,9 +605,12 @@ Incremental code parsing for better syntax highlighting
 #+begin_src emacs-lisp
 (use-package treesit-auto
   :ensure t
-  :custom (treesit-auto-install t)
-  :config
-  (global-treesit-auto-mode))
+  :custom (treesit-auto-install t))
+  ;; current version of treesit-auto-mode has a bug which causes a lot
+  ;; of calls which makes Emacs slow, this will disabled until a fix
+  ;; is made
+  ;; :config
+  ;; (global-treesit-auto-mode))
 #+end_src
 
 Run ispell in text nodes

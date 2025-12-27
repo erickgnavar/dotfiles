@@ -18,6 +18,7 @@
       "vlc"
       "utm"
       "brave-browser"
+      "protonvpn"
       "signal"
       "freecad"
       "orcaslicer"

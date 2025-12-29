@@ -1,6 +1,5 @@
 { pkgs, config, ... }: {
   environment.systemPackages = with pkgs; [
-    terraform
     (azure-cli.withExtensions [ azure-cli.extensions.aks-preview ])
   ];
 

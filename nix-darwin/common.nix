@@ -57,6 +57,7 @@
     xmlformat
     yamllint
     jq
+    ruff
     pyright
     exiftool
     gnused

@@ -2776,6 +2776,12 @@ Install ~gopls~ to have LSP support using eglot
 brew install gopls
 #+end_src
 
+#+begin_src emacs-lisp
+(reformatter-define go-format
+  :program "goimports"
+  :group 'go-ts-mode)
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (use-package go-ts-mode
   :ensure nil
@@ -2784,7 +2790,7 @@ brew install gopls
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Go Commands"))
    ("Format"
-    (("f" gofmt))
+    (("f" go-format-buffer))
     "Execute"
     (("r" go-run))
     "Testing"
@@ -2795,13 +2801,7 @@ brew install gopls
   ;; by default tab width is 8, that's too much space so we define 4
   ;; only for go buffers
   (add-hook 'go-ts-mode-hook #'(lambda ()
-                              (setq-local tab-width 4)))
-  (setq gofmt-command "goimports"))
-
-;; we install this package to have access to their helper functions
-(use-package go-mode
-  :ensure t
-  :after go-ts-mode)
+                                 (setq-local tab-width 4))))
 
 (use-package gotest
   :ensure t

@@ -638,12 +638,6 @@
 			    :source "elpaca-menu-lock-file" :protocol
 			    https :inherit t :depth treeless :ref
 			    "d1346a76122595aeeb7ebb292765841c6cfd417b"))
- (go-mode :source "elpaca-menu-lock-file" :recipe
-	  (:package "go-mode" :repo "dominikh/go-mode.el" :fetcher
-		    github :files ("go-mode.el") :source
-		    "elpaca-menu-lock-file" :protocol https :inherit t
-		    :depth treeless :ref
-		    "602d73e22646b1b98b2eb97927fd426c0d1d2f92"))
  (gotest :source "elpaca-menu-lock-file" :recipe
 	 (:package "gotest" :fetcher github :repo
 		   "nlamirault/gotest.el" :files

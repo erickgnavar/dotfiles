@@ -64,6 +64,7 @@
     imagemagick
     librsvg
     pngpaste
+    watch
     (aspellWithDicts (dicts: with dicts; [ en en-computers es ]))
   ];
 

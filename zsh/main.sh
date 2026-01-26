@@ -91,6 +91,9 @@ alias k="kubectl"
 # Use z zsh plugin as autojump
 alias j="z"
 
+alias btop="nix-shell -p btop --run btop"
+alias htop="nix-shell -p htop --run htop"
+
 # enable mise
 eval "$(mise activate zsh)"
 

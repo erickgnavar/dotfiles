@@ -65,6 +65,7 @@
     librsvg
     pngpaste
     watch
+    gnupg
     (aspellWithDicts (dicts: with dicts; [ en en-computers es ]))
   ];
 

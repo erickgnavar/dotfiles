@@ -1474,7 +1474,7 @@
 				    "*-pkg.el"))
 			 :source "elpaca-menu-lock-file" :protocol
 			 https :inherit t :depth treeless :ref
-			 "016bd286a1ba4628f833a626f8b9d497882ecdf3"))
+			 "433dac791c3a5c6f2aebddc70066f72940a12489"))
  (treesit-ispell :source "elpaca-menu-lock-file" :recipe
 		 (:package "treesit-ispell" :fetcher github :repo
 			   "erickgnavar/treesit-ispell.el" :files

@@ -1,5 +1,6 @@
 { pkgs, config, ... }: {
   environment.systemPackages = with pkgs; [
+    lima
     (azure-cli.withExtensions [ azure-cli.extensions.aks-preview ])
   ];
 
@@ -14,6 +15,7 @@
       "1password"
       "brave-browser"
       "chatgpt"
+      "claude"
       "slack"
       "notion"
       "1password-cli"

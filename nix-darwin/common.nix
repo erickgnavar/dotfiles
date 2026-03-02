@@ -93,10 +93,8 @@
       "postgres-unofficial"
       "tailscale-app"
       "the-unarchiver"
+      "keepingyouawake"
     ];
-    masApps = {
-      "Amphetamine" = 937984704;
-    };
   };
 
   # we need to specify primary user since nix-darwin 25.05

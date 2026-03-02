@@ -91,11 +91,11 @@
       "homerow"
       "localsend"
       "postgres-unofficial"
+      "tailscale-app"
+      "the-unarchiver"
     ];
     masApps = {
       "Amphetamine" = 937984704;
-      "Tailscale" = 1475387142;
-      "The Unarchiver" = 425424353;
     };
   };
 

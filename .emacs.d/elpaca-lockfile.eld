@@ -235,7 +235,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "e79aa49ad3cbbe85379cf6646db3aaacd3b04708"))
+		    "685ea2d50607a9902f1c6c141ee6268d759b9b25"))
  (dired-hacks-utils :source "elpaca-menu-lock-file" :recipe
 		    (:package "dired-hacks-utils" :fetcher github
 			      :repo "Fuco1/dired-hacks" :files

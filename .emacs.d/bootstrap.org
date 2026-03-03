@@ -1713,6 +1713,9 @@ Use ~delta~ tool to show diffs in magit
   :ensure t
   :custom
   (diff-hl-show-staged-changes nil)
+  ;; disable highlight reference to avoid confusion with status
+  ;; indicators in fringe area
+  (diff-hl-highlight-reference-function nil)
   ;; for some reason the :hook form doesn't work so we have to use :init
   :init
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)

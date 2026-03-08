@@ -23,7 +23,7 @@ hs.hotkey.bind("alt", "2", function()
 end)
 
 hs.hotkey.bind("alt", "3", function()
-  app = hs.application.find "Emacs"
+  local app = hs.application.find "Emacs"
 
   if app then
     app:activate()
@@ -31,7 +31,20 @@ hs.hotkey.bind("alt", "3", function()
     -- we need to execute Emacs this way to be able to use mise
     -- properly, otherwise we can't execute stuff like, mix, elixir
     -- and so on
-    os.execute "/bin/zsh -l -c 'emacs > /dev/null 2>&1 & disown'"
+    hs.task.new("/bin/zsh", nil, { "-l", "-c", "emacs > /dev/null 2>&1 & disown" }):start()
+
+    -- Poll until Emacs is available, then focus it
+    hs.timer.doUntil(
+      function()
+        local emacs = hs.application.find "Emacs"
+        if emacs then
+          emacs:activate()
+          return true
+        end
+        return false
+      end,
+      0.1 -- check every 500ms
+    )
   end
 end)
 

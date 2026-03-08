@@ -6,6 +6,9 @@
   ];
 
   homebrew = {
+    brews = [
+      "llama.cpp"
+    ];
     casks = [
       "krisp"
       "spotify"

@@ -25,6 +25,7 @@
       "orcaslicer"
       "blender@lts"
       "imageoptim"
+      "discord"
     ];
     masApps = {
       "Keynote" = 409183694;

@@ -26,6 +26,7 @@
     go
     gopls
     gotools
+    air
     biome
     bat
     mise

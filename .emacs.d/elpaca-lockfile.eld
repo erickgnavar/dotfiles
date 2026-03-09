@@ -70,7 +70,7 @@
 				  "LICENSE" "README*" "*-pkg.el"))
 		       :source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
-		       "ca0896dfd0a0ee549150233ebd96aa0f65b56afb"))
+		       "8a8d06a280c340a7e1639f60c8c44cd4b4127e6b"))
  (clojure-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "clojure-mode" :repo
 			 "clojure-emacs/clojure-mode" :fetcher github

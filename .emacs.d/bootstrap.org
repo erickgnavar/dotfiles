@@ -955,10 +955,8 @@ Hide values that match regex patterns for ~restclient~ files
 (use-package cloak-mode
   :ensure t
   :custom
-  ;TODO: add configuration for mise.toml files, cloak-mode by now only
-  ;support major mode but it may support filename pattern in the
-  ;future
-  (cloak-mode-patterns '((restclient-mode . "^:[^: ]+[ \t]*=[ \t]*\\(.+?\\)$")))
+  (cloak-mode-patterns '((restclient-mode . "^:[^: ]+[ \t]*=[ \t]*\\(.+?\\)$")
+                         ("mise.local.toml" . "[a-zA-Z_-]+[ \t]*=[ \t]*\"\\([^\"]+\\)\"")))
   (cloak-mode-mask "🙈🙈🙈")
   :config
   (global-cloak-mode))

@@ -55,11 +55,13 @@ function git_search() {
 }
 
 # Use ~/.ssh/config to prompt a list of host and ssh to the chosen one
-function ssh_connect() {
+ssh_connect() {
   local host
-  host=$(grep "Host " ~/.ssh/config | awk '{print $2} END {print ""}' | fzf | sed 's/ //g' | sed 's/\n//g')
-  echo "Connecting to $host..."
-  ssh "$host"
+  host=$(grep "^Host " ~/.ssh/config | awk '{print $2}' | fzf --prompt="SSH Host: ")
+  if [[ -n "$host" ]]; then
+    echo "Connecting to $host..."
+    ssh "$host"
+  fi
 }
 
 # custom alias

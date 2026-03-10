@@ -1,10 +1,16 @@
 #!/bin/env bash
+set -euo pipefail
 
 echo "Setting up your system!"
 
 while read -r line; do
+  # Skip empty lines and comments
+  [[ -z "$line" || "$line" == \#* ]] && continue
+
   config_file="$(pwd)/$(echo "$line" | awk '{print $1}')"
-  path=$(eval echo "$(echo "$line" | awk '{print $2}')")
+  path=$(echo "$line" | awk '{print $2}')
+  # Expand ~ to $HOME (avoids unsafe eval)
+  path="${path/#\~/$HOME}"
   parent_dir=$(dirname "$path")
 
   # ensure the parent directory exists

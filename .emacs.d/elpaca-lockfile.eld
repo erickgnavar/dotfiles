@@ -1252,13 +1252,6 @@
 		     :source "elpaca-menu-lock-file" :protocol https
 		     :inherit t :depth treeless :ref
 		     "81651536827c96bf5af5265ee7918ab70e1dd5b1"))
- (pr-review :source "elpaca-menu-lock-file" :recipe
-	    (:package "pr-review" :fetcher github :repo
-		      "blahgeek/emacs-pr-review" :files
-		      (:defaults "graphql") :source
-		      "elpaca-menu-lock-file" :protocol https :inherit
-		      t :depth treeless :ref
-		      "9fa4ef4d1922cbd6dd37b631ea05aed0ef358178"))
  (pretty-hydra :source "elpaca-menu-lock-file" :recipe
 	       (:package "pretty-hydra" :repo
 			 "jerrypnz/major-mode-hydra.el" :fetcher

@@ -50,18 +50,6 @@ function docker_remove_images() {
   docker rmi "$(docker images -q)"
 }
 
-function transfer() {
-  curl --upload-file "$1" "https://transfer.sh/$2"
-}
-
-function extract_youtube_audio() {
-  youtube-dl "$1" --audio-format=mp3 -x
-}
-
-function download_video_best_quality() {
-  youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 "$1"
-}
-
 function git_search() {
   git grep "$1" "$(git rev-list --all)"
 }

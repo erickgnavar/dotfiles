@@ -3,60 +3,49 @@
 -- remove window movement animation
 hs.window.animationDuration = 0
 
+local function getWindowContext()
+  local win = hs.window.focusedWindow()
+  return win, win:frame(), win:screen(), win:screen():frame()
+end
+
 -- put to left
 hs.hotkey.bind(leader, "H", function()
-  local window = hs.window.focusedWindow()
-  local frame = window:frame()
-  local screen = window:screen()
-  local max = screen:frame()
-
+  local win, frame, screen, max = getWindowContext()
   frame.x = max.x
   frame.y = max.y
   frame.w = max.w / 2
   frame.h = max.h
-  window:setFrame(frame)
+  win:setFrame(frame)
 end)
 
 -- put to right
 hs.hotkey.bind(leader, "L", function()
-  local window = hs.window.focusedWindow()
-  local frame = window:frame()
-  local screen = window:screen()
-  local max = screen:frame()
-
+  local win, frame, screen, max = getWindowContext()
   frame.x = max.x + (max.w / 2)
   frame.y = max.y
   frame.w = max.w / 2
   frame.h = max.h
-  window:setFrame(frame)
+  win:setFrame(frame)
 end)
 
 -- put to top
 hs.hotkey.bind(leader, "K", function()
-  local window = hs.window.focusedWindow()
-  local frame = window:frame()
-  local screen = window:screen()
-  local max = screen:frame()
-
+  local win, frame, screen, max = getWindowContext()
   frame.x = max.x
-  frame.y = max.y - (max.h / 2)
+  frame.y = max.y
   frame.w = max.w
   frame.h = max.h / 2
-  window:setFrame(frame)
+  win:setFrame(frame)
 end)
 
 -- put to bottom
 hs.hotkey.bind(leader, "J", function()
-  local window = hs.window.focusedWindow()
-  local frame = window:frame()
-  local screen = window:screen()
-  local max = screen:frame()
-
+  local win, frame, screen, max = getWindowContext()
   frame.x = max.x
   frame.y = max.y + (max.h / 2)
   frame.w = max.w
   frame.h = max.h / 2
-  window:setFrame(frame)
+  win:setFrame(frame)
 end)
 
 -- maximize frame
@@ -66,17 +55,13 @@ end)
 
 -- center frame
 hs.hotkey.bind(leader, "\\", function()
+  local win, frame, screen, max = getWindowContext()
   -- base grid layout will be 6 x 5 and center frame should be 4 x 3
-  local window = hs.window.focusedWindow()
-  local frame = window:frame()
-  local screen = window:screen()
-  local max = screen:frame()
-
   frame.x = max.x + (max.w / 6) * 1
   frame.y = max.y + (max.h / 5) * 1
   frame.w = (max.w / 6) * 4
   frame.h = (max.h / 5) * 3
-  window:setFrame(frame)
+  win:setFrame(frame)
 end)
 
 -- move application between screens

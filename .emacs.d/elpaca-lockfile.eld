@@ -1105,7 +1105,7 @@
 				  "LICENSE" "README*" "*-pkg.el"))
 		       :source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
-		       "ae0d91fa16f0e72df50633d0941242eecd78721b"))
+		       "f514a2570da0f7a8ff0d72641458dbcf96ccf702"))
  (org-tree-slide :source "elpaca-menu-lock-file" :recipe
 		 (:package "org-tree-slide" :fetcher github :repo
 			   "takaxp/org-tree-slide" :files

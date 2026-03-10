@@ -43,7 +43,7 @@ function homebrew-dump {
   cd - || exit
 }
 
-function nixdarwnin_run_install {
+function nixdarwin_run_install {
   cd ~/dotfiles/nix-darwin/ || exit 1
   mkdir -p ~/.config/nix-darwin/
   cp *.nix ~/.config/nix-darwin/

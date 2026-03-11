@@ -14,7 +14,6 @@
     casks = [
       "1password"
       "brave-browser"
-      "chatgpt"
       "claude"
       "slack"
       "notion"

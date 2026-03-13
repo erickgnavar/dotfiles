@@ -693,6 +693,7 @@ Install ~combobulate~ just to have ~combobulate-query-builder~ is like ~tree-sit
                                                      (call-interactively #'switch-to-buffer)))
   (evil-define-key nil 'global (kbd "<leader>c") 'vterm-toggle)
   (evil-define-key nil 'global (kbd "<leader>e") 'my/find-file-in-project)
+  (evil-define-key nil 'global (kbd "<leader>E") 'my/find-file-in-project-local)
   (evil-define-key nil 'global (kbd "<leader>f") 'find-file)
   (evil-define-key nil 'global (kbd "<leader>g") 'magit-status)
   (evil-define-key nil 'global (kbd "<leader>G") 'magit-file-dispatch)
@@ -3031,6 +3032,15 @@ Manipulate frame font height.
   (if (my/project-p)
       (project-find-file)
     (call-interactively #'find-file)))
+
+(defun my/find-file-in-project-local ()
+  "Find inside a relative path."
+  (interactive)
+  ;; mix.exs for elixir monorepos and .env for terraform repositories
+  ;; with many levels
+  (when-let ((base-dir (or (locate-dominating-file (buffer-file-name) "mix.exs")
+                           (locate-dominating-file (buffer-file-name) ".env"))))
+    (project-find-file-in "" (list base-dir) (project-current))))
 
 (defun my/fold-buffer-when-is-too-big (max-lines)
   "Fold buffer is max lines if grater than as MAX-LINES."

@@ -1968,7 +1968,11 @@ The last part can change depending of the version installed
 
 (use-package just-ts-mode
   :ensure t
-  :defer t)
+  :defer t
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Justfile Commands"))
+   ("Format"
+    (("f" just-ts-format-buffer)))))
 
 (use-package toml-ts-mode
   :ensure nil

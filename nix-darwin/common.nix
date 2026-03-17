@@ -92,7 +92,7 @@
       "espanso"
       "homerow"
       "localsend"
-      "postgres-unofficial"
+      "postgres-app"
       "tailscale-app"
       "the-unarchiver"
       "keepingyouawake"

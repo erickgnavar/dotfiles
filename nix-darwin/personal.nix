@@ -1,5 +1,7 @@
 { pkgs, config, ... }: {
   environment.systemPackages = with pkgs; [
+    xcodegen
+    swift-format
     odin
     ols
     mutagen

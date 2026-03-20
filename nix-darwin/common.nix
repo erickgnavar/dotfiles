@@ -15,6 +15,7 @@
     mkalias
     vim
     git
+    gh
     delta
     # cmake and glibtool are required to compile libvterm in emacs
     cmake

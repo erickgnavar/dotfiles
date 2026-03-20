@@ -5,6 +5,7 @@
     odin
     ols
     mutagen
+    ffmpeg
   ];
 
   homebrew = {

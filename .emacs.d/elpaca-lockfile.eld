@@ -883,7 +883,7 @@
 		  ("llama.el" ".dir-locals.el") :source
 		  "elpaca-menu-lock-file" :protocol https :inherit t
 		  :depth treeless :ref
-		  "9802c215a3eea748d9d7f81a1465850388006897"))
+		  "d430d48e0b5afd2a34b5531f103dcb110c3539c4"))
  (lv :source "elpaca-menu-lock-file" :recipe
      (:package "lv" :repo "abo-abo/hydra" :fetcher github :files
 	       ("lv.el") :source "elpaca-menu-lock-file" :protocol
@@ -896,7 +896,7 @@
 		   (:exclude "lisp/magit-section.el"))
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
-		  "3f2a501ec8c327da166e000c5bd9dd77e139aa65"))
+		  "cf797a9090ce9140eafe3380412e33165212491f"))
  (magit-delta :source "elpaca-menu-lock-file" :recipe
 	      (:package "magit-delta" :fetcher github :repo
 			"dandavison/magit-delta" :files
@@ -919,7 +919,7 @@
 			   "magit-section-pkg.el")
 			  :source "elpaca-menu-lock-file" :protocol
 			  https :inherit t :depth treeless :ref
-			  "3f2a501ec8c327da166e000c5bd9dd77e139aa65"))
+			  "c800f79c2061621fde847f6a53129eca0e8da728"))
  (major-mode-hydra :source "elpaca-menu-lock-file" :recipe
 		   (:package "major-mode-hydra" :repo
 			     "jerrypnz/major-mode-hydra.el" :fetcher
@@ -1439,7 +1439,7 @@
 				 "README*" "*-pkg.el"))
 		      :source "elpaca-menu-lock-file" :protocol https
 		      :inherit t :depth treeless :ref
-		      "32a7e256aab281bada5db8569e0871c8c3ad2115"))
+		      "c8e4251fd165acd32e014e6310f2219991bea357"))
  (treepy :source "elpaca-menu-lock-file" :recipe
 	 (:package "treepy" :repo "volrath/treepy.el" :fetcher github
 		   :files
@@ -1607,7 +1607,7 @@
 				   "LICENSE" "README*" "*-pkg.el"))
 			:source "elpaca-menu-lock-file" :protocol
 			https :inherit t :depth treeless :ref
-			"ca902ae02972bdd6919a902be2593d8cb6bd991b"))
+			"64211dcb815f2533ac3d2a7e56ff36ae804d8338"))
  (writeroom-mode :source "elpaca-menu-lock-file" :recipe
 		 (:package "writeroom-mode" :fetcher github :repo
 			   "joostkremers/writeroom-mode" :files

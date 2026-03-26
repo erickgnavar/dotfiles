@@ -97,6 +97,7 @@
       "tailscale-app"
       "the-unarchiver"
       "keepingyouawake"
+      "reflex-app"
     ];
   };
 

@@ -2366,6 +2366,13 @@ Add regex to match ~mix test~ execution output and be able to navigate between e
       (eglot-format-buffer)
     (elixir-format-buffer)))
 
+(defun my/elixir-format-project ()
+  "Format the whole project."
+  (interactive)
+  (let* ((mix-file (expand-file-name (concat (locate-dominating-file (buffer-file-name) "mix.exs") "mix.exs")))
+         (default-directory (file-name-directory mix-file)))
+    (compile "mix format --migrate")))
+
 (use-package elixir-ts-mode
   :ensure nil
   :mode (("\\.ex\\'" . elixir-ts-mode)
@@ -2374,7 +2381,8 @@ Add regex to match ~mix test~ execution output and be able to navigate between e
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Elixir Commands"))
    ("Format"
-    (("f" my/elixir-format-buffer))
+    (("ff" my/elixir-format-buffer)
+     ("fa" my/elixir-format-project))
     "Testing"
     (("tt" my/mix-run-test-at-point)
      ("tf" my/mix-run-test-file)

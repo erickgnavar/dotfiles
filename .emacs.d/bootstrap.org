@@ -139,9 +139,10 @@ Parrot mode FTW!
 
 (use-package parrot
   :ensure t
+  :hook
+  (elpaca-after-init . parrot-mode)
+  (before-save . parrot-start-animation)
   :config
-  (parrot-mode)
-  (add-hook 'before-save-hook 'parrot-start-animation)
   (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
 #+END_SRC
 
@@ -438,8 +439,8 @@ Use ~auto-fill-mode~ only for comments and only with programming buffers
 #+BEGIN_SRC emacs-lisp
 (use-package editorconfig
   :ensure nil
-  :config
-  (editorconfig-mode 1))
+  :hook
+  (elpaca-after-init . editorconfig-mode))
 #+END_SRC
 
 ** Snippets
@@ -959,8 +960,8 @@ Hide values that match regex patterns for ~restclient~ files
   (cloak-mode-patterns '((restclient-mode . "^:[^: ]+[ \t]*=[ \t]*\\(.+?\\)$")
                          ("mise.local.toml" . "[a-zA-Z_-]+[ \t]*=[ \t]*\"\\([^\"]+\\)\"")))
   (cloak-mode-mask "🙈🙈🙈")
-  :config
-  (global-cloak-mode))
+  :hook
+  (elpaca-after-init . global-cloak-mode))
 #+end_src
 
 ** Avy
@@ -1111,8 +1112,8 @@ Add annotations to results shown by vertico
 #+begin_src emacs-lisp
 (use-package marginalia
   :ensure
-  :init
-  (marginalia-mode))
+  :hook
+  (elpaca-after-init . marginalia-mode))
 #+end_src
 
 Icons support

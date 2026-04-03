@@ -32,12 +32,12 @@
       "blender@lts"
       "imageoptim"
       "discord"
+      "hiddenbar"
     ];
     masApps = {
       "Keynote" = 409183694;
       "Numbers" = 409203825;
       "Pages" = 409201541;
-      "Hidden Bar" = 1452453066;
       "Pixelmator Pro" = 1289583905;
       "Things 3" = 904280696;
       "Xcode" = 497799835;

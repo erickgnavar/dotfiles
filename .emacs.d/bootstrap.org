@@ -526,7 +526,7 @@ Function to search into zsh history
     (insert-file-contents (expand-file-name "~/.zsh_history"))
     (let* ((raw-content (buffer-substring-no-properties (point-min) (point-max)))
            (lines (string-split raw-content "\n"))
-           (choices (mapcar (lambda (line) (second (string-split line ";"))) lines)))
+           (choices (mapcar (lambda (line) (cl-second (string-split line ";"))) lines)))
       (completing-read "Select command: " choices))))
 
 (defun my/insert-from-zsh-history ()
@@ -1031,7 +1031,7 @@ Define helper functions to be used by other packages
 (defun my/project-name ()
   "Get project name extracting latest part of project path."
   (if (my/project-p)
-      (second (reverse (split-string (my/project-root) "/")))
+      (cl-second (reverse (split-string (my/project-root) "/")))
     nil))
 #+end_src
 
@@ -1414,7 +1414,7 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
     an org quote in the current position"
   (interactive)
   (let* ((raw-value (current-kill 0 t))
-         (tmp (second (split-string raw-value "“")))
+         (tmp (cl-second (split-string raw-value "“")))
          (quote-value (car (split-string tmp "”"))))
     (insert "#+begin_quote\n")
     (insert (concat quote-value "\n"))

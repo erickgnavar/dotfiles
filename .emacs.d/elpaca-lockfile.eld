@@ -896,7 +896,7 @@
 		   (:exclude "lisp/magit-section.el"))
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
-		  "cf797a9090ce9140eafe3380412e33165212491f"))
+		  "83d899b66f2aa4744498baa6866f3bdec2d238be"))
  (magit-delta :source "elpaca-menu-lock-file" :recipe
 	      (:package "magit-delta" :fetcher github :repo
 			"dandavison/magit-delta" :files

@@ -128,6 +128,10 @@ function pod_shell {
   fi
 }
 
+testpod() {
+  kubectl run "testpod-$(date +%s)" --rm -it --image=debian:13 -- bash
+}
+
 function pod_proxy {
   local namespace
   namespace=$(pick_namespace)

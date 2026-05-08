@@ -33,6 +33,7 @@
       "imageoptim"
       "discord"
       "hiddenbar"
+      "loopback"
     ];
     masApps = {
       "Keynote" = 409183694;

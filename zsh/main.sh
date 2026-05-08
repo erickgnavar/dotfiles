@@ -162,6 +162,10 @@ function k8s_change_context {
   kubectl config use-context "$context"
 }
 
+ck8s() {
+  kubectl config current-context
+}
+
 alias tn="tmuxifier new-session"
 
 function tl {

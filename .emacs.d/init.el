@@ -72,7 +72,7 @@
 (setq vc-follow-symlinks t)
 
 ;; read bootstrap.org and load emacs-lisp code
-(org-babel-load-file (expand-file-name "~/.emacs.d/bootstrap.org"))
+(org-babel-load-file (expand-file-name "bootstrap.org" user-emacs-directory))
 
 ;; custom code that will be unique per machine
 (defconst local-config-file (expand-file-name "local.el" user-emacs-directory))

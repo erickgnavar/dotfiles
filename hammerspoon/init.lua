@@ -32,19 +32,6 @@ hs.hotkey.bind("alt", "3", function()
     -- properly, otherwise we can't execute stuff like, mix, elixir
     -- and so on
     hs.task.new("/bin/zsh", nil, { "-l", "-c", "emacs > /dev/null 2>&1 & disown" }):start()
-
-    -- Poll until Emacs is available, then focus it
-    hs.timer.doUntil(
-      function()
-        local emacs = hs.application.find "Emacs"
-        if emacs then
-          emacs:activate()
-          return true
-        end
-        return false
-      end,
-      0.1 -- check every 500ms
-    )
   end
 end)
 

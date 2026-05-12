@@ -53,3 +53,11 @@ function nixdarwin_run_install {
   cp ~/.config/nix-darwin/flake.lock .
   cd - || exit 1
 }
+
+nixdarwin_free_space() {
+  echo "collecting garbage..."
+  nix-collect-garbage -d
+  sudo nix-collect-garbage -d
+  echo "optimizing storage, it might take a while..."
+  nix-store --optimise
+}

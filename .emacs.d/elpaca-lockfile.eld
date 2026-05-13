@@ -1404,6 +1404,20 @@
 		    "elpaca-menu-lock-file" :protocol https :inherit t
 		    :depth treeless :ref
 		    "d4647ae87fb0cd24bc9081a3d287c860ff061c21"))
+ (swift-mode :source "elpaca-menu-lock-file" :recipe
+	     (:package "swift-mode" :repo "swift-emacs/swift-mode"
+		       :fetcher github :files
+		       ("*.el" "*.el.in" "dir" "*.info" "*.texi"
+			"*.texinfo" "doc/dir" "doc/*.info"
+			"doc/*.texi" "doc/*.texinfo" "lisp/*.el"
+			"docs/dir" "docs/*.info" "docs/*.texi"
+			"docs/*.texinfo"
+			(:exclude ".dir-locals.el" "test.el"
+				  "tests.el" "*-test.el" "*-tests.el"
+				  "LICENSE" "README*" "*-pkg.el"))
+		       :source "MELPA" :protocol https :inherit t
+		       :depth treeless :ref
+		       "bf56866b98de2fd73029da2bca1035ca02f9e879"))
  (telega :source "elpaca-menu-lock-file" :recipe
 	 (:package "telega" :fetcher github :repo "zevlg/telega.el"
 		   :files

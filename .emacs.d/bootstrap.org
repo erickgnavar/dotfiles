@@ -2659,6 +2659,22 @@ We need to use ~--stdin-file-path a.js~ to tell ~biome~ to use ~stdin~.
   :mode "\\.tsx?\\'")
 #+end_src
 
+** Swift
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'reformatter
+  (reformatter-define swift-format
+    :program "swift-format"
+    :args '("/dev/stdin")))
+
+(use-package swift-mode
+  :ensure t
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Swift Commands"))
+   ("Format"
+    (("f" swift-format-buffer)))))
+#+end_src
+
 ** Zig
 
 #+begin_src emacs-lisp

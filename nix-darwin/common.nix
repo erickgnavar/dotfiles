@@ -98,6 +98,7 @@
       "the-unarchiver"
       "keepingyouawake"
       "reflex-app"
+      "handy"
     ];
   };
 

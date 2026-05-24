@@ -414,9 +414,8 @@ Allow to visual mode work more like vim visual highlighting.
 Use ~auto-fill-mode~ only for comments and only with programming buffers
 
 #+begin_src emacs-lisp
-(setq comment-auto-fill-only-comments t)
-
 (add-hook 'prog-mode-hook #'(lambda ()
+                              (setq-local comment-auto-fill-only-comments t)
                               (auto-fill-mode 1)))
 #+end_src
 

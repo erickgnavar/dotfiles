@@ -2875,7 +2875,7 @@ Disable indentation with tabs for =emacs-lisp-mode=
 Enable flymake
 
 #+begin_src emacs-lisp
-(add-hook 'emacs-lisp-mode-hook 'flymake-mode-on)
+(add-hook 'emacs-lisp-mode-hook #'(lambda () (flymake-mode 1)))
 #+end_src
 
 ~package-lint~, used for packages development

@@ -1186,19 +1186,6 @@
 		     :source "elpaca-menu-lock-file" :protocol https
 		     :inherit t :depth treeless :ref
 		     "3407e4530a367b6c2b857dae261cdbb67a440aaa"))
- (pbcopy :source "elpaca-menu-lock-file" :recipe
-	 (:package "pbcopy" :fetcher github :repo
-		   "emacsfodder/pbcopy.el" :files
-		   ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		    "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		    "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		    "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		    (:exclude ".dir-locals.el" "test.el" "tests.el"
-			      "*-test.el" "*-tests.el" "LICENSE"
-			      "README*" "*-pkg.el"))
-		   :source "elpaca-menu-lock-file" :protocol https
-		   :inherit t :depth treeless :ref
-		   "338f7245746b5de1bb96c5cc2b32bfd9b5d83272"))
  (perspective :source "elpaca-menu-lock-file" :recipe
 	      (:package "perspective" :fetcher github :repo
 			"nex3/perspective-el" :files

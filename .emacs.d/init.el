@@ -15,15 +15,15 @@
 ;; Avoid to show a message about deprecation of cl package
 (setq byte-compile-warnings '(cl-functions))
 
-(defvar elpaca-installer-version 0.11)
+(defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil :depth 1 :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+                              :build (:not elpaca-activate)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
        (default-directory repo))
@@ -61,6 +61,10 @@
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
 
+; Ensure compat is installed from GitHub with the correct version
+(elpaca (compat :repo "emacs-compat/compat" :fetcher github
+                :ref "b5b48183689b536f72b1214106afeabc465da9d4"))
+
 ;; setup zsh as a default shell when is available
 (let ((zsh-path (executable-find "zsh")))
   (when zsh-path
@@ -73,6 +77,10 @@
 
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "bootstrap.org" user-emacs-directory))
+
+;; make sure all hooks are executed, for some reason elpaca doesn't
+;; that this after loading packages
+(progn (elpaca-process-queues) (run-hooks 'elpaca-after-init-hook))
 
 ;; custom code that will be unique per machine
 (defconst local-config-file (expand-file-name "local.el" user-emacs-directory))

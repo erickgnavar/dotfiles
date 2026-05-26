@@ -127,6 +127,12 @@
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
 		    "9a81d0cca268d35d5e18d7d4e2277a9e57887dd8"))
+ (compat :source "elpaca-menu-lock-file" :recipe
+	 (:package "compat" :repo "emacs-compat/compat" :fetcher github
+		   :files ("*.el" "compat.texi" "compat.info")
+		   :source "elpaca-menu-lock-file" :protocol https
+		   :inherit t :depth treeless :ref
+		   "b5b48183689b536f72b1214106afeabc465da9d4"))
  (company-restclient :source "elpaca-menu-lock-file" :recipe
 		     (:package "company-restclient" :fetcher github
 			       :repo "iquiw/company-restclient" :files
@@ -156,7 +162,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "c74ae6149172e3429b844c22d67e02b01abea1e4"))
+		    "74e6cc77609cb36cd61aa2a23848659fbb66f05a"))
  (consult-yasnippet :source "elpaca-menu-lock-file" :recipe
 		    (:package "consult-yasnippet" :fetcher github
 			      :repo "mohkale/consult-yasnippet" :files
@@ -336,9 +342,9 @@
    "elpaca-menu-lock-file" :recipe
    (:source nil :protocol https :inherit ignore :depth 1 :repo
 	    "https://github.com/progfolio/elpaca.git" :ref
-	    "a60613a8851df0ce2f859698320a4176e8f193ac" :files
+	    "27c2889f66368bde12b4e243582e343ed9cb75e3" :files
 	    (:defaults "elpaca-test.el" (:exclude "extensions"))
-	    :build (:not elpaca--activate-package) :package "elpaca"))
+	    :build (:not elpaca-activate) :package "elpaca"))
  (elpaca-use-package :source "elpaca-menu-lock-file" :recipe
 		     (:package "elpaca-use-package" :wait t :repo
 			       "https://github.com/progfolio/elpaca.git"
@@ -350,7 +356,7 @@
 			       :source "elpaca-menu-lock-file"
 			       :protocol https :inherit t :depth
 			       treeless :ref
-			       "a60613a8851df0ce2f859698320a4176e8f193ac"))
+			       "27c2889f66368bde12b4e243582e343ed9cb75e3"))
  (emacsql :source "elpaca-menu-lock-file" :recipe
 	  (:package "emacsql" :fetcher github :repo "magit/emacsql"
 		    :files (:defaults "README.md" "sqlite") :source
@@ -362,14 +368,14 @@
 		   :files ("embark.el" "embark-org.el" "embark.texi")
 		   :source "elpaca-menu-lock-file" :protocol https
 		   :inherit t :depth treeless :ref
-		   "d5df0eff182b014ab49328a4dbb1d69eb7faafbd"))
+		   "195add1f1ccd1059472c9df7334c97c4d155425e"))
  (embark-consult :source "elpaca-menu-lock-file" :recipe
 		 (:package "embark-consult" :repo "oantolin/embark"
 			   :fetcher github :files
 			   ("embark-consult.el") :source
 			   "elpaca-menu-lock-file" :protocol https
 			   :inherit t :depth treeless :ref
-			   "d5df0eff182b014ab49328a4dbb1d69eb7faafbd"))
+			   "195add1f1ccd1059472c9df7334c97c4d155425e"))
  (emmet-mode :source "elpaca-menu-lock-file" :recipe
 	     (:package "emmet-mode" :fetcher github :repo
 		       "smihica/emmet-mode" :files

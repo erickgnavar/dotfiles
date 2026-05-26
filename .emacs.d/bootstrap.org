@@ -777,16 +777,12 @@ Allow to use default terminal keybinding in ~vterm~ without losing evil features
 
 Complete parenthesis, square brackets, etc
 
-Enable it globally and disable it just for ~org-mode~ to avoid having a conflict with ~<s~
-
 #+BEGIN_SRC emacs-lisp
-(electric-pair-mode)
+(use-package elec-pair
+  :ensure nil
+  :config
+  (electric-pair-mode))
 #+END_SRC
-
-#+begin_src emacs-lisp
-(add-hook 'org-mode-hook #'(lambda ()
-                             (electric-pair-local-mode -1)))
-#+end_src
 
 ** Restclient
 
@@ -1442,7 +1438,9 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
                                ;; Since emacs 27 this is needed to use shortcuts like <s to create source blocks
                                (unless (featurep 'org-tempo)
                                  (require 'org-tempo))
-                               (org-indent-mode nil)))
+                               (org-indent-mode nil)
+                               ;; disable electric-pair to avoid conflict with ~<s~
+                               (electric-pair-local-mode -1)))
 
   (advice-add 'org-edit-special :before 'my/org-edit-special)
   (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)

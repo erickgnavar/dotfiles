@@ -1445,6 +1445,8 @@ When I read books on Apple Books and I want to insert some quote Apple Books ins
   (org-clock-persistence-insinuate)
 
   (add-hook 'org-mode-hook #'(lambda ()
+                               (setq-local fill-column 100)
+                               (auto-fill-mode 1)
                                ;; Since emacs 27 this is needed to use shortcuts like <s to create source blocks
                                (unless (featurep 'org-tempo)
                                  (require 'org-tempo))

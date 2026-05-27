@@ -30,18 +30,6 @@
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
 		  "b99658e831bc7e7d20ed4bb0a85bdb5c7dd74142"))
- (avy :source "elpaca-menu-lock-file" :recipe
-      (:package "avy" :repo "abo-abo/avy" :fetcher github :files
-		("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"
-		 "doc/dir" "doc/*.info" "doc/*.texi" "doc/*.texinfo"
-		 "lisp/*.el" "docs/dir" "docs/*.info" "docs/*.texi"
-		 "docs/*.texinfo"
-		 (:exclude ".dir-locals.el" "test.el" "tests.el"
-			   "*-test.el" "*-tests.el" "LICENSE"
-			   "README*" "*-pkg.el"))
-		:source "elpaca-menu-lock-file" :protocol https
-		:inherit t :depth treeless :ref
-		"933d1f36cca0f71e4acb5fac707e9ae26c536264"))
  (cider :source "elpaca-menu-lock-file" :recipe
 	(:package "cider" :fetcher github :repo "clojure-emacs/cider"
 		  :files

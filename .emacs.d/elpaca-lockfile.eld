@@ -114,30 +114,13 @@
 				"doc/images/small/*.png"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "9a81d0cca268d35d5e18d7d4e2277a9e57887dd8"))
+		    "1bf7dcd3ce1c8e192a402360930ca18790fec5d4"))
  (compat :source "elpaca-menu-lock-file" :recipe
 	 (:package "compat" :repo "emacs-compat/compat" :fetcher github
 		   :files ("*.el" "compat.texi" "compat.info")
 		   :source "elpaca-menu-lock-file" :protocol https
 		   :inherit t :depth treeless :ref
 		   "b5b48183689b536f72b1214106afeabc465da9d4"))
- (company-restclient :source "elpaca-menu-lock-file" :recipe
-		     (:package "company-restclient" :fetcher github
-			       :repo "iquiw/company-restclient" :files
-			       ("*.el" "*.el.in" "dir" "*.info"
-				"*.texi" "*.texinfo" "doc/dir"
-				"doc/*.info" "doc/*.texi"
-				"doc/*.texinfo" "lisp/*.el" "docs/dir"
-				"docs/*.info" "docs/*.texi"
-				"docs/*.texinfo"
-				(:exclude ".dir-locals.el" "test.el"
-					  "tests.el" "*-test.el"
-					  "*-tests.el" "LICENSE"
-					  "README*" "*-pkg.el"))
-			       :source "elpaca-menu-lock-file"
-			       :protocol https :inherit t :depth
-			       treeless :ref
-			       "e5a3ec54edb44776738c13e13e34c85b3085277b"))
  (consult :source "elpaca-menu-lock-file" :recipe
 	  (:package "consult" :repo "minad/consult" :fetcher github
 		    :files
@@ -1232,7 +1215,7 @@
 				"README*" "*-pkg.el"))
 		     :source "elpaca-menu-lock-file" :protocol https
 		     :inherit t :depth treeless :ref
-		     "81651536827c96bf5af5265ee7918ab70e1dd5b1"))
+		     "fcf1757baee481f617fbf2dc39f8c561207df263"))
  (pretty-hydra :source "elpaca-menu-lock-file" :recipe
 	       (:package "pretty-hydra" :repo
 			 "jerrypnz/major-mode-hydra.el" :fetcher

@@ -545,12 +545,6 @@
 			     :source "elpaca-menu-lock-file" :protocol
 			     https :inherit t :depth treeless :ref
 			     "020d2a33568c8069801db9dd6992b8961a58de8d"))
- (forge :source "elpaca-menu-lock-file" :recipe
-	(:package "forge" :fetcher github :repo "magit/forge" :files
-		  ("lisp/*.el" "docs/*.texi" ".dir-locals.el") :source
-		  "elpaca-menu-lock-file" :protocol https :inherit t
-		  :depth treeless :ref
-		  "33b074f6fbfea3e990a20c144dc33955bacba518"))
  (ghub :source "elpaca-menu-lock-file" :recipe
        (:package "ghub" :fetcher github :repo "magit/ghub" :files
 		 ("lisp/*.el" "docs/*.texi" ".dir-locals.el") :source

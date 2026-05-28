@@ -6,9 +6,14 @@
 
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    emacs-src = {
+      url = "git://git.savannah.gnu.org/emacs.git?ref=emacs-31&rev=c3babe4b8966c3ada6305b2af85e24398190a14f";
+      flake = false;
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, emacs-src }:
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#simple
@@ -21,6 +26,7 @@
             system.configurationRevision = self.rev or self.dirtyRev or null;
           }
         ];
+        specialArgs = { inherit emacs-src; };
       };
 
       # Expose the package set, including overlays, for convenience.

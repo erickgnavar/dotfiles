@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, emacs-src, ... }: {
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -42,7 +42,24 @@
     fastfetch
     fzf
     tmux
-    emacs
+    ((pkgs.emacs.override {
+      srcRepo = true;
+      # drop libgccjit dep, no JIT at runtime
+      withNativeCompilation = false;
+    }).overrideAttrs (old: {
+      name = "emacs-31";
+      src = emacs-src;
+      enableParallelBuilding = true; # parallel make
+      NIX_BUILD_CORES = 0; # use all cores
+      CFLAGS = "-O2 -mcpu=native"; # tune for this CPU
+      # nixpkgs patches don't apply to this emacs-31 commit (already upstream)
+      patches = [ ];
+      postPatch = (old.postPatch or "") + ''
+        # skip byte compilation of thousands of .el files (saves ~80% of build time)
+        substituteInPlace lisp/Makefile.in \
+          --replace-fail 'all: compile-main' 'all:'
+      '';
+    }))
     nixpkgs-fmt
     nixd
     shfmt

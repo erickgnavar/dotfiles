@@ -70,8 +70,6 @@
   (when zsh-path
     (setq shell-file-name zsh-path)))
 
-(require 'bind-key)
-
 ;; Always follow symlinks, used to avoid emacs ask when open org conf file
 (setq vc-follow-symlinks t)
 

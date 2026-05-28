@@ -8,7 +8,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     emacs-src = {
-      url = "git://git.savannah.gnu.org/emacs.git?ref=emacs-31&rev=c3babe4b8966c3ada6305b2af85e24398190a14f";
+      url = "github:emacs-mirror/emacs/c3babe4b8966c3ada6305b2af85e24398190a14f";
       flake = false;
     };
   };

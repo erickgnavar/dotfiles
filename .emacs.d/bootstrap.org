@@ -2011,22 +2011,36 @@ The last part can change depending of the version installed
         (write-file path)))
     (xwidget-webkit-browse-url (format "file://%s" path))))
 
-(use-package markdown-mode
-  :ensure t
-  :defer t
+(defun my/markdown-ts-edit-code-block ()
+  "Edit the fenced code block at point in an indirect buffer via `edit-indirect'."
+  (interactive)
+  (let* ((beg (get-char-property (point) 'markdown-ts-code-beg-marker))
+         (end (get-char-property (point) 'markdown-ts-code-end-marker))
+         (mode (markdown-ts-code-block-mode-at))
+         (indirect-buf (edit-indirect-region (marker-position beg)
+                                             (marker-position end)
+                                             'display-buffer)))
+    (unless (and beg end)
+      (user-error "Not in a fenced code block"))
+    (with-current-buffer indirect-buf
+      (funcall mode))))
+
+(use-package markdown-ts-mode
+  :ensure nil
+  :mode "\\.md\\'"
+  :bind (:map markdown-ts-mode-map
+              ("C-c '" . 'my/markdown-ts-edit-code-block))
   :custom
-  (markdown-fontify-code-blocks-natively t)
-  ;; use different sizes for headings, like org-mode
-  (markdown-header-scaling t)
+  (markdown-ts-fontify-code-blocks-natively t)
   :config
-  (add-hook 'markdown-mode-hook #'(lambda ()
-                                    (setq-local fill-column 100)
-                                    (auto-fill-mode 1))))
+  (add-hook 'markdown-ts-mode-hook #'(lambda ()
+                                       (setq-local fill-column 100)
+                                       (auto-fill-mode 1))))
 
 (use-package flymake-markdownlint
   :ensure (:host github :repo "erickgnavar/flymake-markdownlint")
-  :hook ((markdown-mode . flymake-markdownlint-load)
-         (markdown-mode . flymake-mode)))
+  :hook ((markdown-ts-mode . flymake-markdownlint-load)
+         (markdown-ts-mode . flymake-mode)))
 
 (use-package edit-indirect
   :ensure t

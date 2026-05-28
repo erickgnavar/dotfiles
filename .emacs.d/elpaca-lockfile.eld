@@ -913,21 +913,6 @@
 		       :source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
 		       "a527fb03b76a2bce1e360c6e73a095e06922c3f3"))
- (markdown-mode :source "elpaca-menu-lock-file" :recipe
-		(:package "markdown-mode" :fetcher github :repo
-			  "jrblevin/markdown-mode" :files
-			  ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			   "*.texinfo" "doc/dir" "doc/*.info"
-			   "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			   "docs/dir" "docs/*.info" "docs/*.texi"
-			   "docs/*.texinfo"
-			   (:exclude ".dir-locals.el" "test.el"
-				     "tests.el" "*-test.el"
-				     "*-tests.el" "LICENSE" "README*"
-				     "*-pkg.el"))
-			  :source "elpaca-menu-lock-file" :protocol
-			  https :inherit t :depth treeless :ref
-			  "92802fae9ebbc8c2e4c281c06dcdbd74b8bca80e"))
  (meme :source "elpaca-menu-lock-file" :recipe
        (:source "elpaca-menu-lock-file" :protocol https :inherit t
 		:depth treeless :host github :repo "larsmagne/meme"

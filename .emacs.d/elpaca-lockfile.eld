@@ -100,12 +100,12 @@
 				  :source "elpaca-menu-lock-file"
 				  :protocol https :inherit t :depth
 				  treeless :ref
-				  "22107d90816293c361b777b1f8dfd6ba0be00f7b"))
+				  "1cb1784aab0a3107c0d983933fdfc1dcbf309910"))
  (combobulate :source "elpaca-menu-lock-file" :recipe
 	      (:source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :host github :repo
 		       "mickeynp/combobulate" :package "combobulate"
-		       :ref "ca2545be196ec32945b5db109578582d7c7270b5"))
+		       :ref "4e8cf0df8e22cdaf87c6637eddb60500f0055f46"))
  (company :source "elpaca-menu-lock-file" :recipe
 	  (:package "company" :fetcher github :repo
 		    "company-mode/company-mode" :files

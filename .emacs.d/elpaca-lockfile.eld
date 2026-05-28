@@ -1373,19 +1373,6 @@
 			   :source "elpaca-menu-lock-file" :protocol
 			   https :inherit t :depth treeless :ref
 			   "5bdd734a87f67f6574664f63eb4d02a0bc74c0d0"))
- (transient :source "elpaca-menu-lock-file" :recipe
-	    (:package "transient" :fetcher github :repo
-		      "magit/transient" :files
-		      ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		       "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		       "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		       "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		       (:exclude ".dir-locals.el" "test.el" "tests.el"
-				 "*-test.el" "*-tests.el" "LICENSE"
-				 "README*" "*-pkg.el"))
-		      :source "elpaca-menu-lock-file" :protocol https
-		      :inherit t :depth treeless :ref
-		      "c8e4251fd165acd32e014e6310f2219991bea357"))
  (treepy :source "elpaca-menu-lock-file" :recipe
 	 (:package "treepy" :repo "volrath/treepy.el" :fetcher github
 		   :files

@@ -61,10 +61,6 @@
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
 
-; Ensure compat is installed from GitHub with the correct version
-(elpaca (compat :repo "emacs-compat/compat" :fetcher github
-                :ref "b5b48183689b536f72b1214106afeabc465da9d4"))
-
 ;; setup zsh as a default shell when is available
 (let ((zsh-path (executable-find "zsh")))
   (when zsh-path

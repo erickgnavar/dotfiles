@@ -91,6 +91,8 @@
   };
 
   programs.zsh.enable = true;
+  programs.ssh.startAgent = true;
+  services.gnome.gcr-ssh-agent.enable = false;
 
   users.users.erick.shell = pkgs.zsh;
 

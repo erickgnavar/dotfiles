@@ -135,7 +135,7 @@
     nixpkgs-fmt
     wget
     vim
-    rofi-wayland
+    rofi
     pavucontrol
     killall
     ripgrep

@@ -86,7 +86,7 @@
   users.users.erick = {
     isNormalUser = true;
     description = "Erick Navarro";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" ];
     packages = with pkgs; [ ];
   };
 
@@ -129,6 +129,9 @@
   services.gnome.gnome-keyring.enable = true;
 
   virtualisation.docker.enable = true;
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+
 
   environment.systemPackages = with pkgs; [
     pamixer

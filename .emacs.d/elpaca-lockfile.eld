@@ -110,6 +110,12 @@
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
 		    "1bf7dcd3ce1c8e192a402360930ca18790fec5d4"))
+ (compat :source "elpaca-menu-lock-file" :recipe
+	(:package "compat" :fetcher github :repo "emacs-compat/compat"
+		  :files ("compat.el" "compat-*.el" "compat.texi")
+		  :source "elpaca-menu-lock-file" :protocol https
+		  :inherit t :depth treeless :ref
+		  "ad1806f7f677c4e295ed1e603ae6a6a5d9f9d399"))
  (consult :source "elpaca-menu-lock-file" :recipe
 	  (:package "consult" :repo "minad/consult" :fetcher github
 		    :files

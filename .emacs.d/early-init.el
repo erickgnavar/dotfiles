@@ -18,6 +18,10 @@
 ;; Set transparency
 (set-frame-parameter nil 'alpha 95)
 
+;; Bump eval depth — yaml.el's giant pcase grammar exceeds default
+;; 1600 during eager macro expansion
+(setopt max-lisp-eval-depth 5000)
+
 ;; Change GC config to speed up startup time
 ;; Copied from https://github.com/hlissner/doom-emacs/issues/310#issuecomment-354424413
 (defvar last-file-name-handler-alist file-name-handler-alist)

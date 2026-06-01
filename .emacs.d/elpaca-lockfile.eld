@@ -1485,7 +1485,7 @@
 				    "*-pkg.el"))
 			 :source "elpaca-menu-lock-file" :protocol
 			 https :inherit t :depth treeless :ref
-			 "06cb4f3c565e46470a3c4505c11e26066d869715"))
+			 "a0051a8b8eaa85f8df54ddb032f5710c1f62779d"))
  (wakatime-mode :source "elpaca-menu-lock-file" :recipe
 		(:package "wakatime-mode" :fetcher github :repo
 			  "wakatime/wakatime-mode" :files

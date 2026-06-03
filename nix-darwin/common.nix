@@ -93,7 +93,13 @@
     enable = true;
     # when removing a brew application from this file it should
     # deleted from system as well
-    onActivation.cleanup = "zap";
+    onActivation = {
+      cleanup = "zap";
+      # Homebrew 4.5+ (merged 2026-05-29) requires --force-cleanup for
+      # non-interactive `brew bundle install --cleanup`.
+      # https://github.com/Homebrew/brew/pull/22453
+      extraFlags = [ "--force-cleanup" ];
+    };
     brews = [
       # libvterm is not available in nix for aarch64 so we
       # install it from homebrew

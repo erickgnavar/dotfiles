@@ -136,10 +136,10 @@ nmap <Leader>k :bdelete<space>
 nmap <Leader>n :enew<ENTER>
 
 function MyFindFiles()
-  if len(system('git rev-parse'))
-    :Files
-  else
+  if system('git rev-parse --is-inside-work-tree 2>/dev/null') =~ 'true'
     :GFiles --exclude-standard --others --cached
+  else
+    :Files
   endif
 endfunction
 

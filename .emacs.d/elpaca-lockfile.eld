@@ -589,19 +589,6 @@
 			    :source "elpaca-menu-lock-file" :protocol
 			    https :inherit t :depth treeless :ref
 			    "d1346a76122595aeeb7ebb292765841c6cfd417b"))
- (gotest :source "elpaca-menu-lock-file" :recipe
-	 (:package "gotest" :fetcher github :repo
-		   "nlamirault/gotest.el" :files
-		   ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		    "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		    "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		    "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		    (:exclude ".dir-locals.el" "test.el" "tests.el"
-			      "*-test.el" "*-tests.el" "LICENSE"
-			      "README*" "*-pkg.el"))
-		   :source "elpaca-menu-lock-file" :protocol https
-		   :inherit t :depth treeless :ref
-		   "490189e68d743a851bfb42d0017428a7550e8615"))
  (goto-chg :source "elpaca-menu-lock-file" :recipe
 	   (:package "goto-chg" :repo "emacs-evil/goto-chg" :fetcher
 		     github :files

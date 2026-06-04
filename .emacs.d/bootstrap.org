@@ -2769,18 +2769,14 @@ brew install gopls
     "Execute"
     (("r" go-run))
     "Testing"
-    (("tt" go-test-current-test)
-     ("tf" go-test-current-file)
-     ("ta" go-test-current-project))))
+    (("tt" go-ts-mode-test-function-at-point)
+     ("tf" go-ts-mode-test-this-file)
+     ("ta" go-ts-mode-test-this-package))))
   :config
   ;; by default tab width is 8, that's too much space so we define 4
   ;; only for go buffers
   (add-hook 'go-ts-mode-hook #'(lambda ()
                                  (setq-local tab-width 4))))
-
-(use-package gotest
-  :ensure t
-  :after go-ts-mode)
 #+END_SRC
 
 ** Common lisp

@@ -121,8 +121,8 @@ function pod_shell {
   pod=$(pick_pod "$namespace")
   echo "Connecting to $pod"
 
-  if [ -z "$1" ]; then
-    kubectl -n "$namespace" exec -ti "$pod" -- bash
+  if [ -z "${1:-}" ]; then
+    kubectl -n "$namespace" exec -ti "$pod" -- bash 2>/dev/null || kubectl -n "$namespace" exec -ti "$pod" -- sh
   else
     kubectl -n "$namespace" exec -ti "$pod" -- "$1"
   fi

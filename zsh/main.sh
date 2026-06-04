@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # disable oh my zsh theme so pure prompt can work properly
 export ZSH_THEME=""
 

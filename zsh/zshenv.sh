@@ -1,4 +1,4 @@
-#! /bin/env sh
+#!/usr/bin/env sh
 # This file is always executed, even for non interactive shells so it should only contains environment variables
 # Setup lang
 export LANG="en_US.UTF-8"

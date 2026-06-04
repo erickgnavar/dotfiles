@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # postgres.app setup
 export PATH=/usr/local/bin:$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin
 

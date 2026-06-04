@@ -16,7 +16,6 @@ call vundle#rc()
 
 " Plugins
 Plugin 'gmarik/vundle'
-Plugin 'scrooloose/nerdtree'
 Plugin 'tomtom/tcomment_vim'
 " Zen coding
 Plugin 'mattn/emmet-vim'
@@ -117,11 +116,6 @@ endif
 if !isdirectory(&undodir)
     call mkdir(&undodir, "p")
 endif
-
-" NERDTree -----------------------------
-map <F3> :NERDTreeToggle<CR>
-let NERDTreeIgnore = ['\.pyc$', '\.pyo$', '\.beam$', '\.mo$', '/.class$']
-let g:vim_debug_disable_mappings = 1
 
 " Setup clipboard
 set clipboard=unnamed

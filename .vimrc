@@ -128,6 +128,7 @@ nmap <leader>e :call MyFindFiles()<ENTER>
 nmap <Leader>g :Git<ENTER>
 nmap <Leader>k :bdelete<space>
 nmap <Leader>n :enew<ENTER>
+nmap <Leader>q :BLines<ENTER>
 
 function MyFindFiles()
   if system('git rev-parse --is-inside-work-tree 2>/dev/null') =~ 'true'

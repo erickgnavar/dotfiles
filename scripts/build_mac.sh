@@ -20,8 +20,6 @@ cd "$EMACS_REPO_DIR" || exit
 # clean past build data
 git clean -fdx
 
-set -o nounset
-
 make clean
 
 echo "Making sure all requirements are installed..."

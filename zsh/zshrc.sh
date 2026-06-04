@@ -7,7 +7,7 @@ function load_zsh_plugin() {
   plugin_dir=$(echo "$url" | awk -F'[/.]' '{print $(NF-1)}')
 
   if [ ! -d "$HOME/.config/zsh/$plugin_dir" ]; then
-    git clone --depth 1 "$url" "$HOME/.config/zsh/$plugin_dir"
+    git clone --depth 1 "$url" "$HOME/.config/zsh/$plugin_dir" || return
   fi
 
   . "$HOME/.config/zsh/$plugin_dir/$loader"

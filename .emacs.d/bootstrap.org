@@ -296,13 +296,6 @@ By default it will use project root but this can be changed"
 
 Enable =display-battery-mode= after =doom-modeline= is loaded.
 
-This is required for GitHub notifications segment
-
-#+begin_src emacs-lisp
-(use-package async
-  :ensure t)
-#+end_src
-
 #+BEGIN_SRC emacs-lisp
 (use-package doom-modeline
   :ensure t
@@ -310,8 +303,6 @@ This is required for GitHub notifications segment
   :custom
   (doom-modeline-modal-icon nil)
   (doom-modeline-buffer-file-name-style 'relative-from-project)
-  (doom-modeline-github t)
-  (doom-modeline-github-interval (* 30 60))
   :hook
   (elpaca-after-init . doom-modeline-mode)
   (doom-modeline-mode . display-battery-mode))

@@ -1896,6 +1896,7 @@ The last part can change depending of the version installed
 (use-package yaml-ts-mode
   :ensure nil
   :mode "\\.ya?ml\\'"
+  :hook (yaml-ts-mode . flymake-mode)
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " YAML Commands"))
    ("Format"
@@ -1903,13 +1904,6 @@ The last part can change depending of the version installed
     "Kubernetes"
     (("a" my/k8s-apply)
      ("k" my/k8s-delete)))))
-
-(use-package flymake-yamllint
-  :ensure t
-  :defer t
-  :hook
-  (yaml-ts-mode . flymake-mode)
-  (yaml-ts-mode . flymake-yamllint-setup))
 
 (use-package yaml-pro
   :ensure t

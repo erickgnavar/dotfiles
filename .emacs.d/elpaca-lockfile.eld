@@ -525,21 +525,6 @@
 			     :source "elpaca-menu-lock-file" :protocol
 			     https :inherit t :depth treeless :ref
 			     "0a836d7a919723ae5897fce01c3c7d651a30e8c6"))
- (flymake-yamllint :source "elpaca-menu-lock-file" :recipe
-		   (:package "flymake-yamllint" :fetcher codeberg
-			     :repo "shaohme/flymake-yamllint" :files
-			     ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			      "*.texinfo" "doc/dir" "doc/*.info"
-			      "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			      "docs/dir" "docs/*.info" "docs/*.texi"
-			      "docs/*.texinfo"
-			      (:exclude ".dir-locals.el" "test.el"
-					"tests.el" "*-test.el"
-					"*-tests.el" "LICENSE"
-					"README*" "*-pkg.el"))
-			     :source "elpaca-menu-lock-file" :protocol
-			     https :inherit t :depth treeless :ref
-			     "020d2a33568c8069801db9dd6992b8961a58de8d"))
  (ghub :source "elpaca-menu-lock-file" :recipe
        (:package "ghub" :fetcher github :repo "magit/ghub" :files
 		 ("lisp/*.el" "docs/*.texi" ".dir-locals.el") :source

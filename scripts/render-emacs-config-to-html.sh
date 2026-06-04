@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # read the docs based theme
 echo "#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/org/html-theme-readtheorg.setup" >index.org

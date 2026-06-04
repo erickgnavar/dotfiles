@@ -775,19 +775,6 @@
 		      "elpaca-menu-lock-file" :protocol https :inherit
 		      t :depth treeless :ref
 		      "54f6f69401cbaf3b103e5a2ff4bec34498098ef6"))
- (jsonian :source "elpaca-menu-lock-file" :recipe
-	  (:package "jsonian" :fetcher github :repo "iwahbe/jsonian"
-		    :files
-		    ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		     "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		     "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		     "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		     (:exclude ".dir-locals.el" "test.el" "tests.el"
-			       "*-test.el" "*-tests.el" "LICENSE"
-			       "README*" "*-pkg.el"))
-		    :source "elpaca-menu-lock-file" :protocol https
-		    :inherit t :depth treeless :ref
-		    "f200035b847d6dd10bd7987f4540cff9edd3b881"))
  (just-ts-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "just-ts-mode" :fetcher github :repo
 			 "leon-barrett/just-ts-mode.el" :files

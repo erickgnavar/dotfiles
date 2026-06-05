@@ -294,7 +294,8 @@ By default it will use project root but this can be changed"
 
 ** Doom modeline
 
-Enable =display-battery-mode= after =doom-modeline= is loaded.
+Enable =display-battery-mode= only if a battery is present. =(battery)= reports "battery N/A" on
+desktops, which we use to detect the absence of a battery.
 
 #+BEGIN_SRC emacs-lisp
 (use-package doom-modeline
@@ -305,7 +306,13 @@ Enable =display-battery-mode= after =doom-modeline= is loaded.
   (doom-modeline-buffer-file-name-style 'relative-from-project)
   :hook
   (elpaca-after-init . doom-modeline-mode)
-  (doom-modeline-mode . display-battery-mode))
+  (doom-modeline-mode . (lambda ()
+                          ;; prevent show (battery) message in echo
+                          ;; are and *Messages* buffer
+                          (let* ((inhibit-message t)
+                                 (message-log-max nil)
+                                 (battery-p (not (string-match-p "battery N/A" (battery)))))
+                            (display-battery-mode (if battery-p 1 -1))))))
 #+END_SRC
 
 * Dired

@@ -789,7 +789,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "5152aa3ba7a4360133efd5892f0891837af30440"))
+		    "8bfb80ca046bc0c942a14effef354722ad8a8a6c"))
  (llama :source "elpaca-menu-lock-file" :recipe
 	(:package "llama" :fetcher github :repo "tarsius/llama" :files
 		  ("llama.el" ".dir-locals.el") :source

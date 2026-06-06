@@ -3027,8 +3027,8 @@ Manipulate frame font height.
   (interactive)
   ;; mix.exs for elixir monorepos and .env for terraform repositories
   ;; with many levels
-  (when-let ((base-dir (or (locate-dominating-file (buffer-file-name) "mix.exs")
-                           (locate-dominating-file (buffer-file-name) ".env"))))
+  (when-let* ((base-dir (or (locate-dominating-file (buffer-file-name) "mix.exs")
+                            (locate-dominating-file (buffer-file-name) ".env"))))
     (project-find-file-in "" (list base-dir) (project-current))))
 
 (defun my/fold-buffer-when-is-too-big (max-lines)

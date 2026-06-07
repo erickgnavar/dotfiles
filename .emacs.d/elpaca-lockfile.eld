@@ -295,7 +295,7 @@
    "elpaca-menu-lock-file" :recipe
    (:source nil :protocol https :inherit ignore :depth 1 :repo
 	    "https://github.com/progfolio/elpaca.git" :ref
-	    "27c2889f66368bde12b4e243582e343ed9cb75e3" :files
+	    "e974e6f4b5ea2e974f4d7686c5d956aff455594d" :files
 	    (:defaults "elpaca-test.el" (:exclude "extensions"))
 	    :build (:not elpaca-activate) :package "elpaca"))
  (elpaca-use-package :source "elpaca-menu-lock-file" :recipe
@@ -309,7 +309,7 @@
 			       :source "elpaca-menu-lock-file"
 			       :protocol https :inherit t :depth
 			       treeless :ref
-			       "27c2889f66368bde12b4e243582e343ed9cb75e3"))
+			       "e974e6f4b5ea2e974f4d7686c5d956aff455594d"))
  (emacsql :source "elpaca-menu-lock-file" :recipe
 	  (:package "emacsql" :fetcher github :repo "magit/emacsql"
 		    :files (:defaults "README.md" "sqlite") :source

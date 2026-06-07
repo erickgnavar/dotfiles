@@ -72,10 +72,6 @@
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "bootstrap.org" user-emacs-directory))
 
-;; make sure all hooks are executed, for some reason elpaca doesn't
-;; that this after loading packages
-(progn (elpaca-process-queues) (run-hooks 'elpaca-after-init-hook))
-
 ;; custom code that will be unique per machine
 (defconst local-config-file (expand-file-name "local.el" user-emacs-directory))
 (load local-config-file :noerror)

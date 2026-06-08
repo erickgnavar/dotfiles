@@ -2605,6 +2605,11 @@ We need to use ~--stdin-file-path a.js~ to tell ~biome~ to use ~stdin~.
   (reformatter-define js-format
     :program "biome"
     :args '("format" "--stdin-file-path" "a.js" "--javascript-formatter-indent-style" "space")))
+
+(with-eval-after-load 'reformatter
+  (reformatter-define ts-format
+    :program "biome"
+    :args '("format" "--stdin-file-path" "a.ts" "--indent-style" "space")))
 #+END_SRC
 
 ** Typescript
@@ -2613,7 +2618,12 @@ We need to use ~--stdin-file-path a.js~ to tell ~biome~ to use ~stdin~.
 (use-package typescript-ts-mode
   :ensure nil
   :defer t
-  :mode "\\.tsx?\\'")
+  :mode "\\.tsx?\\'"
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Typescript Commands"))
+   ("Format"
+    (("f" ts-format-buffer))))
+  :hook (typescript-ts-mode . flymake-biome-load))
 #+end_src
 
 ** Swift

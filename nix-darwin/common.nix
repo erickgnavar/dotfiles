@@ -79,6 +79,8 @@
     jq
     ruff
     pyright
+    ty
+    pyrefly
     exiftool
     gnused
     imagemagick

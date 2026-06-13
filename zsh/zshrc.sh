@@ -18,6 +18,7 @@ load_zsh_plugin "https://github.com/zsh-users/zsh-syntax-highlighting.git" "zsh-
 load_zsh_plugin "https://github.com/mafredri/zsh-async.git" "async.zsh"
 load_zsh_plugin "https://github.com/sindresorhus/pure.git" "pure.zsh"
 load_zsh_plugin "https://github.com/agkozak/zsh-z.git" "zsh-z.plugin.zsh"
+load_zsh_plugin "https://github.com/Aloxaf/fzf-tab.git" "fzf-tab.plugin.zsh"
 
 fpath+=("$HOME/.config/zsh/pure")
 # setup pure-prompt

@@ -18,6 +18,10 @@
 ;; Set transparency
 (set-frame-parameter nil 'alpha 95)
 
+;; Set fullscreen via default-frame-alist to avoid a post-init frame
+;; resize.
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;; Bump eval depth — yaml.el's giant pcase grammar exceeds default
 ;; 1600 during eager macro expansion
 (setopt max-lisp-eval-depth 5000)

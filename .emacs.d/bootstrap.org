@@ -1063,6 +1063,13 @@ Vertico posframe, show all the candidates in a child-frame, it will activated on
 (use-package vertico-posframe
   :ensure t
   :if (display-graphic-p)
+  :custom
+  (vertico-posframe-width 100)
+  (vertico-posframe-poshandler (lambda (info)
+                                 (cons (/ (- (plist-get info :parent-frame-width)
+                                             (plist-get info :posframe-width))
+                                          2)
+                                       40)))
   :hook
   (vertico-mode . vertico-posframe-mode))
 #+end_src

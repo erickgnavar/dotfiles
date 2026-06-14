@@ -2629,6 +2629,18 @@ We need to use ~--stdin-file-path a.js~ to tell ~biome~ to use ~stdin~.
   :hook (typescript-ts-mode . flymake-biome-load))
 #+end_src
 
+** Svelte
+
+#+begin_src emacs-lisp
+(use-package svelte-ts-mode
+  :ensure (:host github :repo "leafOfTree/svelte-ts-mode")
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(svelte "https://github.com/tree-sitter-grammars/tree-sitter-svelte")))
+#+end_src
+
+after installation run ~M-x treesit-install-language-grammer~ to compile ~svelte~ grammar
+
 ** Swift
 
 #+begin_src emacs-lisp

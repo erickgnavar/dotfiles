@@ -8,11 +8,11 @@ on:
 jobs:
   build-emacs-config-page:
     runs-on: ubuntu-latest
-    container: alpine:3.13.4
+    container: alpine:3.20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install emacs
-        run: apk --update add emacs
+        run: apk --update add emacs-nox
       - name: Render config into html
         run: cd scripts && sh render-emacs-config-to-html.sh
       - name: Pushes to destination repository

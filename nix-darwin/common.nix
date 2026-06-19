@@ -111,6 +111,7 @@
       # we need to use homebrew version to be able to use erlang
       # with no issues
       "openssl@3"
+      "lorem"
     ];
     casks = [
       "macvim-app"

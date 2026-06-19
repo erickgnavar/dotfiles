@@ -12,6 +12,12 @@
 
 (require 'org)
 
+;; Org 9.6+ refuses to download remote SETUPFILE resources in batch
+;; mode (no minibuffer to prompt). Allow the readtheorg theme setupfile
+;; explicitly so its #+HTML_HEAD <link> tags get injected into the HTML.
+(add-to-list 'org-safe-remote-resources
+             "https://raw\\.githubusercontent\\.com/fniessen/org-html-themes/.*")
+
 (require 'htmlize)
 
 ;; For some reason the default value `inline-css' doesn't apply syntax highlighting correctly

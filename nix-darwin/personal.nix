@@ -34,6 +34,7 @@
       "discord"
       "hiddenbar"
       "loopback"
+      "guanchzhou/tap/threemf"
     ];
     masApps = {
       "Keynote" = 409183694;

@@ -1,51 +1,51 @@
 set nocompatible
 
-let iCanHazVundle=1
-let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
-
-if !filereadable(vundle_readme)
-    echo "Installing Vundle..."
-    echo ""
-    silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-    let iCanHazVundle=0
+" --- vim-plug bootstrap -------------------------------------------------
+" Downloads plug.vim to ~/.vim/autoload/ on first run so plug#begin is
+" available immediately, then runs :PlugInstall to fetch the plugins.
+let s:plug_install = empty(glob('~/.vim/autoload/plug.vim'))
+if s:plug_install
+    echo "Installing vim-plug..."
+    silent !mkdir -p ~/.vim/autoload
+    silent !curl -fLo ~/.vim/autoload/plug.vim
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
-
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+call plug#begin('~/.vim/plugged')
 
 " Plugins
-Plugin 'gmarik/vundle'
-Plugin 'tomtom/tcomment_vim'
+Plug 'tomtom/tcomment_vim'
 " Zen coding
-Plugin 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim'
 " Airline
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'tpope/vim-surround'
-Plugin 'Townk/vim-autoclose' " Allow show diff sign of opened files
-Plugin 'lilydjwg/colorizer'
-Plugin 'editorconfig/editorconfig-vim'
-Plugin 'sheerun/vim-polyglot'  " Plugins for most of the programming languages
-Plugin 'elzr/vim-json'
-Plugin 'mattn/webapi-vim' "gist-vim requirement
-Plugin 'mattn/gist-vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'henrik/vim-indexed-search'
-Plugin 'airblade/vim-rooter'
-Plugin 'terryma/vim-expand-region'
-Plugin 'chriskempson/tomorrow-theme', { 'rtp': 'vim' }
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-Plugin 'andymass/vim-matchup'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-surround'
+Plug 'Townk/vim-autoclose' " Allow show diff sign of opened files
+Plug 'lilydjwg/colorizer'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'sheerun/vim-polyglot'  " Plugins for most of the programming languages
+Plug 'elzr/vim-json'
+Plug 'mattn/webapi-vim' "gist-vim requirement
+Plug 'mattn/gist-vim'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'henrik/vim-indexed-search'
+Plug 'airblade/vim-rooter'
+Plug 'terryma/vim-expand-region'
+Plug 'chriskempson/tomorrow-theme', { 'rtp': 'vim' }
+" Provides the fzf#run autoload glue used by fzf.vim; the binary comes from the system.
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'andymass/vim-matchup'
+
+call plug#end()
 
 let g:loaded_matchit = 1
 
-if iCanHazVundle == 0
-    echo "Installing Bundles, please ignore key map error messages"
+if s:plug_install
+    echo "Installing plugins, please ignore key map error messages"
     echo ""
-    :BundleInstall
+    :PlugInstall
 endif
 
 " ============================================================================
@@ -94,7 +94,7 @@ if has('gui_running')
     set guifont=JetBrainsMono\ Nerd\ Font:h12
 endif
 
-color Tomorrow-Night-Bright
+silent! colorscheme Tomorrow-Night-Bright
 
 set scrolloff=3 " when scrolling, keep cursor 3 lines away from screen border
 

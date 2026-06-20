@@ -35,7 +35,7 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'henrik/vim-indexed-search'
 Plugin 'airblade/vim-rooter'
 Plugin 'terryma/vim-expand-region'
-Plugin 'dracula/vim'
+Plugin 'chriskempson/tomorrow-theme', { 'rtp': 'vim' }
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'andymass/vim-matchup'
@@ -94,7 +94,7 @@ if has('gui_running')
     set guifont=JetBrainsMono\ Nerd\ Font:h12
 endif
 
-color dracula
+color Tomorrow-Night-Bright
 
 set scrolloff=3 " when scrolling, keep cursor 3 lines away from screen border
 

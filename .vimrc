@@ -91,7 +91,7 @@ ca w!! w !sudo tee "%"
 
 " colors
 if has('gui_running')
-    set guifont=Monaco:h12
+    set guifont=JetBrainsMono\ Nerd\ Font:h12
 endif
 
 color dracula

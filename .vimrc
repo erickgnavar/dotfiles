@@ -121,7 +121,6 @@ endif
 set clipboard=unnamed
 
 " Setup leader functions
-" Use ripgrep to match `consult-ripgrep' from the Emacs config
 nmap <Leader>a :Rg<space>
 nmap <Leader>b :Buffers<ENTER>
 nmap <Leader>c :ClearCtrlPCache<ENTER>

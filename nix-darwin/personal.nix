@@ -21,7 +21,6 @@
       "claude"
       "telegram"
       "firefox"
-      "google-chrome"
       "vlc"
       "utm"
       "brave-browser"

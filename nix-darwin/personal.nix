@@ -34,6 +34,8 @@
       "hiddenbar"
       "loopback"
       "guanchzhou/tap/threemf"
+      "yubico-authenticator"
+      "steam"
     ];
     masApps = {
       "Keynote" = 409183694;

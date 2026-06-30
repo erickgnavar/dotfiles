@@ -2731,6 +2731,25 @@ rustup component add rust-src
   (let ((default-directory (my/project-root)))
     (compile "cargo run")))
 
+(defun my/rust-cargo-test-at-point ()
+  "Run the test function at or above point."
+  (interactive)
+  (let* ((default-directory (locate-dominating-file (buffer-file-name) "Cargo.toml"))
+         (test-name (save-excursion
+                      (re-search-backward "#\\[test\\]" nil t)
+                      (forward-line 1)
+                      (when (re-search-forward "fn\\s-+\\([a-zA-Z0-9_]+\\)" (line-end-position) t)
+                        (match-string-no-properties 1)))))
+    (if test-name
+        (compile (format "cargo test %s" test-name))
+      (user-error "No #[test] found above point"))))
+
+(defun my/rust-cargo-test-all ()
+  "Run current project."
+  (interactive)
+  (let ((default-directory (locate-dominating-file (buffer-file-name) "Cargo.toml")))
+    (compile "cargo test")))
+
 (use-package rust-ts-mode
   :ensure nil
   :mode "\\.rs\\'"
@@ -2740,7 +2759,10 @@ rustup component add rust-src
     (("f" my/rust-format-buffer))
     "Cargo"
     (("b" my/rust-cargo-build)
-     ("r" my/rust-cargo-run)))))
+     ("r" my/rust-cargo-run))
+    "Testing"
+    (("ta" my/rust-cargo-test-all)
+     ("tt" my/rust-cargo-test-at-point)))))
 #+END_SRC
 
 #+begin_src emacs-lisp

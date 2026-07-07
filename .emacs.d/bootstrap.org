@@ -1537,8 +1537,9 @@ Note taking using ~denote~
 Define formatter helpers using ~typstyle~
 
 #+begin_src emacs-lisp
-(reformatter-define typst-format
-  :program "typstyle")
+(with-eval-after-load 'reformatter
+  (reformatter-define typst-format
+    :program "typstyle"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1943,9 +1944,10 @@ The last part can change depending of the version installed
    ("Format"
     (("f" eglot-format-buffer)))))
 
-(reformatter-define nix-format
-  :program "nixpkgs-fmt"
-  :group 'nix)
+(with-eval-after-load 'reformatter
+  (reformatter-define nix-format
+    :program "nixpkgs-fmt"
+    :group 'nix))
 
 (use-package nix-ts-mode
   :ensure t
@@ -2793,9 +2795,10 @@ brew install gopls
 #+end_src
 
 #+begin_src emacs-lisp
-(reformatter-define go-format
-  :program "goimports"
-  :group 'go-ts-mode)
+(with-eval-after-load 'reformatter
+  (reformatter-define go-format
+    :program "goimports"
+    :group 'go-ts-mode))
 #+end_src
 
 #+BEGIN_SRC emacs-lisp

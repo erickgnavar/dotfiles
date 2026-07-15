@@ -5,13 +5,14 @@
   - One line per changed file: relative path, pipe, visual bar of `+`/`-` proportional to
     lines added/removed (roughly 1 char per changed line).
   - Include new files.
+  - Show lines added and deleted counters
   - Example:
     ```
     src/lib/foo.ts      | 12 +++++++-----
     src/lib/bar.svelte  | 36 +++++++++++++++++++++++++++++
     src/lib/baz.svelte  | 88 ------------
     ```
-- Use conventional commits, unless the project defines its own convention.
+- Use conventional commits(with scope), unless the project defines its own convention.
 
 ## Session patterns that worked well
 

@@ -2,8 +2,6 @@
   environment.systemPackages = with pkgs; [
     xcodegen
     swift-format
-    odin
-    ols
     mutagen
     ffmpeg
   ];
@@ -11,6 +9,8 @@
   homebrew = {
     brews = [
       "llama.cpp"
+      "odin"
+      "ols"
     ];
     casks = [
       "krisp"
@@ -33,7 +33,7 @@
       "discord"
       "hiddenbar"
       "loopback"
-      "guanchzhou/tap/threemf"
+      { "name" = "guanchzhou/tap/threemf"; trusted = true; }
       "yubico-authenticator"
       "steam"
     ];

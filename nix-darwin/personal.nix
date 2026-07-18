@@ -34,6 +34,7 @@
       "hiddenbar"
       "loopback"
       { "name" = "guanchzhou/tap/threemf"; trusted = true; }
+      { "name" = "ruaylabs/tap/melocoton"; trusted = true; }
       "yubico-authenticator"
       "steam"
     ];

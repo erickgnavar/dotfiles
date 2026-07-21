@@ -13,6 +13,9 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
     mkalias
+    btop
+    htop
+    tokei
     vim
     git
     jujutsu

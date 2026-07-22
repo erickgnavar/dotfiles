@@ -787,6 +787,11 @@
 		      t :depth treeless :ref
 		      "54f6f69401cbaf3b103e5a2ff4bec34498098ef6" :id
 		      jit-spell :type git))
+ (jj-mode :source "elpaca-menu-lock-file" :recipe
+	  (:source nil :package "jj-mode" :id jj-mode :host github
+		   :repo "bolivier/jj-mode.el" :type git :protocol
+		   https :inherit t :depth treeless :ref
+		   "64a59eda9022080dcd7e86c128bb1bc3c92964df"))
  (just-ts-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "just-ts-mode" :fetcher github :repo
 			 "leon-barrett/just-ts-mode.el" :files

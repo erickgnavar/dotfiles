@@ -681,6 +681,7 @@ Set maximum value for ~font-locking~ in ~treesit~ native syntax highlighting
   (evil-define-key nil 'global (kbd "<leader>i") 'consult-imenu)
   (evil-define-key nil 'global (kbd "<leader>hs") 'diff-hl-stage-current-hunk)
   (evil-define-key nil 'global (kbd "<leader>hk") 'diff-hl-revert-hunk)
+  (evil-define-key nil 'global (kbd "<leader>j") 'jj-log)
   (evil-define-key nil 'global (kbd "<leader>k") 'kill-buffer)
   (evil-define-key nil 'global (kbd "<leader>l") 'display-line-numbers-mode)
   (evil-define-key nil 'global (kbd "<leader>n") 'evil-buffer-new)
@@ -1600,6 +1601,17 @@ This pacakge includes ~gitignore-mode~, ~gitconfig-mode~ and ~gitattributes-mode
   :ensure nil
   :custom
   (transient-save-history nil))
+#+end_src
+
+** JJ
+
+#+begin_src emacs-lisp
+(use-package jj-mode
+  :ensure (:host github :repo "bolivier/jj-mode.el")
+  :defer t
+  :config
+  (with-eval-after-load 'evil
+    (evil-make-overriding-map jj-mode-map 'normal)))
 #+end_src
 
 ** Magit

@@ -144,7 +144,6 @@
     pavucontrol
     killall
     ripgrep
-    emacsPackages.jinx
     aspell
     aspellDicts.en
     aspellDicts.es
@@ -178,7 +177,7 @@
     alacritty
     tmux
     keyd
-    emacs30-gtk3
+    emacs31-gtk3
     localsend
     mise
     bat

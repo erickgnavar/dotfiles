@@ -8,7 +8,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     emacs-src = {
-      url = "github:emacs-mirror/emacs/58e4dc3c53ab5f685d5077ec6a592e27e141cb08";
+      url = "github:emacs-mirror/emacs/b6332ac21b12bc15083935574a18d0316d31b02b";
       flake = false;
     };
   };

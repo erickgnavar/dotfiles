@@ -167,7 +167,8 @@
     fzf
     shfmt
     shellcheck
-    nemo-with-extensions
+    nautilus
+    sushi # allow show previews in nautilus when pressing space
     tectonic
     wayland
     wlogout

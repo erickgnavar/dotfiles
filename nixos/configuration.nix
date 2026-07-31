@@ -176,6 +176,7 @@
     nwg-look
     networkmanagerapplet
     swaylock-effects
+    mpvpaper # for live wallpapers
     nerdfetch
     fastfetch
     # image annotation tool

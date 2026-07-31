@@ -181,6 +181,7 @@
     # image annotation tool
     satty
     hyprshot
+    playerctl # to know what song is being played
     swappy
     grim
     slurp

@@ -9,7 +9,7 @@
     "sway/mode",
     "sway/window",
   ],
-  "modules-center": [],
+  "modules-center": ["custom/spotify"],
   "modules-right": [
     "tray",
     "idle_inhibitor",
@@ -51,6 +51,15 @@
   },
   "memory": {
     "format": "{}% "
+  },
+  "custom/spotify": {
+    "exec": "~/.config/waybar/scripts/spotify.sh",
+    "return-type": "json",
+    "interval": 2,
+    "max-length": 40,
+    "on-click": "playerctl -p spotify play-pause",
+    "on-scroll-up": "playerctl -p spotify next",
+    "on-scroll-down": "playerctl -p spotify previous"
   },
   "temperature": {
     "critical-threshold": 80,

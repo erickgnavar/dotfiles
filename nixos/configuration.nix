@@ -74,6 +74,12 @@
 
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.package = pkgs.kdePackages.sddm;
+  services.displayManager.sddm.theme = "sddm-astronaut-theme";
+  services.displayManager.sddm.extraPackages = with pkgs.kdePackages; [
+    qtmultimedia
+  ];
+
   services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
@@ -137,6 +143,14 @@
     pamixer
     i3lock-fancy
     polybar
+    # available theme config file are inside
+    # /run/current-system/sw/share/sddm/themes/sddm-astronaut-theme/Themes
+    (sddm-astronaut.overrideAttrs (oldAttrs: {
+      postInstall = (oldAttrs.postInstall or "") + ''
+        substituteInPlace $out/share/sddm/themes/sddm-astronaut-theme/metadata.desktop \
+          --replace "ConfigFile=Themes/astronaut.conf" "ConfigFile=Themes/pixel_sakura.conf"
+      '';
+    }))
     nixpkgs-fmt
     wget
     vim

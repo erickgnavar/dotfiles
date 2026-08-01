@@ -80,6 +80,8 @@
     qtmultimedia
   ];
 
+  security.pam.services."swaylock-plugin" = {};
+
   services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
@@ -178,6 +180,7 @@
     nwg-look
     networkmanagerapplet
     swaylock-effects
+    swaylock-plugin
     mpvpaper # for live wallpapers
     nerdfetch
     fastfetch

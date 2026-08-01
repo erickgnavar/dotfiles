@@ -64,3 +64,84 @@
               :height "90px"
               :anchor "top right")
   (net-panel))
+
+(defpoll ram-data
+  :interval "5s"
+  :initial "{\"used\": \"--\", \"total\": \"--\", \"percent\": \"0\"}"
+  `scripts/ram.sh`)
+
+(defwidget ram-panel []
+  (box :class "ram-panel" :orientation "v" :space-evenly false :spacing 4
+    (label :class "ram-header" :text "memory" :halign "start")
+    (label :class "ram-value ${ram-data.percent > 85 ? "critical" : ""}"
+        :text "${ram-data.percent}%"
+        :halign "start")
+    (label :class "ram-sub" :text "${ram-data.used} / ${ram-data.total}" :halign "start")))
+
+(defwindow ram
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "24px"
+              :y "264px"
+              :width "200px"
+              :height "90px"
+              :anchor "top right")
+  (ram-panel))
+
+(defpoll cpu-data
+  :interval "2s"
+  :initial "{\"percent\": \"0\", \"load\": \"--\", \"cores\": \"--\"}"
+  `scripts/cpu.sh`)
+
+(defwidget cpu-panel []
+  (box :class "cpu-panel" :orientation "v" :space-evenly false :spacing 4
+    (label :class "cpu-header" :text "cpu" :halign "start")
+    (label :class "cpu-value ${cpu-data.percent > 85 ? "critical" : ""}"
+           :text "${cpu-data.percent}%"
+           :halign "start")
+    (label :class "cpu-sub" :text "load ${cpu-data.load} / ${cpu-data.cores} cores" :halign "start")))
+
+(defwindow cpu
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "24px"
+              :y "378px"
+              :width "200px"
+              :height "90px"
+              :anchor "top right")
+  (cpu-panel))
+
+(defpoll gpu-data
+  :interval "2s"
+  :initial "{\"percent\": \"0\", \"vram_used\": \"--\", \"vram_total\": \"--\"}"
+  `scripts/gpu.sh`)
+
+(defwidget gpu-panel []
+  (box :class "gpu-panel" :orientation "v" :space-evenly false :spacing 4
+    (label :class "gpu-header" :text "gpu" :halign "start")
+    (label :class "gpu-value ${gpu-data.percent > 85 ? "critical" : ""}"
+           :text "${gpu-data.percent}%"
+           :halign "start")
+    (label :class "gpu-sub" :text "${gpu-data.vram_used}M / ${gpu-data.vram_total}M vram" :halign "start")))
+
+(defwindow gpu
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "24px"
+              :y "492px"
+              :width "200px"
+              :height "90px"
+              :anchor "top right")
+  (gpu-panel))

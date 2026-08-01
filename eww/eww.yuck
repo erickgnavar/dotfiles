@@ -28,3 +28,39 @@
               :height "90px"
               :anchor "top right")
   (weather-panel))
+
+(defpoll net-speed
+  :interval "1s"
+  `scripts/net.sh speed`)
+
+(defpoll net-usage
+  :interval "30s"
+  `scripts/net.sh usage`)
+
+(defwidget net-panel []
+  (box :class "net-panel" :orientation "v" :space-evenly false :spacing 6
+    (label :class "net-header" :text "network" :halign "start")
+    (box :orientation "h" :space-evenly false :spacing 16
+      (box :orientation "h" :space-evenly false :spacing 4
+        (label :class "net-arrow" :text "↓")
+        (label :class "net-value" :text {net-speed.down}))
+      (box :orientation "h" :space-evenly false :spacing 4
+        (label :class "net-arrow" :text "↑")
+        (label :class "net-value" :text {net-speed.up})))
+    (box :class "net-usage-row" :orientation "h" :space-evenly false :spacing 12
+      (label :text "total ↓ ${net-usage.down_total}")
+      (label :text "↑ ${net-usage.up_total}"))))
+
+(defwindow net
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "24px"
+              :y "150px"
+              :width "200px"
+              :height "90px"
+              :anchor "top right")
+  (net-panel))

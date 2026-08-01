@@ -155,6 +155,7 @@
       '';
     }))
     jq
+    bc # required for eww/net.sh calculations
     nixpkgs-fmt
     wget
     vim

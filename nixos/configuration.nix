@@ -154,6 +154,7 @@
           --replace "ConfigFile=Themes/astronaut.conf" "ConfigFile=Themes/pixel_sakura.conf"
       '';
     }))
+    jq
     nixpkgs-fmt
     wget
     vim
@@ -181,6 +182,7 @@
     networkmanagerapplet
     swaylock-effects
     swaylock-plugin
+    eww
     mpvpaper # for live wallpapers
     nerdfetch
     fastfetch

@@ -163,6 +163,7 @@
     pavucontrol
     killall
     ripgrep
+    mutagen
     aspell
     aspellDicts.en
     aspellDicts.es

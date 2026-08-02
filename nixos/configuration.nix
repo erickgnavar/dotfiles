@@ -88,6 +88,8 @@
   # enable keyring on unlock
   security.pam.services.sddm.enableGnomeKeyring = true;
   security.pam.services."swaylock-plugin" = { };
+  # Give PipeWire realtime priority for low-latency, stable audio.
+  security.rtkit.enable = true;
 
   services.pulseaudio.enable = false;
   services.pipewire = {
@@ -95,6 +97,8 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # Manage PipeWire devices, routing, and audio policy.
+    wireplumber.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.

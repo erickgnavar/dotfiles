@@ -192,8 +192,8 @@ bindsym $mod+r mode "resize"
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-    # Special key to take a screenshot with grim
-    bindsym Print exec grim
+    # Capture screenshots and open them in Satty for annotation
+    bindsym $mod+Shift+s exec ~/.config/sway/scripts/screenshot.sh
 
 # Enable services so sway can run with no errors, this is required to be able to run waybar
 # because we need to have xdg-portal service enabled
@@ -207,6 +207,7 @@ for_window [class="^Nm-connection-editor$"] floating enable, move position cente
 for_window [app_id="^org.pulseaudio.pavucontrol$"] floating enable, border normal 0, move position center
 for_window [app_id="^pavucontrol$"] floating enable, border normal 0, move position center
 for_window [class="^Pavucontrol$"] floating enable, border normal 0, move position center
+for_window [app_id="^org.satty.satty$"] floating enable, border normal 0, resize set 1200 800, move position center
 
 for_window [app_id="^firefox$"] move to workspace 2
 for_window [class="^Emacs$"] move to workspace 3

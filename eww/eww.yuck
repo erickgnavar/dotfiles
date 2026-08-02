@@ -1,3 +1,24 @@
+(defwidget calendar-panel []
+  (box :class "calendar-panel"
+    (calendar :class "desktop-calendar"
+              :show-heading true
+              :show-day-names true
+              :show-week-numbers false)))
+
+(defwindow calendar-window
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "24px"
+              :y "24px"
+              :width "280px"
+              :height "220px"
+              :anchor "top left")
+  (calendar-panel))
+
 (defpoll weather-data
   :interval "15m"
   :initial "{\"icon\": \"\", \"temp\": \"--\", \"feels\": \"--\", \"desc\": \"loading\", \"humidity\": \"--\", \"city\": \"--\"}"

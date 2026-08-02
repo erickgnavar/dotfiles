@@ -51,8 +51,10 @@
   # Configure keymap in X11
   services.xserver = {
     xkb = {
-      variant = "";
+      variant = "mac";
       layout = "us";
+      # Use Left Alt for macOS-style accent sequences.
+      options = "lv3:lalt_switch";
     };
   };
 
@@ -65,8 +67,10 @@
         settings = {
           main = {
             capslock = "esc";
-            leftmeta = "layer(alt)";
-            leftalt = "layer(meta)";
+            # Swap Meta and Alt for laptop keyboard layouts. This is not
+            # required on desktop computers with a custom keyboard.
+            # leftmeta = "layer(alt)";
+            # leftalt = "layer(meta)";
           };
         };
       };

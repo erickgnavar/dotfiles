@@ -66,6 +66,10 @@ exec autotiling
 # Read `man 5 sway-input` for more information about this section.
 
 input * {
+    xkb_layout us
+    xkb_variant mac
+    # Use Left Alt for macOS-style accent sequences.
+    xkb_options lv3:lalt_switch
     repeat_delay 250
     repeat_rate 50
 }
@@ -87,7 +91,7 @@ input * {
     bindsym $mod+space exec rofi -show drun -show-icons
 
     # Open clipboard history
-    bindsym $mod+Mod1+y exec ~/.config/sway/scripts/clipboard-menu.sh
+    bindsym $mod+y exec ~/.config/sway/scripts/clipboard-menu.sh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.

@@ -4,7 +4,7 @@
   `scripts/weather.sh`)
 
 (defwidget weather-panel []
-  (box :class "weather-panel" :orientation "v" :space-evenly false :spacing 4
+  (box :class "weather-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (box :orientation "h" :space-evenly false :spacing 10
       (label :class "weather-glyph" :text {weather-data.icon})
       (box :orientation "v" :space-evenly false
@@ -15,20 +15,6 @@
       (label :text "feels ${weather-data.feels}°")
       (label :text "${weather-data.humidity}% hum"))))
 
-(defwindow weather
-  :monitor 0
-  :windowtype "dock"
-  :stacking "bottom"
-  :exclusive false
-  :focusable false
-  :geometry (geometry
-              :x "24px"
-              :y "24px"
-              :width "200px"
-              :height "102px"
-              :anchor "top right")
-  (weather-panel))
-
 (defpoll net-speed
   :interval "1s"
   `scripts/net.sh speed`)
@@ -38,7 +24,7 @@
   `scripts/net.sh usage`)
 
 (defwidget net-panel []
-  (box :class "net-panel" :orientation "v" :space-evenly false :spacing 6
+  (box :class "net-panel" :orientation "v" :space-evenly false :spacing 6 :height 102
     (label :class "net-header" :text "network" :halign "start")
     (box :orientation "h" :space-evenly false :spacing 16
       (box :orientation "h" :space-evenly false :spacing 4
@@ -51,46 +37,18 @@
       (label :text "total ↓ ${net-usage.down_total}")
       (label :text "↑ ${net-usage.up_total}"))))
 
-(defwindow net
-  :monitor 0
-  :windowtype "dock"
-  :stacking "bottom"
-  :exclusive false
-  :focusable false
-  :geometry (geometry
-              :x "24px"
-              :y "150px"
-              :width "200px"
-              :height "102px"
-              :anchor "top right")
-  (net-panel))
-
 (defpoll ram-data
   :interval "5s"
   :initial "{\"used\": \"--\", \"total\": \"--\", \"percent\": \"0\"}"
   `scripts/ram.sh`)
 
 (defwidget ram-panel []
-  (box :class "ram-panel" :orientation "v" :space-evenly false :spacing 4
+  (box :class "ram-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "ram-header" :text "memory" :halign "start")
     (label :class "ram-value ${ram-data.percent > 85 ? "critical" : ""}"
         :text "${ram-data.percent}%"
         :halign "start")
     (label :class "ram-sub" :text "${ram-data.used} / ${ram-data.total}" :halign "start")))
-
-(defwindow ram
-  :monitor 0
-  :windowtype "dock"
-  :stacking "bottom"
-  :exclusive false
-  :focusable false
-  :geometry (geometry
-              :x "24px"
-              :y "264px"
-              :width "200px"
-              :height "102px"
-              :anchor "top right")
-  (ram-panel))
 
 (defpoll cpu-data
   :interval "2s"
@@ -98,26 +56,12 @@
   `scripts/cpu.sh`)
 
 (defwidget cpu-panel []
-  (box :class "cpu-panel" :orientation "v" :space-evenly false :spacing 4
+  (box :class "cpu-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "cpu-header" :text "cpu" :halign "start")
     (label :class "cpu-value ${cpu-data.percent > 85 ? "critical" : ""}"
            :text "${cpu-data.percent}%"
            :halign "start")
     (label :class "cpu-sub" :text "load ${cpu-data.load} / ${cpu-data.cores} cores" :halign "start")))
-
-(defwindow cpu
-  :monitor 0
-  :windowtype "dock"
-  :stacking "bottom"
-  :exclusive false
-  :focusable false
-  :geometry (geometry
-              :x "24px"
-              :y "378px"
-              :width "200px"
-              :height "102px"
-              :anchor "top right")
-  (cpu-panel))
 
 (defpoll gpu-data
   :interval "2s"
@@ -125,26 +69,12 @@
   `scripts/gpu.sh`)
 
 (defwidget gpu-panel []
-  (box :class "gpu-panel" :orientation "v" :space-evenly false :spacing 4
+  (box :class "gpu-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "gpu-header" :text "gpu" :halign "start")
     (label :class "gpu-value ${gpu-data.percent > 85 ? "critical" : ""}"
            :text "${gpu-data.percent}%"
            :halign "start")
     (label :class "gpu-sub" :text "${gpu-data.vram_used}M / ${gpu-data.vram_total}M vram" :halign "start")))
-
-(defwindow gpu
-  :monitor 0
-  :windowtype "dock"
-  :stacking "bottom"
-  :exclusive false
-  :focusable false
-  :geometry (geometry
-              :x "24px"
-              :y "492px"
-              :width "200px"
-              :height "102px"
-              :anchor "top right")
-  (gpu-panel))
 
 (defpoll disk-data
   :interval "30s"
@@ -152,14 +82,23 @@
   `scripts/disk.sh`)
 
 (defwidget disk-panel []
-  (box :class "disk-panel" :orientation "v" :space-evenly false :spacing 4
+  (box :class "disk-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "disk-header" :text "disk" :halign "start")
     (label :class "disk-value ${disk-data.percent > 85 ? "critical" : ""}"
            :text "${disk-data.percent}%"
            :halign "start")
     (label :class "disk-sub" :text "${disk-data.used} / ${disk-data.total}" :halign "start")))
 
-(defwindow disk
+(defwidget widget-stack []
+  (box :orientation "v" :space-evenly false :spacing 12
+    (weather-panel)
+    (net-panel)
+    (ram-panel)
+    (cpu-panel)
+    (gpu-panel)
+    (disk-panel)))
+
+(defwindow widgets
   :monitor 0
   :windowtype "dock"
   :stacking "bottom"
@@ -167,8 +106,8 @@
   :focusable false
   :geometry (geometry
               :x "24px"
-              :y "606px"
+              :y "24px"
               :width "200px"
-              :height "102px"
+              :height "672px"
               :anchor "top right")
-  (disk-panel))
+  (widget-stack))

@@ -119,6 +119,7 @@
     jetbrains-mono
     nerd-fonts.jetbrains-mono
     nerd-fonts.symbols-only
+    noto-fonts-color-emoji
   ];
 
   # Allow unfree packages
@@ -188,6 +189,7 @@
     wget
     vim
     rofi
+    rofimoji
     pavucontrol
     killall
     ripgrep

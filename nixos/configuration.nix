@@ -144,6 +144,19 @@
   # Will be exposed through DBus to programs willing to store secrets.
   services.gnome.gnome-keyring.enable = true;
 
+  programs.dconf = {
+    enable = true;
+    profiles.user.databases = [
+      {
+        settings."org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+          gtk-theme = "adw-gtk3-dark";
+          icon-theme = "Papirus-Dark";
+        };
+      }
+    ];
+  };
+
   virtualisation.docker.enable = true;
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
@@ -188,6 +201,8 @@
     wl-clipboard
     wtype # sends paste shortcuts for the Sway clipboard menu
     glib
+    adw-gtk3
+    papirus-icon-theme
     nwg-look
     networkmanagerapplet
     swaylock-effects

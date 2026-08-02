@@ -131,7 +131,14 @@
 
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
+    wlr = {
+      enable = true;
+      # OBS requires an explicit output chooser for PipeWire screen capture.
+      settings.screencast = {
+        chooser_type = "simple";
+        chooser_cmd = "${pkgs.slurp}/bin/slurp -f 'Monitor: %o' -or";
+      };
+    };
     extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
   };
 

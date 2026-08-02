@@ -121,11 +121,8 @@
     enable = true;
     wrapperFeatures.gtk = true;
     extraPackages = with pkgs; [
-      swaylock
       swayidle
       waybar
-      xdg-desktop-portal-wlr
-      xdg-desktop-portal
     ];
   };
 
@@ -212,14 +209,12 @@
     brave
     alacritty
     tmux
-    keyd
     emacs31-gtk3
     localsend
     mise
     bat
     eza
     unzip
-    zsh
     git
     delta
     gtk3

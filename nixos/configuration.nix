@@ -81,6 +81,8 @@
     qtmultimedia
   ];
 
+  # enable keyring on unlock
+  security.pam.services.sddm.enableGnomeKeyring = true;
   security.pam.services."swaylock-plugin" = { };
 
   services.pulseaudio.enable = false;

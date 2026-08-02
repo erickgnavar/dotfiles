@@ -33,6 +33,9 @@ exec_always eww daemon
 exec_always eww open widgets
 exec_always eww open calendar-window
 
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
+
 exec autotiling
 
 ### Idle configuration
@@ -82,6 +85,9 @@ input * {
 
     # Start rofi (a program launcher)
     bindsym $mod+space exec rofi -show drun -show-icons
+
+    # Open clipboard history
+    bindsym $mod+Mod1+y exec ~/.config/sway/scripts/clipboard-menu.sh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.

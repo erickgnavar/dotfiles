@@ -184,6 +184,7 @@
     wayland
     wlogout
     wl-clipboard
+    wtype # sends paste shortcuts for the Sway clipboard menu
     glib
     nwg-look
     networkmanagerapplet

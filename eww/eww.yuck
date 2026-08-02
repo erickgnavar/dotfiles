@@ -84,10 +84,14 @@
 (defwidget disk-panel []
   (box :class "disk-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "disk-header" :text "disk" :halign "start")
-    (label :class "disk-value ${disk-data.percent > 85 ? "critical" : ""}"
-           :text "${disk-data.percent}%"
-           :halign "start")
-    (label :class "disk-sub" :text "${disk-data.used} / ${disk-data.total}" :halign "start")))
+    (progress :class "disk-bar ${disk-data.percent > 85 ? "critical" : ""}"
+              :value {disk-data.percent}
+              :hexpand true)
+    (box :class "disk-sub" :orientation "h" :space-evenly false
+      (label :text "${disk-data.used} / ${disk-data.total}" :halign "start" :hexpand true)
+      (label :class "disk-percent ${disk-data.percent > 85 ? "critical" : ""}"
+             :text "${disk-data.percent}%"
+             :halign "end"))))
 
 (defwidget widget-stack []
   (box :orientation "v" :space-evenly false :spacing 12

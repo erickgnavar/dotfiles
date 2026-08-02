@@ -13,10 +13,9 @@
   nix.gc = {
     # Enable the automatic garbage collector
     automatic = true;
-    # When to run the garbage collector
-    dates = "00:00";
-    # Delete old files
-    options = "-d";
+    # Remove generations older than two weeks once a week.
+    dates = "weekly";
+    options = "--delete-older-than 14d";
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

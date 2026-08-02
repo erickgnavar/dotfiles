@@ -21,20 +21,21 @@
 
 (defpoll weather-data
   :interval "15m"
-  :initial "{\"icon\": \"\", \"temp\": \"--\", \"feels\": \"--\", \"desc\": \"loading\", \"humidity\": \"--\", \"city\": \"--\"}"
+  :initial "{\"icon\": \"\", \"temp\": \"--\", \"feels\": \"--\", \"desc\": \"loading\", \"humidity\": \"--\", \"wind\": \"--\", \"city\": \"--\"}"
   `scripts/weather.sh`)
 
 (defwidget weather-panel []
   (box :class "weather-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
+    (label :class "weather-city" :text {weather-data.city} :halign "start")
     (box :orientation "h" :space-evenly false :spacing 10
       (label :class "weather-glyph" :text {weather-data.icon})
       (box :orientation "v" :space-evenly false
         (label :class "weather-temp" :text "${weather-data.temp}°" :halign "start")
         (label :class "weather-desc" :text {weather-data.desc} :halign "start")))
-    (label :class "weather-city" :text {weather-data.city} :halign "start")
-    (box :class "weather-sub" :orientation "h" :space-evenly false :spacing 12
+    (box :class "weather-sub" :orientation "h" :space-evenly false :spacing 10
       (label :text "feels ${weather-data.feels}°")
-      (label :text "${weather-data.humidity}% hum"))))
+      (label :text "${weather-data.humidity}% hum")
+      (label :text "${weather-data.wind} km/h"))))
 
 (defpoll net-speed
   :interval "1s"

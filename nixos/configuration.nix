@@ -84,7 +84,7 @@
     qtmultimedia
   ];
 
-  security.pam.services."swaylock-plugin" = {};
+  security.pam.services."swaylock-plugin" = { };
 
   services.pulseaudio.enable = false;
   services.pipewire = {

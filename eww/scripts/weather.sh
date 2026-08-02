@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 data=$(curl -s "wttr.in/?format=j1" --max-time 5)
-city=$(curl -s "wttr.in/?format=%l" --max-time 5)
+location=$(curl -s "wttr.in/?format=%l" --max-time 5)
 
 if [ -z "$data" ]; then
   echo '{"icon": "\uf071", "temp": "--", "feels": "--", "desc": "offline", "humidity": "--", "wind": "--", "city": "--"}'
@@ -13,7 +13,9 @@ desc=$(echo "$data" | jq -r '.current_condition[0].weatherDesc[0].value')
 humidity=$(echo "$data" | jq -r '.current_condition[0].humidity')
 wind=$(echo "$data" | jq -r '.current_condition[0].windspeedKmph')
 code=$(echo "$data" | jq -r '.current_condition[0].weatherCode')
-city=$(echo "$city" | tr '[:lower:]' '[:upper:]')
+# The penultimate component is the city; single-component responses use the full value.
+city=$(printf '%s' "$location" | awk -F',' '{ city = $(NF - 1); gsub(/^[[:space:]]+|[[:space:]]+$/, "", city); print toupper(city) }')
+[ -n "$city" ] || city="--"
 
 case "$code" in
 113) icon="\ue30d" ;;

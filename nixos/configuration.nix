@@ -258,6 +258,7 @@
     nixd
     biome
     brightnessctl
+    wlsunset
     libnotify
     swaynotificationcenter
     spotify

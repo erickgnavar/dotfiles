@@ -26,3 +26,9 @@
   short (≤50 chars summary line).
 - **Revert fast.** If an extraction turns out to be wrong ("this is only used in one component"),
 revert it immediately rather than defending it.
+
+## Language / framework conventions
+
+Language-specific conventions live in skill files under `~/.pi/agent/skills/`.
+A `lang-directives` extension auto-detects relevant skills from the prompt and
+reminds you to load them.

@@ -23,6 +23,9 @@ main { max-width: 1100px; margin-left: 270px; padding: 50px 5vw 100px; }
 .file-header h3, .file-header p { margin: 0; }
 .file-header h3 { font: 600 .9rem ui-monospace, monospace; }
 .file-header p { color: var(--muted); font-size: .75rem; }
+.file-actions { display: flex; align-items: center; gap: 10px; }
+.source-link { color: var(--accent); font-size: .75rem; white-space: nowrap; }
+.source-link:hover { color: var(--text); }
 .copy { padding: 5px 10px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; background: transparent; cursor: pointer; }
 .copy:hover { color: var(--text); border-color: var(--accent); }
 pre[class*="language-"] { max-height: 650px; margin: 0 !important; border-radius: 0; font-size: .8rem; }
@@ -32,7 +35,8 @@ pre[class*="language-"] { max-height: 650px; margin: 0 !important; border-radius
 #content a { color: var(--accent); }
 #content a:hover { color: var(--text); }
 h1.title { margin: 0 0 32px; color: var(--text); font-size: clamp(2rem, 5vw, 4rem); letter-spacing: -.05em; text-align: left; }
-#org-div-home-and-up { position: fixed; z-index: 2; top: 24px; left: 20px; width: 230px; font-size: .8rem; }
+.page-links { position: fixed; z-index: 2; top: 24px; left: 20px; display: flex; width: 230px; justify-content: space-between; font-size: .8rem; }
+.page-links a { color: var(--accent); }
 #table-of-contents { position: fixed; z-index: 1; inset: 0 auto 0 0; width: 270px; padding: 62px 20px 28px; overflow: auto; border-right: 1px solid var(--border); background: #15171d; }
 #table-of-contents h2 { margin: 0 0 14px; color: var(--text); font-size: 1.4rem; }
 #text-table-of-contents ul { margin: 0; padding-left: 14px; list-style: none; }
@@ -66,7 +70,9 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
   aside nav { display: none; }
   aside.nav-open nav { display: block; }
   main { margin: 0; padding: 30px 18px 70px; }
-  #org-div-home-and-up { position: static; width: auto; padding: 18px 18px 0; }
+  .file-header { align-items: flex-start; gap: 8px; }
+  .file-actions { flex-direction: column; align-items: flex-end; gap: 6px; }
+  .page-links { position: static; width: auto; padding: 18px 18px 0; }
   #table-of-contents { position: static; width: auto; max-height: 45vh; padding: 18px; border-right: 0; border-bottom: 1px solid var(--border); }
   #content { margin: 0; padding: 30px 18px 70px; }
   #postamble { margin: 0; padding: 20px 18px; }

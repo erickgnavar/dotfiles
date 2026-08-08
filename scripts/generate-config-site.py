@@ -11,6 +11,7 @@ import sys
 import tempfile
 from collections import defaultdict
 from pathlib import Path
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
 EMACS_SOURCE = Path(".emacs.d/bootstrap.org")
@@ -99,6 +100,36 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def git_output(*arguments: str) -> str:
+    try:
+        result = subprocess.run(
+            ["git", *arguments],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError as error:
+        raise RuntimeError("Git is required to generate the site") from error
+    except subprocess.CalledProcessError as error:
+        detail = error.stderr.strip()
+        raise RuntimeError(detail or f"git {' '.join(arguments)} failed") from error
+    return result.stdout.strip()
+
+
+def github_source_base() -> str:
+    repository = os.environ.get("GITHUB_REPOSITORY")
+    if repository is None:
+        remote = git_output("remote", "get-url", "origin")
+        marker = "github.com"
+        if marker not in remote:
+            raise RuntimeError("the origin remote is not hosted on GitHub")
+        repository = remote.split(marker, 1)[1].lstrip(":/").removesuffix(".git")
+
+    revision = os.environ.get("GITHUB_SHA") or git_output("rev-parse", "HEAD")
+    return f"https://github.com/{repository}/blob/{revision}/"
+
+
 def repository_files() -> list[Path]:
     """Return tracked files, failing closed outside a Git checkout."""
     try:
@@ -167,8 +198,9 @@ def file_id(relative: Path) -> str:
     return f"file-{slug}-{digest}"
 
 
-def render_file(relative: Path, source: str) -> str:
+def render_file(relative: Path, source: str, source_base: str) -> str:
     path = relative.as_posix()
+    source_url = source_base + quote(path, safe="/")
     line_count = len(source.splitlines())
     language = language_for(relative, source)
     return f"""
@@ -178,13 +210,18 @@ def render_file(relative: Path, source: str) -> str:
       <h3>{html.escape(relative.name)}</h3>
       <p>{html.escape(path)} · {line_count:,} lines</p>
     </div>
-    <button class="copy" type="button" aria-label="Copy {html.escape(path, quote=True)}">Copy</button>
+    <div class="file-actions">
+      <a class="source-link" href="{html.escape(source_url, quote=True)}">View on GitHub</a>
+      <button class="copy" type="button" aria-label="Copy {html.escape(path, quote=True)}">Copy</button>
+    </div>
   </header>
   <pre><code class="language-{language}">{html.escape(source)}</code></pre>
 </article>"""
 
 
-def render_site(files: list[tuple[Path, str]], stylesheet: str) -> str:
+def render_site(
+    files: list[tuple[Path, str]], stylesheet: str, source_base: str
+) -> str:
     grouped: dict[str, list[tuple[Path, str]]] = defaultdict(list)
     for relative, source in files:
         grouped[group_name(relative)].append((relative, source))
@@ -204,7 +241,9 @@ def render_site(files: list[tuple[Path, str]], stylesheet: str) -> str:
                 f'<a href="#{group_id}"><span>{html.escape(group)}</span><b>{len(entries)}</b></a>'
             )
             heading = html.escape(group)
-        cards = "\n".join(render_file(path, source) for path, source in entries)
+        cards = "\n".join(
+            render_file(path, source, source_base) for path, source in entries
+        )
         sections.append(
             f'<section class="group" id="{group_id}"><h2>{heading}</h2>{cards}</section>'
         )
@@ -267,6 +306,7 @@ def main() -> int:
     patterns = DEFAULT_EXCLUDES + tuple(args.exclude)
     try:
         candidates = repository_files()
+        source_base = github_source_base()
     except RuntimeError as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
@@ -308,13 +348,19 @@ def main() -> int:
             staging = Path(staging_directory)
             staged_index = staging / output.name
             staged_emacs = staging / emacs_output.name
+            emacs_source_url = source_base + quote(EMACS_SOURCE.as_posix(), safe="/")
             subprocess.run(
-                ["bash", str(EMACS_RENDERER), str(staged_emacs)],
+                [
+                    "bash",
+                    str(EMACS_RENDERER),
+                    str(staged_emacs),
+                    emacs_source_url,
+                ],
                 cwd=ROOT,
                 check=True,
             )
             staged_index.write_text(
-                render_site(files, stylesheet), encoding="utf-8"
+                render_site(files, stylesheet, source_base), encoding="utf-8"
             )
             os.replace(staged_emacs, emacs_output)
             os.replace(staged_index, output)

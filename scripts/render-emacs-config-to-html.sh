@@ -3,11 +3,12 @@ set -euo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 root_dir=$(cd -- "$script_dir/.." && pwd)
-if (($# != 1)); then
-  echo "Usage: $0 OUTPUT" >&2
+if (($# != 2)); then
+  echo "Usage: $0 OUTPUT SOURCE_URL" >&2
   exit 64
 fi
 output=$1
+source_url=$2
 work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT
 
@@ -16,12 +17,10 @@ trap 'rm -rf "$work_dir"' EXIT
 # existing init file from affecting it.
 export HOME="$work_dir/home"
 export XDG_CONFIG_HOME="$work_dir/config"
+export DOTFILES_SOURCE_URL="$source_url"
 mkdir -p "$HOME" "$XDG_CONFIG_HOME"
 
-{
-  echo "#+HTML_LINK_HOME: index.html"
-  cat "$root_dir/.emacs.d/bootstrap.org"
-} >"$work_dir/index.org"
+cp "$root_dir/.emacs.d/bootstrap.org" "$work_dir/index.org"
 
 emacs --batch \
   -Q \

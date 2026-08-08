@@ -39,11 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>")
 
+(defconst dotfiles-html-preamble
+  (format
+   "<nav class=\"page-links\"><a href=\"index.html\">Dotfiles</a><a href=\"%s\">View on GitHub</a></nav>"
+   (getenv "DOTFILES_SOURCE_URL")))
+
 ;; Keep source highlighting in CSS classes and use the same visual language as
 ;; the generated dotfiles index instead of an external Org theme.
 (setq org-export-time-stamp-file nil
       org-html-htmlize-output-type 'css
       org-html-head dotfiles-html-head
       org-html-head-extra dotfiles-html-scripts
+      org-html-preamble dotfiles-html-preamble
       org-html-head-include-default-style nil
       org-html-head-include-scripts nil)

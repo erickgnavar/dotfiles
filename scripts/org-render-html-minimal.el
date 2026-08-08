@@ -5,21 +5,25 @@
 
 (package-initialize)
 
+;; This is required to highlight code blocks properly.
 (package-refresh-contents)
-
-;; this is required to highlight code blocks properly
 (package-install 'htmlize)
 
+(require 'htmlize)
 (require 'org)
 
-;; Org 9.6+ refuses to download remote SETUPFILE resources in batch
-;; mode (no minibuffer to prompt). Allow the readtheorg theme setupfile
-;; explicitly so its #+HTML_HEAD <link> tags get injected into the HTML.
-(add-to-list 'org-safe-remote-resources
-             "https://raw\\.githubusercontent\\.com/fniessen/org-html-themes/.*")
+(defconst dotfiles-html-head
+  (let ((stylesheet
+         (expand-file-name "config-site.css"
+                           (file-name-directory load-file-name))))
+    (with-temp-buffer
+      (insert-file-contents stylesheet)
+      (concat "<style>\n" (buffer-string) "</style>"))))
 
-(require 'htmlize)
-
-;; For some reason the default value `inline-css' doesn't apply syntax highlighting correctly
-;; in the resulting html file so we need to change the value to `css'
-(setq org-html-htmlize-output-type 'css)
+;; Keep source highlighting in CSS classes and use the same visual language as
+;; the generated dotfiles index instead of an external Org theme.
+(setq org-export-time-stamp-file nil
+      org-html-htmlize-output-type 'css
+      org-html-head dotfiles-html-head
+      org-html-head-include-default-style nil
+      org-html-head-include-scripts nil)

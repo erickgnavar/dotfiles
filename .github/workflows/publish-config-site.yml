@@ -1,0 +1,53 @@
+---
+name: Publish config site
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Emacs
+        run: sudo apt-get update && sudo apt-get install --yes emacs-nox
+      - name: Generate site
+        run: ./scripts/generate-config-site.py
+      - name: Publish gh-pages branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          publish_dir="${RUNNER_TEMP}/config-site-pages"
+          repository="https://github.com/${GITHUB_REPOSITORY}.git"
+
+          if git ls-remote --exit-code --heads "$repository" gh-pages >/dev/null; then
+            git clone --depth=1 --branch=gh-pages "$repository" "$publish_dir"
+          else
+            branch_status=$?
+            if ((branch_status != 2)); then
+              echo "Failed to inspect the gh-pages branch" >&2
+              exit "$branch_status"
+            fi
+            git init --initial-branch=gh-pages "$publish_dir"
+            git -C "$publish_dir" remote add origin "$repository"
+          fi
+
+          git -C "$publish_dir" rm -r --ignore-unmatch .
+          cp -a site/. "$publish_dir"/
+          git -C "$publish_dir" add --all
+          git -C "$publish_dir" config user.name "$GITHUB_ACTOR"
+          git -C "$publish_dir" config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+
+          if git -C "$publish_dir" diff --cached --quiet; then
+            echo "No site changes to publish"
+          else
+            git -C "$publish_dir" commit \
+              --message="deploy: publish config site" \
+              --message="Generated from ${GITHUB_SHA}"
+            git -C "$publish_dir" push origin gh-pages
+          fi

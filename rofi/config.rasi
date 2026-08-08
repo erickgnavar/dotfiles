@@ -1,1 +1,91 @@
-@theme "Arc-Dark"
+configuration {
+  modi: "drun,run,window";
+  show-icons: true;
+  display-drun: "Applications";
+  display-run: "Run";
+  display-window: "Windows";
+}
+
+* {
+  background: rgba(15, 15, 15, 92%);
+  surface: rgba(255, 255, 255, 6%);
+  surface-hover: rgba(126, 186, 228, 12%);
+  border-color: rgba(255, 255, 255, 12%);
+  foreground: #eeeeee;
+  muted: rgba(255, 255, 255, 55%);
+  accent: #7ebae4;
+  critical: #f53c3c;
+  background-color: transparent;
+  text-color: @foreground;
+  font: "JetBrainsMono Nerd Font 12";
+}
+
+window {
+  width: 600px;
+  padding: 12px;
+  border: 1px;
+  border-color: @border-color;
+  border-radius: 10px;
+  background-color: @background;
+}
+
+mainbox {
+  spacing: 10px;
+}
+
+inputbar {
+  padding: 10px 12px;
+  spacing: 10px;
+  border-radius: 8px;
+  background-color: @surface;
+}
+
+prompt {
+  text-color: @accent;
+}
+
+entry {
+  placeholder: "Search…";
+  placeholder-color: @muted;
+}
+
+listview {
+  lines: 8;
+  columns: 1;
+  spacing: 4px;
+  scrollbar: false;
+  fixed-height: false;
+}
+
+element {
+  padding: 8px 10px;
+  spacing: 10px;
+  border-radius: 8px;
+  background-color: transparent;
+}
+
+element normal normal,
+element alternate normal {
+  background-color: transparent;
+  text-color: @foreground;
+}
+
+element selected normal {
+  background-color: @surface-hover;
+  text-color: @accent;
+}
+
+element urgent normal {
+  text-color: @critical;
+}
+
+element-icon {
+  size: 24px;
+  background-color: transparent;
+}
+
+element-text {
+  vertical-align: 0.5;
+  background-color: transparent;
+  text-color: inherit;
+}

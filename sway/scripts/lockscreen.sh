@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VIDEO_DIR="$HOME/Videos/wallpapers/"
+VIDEO_DIR="$HOME/Wallpapers/"
 
 if [[ ! -d "$VIDEO_DIR" ]]; then
   echo "Error: '$VIDEO_DIR' is not a directory" >&2

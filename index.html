@@ -52,6 +52,8 @@ h1.title { margin: 0 0 32px; color: var(--text); font-size: clamp(2rem, 5vw, 4re
 h2 { margin: 0 0 14px; color: var(--text); font-size: 1.5rem; }
 h3 { margin-top: 32px; color: var(--text); }
 p, li { color: var(--text); }
+.org-src-container { position: relative; }
+.org-src-container > .copy { position: absolute; z-index: 1; top: 8px; right: 8px; background: var(--panel); }
 pre.src, pre.example { max-height: 650px; margin: 16px 0; padding: 16px; overflow: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text); font: .8rem/1.5 ui-monospace, monospace; }
 .org-comment, .org-comment-delimiter { color: #6c7086; font-style: italic; }
 .org-keyword, .org-negation-char { color: #cba6f7; }
@@ -10255,7 +10257,7 @@ cd - || exit
   <header class="file-header">
     <div>
       <h3>config-site.css</h3>
-      <p>scripts/config-site.css · 71 lines</p>
+      <p>scripts/config-site.css · 73 lines</p>
     </div>
     <button class="copy" type="button" aria-label="Copy scripts/config-site.css">Copy</button>
   </header>
@@ -10304,6 +10306,8 @@ h1.title { margin: 0 0 32px; color: var(--text); font-size: clamp(2rem, 5vw, 4re
 h2 { margin: 0 0 14px; color: var(--text); font-size: 1.5rem; }
 h3 { margin-top: 32px; color: var(--text); }
 p, li { color: var(--text); }
+.org-src-container { position: relative; }
+.org-src-container &gt; .copy { position: absolute; z-index: 1; top: 8px; right: 8px; background: var(--panel); }
 pre.src, pre.example { max-height: 650px; margin: 16px 0; padding: 16px; overflow: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text); font: .8rem/1.5 ui-monospace, monospace; }
 .org-comment, .org-comment-delimiter { color: #6c7086; font-style: italic; }
 .org-keyword, .org-negation-char { color: #cba6f7; }
@@ -10601,6 +10605,8 @@ h1.title { margin: 0 0 32px; color: var(--text); font-size: clamp(2rem, 5vw, 4re
 h2 { margin: 0 0 14px; color: var(--text); font-size: 1.5rem; }
 h3 { margin-top: 32px; color: var(--text); }
 p, li { color: var(--text); }
+.org-src-container { position: relative; }
+.org-src-container > .copy { position: absolute; z-index: 1; top: 8px; right: 8px; background: var(--panel); }
 pre.src, pre.example { max-height: 650px; margin: 16px 0; padding: 16px; overflow: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text); font: .8rem/1.5 ui-monospace, monospace; }
 .org-comment, .org-comment-delimiter { color: #6c7086; font-style: italic; }
 .org-keyword, .org-negation-char { color: #cba6f7; }
@@ -10684,6 +10690,8 @@ h1.title { margin: 0 0 32px; color: var(--text); font-size: clamp(2rem, 5vw, 4re
 h2 { margin: 0 0 14px; color: var(--text); font-size: 1.5rem; }
 h3 { margin-top: 32px; color: var(--text); }
 p, li { color: var(--text); }
+.org-src-container { position: relative; }
+.org-src-container > .copy { position: absolute; z-index: 1; top: 8px; right: 8px; background: var(--panel); }
 pre.src, pre.example { max-height: 650px; margin: 16px 0; padding: 16px; overflow: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text); font: .8rem/1.5 ui-monospace, monospace; }
 .org-comment, .org-comment-delimiter { color: #6c7086; font-style: italic; }
 .org-keyword, .org-negation-char { color: #cba6f7; }
@@ -10821,7 +10829,7 @@ if __name__ == &quot;__main__&quot;:
   <header class="file-header">
     <div>
       <h3>org-render-html-minimal.el</h3>
-      <p>scripts/org-render-html-minimal.el · 29 lines</p>
+      <p>scripts/org-render-html-minimal.el · 49 lines</p>
     </div>
     <button class="copy" type="button" aria-label="Copy scripts/org-render-html-minimal.el">Copy</button>
   </header>
@@ -10847,11 +10855,31 @@ if __name__ == &quot;__main__&quot;:
       (insert-file-contents stylesheet)
       (concat &quot;&lt;style&gt;\n&quot; (buffer-string) &quot;&lt;/style&gt;&quot;))))
 
+(defconst dotfiles-html-scripts
+  &quot;&lt;script&gt;
+document.addEventListener(&#x27;DOMContentLoaded&#x27;, () =&gt; {
+  document.querySelectorAll(&#x27;pre.src&#x27;).forEach(block =&gt; {
+    const button = document.createElement(&#x27;button&#x27;);
+    button.className = &#x27;copy&#x27;;
+    button.type = &#x27;button&#x27;;
+    button.textContent = &#x27;Copy&#x27;;
+    button.setAttribute(&#x27;aria-label&#x27;, &#x27;Copy code snippet&#x27;);
+    button.addEventListener(&#x27;click&#x27;, async () =&gt; {
+      await navigator.clipboard.writeText(block.textContent);
+      button.textContent = &#x27;Copied&#x27;;
+      setTimeout(() =&gt; button.textContent = &#x27;Copy&#x27;, 1200);
+    });
+    block.parentElement.prepend(button);
+  });
+});
+&lt;/script&gt;&quot;)
+
 ;; Keep source highlighting in CSS classes and use the same visual language as
 ;; the generated dotfiles index instead of an external Org theme.
 (setq org-export-time-stamp-file nil
       org-html-htmlize-output-type &#x27;css
       org-html-head dotfiles-html-head
+      org-html-head-extra dotfiles-html-scripts
       org-html-head-include-default-style nil
       org-html-head-include-scripts nil)
 </code></pre>

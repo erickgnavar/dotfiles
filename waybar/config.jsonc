@@ -25,7 +25,8 @@
     // "custom/gpu",
     "temperature",
     "battery",
-    "clock"
+    "clock",
+    "custom/notification"
   ],
   "sway/workspaces": {
     "format": "{name}",
@@ -84,6 +85,25 @@
     "format": "\uf313",
     "tooltip-format": "Power menu",
     "on-click": "~/.config/sway/scripts/wlogout-menu.sh"
+  },
+  "custom/notification": {
+    "tooltip": true,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂜",
+      "dnd-notification": "󰂠",
+      "dnd-none": "󰪓",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰪑",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
   },
   "temperature": {
     "critical-threshold": 80,

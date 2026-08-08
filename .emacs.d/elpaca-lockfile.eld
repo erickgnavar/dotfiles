@@ -12,13 +12,6 @@
 		     :inherit t :depth treeless :ref
 		     "e1ef5dad75fa502d761f70d9ddf1aeb1c423f41d" :id
 		     annalist :type git))
- (anything :source "elpaca-menu-lock-file" :recipe
-	   (:source "elpaca-menu-lock-file" :protocol https :inherit t
-		    :depth treeless :repo
-		    "https://repo.or.cz/anything-config.git" :package
-		    "anything" :ref
-		    "9e2259fc779eef1a3e947e74cc7d301d1cea0ca6" :id
-		    anything :type git))
  (cider :source "elpaca-menu-lock-file" :recipe
 	(:package "cider" :fetcher github :repo "clojure-emacs/cider"
 		  :files
@@ -742,20 +735,6 @@
 			  "hydra-posframe" :ref
 			  "142a04dd588af6c725e331863c3ca7bd5dda13ec"
 			  :id hydra-posframe :type git))
- (imgur :source "elpaca-menu-lock-file" :recipe
-	(:package "imgur" :fetcher github :repo "myuhe/imgur.el"
-		  :files
-		  ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		   "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		   "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		   "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		   (:exclude ".dir-locals.el" "test.el" "tests.el"
-			     "*-test.el" "*-tests.el" "LICENSE"
-			     "README*" "*-pkg.el"))
-		  :source "elpaca-menu-lock-file" :protocol https
-		  :inherit t :depth treeless :host github :main nil
-		  :ref "ed952eb8f556c6fc0d982e2a689083504558cffb" :id
-		  imgur :type git))
  (inflections :source "elpaca-menu-lock-file" :recipe
 	      (:package "inflections" :repo "eschulte/jump.el"
 			:fetcher github :files ("inflections.el")
@@ -916,12 +895,6 @@
 		       :inherit t :depth treeless :ref
 		       "a527fb03b76a2bce1e360c6e73a095e06922c3f3" :id
 		       marginalia :type git))
- (meme :source "elpaca-menu-lock-file" :recipe
-       (:source "elpaca-menu-lock-file" :protocol https :inherit t
-		:depth treeless :host github :repo "larsmagne/meme"
-		:package "meme" :ref
-		"3850a8dfafa15b3f2f988720fcc63c5a7e507ba6" :id meme
-		:type git))
  (mermaid-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "mermaid-mode" :repo "abrochard/mermaid-mode"
 			 :fetcher github :files
@@ -938,6 +911,11 @@
 			 https :inherit t :depth treeless :ref
 			 "e74d4da7612c7a88e07f9dd3369e3b9fd36f396c"
 			 :id mermaid-mode :type git))
+ (mini-meme :source "elpaca-menu-lock-file" :recipe
+	    (:source nil :package "mini-meme" :id mini-meme :host
+		     github :repo "erickgnavar/mini-meme.el" :type git
+		     :protocol https :inherit t :depth treeless :ref
+		     "079e82c4c85b0fd3dfafb69b6778d4e2a158acad"))
  (mise :source "elpaca-menu-lock-file" :recipe
        (:package "mise" :fetcher github :repo "eki3z/mise.el" :files
 		 ("*.el" "*.el.in" "dir" "*.info" "*.texi" "*.texinfo"

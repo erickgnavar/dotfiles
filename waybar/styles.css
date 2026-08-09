@@ -208,16 +208,25 @@ label:focus {
   background-color: #f53c3c;
 }
 
-#custom-vpn {
+/* Session states: blue is active, muted is inactive, red needs attention. */
+#custom-vpn,
+#idle_inhibitor,
+#custom-notification {
+  padding: 0 8px;
   background-color: transparent;
-}
-
-#custom-vpn.connected {
-  color: #2ecc71;
-}
-
-#custom-vpn.disconnected {
   color: rgba(255, 255, 255, 0.35);
+}
+
+#custom-vpn.connected,
+#idle_inhibitor.activated,
+#custom-notification.notification,
+#custom-notification.dnd-notification,
+#custom-notification.dnd-none,
+#custom-notification.inhibited-notification,
+#custom-notification.inhibited-none,
+#custom-notification.dnd-inhibited-notification,
+#custom-notification.dnd-inhibited-none {
+  color: #7ebae4;
 }
 
 #pulseaudio {
@@ -281,16 +290,6 @@ label:focus {
   background-color: #eb4d4b;
 }
 
-#idle_inhibitor {
-  background-color: transparent;
-  color: #ffffff;
-}
-
-#idle_inhibitor.activated {
-  background-color: transparent;
-  color: #ffffff;
-}
-
 #language {
   background: #00b093;
   color: #740864;
@@ -328,20 +327,9 @@ label:focus {
 }
 
 #privacy-item {
-  padding: 0 5px;
-  color: white;
-}
-
-#privacy-item.screenshare {
-  background-color: #cf5700;
-}
-
-#privacy-item.audio-in {
-  background-color: #1ca000;
-}
-
-#privacy-item.audio-out {
-  background-color: #0069d4;
+  padding: 0 8px;
+  color: #f53c3c;
+  background-color: transparent;
 }
 
 #custom-spotify {
@@ -361,13 +349,5 @@ label:focus {
 #custom-notification {
   font-family: "Symbols Nerd Font";
   font-size: 16px;
-  padding: 0 10px;
-  color: #7ebae4;
-}
-
-#custom-notification.dnd-notification,
-#custom-notification.dnd-none,
-#custom-notification.dnd-inhibited-notification,
-#custom-notification.dnd-inhibited-none {
-  color: #888888;
+  padding: 0 8px;
 }

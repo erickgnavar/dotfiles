@@ -57,6 +57,19 @@ image/*)
   swaymsg output '*' bg "$selected" fill
   ;;
 video/*)
+  # Sway starts swaybg for static images; stop it before using mpvpaper.
+  mapfile -t swaybg_pids < <(pgrep -f '[s]waybg' || true)
+  if ((${#swaybg_pids[@]})); then
+    kill "${swaybg_pids[@]}" 2>/dev/null || true
+    for _ in {1..10}; do
+      swaybg_running=false
+      for pid in "${swaybg_pids[@]}"; do
+        kill -0 "$pid" 2>/dev/null && swaybg_running=true
+      done
+      "$swaybg_running" || break
+      sleep 0.05
+    done
+  fi
   mpvpaper -o "hwdec=vaapi no-audio loop" '*' "$selected"
   ;;
 esac

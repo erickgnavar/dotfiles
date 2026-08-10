@@ -5,7 +5,8 @@ emit_status() {
   local clients count tooltip
 
   if ! clients=$(wayvncctl --json client-list 2>/dev/null); then
-    clients='[]'
+    jq -cn '{text: "󰢹", tooltip: "WayVNC stopped — click to start", class: "stopped"}'
+    return
   fi
   if ! count=$(jq -r 'if type == "array" then length else 0 end' <<<"$clients" 2>/dev/null); then
     count=0
@@ -21,9 +22,9 @@ emit_status() {
         end
     ' <<<"$clients")
     jq -cn --arg count "$count" --arg tooltip "$tooltip" \
-      '{text: ("󰢹 " + $count), tooltip: ("Active VNC sessions\n" + $tooltip), class: "active"}'
+      '{text: ("󰢹 " + $count), tooltip: ("Active VNC sessions\n" + $tooltip + "\nClick to stop"), class: "active"}'
   else
-    jq -cn '{text: "", tooltip: "No active VNC sessions", class: "inactive"}'
+    jq -cn '{text: "󰢹", tooltip: "WayVNC running — no active sessions\nClick to stop", class: "running"}'
   fi
 }
 

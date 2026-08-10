@@ -170,6 +170,19 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  # Waybar starts and stops this service on demand.
+  systemd.user.services.wayvnc = {
+    description = "WayVNC remote desktop server";
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    environment.WAYLAND_DISPLAY = "wayland-1";
+    serviceConfig = {
+      # Port 5900 is reserved by libvirt/QEMU's local VNC display.
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -Ldebug 0.0.0.0 5901";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     pamixer

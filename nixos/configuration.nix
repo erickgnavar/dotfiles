@@ -191,6 +191,7 @@
     vim
     rofi
     rofimoji
+    wayvnc # enable remote control
     pavucontrol
     killall
     ripgrep

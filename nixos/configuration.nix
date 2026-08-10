@@ -300,11 +300,15 @@
   # Enable tailscale
   services.tailscale.enable = true;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+    # Keep Tailscale exit nodes working with reverse-path filtering enabled.
+    checkReversePath = "loose";
+    # Allow direct Tailscale peer connections.
+    allowedUDPPorts = [ config.services.tailscale.port ];
+    # WayVNC listens globally but is reachable only through Tailscale.
+    interfaces.${config.services.tailscale.interfaceName}.allowedTCPPorts = [ 5901 ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

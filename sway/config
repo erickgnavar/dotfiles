@@ -25,12 +25,12 @@ gaps inner 5
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
+# Make the active Sway sockets available to graphical systemd user services.
+exec_always systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK
+
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec swaync
 
-exec_always ~/.config/sway/scripts/wallpaper.sh
-# Pick a new wallpaper every 30 minutes without duplicating the timer on reload.
-exec bash -c 'while sleep 30m; do ~/.config/sway/scripts/wallpaper.sh >/dev/null 2>&1 & done'
 # Shift from 6500K to 4000K based on local sunrise and sunset times.
 exec wlsunset -l 19.4326 -L -99.1332 -t 4000 -T 6500
 

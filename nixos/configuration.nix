@@ -171,6 +171,47 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  # Rotate wallpapers while the graphical session is active.
+  systemd.user.services.wallpaper-rotate = {
+    description = "Select the next desktop wallpaper";
+    after = [ "graphical-session.target" ];
+    path = with pkgs; [
+      coreutils
+      file
+      findutils
+      procps
+      sway
+      systemd
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash %h/.config/sway/scripts/wallpaper.sh";
+    };
+  };
+
+  systemd.user.timers.wallpaper-rotate = {
+    description = "Rotate the desktop wallpaper every 30 minutes";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    timerConfig = {
+      OnActiveSec = "1s";
+      OnUnitActiveSec = "30m";
+      Unit = "wallpaper-rotate.service";
+    };
+  };
+
+  # Keep video wallpaper playback under systemd supervision.
+  systemd.user.services.wallpaper-video = {
+    description = "Video desktop wallpaper";
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = ''${pkgs.mpvpaper}/bin/mpvpaper -o "hwdec=vaapi no-audio loop" "*" %h/.local/state/wallpaper/current-video'';
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+  };
+
   environment.etc."wayvnc/config".text = ''
     enable_auth=true
     enable_pam=true

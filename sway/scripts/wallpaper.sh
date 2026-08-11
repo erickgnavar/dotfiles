@@ -4,6 +4,7 @@ set -euo pipefail
 WALLPAPER_DIR="$HOME/Wallpapers"
 STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper"
 LAST_WALLPAPER_FILE="$STATE_DIR/last-wallpaper"
+VIDEO_WALLPAPER_LINK="$STATE_DIR/current-video"
 
 if [[ ! -d "$WALLPAPER_DIR" ]]; then
   echo "Error: '$WALLPAPER_DIR' is not a directory" >&2
@@ -34,19 +35,6 @@ if ((${#media[@]} > 1)) && [[ -n "$last_wallpaper" ]]; then
   done
 fi
 
-mapfile -t mpvpaper_pids < <(pgrep -f '[m]pvpaper' || true)
-if ((${#mpvpaper_pids[@]})); then
-  kill "${mpvpaper_pids[@]}" 2>/dev/null || true
-  for _ in {1..10}; do
-    mpvpaper_running=false
-    for pid in "${mpvpaper_pids[@]}"; do
-      kill -0 "$pid" 2>/dev/null && mpvpaper_running=true
-    done
-    "$mpvpaper_running" || break
-    sleep 0.05
-  done
-fi
-
 selected=${choices[RANDOM % ${#choices[@]}]}
 mkdir -p "$STATE_DIR"
 printf '%s\n' "$selected" >"$LAST_WALLPAPER_FILE"
@@ -54,6 +42,7 @@ mime_type=$(file --brief --mime-type -- "$selected")
 
 case "$mime_type" in
 image/*)
+  systemctl --user stop wallpaper-video.service
   swaymsg output '*' bg "$selected" fill
   ;;
 video/*)
@@ -70,6 +59,7 @@ video/*)
       sleep 0.05
     done
   fi
-  mpvpaper -o "hwdec=vaapi no-audio loop" '*' "$selected"
+  ln -sfn -- "$selected" "$VIDEO_WALLPAPER_LINK"
+  systemctl --user restart wallpaper-video.service
   ;;
 esac

@@ -353,8 +353,10 @@
     enable = true;
     # Keep Tailscale exit nodes working with reverse-path filtering enabled.
     checkReversePath = "loose";
-    # Allow direct Tailscale peer connections.
-    allowedUDPPorts = [ config.services.tailscale.port ];
+    # LocalSend uses TCP for transfers and UDP for device discovery.
+    allowedTCPPorts = [ 53317 ];
+    # Allow direct Tailscale peer connections and LocalSend discovery.
+    allowedUDPPorts = [ config.services.tailscale.port 53317 ];
     # WayVNC listens globally but is reachable only through Tailscale.
     interfaces.${config.services.tailscale.interfaceName}.allowedTCPPorts = [ 5901 ];
   };

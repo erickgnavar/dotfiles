@@ -285,6 +285,7 @@
     fastfetch
     # image annotation tool
     satty
+    woomer # screen magnification tool
     hyprshot
     playerctl # to know what song is being played
     swappy

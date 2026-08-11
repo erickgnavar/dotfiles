@@ -88,6 +88,7 @@
   # enable keyring on unlock
   security.pam.services.sddm.enableGnomeKeyring = true;
   security.pam.services."swaylock-plugin" = { };
+  security.pam.services.wayvnc = { };
   # Give PipeWire realtime priority for low-latency, stable audio.
   security.rtkit.enable = true;
 
@@ -170,6 +171,11 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  environment.etc."wayvnc/config".text = ''
+    enable_auth=true
+    enable_pam=true
+  '';
+
   # Waybar starts and stops this service on demand.
   systemd.user.services.wayvnc = {
     description = "WayVNC remote desktop server";
@@ -178,7 +184,7 @@
     environment.WAYLAND_DISPLAY = "wayland-1";
     serviceConfig = {
       # Port 5900 is reserved by libvirt/QEMU's local VNC display.
-      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -Ldebug 0.0.0.0 5901";
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -C /etc/wayvnc/config -Ldebug 0.0.0.0 5901";
       Restart = "on-failure";
       RestartSec = 2;
     };

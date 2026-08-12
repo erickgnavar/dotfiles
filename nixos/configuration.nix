@@ -150,6 +150,21 @@
 
   services.dbus.enable = true;
 
+  # Enable Flatpak applications and configure Flathub system-wide.
+  services.flatpak.enable = true;
+  systemd.services.flatpak-setup = {
+    description = "Configure the Flathub Flatpak remote";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    path = [ pkgs.flatpak ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      flatpak remote-add --system --if-not-exists \
+        flathub https://flathub.org/repo/flathub.flatpakrepo
+    '';
+  };
+
   # Enable the gnome-keyring secrets vault.
   # Will be exposed through DBus to programs willing to store secrets.
   services.gnome.gnome-keyring.enable = true;

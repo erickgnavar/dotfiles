@@ -14,6 +14,7 @@
   "modules-right": [
     "tray",
     "idle_inhibitor",
+    "custom/night-light",
     "pulseaudio",
     "pulseaudio#microphone",
     "privacy",
@@ -92,6 +93,13 @@
     "format": "󰸉",
     "tooltip-format": "Change wallpaper",
     "on-click": "systemctl --user start wallpaper-rotate.service"
+  },
+  "custom/night-light": {
+    "exec": "~/.config/waybar/scripts/night-light.sh status",
+    "return-type": "json",
+    "interval": 2,
+    "format": "{}",
+    "on-click": "~/.config/waybar/scripts/night-light.sh toggle"
   },
   "custom/notification": {
     "tooltip": true,

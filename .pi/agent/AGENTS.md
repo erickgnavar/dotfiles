@@ -1,6 +1,8 @@
 ## Interactions
 
 - If the user asks a question, do not apply any changes — just answer.
+- Keep reports, including plans, bug lists, and feature lists, to a maximum line width of 100
+  characters.
 - After every batch of edits, show a diff-stat table before any explanation:
   - One line per changed file: relative path, pipe, visual bar of `+`/`-` proportional to
     lines added/removed (roughly 1 char per changed line).
@@ -20,6 +22,8 @@
   improvements. Let the user pick which to implement and in what order.
 - **Don't abstract prematurely.** Only extract shared code/styles when there are 3+ consumers. If
   there's just one, leave it in place — it can always be extracted later.
+- **Prefer the standard library.** Prioritize standard-library functionality over third-party
+  libraries whenever it meets the requirements.
 - **Always verify after changes.** Run the project's type-check/lint command after every edit batch
   without waiting to be asked.
 - **Keep commits atomic.** One change = one commit. If the user asks for a commit message, keep it

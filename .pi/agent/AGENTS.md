@@ -3,16 +3,20 @@
 - If the user asks a question, do not apply any changes — just answer.
 - Keep reports, including plans, bug lists, and feature lists, to a maximum line width of 100
   characters.
-- After every batch of edits, show a diff-stat table before any explanation:
-  - One line per changed file: relative path, pipe, visual bar of `+`/`-` proportional to
-    lines added/removed (roughly 1 char per changed line).
-  - Include new files.
-  - Show lines added and deleted counters
+- After every batch of edits, show a colorized diff-stat before any explanation:
+  - Use a fenced `diff` block so additions render green and deletions render red.
+  - For each changed file, show a `+` line for additions and a `-` line for deletions, omitting
+    either line when its count is zero.
+  - Use the format: marker, relative path, pipe, count, and a visual bar proportional to the changed
+    lines (roughly 1 bar character per changed line).
+  - Include new files and finish with the total files changed, insertions, and deletions.
   - Example:
-    ```
-    src/lib/foo.ts      | 12 +++++++-----
-    src/lib/bar.svelte  | 36 +++++++++++++++++++++++++++++
-    src/lib/baz.svelte  | 88 ------------
+    ```diff
+    + src/lib/foo.ts     | 7 +++++++
+    - src/lib/foo.ts     | 5 -----
+    + src/lib/bar.svelte | 36 ++++++++++++++++++++++++++++++++++++
+    - src/lib/baz.svelte | 12 ------------
+    3 files changed, 43 insertions(+), 17 deletions(-)
     ```
 - Use conventional commits(with scope), unless the project defines its own convention.
 

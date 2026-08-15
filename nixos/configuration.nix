@@ -150,6 +150,15 @@
 
   services.dbus.enable = true;
 
+  # Let Gammastep determine sunrise and sunset from the current location.
+  services.geoclue2 = {
+    enable = true;
+    appConfig.gammastep = {
+      isAllowed = true;
+      isSystem = false;
+    };
+  };
+
   # Enable Flatpak applications and configure Flathub system-wide.
   services.flatpak.enable = true;
   systemd.services.flatpak-setup = {
@@ -336,7 +345,7 @@
     nixd
     biome
     brightnessctl
-    wlsunset
+    gammastep # adjust screen color temperature based on sunrise and sunset
     libnotify
     swaynotificationcenter
     spotify

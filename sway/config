@@ -31,8 +31,8 @@ exec_always systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec swaync
 
-# Shift from 6500K to 4000K based on local sunrise and sunset times.
-exec wlsunset -l 19.4326 -L -99.1332 -t 4000 -T 6500
+# Shift from 6500K to 4000K using GeoClue-based sunrise and sunset times.
+exec gammastep -m wayland -l geoclue2 -t 6500:4000
 
 exec_always eww daemon
 exec_always eww open widgets

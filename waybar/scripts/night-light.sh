@@ -2,7 +2,7 @@
 set -euo pipefail
 
 is_running() {
-  pgrep -x wlsunset >/dev/null
+  pgrep -f '(^|/)gammastep([[:space:]]|$)' >/dev/null
 }
 
 case "${1:-status}" in
@@ -15,9 +15,9 @@ status)
   ;;
 toggle)
   if is_running; then
-    pkill -x wlsunset
+    pkill -f '(^|/)gammastep([[:space:]]|$)'
   else
-    swaymsg exec 'wlsunset -l 19.4326 -L -99.1332 -t 4000 -T 6500' >/dev/null
+    swaymsg exec 'gammastep -m wayland -l geoclue2 -t 6500:4000' >/dev/null
   fi
   ;;
 *)

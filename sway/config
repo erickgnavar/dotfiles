@@ -95,6 +95,9 @@ input * {
     # Start rofi (a program launcher)
     bindsym $mod+space exec rofi -show drun -show-icons
 
+    # Open frequently used desktop actions
+    bindsym $mod+k exec ~/.config/sway/scripts/quick-actions.sh
+
     # Open the emoji picker with the macOS shortcut: Control+Command+Space
     bindsym Ctrl+$mod+space exec rofimoji --selector rofi --action type --typer wtype
 
@@ -126,7 +129,8 @@ input * {
     # Move your focus around
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
+    # Mod+k opens quick actions, so keep upward focus movement on the arrow key.
+    bindsym $mod+Up focus up
     bindsym $mod+$right focus right
 
     # Move the focused window with the same, but add Shift

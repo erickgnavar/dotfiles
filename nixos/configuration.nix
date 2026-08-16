@@ -270,6 +270,7 @@
     }))
     jq
     file # detect image and video wallpaper types
+    ffmpeg # re-encode videos
     bc # required for eww/net.sh calculations
     nixpkgs-fmt
     wget

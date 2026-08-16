@@ -326,6 +326,7 @@
     tmux
     emacs31-gtk3
     localsend
+    python3 # run the Nautilus LocalSend action
     mise
     bat
     eza

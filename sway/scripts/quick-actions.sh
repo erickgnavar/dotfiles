@@ -5,6 +5,7 @@ selection=$(
   printf '%s\n' \
     "󰸉  Change wallpaper" \
     "󰄀  Take screenshot" \
+    "󰖩  Share Wi-Fi" \
     "  Clipboard history" \
     "  Toggle night light" \
     "󰢹  Toggle remote desktop" \
@@ -19,6 +20,9 @@ case "$selection" in
   ;;
 "󰄀  Take screenshot")
   exec "$HOME/.config/sway/scripts/screenshot.sh"
+  ;;
+"󰖩  Share Wi-Fi")
+  exec "$HOME/.config/sway/scripts/wifi-qr.sh"
   ;;
 "  Clipboard history")
   exec "$HOME/.config/sway/scripts/clipboard-menu.sh"

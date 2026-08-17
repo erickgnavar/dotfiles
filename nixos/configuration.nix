@@ -297,6 +297,7 @@
     wayland
     wlogout
     wl-clipboard
+    xdg-utils # open URLs with their default Linux application
     wtype # sends paste shortcuts for the Sway clipboard menu
     glib
     adw-gtk3

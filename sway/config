@@ -108,6 +108,26 @@ input * {
     # Magnify a frozen capture of the screen; scroll to zoom and Escape to exit.
     bindsym $mod+z exec woomer
 
+    # Enter a keyboard pointer mode for scrolling and clicking.
+    bindsym $mod+Shift+g mode "Mouse"
+    mode "Mouse" {
+        bindsym j exec wlrctl pointer scroll 10 0
+        bindsym k exec wlrctl pointer scroll -10 0
+        bindsym h exec wlrctl pointer scroll 0 -10
+        bindsym l exec wlrctl pointer scroll 0 10
+        bindsym --no-repeat g mode "Mouse Go"
+        bindsym --no-repeat Shift+g exec wtype -P End -p End
+        bindsym --no-repeat s exec wlrctl pointer click left
+        bindsym --no-repeat d exec wlrctl pointer click middle
+        bindsym --no-repeat f exec wlrctl pointer click right
+        bindsym Escape mode default
+    }
+
+    mode "Mouse Go" {
+        bindsym --no-repeat g exec wtype -P Home -p Home, mode "Mouse"
+        bindsym Escape mode "Mouse"
+    }
+
     # Open clipboard history
     bindsym $mod+y exec ~/.config/sway/scripts/clipboard-menu.sh
 

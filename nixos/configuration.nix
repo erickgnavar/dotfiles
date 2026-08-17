@@ -313,6 +313,7 @@
     # image annotation tool
     satty
     woomer # screen magnification tool
+    wlrctl # scroll and click from Sway's keyboard pointer mode
     hyprshot
     playerctl # to know what song is being played
     swappy

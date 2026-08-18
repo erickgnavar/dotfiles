@@ -5,6 +5,8 @@ the commit message text — it never runs `git commit`:
 
 - `gmcm` → "give me a commit message for the current change based on our conversation context (text
 only, do not run `git commit`; only inspect the repo if we haven't already discussed the changes)"
+- `cad` → "check your previous response against the official sources for the current context (docs,
+library repos, etc.); correct anything wrong or outdated; cite the sources"
 
 ## Interactions
 

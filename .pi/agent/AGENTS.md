@@ -1,3 +1,11 @@
+## Aliases
+
+When the user types an alias, interpret it as its full meaning. The agent only generates
+the commit message text — it never runs `git commit`:
+
+- `gmcm` → "give me a commit message for the current change based on our conversation context (text
+only, do not run `git commit`; only inspect the repo if we haven't already discussed the changes)"
+
 ## Interactions
 
 - If the user asks a question, do not apply any changes — just answer.

@@ -33,8 +33,10 @@
       "discord"
       "hiddenbar"
       "loopback"
+      "keepassxc"
       { "name" = "guanchzhou/tap/threemf"; trusted = true; }
       { "name" = "ruaylabs/tap/melocoton"; trusted = true; }
+      { "name" = "ruaylabs/tap/hitsu"; trusted = true; }
       "yubico-authenticator"
       "steam"
     ];

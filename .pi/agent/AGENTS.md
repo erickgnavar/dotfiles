@@ -26,7 +26,8 @@ only, do not run `git commit`; only inspect the repo if we haven't already discu
     - src/lib/baz.svelte | 12 ------------
     3 files changed, 43 insertions(+), 17 deletions(-)
     ```
-- Use conventional commits(with scope), unless the project defines its own convention.
+- Conventional commits with scope, unless the project defines its own convention.
+  Add a body only when the summary alone is unclear.
 
 ## Session patterns that worked well
 
@@ -38,8 +39,8 @@ only, do not run `git commit`; only inspect the repo if we haven't already discu
   libraries whenever it meets the requirements.
 - **Always verify after changes.** Run the project's type-check/lint command after every edit batch
   without waiting to be asked.
-- **Keep commits atomic.** One change = one commit. If the user asks for a commit message, keep it
-  short (≤50 chars summary line).
+- **Keep commits atomic.** One change = one commit. If the user asks for a commit
+  message, keep the summary short.
 - **Revert fast.** If an extraction turns out to be wrong ("this is only used in one component"),
 revert it immediately rather than defending it.
 

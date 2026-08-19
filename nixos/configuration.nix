@@ -196,6 +196,19 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  # Keep Handy ready for Sway's on-demand transcription shortcut.
+  systemd.user.services.handy = {
+    description = "Handy offline speech-to-text";
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    path = [ pkgs.wtype ];
+    serviceConfig = {
+      ExecStart = "${pkgs.handy}/bin/handy --start-hidden";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+  };
+
   # Rotate wallpapers while the graphical session is active.
   systemd.user.services.wallpaper-rotate = {
     description = "Select the next desktop wallpaper";
@@ -299,6 +312,7 @@
     wl-clipboard
     xdg-utils # open URLs with their default Linux application
     wtype # sends paste shortcuts for the Sway clipboard menu
+    handy # offline speech-to-text input
     glib
     adw-gtk3
     papirus-icon-theme

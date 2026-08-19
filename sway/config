@@ -27,6 +27,9 @@ gaps inner 5
 
 # Make the active Sway sockets available to graphical systemd user services.
 exec_always systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK
+# Restart Handy once per Sway session after importing its Wayland environment.
+exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
+    systemctl --user restart handy.service'
 
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec swaync
@@ -100,6 +103,10 @@ input * {
 
     # Open the emoji picker with the macOS shortcut: Control+Command+Space
     bindsym Ctrl+$mod+space exec rofimoji --selector rofi --action type --typer wtype
+
+    # Hold Left Alt+Space for offline push-to-talk transcription.
+    bindsym --no-repeat Mod5+space exec handy --toggle-transcription
+    bindsym --release Mod5+space exec handy --toggle-transcription
 
     # Switch tabs with macOS-style Command+Shift+[ and Command+Shift+].
     bindsym $mod+Shift+bracketleft exec wtype -M ctrl -P Page_Up -p Page_Up -m ctrl

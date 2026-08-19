@@ -8,6 +8,7 @@
   homebrew = {
     taps = [
       "Azure/kubelogin"
+      { name = "abue-ammar/tinycast"; trusted = true; }
     ];
     brews = [
       "Azure/kubelogin/kubelogin"
@@ -20,6 +21,7 @@
       "notion"
       "1password-cli"
       "maccy"
+      "tinycast"
     ];
   };
 

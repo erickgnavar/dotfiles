@@ -32,6 +32,8 @@
       "imageoptim"
       "discord"
       "hiddenbar"
+      "tigervnc-viewer"
+      "calibre"
       "loopback"
       "keepassxc"
       { "name" = "guanchzhou/tap/threemf"; trusted = true; }

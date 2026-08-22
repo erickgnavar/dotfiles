@@ -2176,6 +2176,9 @@ Bash formatter using ~shfmt~
 
 (use-package c-ts-mode
   :ensure nil
+  :mode (("\\.c\\'" . c-ts-mode)
+         ("\\.i\\'" . c-ts-mode)
+         ("\\.h\\'" . c-ts-mode))
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " C commands"))
    ("Format"
@@ -2183,6 +2186,12 @@ Bash formatter using ~shfmt~
 
 (use-package c++-ts-mode
   :ensure nil
+  :mode (("\\.cc\\'" . c++-ts-mode)
+         ("\\.cpp\\'" . c++-ts-mode)
+         ("\\.cxx\\'" . c++-ts-mode)
+         ("\\.hh\\'" . c++-ts-mode)
+         ("\\.hpp\\'" . c++-ts-mode)
+         ("\\.hxx\\'" . c++-ts-mode))
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " C++ commands"))
    ("Format"

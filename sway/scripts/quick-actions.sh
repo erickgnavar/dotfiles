@@ -11,6 +11,7 @@ selection=$(
     "  Clipboard history" \
     "  Toggle night light" \
     "󰢹  Toggle remote desktop" \
+    "󰆴  Kill process" \
     "󰌾  Lock screen" \
     "󰐥  Power menu" |
     rofi -dmenu -i -p "Quick Actions"
@@ -121,6 +122,18 @@ case "$selection" in
   ;;
 "󰢹  Toggle remote desktop")
   exec "$HOME/.config/waybar/scripts/vnc-toggle.sh"
+  ;;
+"󰆴  Kill process")
+  process_selection=$(
+    ps -eo pid=,user=,%cpu=,%mem=,args= --sort=-%cpu |
+      awk '{command = $5; sub(".*/", "", command); $5 = command; print}' |
+      rofi -dmenu -i -p "Kill Process"
+  ) || exit 0
+  [[ -n "$process_selection" ]] || exit 0
+
+  pid=$(awk '{print $1}' <<<"$process_selection")
+  [[ "$pid" =~ ^[0-9]+$ ]] || exit 1
+  kill -TERM -- "$pid"
   ;;
 "󰌾  Lock screen")
   exec "$HOME/.config/sway/scripts/lockscreen.sh"

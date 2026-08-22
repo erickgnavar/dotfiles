@@ -3069,9 +3069,11 @@ Manipulate frame font height.
 (defun my/find-file-in-project ()
   "Custom find file function."
   (interactive)
-  (if (my/project-p)
-      (project-find-file)
-    (call-interactively #'find-file)))
+  (let ((completion-ignore-case t)
+        (read-file-name-completion-ignore-case t))
+    (if (my/project-p)
+        (project-find-file)
+      (call-interactively #'find-file))))
 
 (defun my/find-file-in-project-local ()
   "Find inside a relative path."

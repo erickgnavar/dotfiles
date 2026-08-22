@@ -7,6 +7,7 @@ selection=$(
     "󰄀  Take screenshot" \
     "󰖩  Share Wi-Fi" \
     "󰍹  Scale display" \
+    "󰑐  Refresh rate" \
     "  Clipboard history" \
     "  Toggle night light" \
     "󰢹  Toggle remote desktop" \
@@ -60,6 +61,57 @@ case "$selection" in
   esac
 
   swaymsg output "$output" scale "$scale" >/dev/null
+  ;;
+"󰑐  Refresh rate")
+  compact_mode_filter='
+    def compact_mode:
+      if (.current_mode | type) == "object" then
+        "\(.current_mode.width)x\(.current_mode.height)@\(.current_mode.refresh / 1000)hz"
+      else
+        ((try (
+          (.current_mode // "")
+          | capture("(?<width>[0-9]+)x(?<height>[0-9]+).*@ ?(?<rate>[0-9.]+).*Hz")
+          | "\(.width)x\(.height)@\(.rate)hz"
+        ) catch null) // "unknown")
+      end;
+  '
+  outputs=$(swaymsg --type get_outputs --raw)
+  output=$(
+    jq -r 'map(select(.focused))[0].name // map(select(.active))[0].name // empty' \
+      <<<"$outputs"
+  )
+  [[ -n "$output" ]] || exit 1
+
+  output_selection=$(
+    jq -r "$compact_mode_filter .[] | \"\(.name)\\t\(compact_mode)\"" <<<"$outputs" |
+      rofi -dmenu -p "Select display"
+  ) || exit 0
+  [[ -n "$output_selection" ]] || exit 0
+  output=${output_selection%%$'\t'*}
+
+  current_status=$(jq -r --arg output "$output" \
+    "$compact_mode_filter .[] | select(.name == \$output) | compact_mode" \
+    <<<"$outputs")
+  mode_selection=$(
+    jq -r --arg output "$output" \
+      '.[] | select(.name == $output) | .modes
+      | sort_by([.width, .height, .refresh])
+      | group_by([.width, .height, .refresh]) | map(.[0])
+      | map("\(.width)x\(.height)@\(.refresh / 1000)hz")[]' \
+      <<<"$outputs" |
+      rofi -dmenu -p "$output · Current: $current_status"
+  ) || exit 0
+  [[ -n "$mode_selection" ]] || exit 0
+
+  if [[ "$mode_selection" =~ ^([0-9]+)x([0-9]+)@([0-9.]+)hz$ ]]; then
+    width=${BASH_REMATCH[1]}
+    height=${BASH_REMATCH[2]}
+    refresh=${BASH_REMATCH[3]}
+  else
+    exit 1
+  fi
+
+  swaymsg output "$output" mode "${width}x${height}@${refresh}Hz" >/dev/null
   ;;
 "  Clipboard history")
   exec "$HOME/.config/sway/scripts/clipboard-menu.sh"

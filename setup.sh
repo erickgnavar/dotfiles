@@ -7,8 +7,9 @@ while read -r line; do
   # Skip empty lines and comments
   [[ -z "$line" || "$line" == \#* ]] && continue
 
-  config_file="$(pwd)/$(echo "$line" | awk '{print $1}')"
-  path=$(echo "$line" | awk '{print $2}')
+  source_path="${line%% *}"
+  path="${line#* }"
+  config_file="$(pwd)/$source_path"
   # Expand ~ to $HOME (avoids unsafe eval)
   path="${path/#\~/$HOME}"
   parent_dir=$(dirname "$path")

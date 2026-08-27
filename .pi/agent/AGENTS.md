@@ -11,6 +11,9 @@ the commit message text — it never runs `git commit`:
 - If the user asks a question, do not apply any changes — just answer.
 - Keep reports, including plans, bug lists, and feature lists, to a maximum line width of 100
   characters.
+- Before editing files, check for an applicable `.editorconfig` and follow its guidelines.
+- For existing files, check whether they end with blank lines and preserve their end-of-file
+  convention to avoid unnecessary diffs. Always end new files with a newline.
 - After every batch of edits, show a colorized diff-stat before any explanation:
   - Use a fenced `diff` block so additions render green and deletions render red.
   - For each changed file, show a `+` line for additions and a `-` line for deletions, omitting

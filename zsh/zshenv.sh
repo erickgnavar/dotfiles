@@ -41,9 +41,6 @@ if [ -d "$HOME/.ghcup/" ]; then
   export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 fi
 
-# opam configuration
-test -r "$HOME/.opam/opam-init/init.zsh" && . "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>/dev/null
-
 # this will load credentials from a private file what won't be commited
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 

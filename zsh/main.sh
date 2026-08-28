@@ -7,8 +7,14 @@ export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=1000000
 export SAVEHIST=1000000
 
-# Ignore duplicates
+# Remove older duplicates when a new duplicate is added
 setopt HIST_IGNORE_ALL_DUPS
+# Expire duplicates before unique entries when history is trimmed
+setopt HIST_EXPIRE_DUPS_FIRST
+# Avoid duplicate entries during history search
+setopt HIST_FIND_NO_DUPS
+# Omit older duplicates when writing the history file
+setopt HIST_SAVE_NO_DUPS
 # Ignore when prefixed with space
 setopt HIST_IGNORE_SPACE
 # Share history between sessions

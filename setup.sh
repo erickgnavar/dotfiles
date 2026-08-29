@@ -3,6 +3,17 @@ set -euo pipefail
 
 echo "Setting up your system!"
 
+platform="${1:-$(uname -s)}"
+
+case "$platform" in
+Darwin | darwin | macOS | macos) platform_file="placements/macos.txt" ;;
+Linux | linux) platform_file="placements/linux.txt" ;;
+*)
+  echo "Unsupported platform: $platform" >&2
+  exit 1
+  ;;
+esac
+
 while read -r line; do
   # Skip empty lines and comments
   [[ -z "$line" || "$line" == \#* ]] && continue
@@ -26,8 +37,7 @@ while read -r line; do
     ln -s "$config_file" "$path"
     echo "symlink created: $config_file -> $path"
   fi
-done <placements.txt
-
+done < <(cat placements/common.txt "$platform_file")
 if [ ! -d "$HOME/.tmuxifier/" ]; then
   echo "tmuxifier not installed, cloning..."
   git clone https://github.com/jimeh/tmuxifier.git ~/.tmuxifier

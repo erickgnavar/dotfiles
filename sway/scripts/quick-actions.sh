@@ -12,6 +12,7 @@ selection=$(
     "  Toggle night light" \
     "󰢹  Toggle remote desktop" \
     "󰆴  Kill process" \
+    "󰩹  Empty trash" \
     "󰌾  Lock screen" \
     "󰐥  Power menu" |
     rofi -dmenu -i -p "Quick Actions"
@@ -134,6 +135,13 @@ case "$selection" in
   pid=$(awk '{print $1}' <<<"$process_selection")
   [[ "$pid" =~ ^[0-9]+$ ]] || exit 1
   kill -TERM -- "$pid"
+  ;;
+"󰩹  Empty trash")
+  trash_dir="${XDG_DATA_HOME:-$HOME/.local/share}/Trash"
+  for directory in files info; do
+    [[ -d "$trash_dir/$directory" ]] || continue
+    find "$trash_dir/$directory" -mindepth 1 -delete
+  done
   ;;
 "󰌾  Lock screen")
   exec "$HOME/.config/sway/scripts/lockscreen.sh"

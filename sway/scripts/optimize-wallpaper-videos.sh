@@ -42,9 +42,10 @@ for source in "${videos[@]}"; do
   mkdir -p "$(dirname "$output")" "$(dirname "$backup")"
   temporary=$(mktemp --tmpdir="$(dirname "$output")" ".wallpaper-XXXXXX.mp4")
 
-  echo "Encoding '$relative' at 30 FPS..."
+  echo "Encoding '$relative' at 30 FPS and at most 4096x4096..."
   if ffmpeg -y -nostdin -hide_banner -loglevel warning -stats \
-    -i "$source" -map 0:v:0 -an -vf fps=30 \
+    -i "$source" -map 0:v:0 -an \
+    -vf 'scale=4096:4096:force_original_aspect_ratio=decrease:force_divisible_by=2,fps=30' \
     -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
     -movflags +faststart "$temporary" &&
     ffprobe -v error -select_streams v:0 -show_entries stream=index \

@@ -44,10 +44,6 @@ fi
 # this will load credentials from a private file what won't be commited
 test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
-if [ -d "$HOME/.tmuxifier/" ]; then
-  export PATH="$HOME/.tmuxifier/bin:$PATH"
-fi
-
 # Disable telemetry in homebrew
 export HOMEBREW_NO_ANALYTICS=1
 

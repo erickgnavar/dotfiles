@@ -38,7 +38,3 @@ while read -r line; do
     echo "symlink created: $config_file -> $path"
   fi
 done < <(cat placements/common.txt "$platform_file")
-if [ ! -d "$HOME/.tmuxifier/" ]; then
-  echo "tmuxifier not installed, cloning..."
-  git clone https://github.com/jimeh/tmuxifier.git ~/.tmuxifier
-fi

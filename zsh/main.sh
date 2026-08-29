@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# disable oh my zsh theme so pure prompt can work properly
-export ZSH_THEME=""
-
 # ZSH history file config
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=1000000
@@ -29,10 +26,71 @@ source <(fzf --zsh)
 # avoid press it by mistake
 bindkey -r "^T"
 
+# Use Emacs-style key bindings.
+bindkey -e
+# Load Zsh's edit-command-line widget.
+autoload -Uz edit-command-line
+# Register it as a ZLE widget.
+zle -N edit-command-line
+# Bind Ctrl-X Ctrl-E to edit the current command in $EDITOR.
+bindkey '^X^E' edit-command-line
+
 # helper functions
 
 function reload {
   source "$HOME/.zshrc"
+}
+
+# Match directory completion without regard to letter case.
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# Long listing alias.
+alias ll="ls -lh"
+
+# The `take` helpers below are adapted from Oh My Zsh's lib/functions.zsh:
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/functions.zsh
+function takedir() {
+  local target
+  for target in "$@"; do
+    :
+  done
+  mkdir -p -- "$@" && cd -- "$target"
+}
+
+function takeurl() {
+  local data thedir
+  data="$(mktemp)"
+  curl -L "$1" >"$data"
+  tar xf "$data"
+  thedir="$(tar tf "$data" | head -n 1)"
+  rm "$data"
+  cd -- "$thedir"
+}
+
+function takezip() {
+  local data thedir
+  data="$(mktemp)"
+  curl -L "$1" >"$data"
+  unzip "$data" -d "./"
+  thedir="$(unzip -l "$data" | awk 'NR==4 {print $4}' | sed 's|/.*||')"
+  rm "$data"
+  cd -- "$thedir"
+}
+
+function takegit() {
+  git clone "$1" && cd -- "$(basename -- "${1%.git}")"
+}
+
+function take() {
+  if [[ $1 =~ ^(https?|ftp).*\.(tar\.(gz|bz2|xz)|tgz)$ ]]; then
+    takeurl "$1"
+  elif [[ $1 =~ ^(https?|ftp).*\.(zip)$ ]]; then
+    takezip "$1"
+  elif [[ $1 =~ ^([A-Za-z0-9]+@|https?|git|ssh|ftps?|rsync).*\.git/?$ ]]; then
+    takegit "$1"
+  else
+    takedir "$@"
+  fi
 }
 
 function t() {

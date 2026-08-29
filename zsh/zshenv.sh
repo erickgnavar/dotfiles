@@ -47,5 +47,3 @@ test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 # Disable telemetry in homebrew
 export HOMEBREW_NO_ANALYTICS=1
 
-# disable on-my-zsh auto update
-zstyle ':omz:update' mode disabled

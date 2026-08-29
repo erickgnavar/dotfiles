@@ -4,6 +4,7 @@ set -euo pipefail
 selection=$(
   printf '%s\n' \
     "󰸉  Change wallpaper" \
+    "󰑇  Pick wallpaper" \
     "󰄀  Take screenshot" \
     "󰖩  Share Wi-Fi" \
     "󰍹  Scale display" \
@@ -21,6 +22,9 @@ selection=$(
 case "$selection" in
 "󰸉  Change wallpaper")
   systemctl --user start wallpaper-rotate.service
+  ;;
+"󰑇  Pick wallpaper")
+  exec "$HOME/.config/sway/scripts/pick-wallpaper.sh"
   ;;
 "󰄀  Take screenshot")
   exec "$HOME/.config/sway/scripts/screenshot.sh"

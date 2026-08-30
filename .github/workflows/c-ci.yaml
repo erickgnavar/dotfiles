@@ -1,0 +1,20 @@
+---
+name: C CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Install clang-format
+        run: sudo apt update && sudo apt install clang-format --yes
+
+      - name: Check C formatting
+        run: find . -type f -name "*.c" -print0 | xargs -0 clang-format --dry-run --Werror

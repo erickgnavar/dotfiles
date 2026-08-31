@@ -201,6 +201,19 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  # Keep the clipboard picker resident so hotkey activation only presents its existing process.
+  systemd.user.services.clipboard-picker = {
+    description = "Resident GTK clipboard picker";
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "%h/dotfiles/clipboard-picker/result/bin/clipboard-picker --gapplication-service";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+  };
+
   # Keep Handy ready for Sway's on-demand transcription shortcut.
   systemd.user.services.handy = {
     description = "Handy offline speech-to-text";

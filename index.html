@@ -105,9 +105,10 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
 <body>
   <aside>
     <h1>Dotfiles</h1>
-    <p>115 tracked files across 25 groups</p>
+    <p>118 tracked files across 26 groups</p>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Browse sections</button>
-    <nav id="site-navigation"><a href="emacs.html"><span>Emacs guide</span><b>↗</b></a>
+    <nav id="site-navigation"><a href="#group-clipboard-picker"><span>Clipboard Picker</span><b>3</b></a>
+<a href="emacs.html"><span>Emacs guide</span><b>↗</b></a>
 <a href="#group-espanso"><span>Espanso</span><b>2</b></a>
 <a href="#group-eww"><span>Eww</span><b>8</b></a>
 <a href="#group-general"><span>General</span><b>15</b></a>
@@ -138,7 +139,1476 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
       <h1>Configuration,<br>documented by itself.</h1>
       <p>Generated from the repository source.</p>
     </header>
-    <section class="group" id="group-emacs"><h2><a href="emacs.html">Emacs <small>Open documented config →</small></a></h2>
+    <section class="group" id="group-clipboard-picker"><h2>Clipboard Picker</h2>
+<article class="file" id="file-clipboard-picker-default-nix-cbf1736434">
+  <header class="file-header">
+    <div>
+      <h3>default.nix</h3>
+      <p>clipboard-picker/default.nix · 46 lines</p>
+    </div>
+    <div class="file-actions">
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/clipboard-picker/default.nix">View on GitHub</a>
+      <button class="copy" type="button" aria-label="Copy clipboard-picker/default.nix">Copy</button>
+    </div>
+  </header>
+  <pre><code class="language-nix">{ pkgs ? import &lt;nixpkgs&gt; { } }:
+
+pkgs.stdenv.mkDerivation {
+  pname = &quot;clipboard-picker&quot;;
+  version = &quot;0.1.0&quot;;
+  src = ./.;
+
+  nativeBuildInputs = with pkgs; [
+    pkg-config
+    wrapGAppsHook4
+    makeWrapper
+  ];
+
+  buildInputs = with pkgs; [
+    gtk4
+    glib
+    json-glib
+  ];
+
+  buildPhase = &#x27;&#x27;
+    runHook preBuild
+    cc -O3 -Wall -Wextra -o clipboard-picker main.c \
+      $(pkg-config --cflags --libs gtk4 gio-2.0 json-glib-1.0)
+    runHook postBuild
+  &#x27;&#x27;;
+
+  installPhase = &#x27;&#x27;
+    runHook preInstall
+    install -Dm755 clipboard-picker $out/bin/clipboard-picker
+
+    wrapProgram $out/bin/clipboard-picker \
+      --prefix PATH : ${pkgs.lib.makeBinPath [
+        pkgs.cliphist
+        pkgs.wl-clipboard
+        pkgs.sway
+        pkgs.wtype
+      ]}
+    runHook postInstall
+  &#x27;&#x27;;
+
+  meta = with pkgs.lib; {
+    description = &quot;GTK4 C clipboard history picker for Sway&quot;;
+    mainProgram = &quot;clipboard-picker&quot;;
+    platforms = platforms.linux;
+  };
+}
+</code></pre>
+</article>
+
+<article class="file" id="file-clipboard-picker-main-c-ba60e3e353">
+  <header class="file-header">
+    <div>
+      <h3>main.c</h3>
+      <p>clipboard-picker/main.c · 1,298 lines</p>
+    </div>
+    <div class="file-actions">
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/clipboard-picker/main.c">View on GitHub</a>
+      <button class="copy" type="button" aria-label="Copy clipboard-picker/main.c">Copy</button>
+    </div>
+  </header>
+  <pre><code class="language-text">#include &lt;errno.h&gt;
+#include &lt;gio/gio.h&gt;
+#include &lt;gtk/gtk.h&gt;
+#include &lt;json-glib/json-glib.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;sys/un.h&gt;
+#include &lt;unistd.h&gt;
+
+#define APP_ID &quot;com.erick.ClipboardPicker&quot;
+#define PREVIEW_DEBOUNCE_MS 100
+#define SEARCH_PREVIEW_DEBOUNCE_MS 200
+#define PREVIEW_CACHE_MAX_ITEMS 12
+#define PREVIEW_CACHE_MAX_BYTES (16 * 1024 * 1024)
+#define SEARCH_CACHE_MAX_ENTRIES 32
+
+typedef struct {
+  GObject parent_instance;
+  gchar *raw;
+  gchar *display_single_line;
+  gchar *search_text;
+  gboolean binary;
+} ClipboardItem;
+
+typedef struct {
+  GObjectClass parent_class;
+} ClipboardItemClass;
+
+typedef struct {
+  gchar *key;
+  GBytes *bytes;
+  gsize size;
+} PreviewCacheEntry;
+
+typedef struct {
+  int fd;
+  guint generation;
+} FocusedAppRequest;
+
+typedef struct {
+  GtkApplication parent_instance;
+  GListStore *results;
+  GPtrArray *search_items;
+  GHashTable *search_cache;
+  GtkSingleSelection *selection;
+  GtkSearchEntry *search;
+  GtkBox *preview_box;
+  GtkStack *preview_stack;
+  GtkLabel *empty_label;
+  GtkPicture *picture;
+  GtkLabel *text_preview;
+  GtkLabel *mime_value;
+  GtkLabel *size_value;
+  GtkLabel *details_value;
+  GtkListView *list_view;
+  GtkWindow *window;
+  gchar *focused_app;
+  gchar *pending_query;
+  guint preview_timeout_id;
+  guint paste_timeout_id;
+  guint secondary_setup_id;
+  guint history_refresh_id;
+  ClipboardItem *pending_preview_item;
+  ClipboardItem *displayed_preview_item;
+  GCancellable *focused_app_cancellable;
+  GCancellable *history_cancellable;
+  GSubprocess *history_process;
+  GCancellable *preview_cancellable;
+  GSubprocess *preview_process;
+  GCancellable *paste_cancellable;
+  GSubprocess *paste_process;
+  GHashTable *preview_cache;
+  GQueue preview_cache_lru;
+  gsize preview_cache_bytes;
+  guint focused_app_generation;
+  guint preview_generation;
+  gboolean history_loading;
+  gboolean updating_results;
+  gboolean shutting_down;
+} ClipboardPicker;
+
+typedef struct {
+  GtkApplicationClass parent_class;
+} ClipboardPickerClass;
+
+G_DEFINE_TYPE(ClipboardItem, clipboard_item, G_TYPE_OBJECT)
+G_DEFINE_TYPE(ClipboardPicker, clipboard_picker, GTK_TYPE_APPLICATION)
+
+static void on_search_activate(GtkSearchEntry *search, gpointer user_data);
+static void update_search_results(ClipboardPicker *app);
+
+static gboolean write_all(int fd, const void *buffer, size_t size) {
+  const guint8 *data = buffer;
+  while (size &gt; 0) {
+    ssize_t written = write(fd, data, size);
+    if (written &lt; 0 &amp;&amp; errno == EINTR)
+      continue;
+    if (written &lt;= 0)
+      return FALSE;
+    data += written;
+    size -= written;
+  }
+  return TRUE;
+}
+
+static gboolean read_all(int fd, void *buffer, size_t size) {
+  guint8 *data = buffer;
+  while (size &gt; 0) {
+    ssize_t received = read(fd, data, size);
+    if (received &lt; 0 &amp;&amp; errno == EINTR)
+      continue;
+    if (received &lt;= 0)
+      return FALSE;
+    data += received;
+    size -= received;
+  }
+  return TRUE;
+}
+
+static gchar *focused_app_from_json(JsonNode *node) {
+  if (!JSON_NODE_HOLDS_OBJECT(node))
+    return NULL;
+
+  JsonObject *object = json_node_get_object(node);
+  if (json_object_has_member(object, &quot;focused&quot;) &amp;&amp;
+      json_object_get_boolean_member(object, &quot;focused&quot;)) {
+    const gchar *app_id = json_object_has_member(object, &quot;app_id&quot;)
+                              ? json_object_get_string_member(object, &quot;app_id&quot;)
+                              : NULL;
+    if (app_id &amp;&amp; *app_id)
+      return g_strdup(app_id);
+
+    JsonObject *properties =
+        json_object_get_object_member(object, &quot;window_properties&quot;);
+    if (properties) {
+      const gchar *class_name =
+          json_object_has_member(properties, &quot;class&quot;)
+              ? json_object_get_string_member(properties, &quot;class&quot;)
+              : NULL;
+      if (class_name &amp;&amp; *class_name)
+        return g_strdup(class_name);
+    }
+  }
+
+  const gchar *child_names[] = {&quot;nodes&quot;, &quot;floating_nodes&quot;, NULL};
+  for (const gchar **name = child_names; *name; name++) {
+    JsonArray *children = json_object_get_array_member(object, *name);
+    if (!children)
+      continue;
+    for (guint i = 0; i &lt; json_array_get_length(children); i++) {
+      gchar *result =
+          focused_app_from_json(json_array_get_element(children, i));
+      if (result)
+        return result;
+    }
+  }
+  return NULL;
+}
+
+static int begin_focused_app_request(void) {
+  const gchar *socket_path = g_getenv(&quot;SWAYSOCK&quot;);
+  if (!socket_path || !*socket_path)
+    return -1;
+
+  int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (fd &lt; 0)
+    return -1;
+
+  struct timeval timeout = {.tv_sec = 2};
+  setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &amp;timeout, sizeof(timeout));
+  setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &amp;timeout, sizeof(timeout));
+
+  struct sockaddr_un address = {.sun_family = AF_UNIX};
+  if (strlen(socket_path) &gt;= sizeof(address.sun_path)) {
+    close(fd);
+    return -1;
+  }
+  g_strlcpy(address.sun_path, socket_path, sizeof(address.sun_path));
+  if (connect(fd, (struct sockaddr *)&amp;address,
+              G_STRUCT_OFFSET(struct sockaddr_un, sun_path) +
+                  strlen(socket_path) + 1) &lt; 0) {
+    close(fd);
+    return -1;
+  }
+
+  const guint8 magic[] = {&#x27;i&#x27;, &#x27;3&#x27;, &#x27;-&#x27;, &#x27;i&#x27;, &#x27;p&#x27;, &#x27;c&#x27;};
+  const guint32 payload_length = GUINT32_TO_LE(0);
+  const guint32 message_type = GUINT32_TO_LE(4); /* GET_TREE */
+  guint8 header[14];
+  memcpy(header, magic, sizeof(magic));
+  memcpy(header + 6, &amp;payload_length, sizeof(payload_length));
+  memcpy(header + 10, &amp;message_type, sizeof(message_type));
+  if (!write_all(fd, header, sizeof(header))) {
+    close(fd);
+    return -1;
+  }
+  return fd;
+}
+
+static gchar *read_focused_app_response(int fd) {
+  const guint8 magic[] = {&#x27;i&#x27;, &#x27;3&#x27;, &#x27;-&#x27;, &#x27;i&#x27;, &#x27;p&#x27;, &#x27;c&#x27;};
+  guint8 response_header[14];
+  if (!read_all(fd, response_header, sizeof(response_header)) ||
+      memcmp(response_header, magic, sizeof(magic)) != 0)
+    return NULL;
+
+  guint32 response_length = 0;
+  memcpy(&amp;response_length, response_header + 6, sizeof(response_length));
+  response_length = GUINT32_FROM_LE(response_length);
+  gchar *payload = g_malloc(response_length + 1);
+  gchar *result = NULL;
+  if (read_all(fd, payload, response_length)) {
+    payload[response_length] = &#x27;\0&#x27;;
+    JsonParser *parser = json_parser_new();
+    GError *error = NULL;
+    if (json_parser_load_from_data(parser, payload, response_length, &amp;error))
+      result = focused_app_from_json(json_parser_get_root(parser));
+    g_clear_error(&amp;error);
+    g_object_unref(parser);
+  }
+  g_free(payload);
+  return result;
+}
+
+static void focused_app_request_free(gpointer data) {
+  FocusedAppRequest *request = data;
+  close(request-&gt;fd);
+  g_free(request);
+}
+
+static void focused_app_task(GTask *task, gpointer source_object,
+                             gpointer task_data, GCancellable *cancellable) {
+  (void)source_object;
+  (void)cancellable;
+  FocusedAppRequest *request = task_data;
+  if (g_task_return_error_if_cancelled(task))
+    return;
+
+  gchar *result = read_focused_app_response(request-&gt;fd);
+  if (g_task_return_error_if_cancelled(task)) {
+    g_free(result);
+    return;
+  }
+  if (result) {
+    gchar *normalized = g_ascii_strdown(result, -1);
+    g_free(result);
+    result = normalized;
+  }
+  g_task_return_pointer(task, result, g_free);
+}
+
+static void focused_app_loaded(GObject *source, GAsyncResult *result,
+                               gpointer user_data) {
+  (void)user_data;
+  ClipboardPicker *app = (ClipboardPicker *)source;
+  GTask *task = G_TASK(result);
+  FocusedAppRequest *request = g_task_get_task_data(task);
+  GError *error = NULL;
+  gchar *focused_app = g_task_propagate_pointer(task, &amp;error);
+
+  if (request-&gt;generation == app-&gt;focused_app_generation) {
+    g_clear_object(&amp;app-&gt;focused_app_cancellable);
+    if (!error &amp;&amp; !app-&gt;shutting_down) {
+      g_free(app-&gt;focused_app);
+      app-&gt;focused_app = g_steal_pointer(&amp;focused_app);
+    }
+  }
+  g_free(focused_app);
+  g_clear_error(&amp;error);
+}
+
+static void load_focused_app_async(ClipboardPicker *app) {
+  app-&gt;focused_app_generation++;
+  if (app-&gt;focused_app_cancellable) {
+    g_cancellable_cancel(app-&gt;focused_app_cancellable);
+    g_clear_object(&amp;app-&gt;focused_app_cancellable);
+  }
+  g_clear_pointer(&amp;app-&gt;focused_app, g_free);
+
+  int fd = begin_focused_app_request();
+  if (fd &lt; 0)
+    return;
+
+  FocusedAppRequest *request = g_new0(FocusedAppRequest, 1);
+  request-&gt;fd = fd;
+  request-&gt;generation = app-&gt;focused_app_generation;
+  app-&gt;focused_app_cancellable = g_cancellable_new();
+  GTask *task =
+      g_task_new(app, app-&gt;focused_app_cancellable, focused_app_loaded, NULL);
+  g_task_set_task_data(task, request, focused_app_request_free);
+  g_task_run_in_thread(task, focused_app_task);
+  g_object_unref(task);
+}
+
+static void clipboard_item_finalize(GObject *object) {
+  ClipboardItem *item = (ClipboardItem *)object;
+  g_free(item-&gt;raw);
+  g_free(item-&gt;display_single_line);
+  g_free(item-&gt;search_text);
+  G_OBJECT_CLASS(clipboard_item_parent_class)-&gt;finalize(object);
+}
+
+static void clipboard_item_class_init(ClipboardItemClass *class) {
+  G_OBJECT_CLASS(class)-&gt;finalize = clipboard_item_finalize;
+}
+
+static void clipboard_item_init(ClipboardItem *item) { (void)item; }
+
+static void search_cache_reset(ClipboardPicker *app) {
+  g_hash_table_remove_all(app-&gt;search_cache);
+  g_hash_table_insert(app-&gt;search_cache, g_strdup(&quot;&quot;),
+                      g_ptr_array_ref(app-&gt;search_items));
+}
+
+static void search_cache_prune(ClipboardPicker *app, const gchar *query) {
+  GHashTableIter iter;
+  gpointer key;
+  g_hash_table_iter_init(&amp;iter, app-&gt;search_cache);
+  while (g_hash_table_iter_next(&amp;iter, &amp;key, NULL)) {
+    const gchar *cached_query = key;
+    if (!g_str_has_prefix(query, cached_query))
+      g_hash_table_iter_remove(&amp;iter);
+  }
+}
+
+static GPtrArray *search_cache_find_candidates(ClipboardPicker *app) {
+  GPtrArray *best = app-&gt;search_items;
+  gsize best_length = 0;
+  GHashTableIter iter;
+  gpointer key;
+  gpointer value;
+  g_hash_table_iter_init(&amp;iter, app-&gt;search_cache);
+  while (g_hash_table_iter_next(&amp;iter, &amp;key, &amp;value)) {
+    const gchar *cached_query = key;
+    gsize cached_length = strlen(cached_query);
+    if (cached_length &gt;= best_length) {
+      best = value;
+      best_length = cached_length;
+    }
+  }
+  return best;
+}
+
+static void search_cache_insert(ClipboardPicker *app, const gchar *query,
+                                GPtrArray *matches) {
+  g_hash_table_replace(app-&gt;search_cache, g_strdup(query),
+                       g_ptr_array_ref(matches));
+
+  while (g_hash_table_size(app-&gt;search_cache) &gt; SEARCH_CACHE_MAX_ENTRIES) {
+    const gchar *shortest_query = NULL;
+    gsize shortest_length = G_MAXSIZE;
+    GHashTableIter iter;
+    gpointer key;
+    g_hash_table_iter_init(&amp;iter, app-&gt;search_cache);
+    while (g_hash_table_iter_next(&amp;iter, &amp;key, NULL)) {
+      const gchar *cached_query = key;
+      gsize cached_length = strlen(cached_query);
+      if (cached_length &gt; 0 &amp;&amp; cached_length &lt; shortest_length) {
+        shortest_query = cached_query;
+        shortest_length = cached_length;
+      }
+    }
+    g_hash_table_remove(app-&gt;search_cache, shortest_query);
+  }
+}
+
+static void preview_cache_entry_free(PreviewCacheEntry *entry) {
+  g_free(entry-&gt;key);
+  g_bytes_unref(entry-&gt;bytes);
+  g_free(entry);
+}
+
+static GBytes *preview_cache_lookup(ClipboardPicker *app, const gchar *key) {
+  PreviewCacheEntry *entry = g_hash_table_lookup(app-&gt;preview_cache, key);
+  if (!entry)
+    return NULL;
+
+  g_queue_remove(&amp;app-&gt;preview_cache_lru, entry);
+  g_queue_push_head(&amp;app-&gt;preview_cache_lru, entry);
+  return g_bytes_ref(entry-&gt;bytes);
+}
+
+static void preview_cache_insert(ClipboardPicker *app, const gchar *key,
+                                 GBytes *bytes) {
+  gsize size = g_bytes_get_size(bytes);
+  if (size &gt; PREVIEW_CACHE_MAX_BYTES)
+    return;
+
+  PreviewCacheEntry *entry = g_hash_table_lookup(app-&gt;preview_cache, key);
+  if (entry) {
+    GBytes *replacement = g_bytes_ref(bytes);
+    app-&gt;preview_cache_bytes -= entry-&gt;size;
+    g_clear_pointer(&amp;entry-&gt;bytes, g_bytes_unref);
+    entry-&gt;bytes = replacement;
+    entry-&gt;size = size;
+    app-&gt;preview_cache_bytes += size;
+    g_queue_remove(&amp;app-&gt;preview_cache_lru, entry);
+    g_queue_push_head(&amp;app-&gt;preview_cache_lru, entry);
+  } else {
+    entry = g_new0(PreviewCacheEntry, 1);
+    entry-&gt;key = g_strdup(key);
+    entry-&gt;bytes = g_bytes_ref(bytes);
+    entry-&gt;size = size;
+    app-&gt;preview_cache_bytes += size;
+    g_hash_table_insert(app-&gt;preview_cache, entry-&gt;key, entry);
+    g_queue_push_head(&amp;app-&gt;preview_cache_lru, entry);
+  }
+
+  while (g_queue_get_length(&amp;app-&gt;preview_cache_lru) &gt;
+             PREVIEW_CACHE_MAX_ITEMS ||
+         app-&gt;preview_cache_bytes &gt; PREVIEW_CACHE_MAX_BYTES) {
+    entry = g_queue_pop_tail(&amp;app-&gt;preview_cache_lru);
+    app-&gt;preview_cache_bytes -= entry-&gt;size;
+    g_hash_table_remove(app-&gt;preview_cache, entry-&gt;key);
+    preview_cache_entry_free(entry);
+  }
+}
+
+static void preview_cache_clear(ClipboardPicker *app) {
+  PreviewCacheEntry *entry;
+  while ((entry = g_queue_pop_head(&amp;app-&gt;preview_cache_lru))) {
+    g_hash_table_remove(app-&gt;preview_cache, entry-&gt;key);
+    preview_cache_entry_free(entry);
+  }
+  app-&gt;preview_cache_bytes = 0;
+}
+
+static GBytes *decode_item(ClipboardItem *item) {
+  const gchar *argv[] = {&quot;cliphist&quot;, &quot;decode&quot;, NULL};
+  GSubprocessFlags flags = G_SUBPROCESS_FLAGS_STDIN_PIPE |
+                           G_SUBPROCESS_FLAGS_STDOUT_PIPE |
+                           G_SUBPROCESS_FLAGS_STDERR_PIPE;
+  GSubprocess *process = g_subprocess_newv(argv, flags, NULL);
+  if (!process)
+    return NULL;
+
+  GBytes *input = g_bytes_new(item-&gt;raw, strlen(item-&gt;raw));
+  GBytes *stdout_data = NULL;
+  GBytes *stderr_data = NULL;
+  gboolean ok = g_subprocess_communicate(process, input, NULL, &amp;stdout_data,
+                                         &amp;stderr_data, NULL);
+  g_bytes_unref(input);
+  if (!ok)
+    g_clear_pointer(&amp;stdout_data, g_bytes_unref);
+  if (stderr_data) {
+    gsize size = 0;
+    const gchar *data = g_bytes_get_data(stderr_data, &amp;size);
+    if (size)
+      g_debug(&quot;command: %.*s&quot;, (int)size, data);
+    g_bytes_unref(stderr_data);
+  }
+  g_object_unref(process);
+  return stdout_data;
+}
+
+static void parse_history_task(GTask *task, gpointer source_object,
+                               gpointer task_data, GCancellable *cancellable) {
+  (void)source_object;
+  (void)cancellable;
+  GBytes *output = task_data;
+  gsize output_size = 0;
+  const gchar *output_data = g_bytes_get_data(output, &amp;output_size);
+  gchar *text = g_malloc(output_size + 1);
+  if (output_size)
+    memcpy(text, output_data, output_size);
+  text[output_size] = &#x27;\0&#x27;;
+
+  GPtrArray *items = g_ptr_array_new_with_free_func(g_object_unref);
+  gchar *line_start = text;
+  gchar *text_end = text + output_size;
+  for (gchar *cursor = text;; cursor++) {
+    if (cursor &lt; text_end &amp;&amp; *cursor != &#x27;\n&#x27;)
+      continue;
+
+    *cursor = &#x27;\0&#x27;;
+    gchar *tab = memchr(line_start, &#x27;\t&#x27;, cursor - line_start);
+    if (tab &amp;&amp; tab != line_start) {
+      *tab = &#x27;\0&#x27;;
+      const gchar *display = tab + 1;
+      ClipboardItem *item = g_object_new(clipboard_item_get_type(), NULL);
+      item-&gt;raw = g_strdup(line_start);
+      item-&gt;display_single_line = g_strdup(display);
+      item-&gt;search_text = g_utf8_casefold(display, -1);
+      item-&gt;binary = g_str_has_prefix(display, &quot;[[ binary data&quot;);
+      g_ptr_array_add(items, item);
+    }
+    if (cursor == text_end)
+      break;
+    line_start = cursor + 1;
+  }
+
+  g_free(text);
+  g_task_return_pointer(task, items, (GDestroyNotify)g_ptr_array_unref);
+}
+
+static void history_parsed(GObject *source, GAsyncResult *result,
+                           gpointer user_data) {
+  (void)user_data;
+  ClipboardPicker *app = (ClipboardPicker *)source;
+  app-&gt;history_loading = FALSE;
+  GPtrArray *items = g_task_propagate_pointer(G_TASK(result), NULL);
+  if (app-&gt;shutting_down) {
+    g_ptr_array_unref(items);
+    return;
+  }
+
+  g_clear_pointer(&amp;app-&gt;search_items, g_ptr_array_unref);
+  app-&gt;search_items = items;
+  search_cache_reset(app);
+
+  if (app-&gt;search_items-&gt;len == 0)
+    gtk_label_set_text(app-&gt;empty_label, &quot;Clipboard history is empty&quot;);
+  else
+    gtk_label_set_text(app-&gt;empty_label, &quot;Select an entry to preview&quot;);
+  update_search_results(app);
+}
+
+static void history_loaded(GObject *source, GAsyncResult *result,
+                           gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  GSubprocess *process = G_SUBPROCESS(source);
+  GBytes *output = NULL;
+  GError *error = NULL;
+  gboolean success =
+      g_subprocess_communicate_finish(process, result, &amp;output, NULL, &amp;error);
+
+  g_clear_object(&amp;app-&gt;history_process);
+  g_clear_object(&amp;app-&gt;history_cancellable);
+  g_object_unref(process);
+
+  if (!success) {
+    app-&gt;history_loading = FALSE;
+    if (!app-&gt;shutting_down)
+      gtk_label_set_text(app-&gt;empty_label, error-&gt;message);
+    g_clear_error(&amp;error);
+    g_clear_pointer(&amp;output, g_bytes_unref);
+    g_object_unref(app);
+    return;
+  }
+  if (app-&gt;shutting_down) {
+    g_bytes_unref(output);
+    g_object_unref(app);
+    return;
+  }
+
+  GTask *task = g_task_new(app, NULL, history_parsed, NULL);
+  g_task_set_task_data(task, output, (GDestroyNotify)g_bytes_unref);
+  g_task_run_in_thread(task, parse_history_task);
+  g_object_unref(task);
+  g_object_unref(app);
+}
+
+static void load_history_async(ClipboardPicker *app) {
+  if (app-&gt;history_loading)
+    return;
+  app-&gt;history_loading = TRUE;
+
+  const gchar *argv[] = {&quot;cliphist&quot;, &quot;list&quot;, NULL};
+  GError *error = NULL;
+  GSubprocess *process =
+      g_subprocess_newv(argv, G_SUBPROCESS_FLAGS_STDOUT_PIPE, &amp;error);
+  if (!process) {
+    app-&gt;history_loading = FALSE;
+    gtk_label_set_text(app-&gt;empty_label, error-&gt;message);
+    g_clear_error(&amp;error);
+    return;
+  }
+  app-&gt;history_cancellable = g_cancellable_new();
+  app-&gt;history_process = g_object_ref(process);
+  g_subprocess_communicate_async(process, NULL, app-&gt;history_cancellable,
+                                 history_loaded, g_object_ref(app));
+}
+
+static gchar *format_size(gsize size) {
+  if (size &lt; 1024)
+    return g_strdup_printf(&quot;%zu B&quot;, size);
+  if (size &lt; 1024 * 1024)
+    return g_strdup_printf(&quot;%.1f KiB&quot;, size / 1024.0);
+  return g_strdup_printf(&quot;%.1f MiB&quot;, size / (1024.0 * 1024.0));
+}
+
+static void show_preview(ClipboardPicker *app, ClipboardItem *item,
+                         GBytes *bytes) {
+  g_set_object(&amp;app-&gt;displayed_preview_item, item);
+  gsize size = 0;
+  const gchar *data = g_bytes_get_data(bytes, &amp;size);
+  gchar *size_text = format_size(size);
+  gtk_label_set_text(app-&gt;size_value, size_text);
+  g_free(size_text);
+
+  GError *error = NULL;
+  gchar *content_type = g_content_type_guess(NULL, (guchar *)data, size, NULL);
+  gchar *mime = g_content_type_get_mime_type(content_type);
+  gtk_label_set_text(app-&gt;mime_value, mime ? mime : content_type);
+  g_free(mime);
+  g_free(content_type);
+
+  if (item-&gt;binary) {
+    GdkTexture *texture = gdk_texture_new_from_bytes(bytes, &amp;error);
+    if (texture) {
+      gtk_picture_set_paintable(app-&gt;picture, GDK_PAINTABLE(texture));
+      gchar *details =
+          g_strdup_printf(&quot;%d × %d pixels&quot;, gdk_texture_get_width(texture),
+                          gdk_texture_get_height(texture));
+      gtk_label_set_text(app-&gt;details_value, details);
+      g_free(details);
+      gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;image&quot;);
+      g_object_unref(texture);
+      g_bytes_unref(bytes);
+      return;
+    }
+  }
+
+  gchar *text = g_strndup(data, size);
+  gsize characters = g_utf8_strlen(text, -1);
+  gsize lines = *text ? 1 : 0;
+  for (gchar *p = text; *p; p++)
+    if (*p == &#x27;\n&#x27;)
+      lines++;
+  gchar *details =
+      g_strdup_printf(&quot;%zu characters · %zu lines&quot;, characters, lines);
+  gtk_label_set_text(app-&gt;details_value, details);
+  g_free(details);
+  gtk_label_set_text(app-&gt;text_preview, text);
+  gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;text&quot;);
+  g_clear_error(&amp;error);
+  g_free(text);
+  g_bytes_unref(bytes);
+}
+
+typedef struct {
+  ClipboardPicker *app;
+  ClipboardItem *item;
+  GBytes *input;
+  guint generation;
+  GCancellable *cancellable;
+} PreviewRequest;
+
+static void preview_request_free(PreviewRequest *request) {
+  g_clear_pointer(&amp;request-&gt;input, g_bytes_unref);
+  g_clear_object(&amp;request-&gt;item);
+  g_clear_object(&amp;request-&gt;cancellable);
+  g_clear_object(&amp;request-&gt;app);
+  g_free(request);
+}
+
+static void preview_loaded(GObject *source, GAsyncResult *result,
+                           gpointer user_data) {
+  PreviewRequest *request = user_data;
+  ClipboardPicker *app = request-&gt;app;
+  GSubprocess *process = G_SUBPROCESS(source);
+  GBytes *bytes = NULL;
+  GError *error = NULL;
+  gboolean success =
+      g_subprocess_communicate_finish(process, result, &amp;bytes, NULL, &amp;error);
+  if (app-&gt;preview_process == process) {
+    g_clear_object(&amp;app-&gt;preview_process);
+    g_clear_object(&amp;app-&gt;preview_cancellable);
+  }
+  g_object_unref(process);
+
+  if (success &amp;&amp; bytes &amp;&amp; !app-&gt;shutting_down)
+    preview_cache_insert(app, request-&gt;item-&gt;raw, bytes);
+
+  if (!app-&gt;shutting_down &amp;&amp; request-&gt;generation == app-&gt;preview_generation) {
+    if (success &amp;&amp; bytes) {
+      show_preview(app, request-&gt;item, bytes);
+      bytes = NULL;
+    } else {
+      gtk_label_set_text(app-&gt;empty_label,
+                         error ? error-&gt;message
+                               : &quot;Unable to decode clipboard entry&quot;);
+      gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;empty&quot;);
+    }
+  }
+  g_clear_error(&amp;error);
+  g_clear_pointer(&amp;bytes, g_bytes_unref);
+  preview_request_free(request);
+}
+
+static void load_preview_async(ClipboardPicker *app, ClipboardItem *item) {
+  PreviewRequest *request = g_new0(PreviewRequest, 1);
+  request-&gt;app = g_object_ref(app);
+  request-&gt;item = g_object_ref(item);
+  request-&gt;generation = app-&gt;preview_generation;
+  request-&gt;input = g_bytes_new(item-&gt;raw, strlen(item-&gt;raw));
+  request-&gt;cancellable = g_cancellable_new();
+  app-&gt;preview_cancellable = g_object_ref(request-&gt;cancellable);
+
+  const gchar *argv[] = {&quot;cliphist&quot;, &quot;decode&quot;, NULL};
+  GError *error = NULL;
+  GSubprocess *process = g_subprocess_newv(
+      argv, G_SUBPROCESS_FLAGS_STDIN_PIPE | G_SUBPROCESS_FLAGS_STDOUT_PIPE,
+      &amp;error);
+  if (!process) {
+    gtk_label_set_text(app-&gt;empty_label, error-&gt;message);
+    g_clear_error(&amp;error);
+    g_clear_object(&amp;app-&gt;preview_cancellable);
+    preview_request_free(request);
+    return;
+  }
+  app-&gt;preview_process = g_object_ref(process);
+  g_subprocess_communicate_async(process, request-&gt;input, request-&gt;cancellable,
+                                 preview_loaded, request);
+}
+
+static void cancel_preview_load(ClipboardPicker *app) {
+  g_clear_handle_id(&amp;app-&gt;preview_timeout_id, g_source_remove);
+  g_clear_object(&amp;app-&gt;pending_preview_item);
+  if (app-&gt;preview_cancellable) {
+    g_cancellable_cancel(app-&gt;preview_cancellable);
+    g_clear_object(&amp;app-&gt;preview_cancellable);
+  }
+  if (app-&gt;preview_process) {
+    g_subprocess_force_exit(app-&gt;preview_process);
+    g_clear_object(&amp;app-&gt;preview_process);
+  }
+}
+
+static gboolean preview_debounce_elapsed(gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  app-&gt;preview_timeout_id = 0;
+  ClipboardItem *item = g_steal_pointer(&amp;app-&gt;pending_preview_item);
+  if (!app-&gt;shutting_down &amp;&amp; item) {
+    GBytes *cached = preview_cache_lookup(app, item-&gt;raw);
+    if (cached)
+      show_preview(app, item, cached);
+    else
+      load_preview_async(app, item);
+  }
+  g_clear_object(&amp;item);
+  return G_SOURCE_REMOVE;
+}
+
+static void schedule_preview(ClipboardPicker *app, ClipboardItem *item,
+                             guint delay_ms) {
+  if (item &amp;&amp; item == app-&gt;displayed_preview_item)
+    return;
+
+  app-&gt;preview_generation++;
+  cancel_preview_load(app);
+  g_clear_object(&amp;app-&gt;displayed_preview_item);
+
+  if (!item) {
+    guint count = app-&gt;search_items-&gt;len;
+    const gchar *message = app-&gt;history_loading ? &quot;Loading clipboard history…&quot;
+                           : count == 0         ? &quot;Clipboard history is empty&quot;
+                           : app-&gt;pending_query[0]
+                               ? &quot;No matching clipboard entries&quot;
+                               : &quot;Select an entry to preview&quot;;
+    gtk_label_set_text(app-&gt;empty_label, message);
+    gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;empty&quot;);
+    return;
+  }
+
+  gtk_label_set_text(app-&gt;empty_label, &quot;Loading preview…&quot;);
+  gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;empty&quot;);
+  app-&gt;pending_preview_item = g_object_ref(item);
+  app-&gt;preview_timeout_id =
+      g_timeout_add_full(G_PRIORITY_DEFAULT, delay_ms, preview_debounce_elapsed,
+                         g_object_ref(app), g_object_unref);
+}
+
+static void selection_changed(GObject *object, GParamSpec *pspec,
+                              gpointer user_data) {
+  (void)pspec;
+  ClipboardPicker *app = user_data;
+  if (app-&gt;updating_results)
+    return;
+
+  ClipboardItem *item =
+      gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(object));
+  schedule_preview(app, item, PREVIEW_DEBOUNCE_MS);
+}
+
+static void factory_setup(GtkSignalListItemFactory *factory, GtkListItem *item,
+                          gpointer user_data) {
+  (void)factory;
+  (void)user_data;
+  GtkLabel *label = GTK_LABEL(gtk_label_new(NULL));
+  gtk_widget_add_css_class(GTK_WIDGET(label), &quot;history-item&quot;);
+  gtk_label_set_xalign(label, 0);
+  gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
+  gtk_label_set_single_line_mode(label, TRUE);
+  gtk_list_item_set_child(item, GTK_WIDGET(label));
+}
+
+static void factory_bind(GtkSignalListItemFactory *factory, GtkListItem *item,
+                         gpointer user_data) {
+  (void)factory;
+  (void)user_data;
+  ClipboardItem *value = gtk_list_item_get_item(item);
+  GtkLabel *label = GTK_LABEL(gtk_list_item_get_child(item));
+  gtk_label_set_text(label, value-&gt;display_single_line);
+}
+
+static gboolean is_resident(ClipboardPicker *app) {
+  return (g_application_get_flags(G_APPLICATION(app)) &amp;
+          G_APPLICATION_IS_SERVICE) != 0;
+}
+
+static void dismiss_picker(ClipboardPicker *app) {
+  if (is_resident(app) &amp;&amp; app-&gt;window)
+    gtk_widget_set_visible(GTK_WIDGET(app-&gt;window), FALSE);
+  else
+    g_application_quit(G_APPLICATION(app));
+}
+
+static gboolean on_window_close_requested(GtkWindow *window,
+                                          gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  if (!is_resident(app))
+    return FALSE;
+  gtk_widget_set_visible(GTK_WIDGET(window), FALSE);
+  return TRUE;
+}
+
+static gboolean inject_paste(gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  app-&gt;paste_timeout_id = 0;
+  if (app-&gt;shutting_down)
+    return G_SOURCE_REMOVE;
+
+  const gchar *terminal_names[] = {
+      &quot;alacritty&quot;, &quot;foot&quot;,    &quot;kitty&quot;, &quot;wezterm&quot;, &quot;ghostty&quot;,
+      &quot;terminal&quot;,  &quot;konsole&quot;, &quot;xterm&quot;, &quot;urxvt&quot;,   NULL};
+  gboolean terminal = FALSE;
+  for (const gchar **name = terminal_names; *name; name++)
+    if (app-&gt;focused_app &amp;&amp; g_strrstr(app-&gt;focused_app, *name))
+      terminal = TRUE;
+
+  const gchar *argv_emacs[] = {&quot;wtype&quot;, &quot;-M&quot;, &quot;ctrl&quot;, &quot;-P&quot;,   &quot;y&quot;,
+                               &quot;-p&quot;,    &quot;y&quot;,  &quot;-m&quot;,   &quot;ctrl&quot;, NULL};
+  const gchar *argv_terminal[] = {&quot;wtype&quot;, &quot;-M&quot;, &quot;ctrl&quot;, &quot;-M&quot;, &quot;shift&quot;,
+                                  &quot;-P&quot;,    &quot;v&quot;,  &quot;-p&quot;,   &quot;v&quot;,  &quot;-m&quot;,
+                                  &quot;shift&quot;, &quot;-m&quot;, &quot;ctrl&quot;, NULL};
+  const gchar *argv_regular[] = {&quot;wtype&quot;, &quot;-M&quot;, &quot;ctrl&quot;, &quot;-P&quot;,   &quot;v&quot;,
+                                 &quot;-p&quot;,    &quot;v&quot;,  &quot;-m&quot;,   &quot;ctrl&quot;, NULL};
+  const gchar *const *argv =
+      app-&gt;focused_app &amp;&amp; g_strrstr(app-&gt;focused_app, &quot;emacs&quot;) ? argv_emacs
+      : terminal                                               ? argv_terminal
+                                                               : argv_regular;
+  GError *error = NULL;
+  if (!g_spawn_async(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH, NULL,
+                     NULL, NULL, &amp;error)) {
+    g_warning(&quot;clipboard-picker: wtype failed: %s&quot;, error-&gt;message);
+    g_clear_error(&amp;error);
+  }
+  g_free(app-&gt;focused_app);
+  app-&gt;focused_app = NULL;
+  dismiss_picker(app);
+  return G_SOURCE_REMOVE;
+}
+
+static void paste_finished(GObject *source, GAsyncResult *result,
+                           gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  GSubprocess *process = G_SUBPROCESS(source);
+  GError *error = NULL;
+  gboolean success =
+      g_subprocess_communicate_finish(process, result, NULL, NULL, &amp;error);
+  if (app-&gt;paste_process == process) {
+    g_clear_object(&amp;app-&gt;paste_process);
+    g_clear_object(&amp;app-&gt;paste_cancellable);
+  }
+  g_object_unref(process);
+
+  if (!success) {
+    if (!app-&gt;shutting_down)
+      g_warning(&quot;clipboard-picker: wl-copy failed: %s&quot;, error-&gt;message);
+    g_clear_error(&amp;error);
+    g_object_unref(app);
+    return;
+  }
+
+  if (!app-&gt;shutting_down) {
+    GtkWindow *window = gtk_application_get_active_window(GTK_APPLICATION(app));
+    if (window)
+      gtk_widget_set_visible(GTK_WIDGET(window), FALSE);
+    app-&gt;paste_timeout_id =
+        g_timeout_add_full(G_PRIORITY_DEFAULT, 120, inject_paste,
+                           g_object_ref(app), g_object_unref);
+  }
+  g_object_unref(app);
+}
+
+static void activate_item(GtkListView *view, guint position,
+                          gpointer user_data) {
+  (void)view;
+  ClipboardPicker *app = user_data;
+  ClipboardItem *item =
+      g_list_model_get_item(G_LIST_MODEL(app-&gt;results), position);
+  if (!item)
+    return;
+  GBytes *data = decode_item(item);
+  if (!data) {
+    g_object_unref(item);
+    return;
+  }
+
+  if (app-&gt;paste_cancellable) {
+    g_cancellable_cancel(app-&gt;paste_cancellable);
+    g_clear_object(&amp;app-&gt;paste_cancellable);
+  }
+  if (app-&gt;paste_process) {
+    g_subprocess_force_exit(app-&gt;paste_process);
+    g_clear_object(&amp;app-&gt;paste_process);
+  }
+
+  const gchar *argv[] = {&quot;wl-copy&quot;, NULL};
+  GError *error = NULL;
+  GSubprocess *process =
+      g_subprocess_newv(argv, G_SUBPROCESS_FLAGS_STDIN_PIPE, &amp;error);
+  if (!process) {
+    g_warning(&quot;clipboard-picker: unable to start wl-copy: %s&quot;, error-&gt;message);
+    g_clear_error(&amp;error);
+    g_bytes_unref(data);
+    g_object_unref(item);
+    return;
+  }
+  app-&gt;paste_cancellable = g_cancellable_new();
+  app-&gt;paste_process = g_object_ref(process);
+  g_subprocess_communicate_async(process, data, app-&gt;paste_cancellable,
+                                 paste_finished, g_object_ref(app));
+  g_bytes_unref(data);
+  g_object_unref(item);
+}
+
+static void on_search_activate(GtkSearchEntry *search, gpointer user_data) {
+  (void)search;
+  ClipboardPicker *app = user_data;
+  guint position = gtk_single_selection_get_selected(app-&gt;selection);
+  if (position != GTK_INVALID_LIST_POSITION)
+    activate_item(app-&gt;list_view, position, app);
+}
+
+static void apply_search_results(ClipboardPicker *app, GPtrArray *matches) {
+  ClipboardItem *selected =
+      gtk_single_selection_get_selected_item(app-&gt;selection);
+  if (selected)
+    g_object_ref(selected);
+
+  guint selected_position = GTK_INVALID_LIST_POSITION;
+  if (selected) {
+    for (guint i = 0; i &lt; matches-&gt;len; i++) {
+      if (g_ptr_array_index(matches, i) == selected) {
+        selected_position = i;
+        break;
+      }
+    }
+  }
+
+  app-&gt;updating_results = TRUE;
+  guint count = g_list_model_get_n_items(G_LIST_MODEL(app-&gt;results));
+  g_list_store_splice(app-&gt;results, 0, count, matches-&gt;pdata, matches-&gt;len);
+  if (matches-&gt;len) {
+    guint position =
+        selected_position == GTK_INVALID_LIST_POSITION ? 0 : selected_position;
+    gtk_single_selection_set_selected(app-&gt;selection, position);
+  }
+  app-&gt;updating_results = FALSE;
+
+  ClipboardItem *current =
+      gtk_single_selection_get_selected_item(app-&gt;selection);
+  schedule_preview(app, current, SEARCH_PREVIEW_DEBOUNCE_MS);
+  g_clear_object(&amp;selected);
+}
+
+static void update_search_results(ClipboardPicker *app) {
+  if (app-&gt;shutting_down)
+    return;
+
+  search_cache_prune(app, app-&gt;pending_query);
+  GPtrArray *cached =
+      g_hash_table_lookup(app-&gt;search_cache, app-&gt;pending_query);
+  if (cached) {
+    apply_search_results(app, cached);
+    return;
+  }
+
+  GPtrArray *candidates = search_cache_find_candidates(app);
+  GPtrArray *matches = g_ptr_array_new_with_free_func(g_object_unref);
+  for (guint i = 0; i &lt; candidates-&gt;len; i++) {
+    ClipboardItem *item = g_ptr_array_index(candidates, i);
+    if (g_strstr_len(item-&gt;search_text, -1, app-&gt;pending_query))
+      g_ptr_array_add(matches, g_object_ref(item));
+  }
+
+  search_cache_insert(app, app-&gt;pending_query, matches);
+  apply_search_results(app, matches);
+  g_ptr_array_unref(matches);
+}
+
+static void on_search_changed(GtkEditable *editable, gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  g_free(app-&gt;pending_query);
+  app-&gt;pending_query = g_utf8_casefold(gtk_editable_get_text(editable), -1);
+  app-&gt;preview_generation++;
+  cancel_preview_load(app);
+  update_search_results(app);
+}
+
+static gboolean on_key_pressed(GtkEventControllerKey *controller, guint keyval,
+                               guint keycode, GdkModifierType state,
+                               gpointer user_data) {
+  (void)controller;
+  (void)keycode;
+  ClipboardPicker *app = user_data;
+  if (keyval == GDK_KEY_Escape) {
+    dismiss_picker(app);
+    return GDK_EVENT_STOP;
+  }
+
+  gboolean ctrl = (state &amp; GDK_CONTROL_MASK) != 0;
+  if (ctrl &amp;&amp; (keyval == GDK_KEY_n || keyval == GDK_KEY_p)) {
+    guint count = g_list_model_get_n_items(G_LIST_MODEL(app-&gt;results));
+    if (count == 0)
+      return GDK_EVENT_STOP;
+    guint current = gtk_single_selection_get_selected(app-&gt;selection);
+    gint direction = keyval == GDK_KEY_n ? 1 : -1;
+    gint target = current == GTK_INVALID_LIST_POSITION
+                      ? (direction &gt; 0 ? 0 : (gint)count - 1)
+                      : (gint)current + direction;
+    target = CLAMP(target, 0, (gint)count - 1);
+    gtk_single_selection_set_selected(app-&gt;selection, target);
+    gtk_list_view_scroll_to(app-&gt;list_view, target, GTK_LIST_SCROLL_FOCUS,
+                            NULL);
+    return GDK_EVENT_STOP;
+  }
+  return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean finish_secondary_setup(gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  app-&gt;secondary_setup_id = 0;
+  if (app-&gt;shutting_down)
+    return G_SOURCE_REMOVE;
+
+  app-&gt;picture = GTK_PICTURE(gtk_picture_new());
+  gtk_picture_set_content_fit(app-&gt;picture, GTK_CONTENT_FIT_CONTAIN);
+  gtk_stack_add_named(app-&gt;preview_stack, GTK_WIDGET(app-&gt;picture), &quot;image&quot;);
+
+  GtkScrolledWindow *text_scroll =
+      GTK_SCROLLED_WINDOW(gtk_scrolled_window_new());
+  app-&gt;text_preview = GTK_LABEL(gtk_label_new(NULL));
+  gtk_widget_add_css_class(GTK_WIDGET(app-&gt;text_preview), &quot;text-preview&quot;);
+  gtk_label_set_selectable(app-&gt;text_preview, TRUE);
+  gtk_label_set_wrap(app-&gt;text_preview, TRUE);
+  gtk_label_set_wrap_mode(app-&gt;text_preview, PANGO_WRAP_WORD_CHAR);
+  gtk_label_set_xalign(app-&gt;text_preview, 0.0);
+  gtk_label_set_yalign(app-&gt;text_preview, 0.0);
+  gtk_widget_set_margin_top(GTK_WIDGET(app-&gt;text_preview), 16);
+  gtk_widget_set_margin_bottom(GTK_WIDGET(app-&gt;text_preview), 16);
+  gtk_widget_set_margin_start(GTK_WIDGET(app-&gt;text_preview), 16);
+  gtk_widget_set_margin_end(GTK_WIDGET(app-&gt;text_preview), 16);
+  gtk_scrolled_window_set_child(text_scroll, GTK_WIDGET(app-&gt;text_preview));
+  gtk_stack_add_named(app-&gt;preview_stack, GTK_WIDGET(text_scroll), &quot;text&quot;);
+
+  GtkGrid *metadata = GTK_GRID(gtk_grid_new());
+  gtk_widget_add_css_class(GTK_WIDGET(metadata), &quot;metadata&quot;);
+  gtk_grid_set_column_spacing(metadata, 16);
+  gtk_grid_set_row_spacing(metadata, 6);
+  const gchar *names[] = {&quot;MIME&quot;, &quot;Size&quot;, &quot;Details&quot;};
+  GtkLabel **values[] = {&amp;app-&gt;mime_value, &amp;app-&gt;size_value,
+                         &amp;app-&gt;details_value};
+  for (guint i = 0; i &lt; 3; i++) {
+    GtkLabel *key = GTK_LABEL(gtk_label_new(names[i]));
+    gtk_label_set_xalign(key, 0.0);
+    gtk_widget_add_css_class(GTK_WIDGET(key), &quot;metadata-key&quot;);
+    gtk_grid_attach(metadata, GTK_WIDGET(key), 0, i, 1, 1);
+    *values[i] = GTK_LABEL(gtk_label_new(&quot;&quot;));
+    gtk_label_set_xalign(*values[i], 0.0);
+    gtk_grid_attach(metadata, GTK_WIDGET(*values[i]), 1, i, 1, 1);
+  }
+  gtk_box_append(app-&gt;preview_box,
+                 GTK_WIDGET(gtk_separator_new(GTK_ORIENTATION_HORIZONTAL)));
+  gtk_box_append(app-&gt;preview_box, GTK_WIDGET(metadata));
+
+  g_signal_connect(app-&gt;selection, &quot;notify::selected-item&quot;,
+                   G_CALLBACK(selection_changed), app);
+  load_history_async(app);
+  gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;empty&quot;);
+  return G_SOURCE_REMOVE;
+}
+
+static void refresh_history(ClipboardPicker *app) {
+  if (app-&gt;history_loading || !app-&gt;results)
+    return;
+  app-&gt;preview_generation++;
+  cancel_preview_load(app);
+  g_clear_object(&amp;app-&gt;displayed_preview_item);
+  app-&gt;updating_results = TRUE;
+  g_list_store_remove_all(app-&gt;results);
+  app-&gt;updating_results = FALSE;
+  g_clear_pointer(&amp;app-&gt;search_items, g_ptr_array_unref);
+  app-&gt;search_items = g_ptr_array_new_with_free_func(g_object_unref);
+  search_cache_reset(app);
+  update_search_results(app);
+  gtk_label_set_text(app-&gt;empty_label, &quot;Loading clipboard history…&quot;);
+  gtk_stack_set_visible_child_name(app-&gt;preview_stack, &quot;empty&quot;);
+  load_history_async(app);
+}
+
+static gboolean refresh_history_idle(gpointer user_data) {
+  ClipboardPicker *app = user_data;
+  app-&gt;history_refresh_id = 0;
+  if (!app-&gt;shutting_down)
+    refresh_history(app);
+  return G_SOURCE_REMOVE;
+}
+
+static void clipboard_picker_activate(GApplication *application) {
+  ClipboardPicker *app = (ClipboardPicker *)application;
+  load_focused_app_async(app);
+  if (app-&gt;window) {
+    gtk_window_present(app-&gt;window);
+    gtk_editable_set_text(GTK_EDITABLE(app-&gt;search), &quot;&quot;);
+    gtk_widget_grab_focus(GTK_WIDGET(app-&gt;search));
+    if (!app-&gt;history_refresh_id &amp;&amp; !app-&gt;secondary_setup_id) {
+      app-&gt;history_refresh_id =
+          g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, refresh_history_idle,
+                          g_object_ref(app), g_object_unref);
+    }
+    return;
+  }
+
+  GtkApplicationWindow *window = GTK_APPLICATION_WINDOW(
+      gtk_application_window_new(GTK_APPLICATION(application)));
+  app-&gt;window = GTK_WINDOW(window);
+  gtk_window_set_title(app-&gt;window, &quot;Clipboard History (C)&quot;);
+  gtk_window_set_decorated(app-&gt;window, FALSE);
+  g_signal_connect(app-&gt;window, &quot;close-request&quot;,
+                   G_CALLBACK(on_window_close_requested), app);
+  gtk_widget_add_css_class(GTK_WIDGET(window), &quot;clipboard-picker&quot;);
+  gtk_window_set_default_size(GTK_WINDOW(window), 900, 520);
+
+  GtkBox *root = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 12));
+  gtk_widget_set_margin_top(GTK_WIDGET(root), 12);
+  gtk_widget_set_margin_bottom(GTK_WIDGET(root), 12);
+  gtk_widget_set_margin_start(GTK_WIDGET(root), 12);
+  gtk_widget_set_margin_end(GTK_WIDGET(root), 12);
+  gtk_window_set_child(GTK_WINDOW(window), GTK_WIDGET(root));
+
+  app-&gt;search = GTK_SEARCH_ENTRY(gtk_search_entry_new());
+  gtk_search_entry_set_placeholder_text(app-&gt;search,
+                                        &quot;Search clipboard history…&quot;);
+  g_signal_connect(app-&gt;search, &quot;changed&quot;, G_CALLBACK(on_search_changed), app);
+  g_signal_connect(app-&gt;search, &quot;activate&quot;, G_CALLBACK(on_search_activate),
+                   app);
+  gtk_box_append(root, GTK_WIDGET(app-&gt;search));
+
+  GtkPaned *panes = GTK_PANED(gtk_paned_new(GTK_ORIENTATION_HORIZONTAL));
+  gtk_widget_add_css_class(GTK_WIDGET(panes), &quot;content-panes&quot;);
+  gtk_paned_set_position(panes, 420);
+  gtk_widget_set_vexpand(GTK_WIDGET(panes), TRUE);
+  gtk_box_append(root, GTK_WIDGET(panes));
+
+  GtkScrolledWindow *history = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new());
+  gtk_widget_add_css_class(GTK_WIDGET(history), &quot;history&quot;);
+  GtkListItemFactory *factory = gtk_signal_list_item_factory_new();
+  g_signal_connect(factory, &quot;setup&quot;, G_CALLBACK(factory_setup), app);
+  g_signal_connect(factory, &quot;bind&quot;, G_CALLBACK(factory_bind), app);
+
+  app-&gt;results = g_list_store_new(clipboard_item_get_type());
+  app-&gt;selection =
+      gtk_single_selection_new(G_LIST_MODEL(g_object_ref(app-&gt;results)));
+  GtkListView *list = GTK_LIST_VIEW(
+      gtk_list_view_new(GTK_SELECTION_MODEL(app-&gt;selection), factory));
+  app-&gt;list_view = list;
+  g_signal_connect(list, &quot;activate&quot;, G_CALLBACK(activate_item), app);
+  gtk_scrolled_window_set_child(history, GTK_WIDGET(list));
+  gtk_paned_set_start_child(panes, GTK_WIDGET(history));
+
+  app-&gt;preview_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
+  gtk_widget_add_css_class(GTK_WIDGET(app-&gt;preview_box), &quot;preview&quot;);
+  app-&gt;preview_stack = GTK_STACK(gtk_stack_new());
+  gtk_widget_set_hexpand(GTK_WIDGET(app-&gt;preview_stack), TRUE);
+  gtk_widget_set_vexpand(GTK_WIDGET(app-&gt;preview_stack), TRUE);
+  gtk_box_append(app-&gt;preview_box, GTK_WIDGET(app-&gt;preview_stack));
+  app-&gt;empty_label = GTK_LABEL(gtk_label_new(&quot;Loading clipboard history…&quot;));
+  gtk_stack_add_named(app-&gt;preview_stack, GTK_WIDGET(app-&gt;empty_label),
+                      &quot;empty&quot;);
+  gtk_paned_set_end_child(panes, GTK_WIDGET(app-&gt;preview_box));
+
+  GtkCssProvider *css = gtk_css_provider_new();
+  gtk_css_provider_load_from_string(
+      css,
+      &quot;window.clipboard-picker { background-color: #0f0f0f; border-radius: &quot;
+      &quot;10px; }\n&quot;
+      &quot;.content-panes &gt; separator { min-width: 12px; background: transparent; &quot;
+      &quot;}\n&quot;
+      &quot;.history, .preview { background-color: #1b1b1b; &quot;
+      &quot;border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 8px; }\n&quot;
+      &quot;.preview stack, .preview scrolledwindow, .preview picture, &quot;
+      &quot;.preview scrolledwindow viewport, .history scrolledwindow viewport { &quot;
+      &quot;background-color: #1b1b1b; }\n&quot;
+      &quot;.history-item { padding: 9px 10px; }\n&quot;
+      &quot;.metadata { padding: 10px 12px; }\n&quot;
+      &quot;.metadata-key { color: rgba(255, 255, 255, 0.55); }\n&quot;
+      &quot;.text-preview { background-color: #0f0f0f; }&quot;);
+  gtk_style_context_add_provider_for_display(
+      gdk_display_get_default(), GTK_STYLE_PROVIDER(css),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  g_object_unref(css);
+
+  GtkEventController *keys = gtk_event_controller_key_new();
+  gtk_event_controller_set_propagation_phase(keys, GTK_PHASE_CAPTURE);
+  g_signal_connect(keys, &quot;key-pressed&quot;, G_CALLBACK(on_key_pressed), app);
+  gtk_widget_add_controller(GTK_WIDGET(window), keys);
+
+  gtk_window_present(GTK_WINDOW(window));
+  gtk_widget_grab_focus(GTK_WIDGET(app-&gt;search));
+  app-&gt;secondary_setup_id =
+      g_timeout_add_full(G_PRIORITY_LOW, 16, finish_secondary_setup,
+                         g_object_ref(app), g_object_unref);
+}
+
+static void clipboard_picker_init(ClipboardPicker *app) {
+  app-&gt;pending_query = g_strdup(&quot;&quot;);
+  app-&gt;search_items = g_ptr_array_new_with_free_func(g_object_unref);
+  app-&gt;search_cache = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+                                            (GDestroyNotify)g_ptr_array_unref);
+  search_cache_reset(app);
+  app-&gt;preview_cache = g_hash_table_new(g_str_hash, g_str_equal);
+  g_queue_init(&amp;app-&gt;preview_cache_lru);
+}
+
+static void clipboard_picker_shutdown(GApplication *application) {
+  ClipboardPicker *app = (ClipboardPicker *)application;
+  app-&gt;shutting_down = TRUE;
+
+  cancel_preview_load(app);
+  g_clear_handle_id(&amp;app-&gt;paste_timeout_id, g_source_remove);
+  g_clear_handle_id(&amp;app-&gt;secondary_setup_id, g_source_remove);
+  g_clear_handle_id(&amp;app-&gt;history_refresh_id, g_source_remove);
+  if (app-&gt;focused_app_cancellable)
+    g_cancellable_cancel(app-&gt;focused_app_cancellable);
+  if (app-&gt;history_cancellable)
+    g_cancellable_cancel(app-&gt;history_cancellable);
+  if (app-&gt;history_process)
+    g_subprocess_force_exit(app-&gt;history_process);
+  if (app-&gt;paste_cancellable)
+    g_cancellable_cancel(app-&gt;paste_cancellable);
+  if (app-&gt;paste_process)
+    g_subprocess_force_exit(app-&gt;paste_process);
+
+  G_APPLICATION_CLASS(clipboard_picker_parent_class)-&gt;shutdown(application);
+}
+
+static void clipboard_picker_finalize(GObject *object) {
+  ClipboardPicker *app = (ClipboardPicker *)object;
+  g_free(app-&gt;focused_app);
+  g_free(app-&gt;pending_query);
+  g_clear_object(&amp;app-&gt;pending_preview_item);
+  g_clear_object(&amp;app-&gt;displayed_preview_item);
+  g_clear_object(&amp;app-&gt;focused_app_cancellable);
+  g_clear_object(&amp;app-&gt;history_cancellable);
+  g_clear_object(&amp;app-&gt;history_process);
+  g_clear_object(&amp;app-&gt;preview_cancellable);
+  g_clear_object(&amp;app-&gt;preview_process);
+  g_clear_object(&amp;app-&gt;paste_cancellable);
+  g_clear_object(&amp;app-&gt;paste_process);
+  g_clear_object(&amp;app-&gt;results);
+  g_clear_pointer(&amp;app-&gt;search_items, g_ptr_array_unref);
+  g_clear_pointer(&amp;app-&gt;search_cache, g_hash_table_unref);
+  preview_cache_clear(app);
+  g_clear_pointer(&amp;app-&gt;preview_cache, g_hash_table_unref);
+  G_OBJECT_CLASS(clipboard_picker_parent_class)-&gt;finalize(object);
+}
+
+static void clipboard_picker_startup(GApplication *application) {
+  G_APPLICATION_CLASS(clipboard_picker_parent_class)-&gt;startup(application);
+  if ((g_application_get_flags(application) &amp; G_APPLICATION_IS_SERVICE) != 0)
+    g_application_hold(application);
+}
+
+static void clipboard_picker_class_init(ClipboardPickerClass *class) {
+  GObjectClass *object_class = G_OBJECT_CLASS(class);
+  object_class-&gt;finalize = clipboard_picker_finalize;
+  GApplicationClass *application_class = G_APPLICATION_CLASS(class);
+  application_class-&gt;startup = clipboard_picker_startup;
+  application_class-&gt;activate = clipboard_picker_activate;
+  application_class-&gt;shutdown = clipboard_picker_shutdown;
+}
+
+int main(int argc, char **argv) {
+  /* Work around GTK partial-redraw artifacts across renderers:
+   * https://gitlab.gnome.org/GNOME/gtk/-/work_items/8339 */
+  g_setenv(&quot;GSK_DEBUG&quot;, &quot;full-redraw&quot;, TRUE);
+  ClipboardPicker *app =
+      g_object_new(clipboard_picker_get_type(), &quot;application-id&quot;, APP_ID,
+                   &quot;flags&quot;, G_APPLICATION_DEFAULT_FLAGS, NULL);
+  int status = g_application_run(G_APPLICATION(app), argc, argv);
+  g_object_unref(app);
+  return status;
+}
+</code></pre>
+</article>
+
+<article class="file" id="file-clipboard-picker-README-md-d0c4e656da">
+  <header class="file-header">
+    <div>
+      <h3>README.md</h3>
+      <p>clipboard-picker/README.md · 83 lines</p>
+    </div>
+    <div class="file-actions">
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/clipboard-picker/README.md">View on GitHub</a>
+      <button class="copy" type="button" aria-label="Copy clipboard-picker/README.md">Copy</button>
+    </div>
+  </header>
+  <pre><code class="language-markdown"># Clipboard Picker
+
+This is the active C/GTK4 clipboard picker. It compiles with GCC, GTK4, GLib, and JSON-GLib
+development files.
+
+It provides:
+
+- Cliphist history in a virtualized `Gtk.ListView`.
+- Cancellable worker-thread search with generation-safe result updates.
+- Text and image previews.
+- MIME, size, and content details.
+- `Ctrl+N`/`Ctrl+P` and arrow-key list navigation.
+- `Escape` to quit and activation to copy with `wl-copy`.
+- Terminal-aware paste injection through `wtype`.
+- The `com.erick.ClipboardPicker` app ID for Sway window matching.
+- Full redraws forced to work around partial-redraw artifacts across renderers
+  ([GTK issue #8339](https://gitlab.gnome.org/GNOME/gtk/-/work_items/8339)).
+- Binary-safe decoding for image previews and clipboard writes.
+- A 12px transparent gap between the history and preview panels.
+
+## Build locally
+
+From this directory, with GTK4 and JSON-GLib development files installed:
+
+```bash
+cc -O3 -march=native -Wall -Wextra -o clipboard-picker main.c \
+  $(pkg-config --cflags --libs gtk4 gio-2.0 json-glib-1.0)
+./clipboard-picker
+```
+
+On NixOS, enter a temporary development shell first:
+
+```bash
+nix-shell -p gcc pkg-config gtk4 glib.dev json-glib --run bash
+```
+
+Then compile and run it:
+
+```bash
+cc -O3 -march=native -Wall -Wextra -o clipboard-picker main.c \
+  $(pkg-config --cflags --libs gtk4 gio-2.0 json-glib-1.0)
+./clipboard-picker
+```
+
+History loading, parsing, and preview decoding are asynchronous. Preview loading is debounced, and
+decoded entries are retained in a bounded LRU cache for faster navigation.
+
+Manual local builds use `-O3 -march=native`, which optimizes for the local CPU and is not portable
+between machines. The Nix package uses `-O3` because Nix deliberately rejects native CPU flags for
+reproducible builds.
+
+## Install with Nix
+
+Build the package from this directory:
+
+```bash
+nix-build default.nix
+./result/bin/clipboard-picker
+```
+
+Install it into the current Nix profile with:
+
+```bash
+nix-env -if default.nix
+```
+
+## Resident user service
+
+The NixOS configuration starts the picker with `--gapplication-service`. This preloads GTK without
+opening a window. Running the normal executable then activates the resident process over D-Bus.
+Escape and successful paste actions hide the resident window instead of stopping the service.
+
+Build the package before starting the service, then rebuild NixOS:
+
+```bash
+nix-build default.nix
+sudo nixos-rebuild switch --flake ../nixos
+systemctl --user restart clipboard-picker.service
+```
+
+The package includes GTK4, GLib, and JSON-GLib build dependencies plus runtime paths for Cliphist,
+`wl-copy`, Sway, and `wtype`. Focused-application detection uses Sway&#x27;s Unix IPC directly, without
+`jq` or `swaymsg`.
+</code></pre>
+</article></section>
+<section class="group" id="group-emacs"><h2><a href="emacs.html">Emacs <small>Open documented config →</small></a></h2>
 <article class="file" id="file-emacs-d-early-init-el-f7f2e77d14">
   <header class="file-header">
     <div>
@@ -146,7 +1616,7 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
       <p>.emacs.d/early-init.el · 43 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/early-init.el">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/early-init.el">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/early-init.el">Copy</button>
     </div>
   </header>
@@ -203,7 +1673,7 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
       <p>.emacs.d/elpaca-lockfile.eld · 1,673 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/elpaca-lockfile.eld">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/elpaca-lockfile.eld">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/elpaca-lockfile.eld">Copy</button>
     </div>
   </header>
@@ -1890,7 +3360,7 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
       <p>.emacs.d/init.el · 80 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/init.el">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/init.el">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/init.el">Copy</button>
     </div>
   </header>
@@ -1984,7 +3454,7 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
       <p>.emacs.d/README.org · 3,302 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/README.org">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/README.org">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/README.org">Copy</button>
     </div>
   </header>
@@ -5300,7 +6770,7 @@ Save image from clipboard to path.
       <p>.emacs.d/snippets/dart-mode/af · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/af">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/af">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/af">Copy</button>
     </div>
   </header>
@@ -5318,7 +6788,7 @@ Save image from clipboard to path.
       <p>.emacs.d/snippets/dart-mode/fu · 7 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/fu">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/fu">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/fu">Copy</button>
     </div>
   </header>
@@ -5338,7 +6808,7 @@ Save image from clipboard to path.
       <p>.emacs.d/snippets/dart-mode/iclass · 7 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/iclass">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/iclass">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/iclass">Copy</button>
     </div>
   </header>
@@ -5358,7 +6828,7 @@ class $1 extends $2 {
       <p>.emacs.d/snippets/dart-mode/print · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/print">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/print">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/print">Copy</button>
     </div>
   </header>
@@ -5376,7 +6846,7 @@ print($1);$2</code></pre>
       <p>.emacs.d/snippets/dart-mode/stanim · 33 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/stanim">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/stanim">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/stanim">Copy</button>
     </div>
   </header>
@@ -5422,7 +6892,7 @@ with SingleTickerProviderStateMixin {
       <p>.emacs.d/snippets/dart-mode/stful · 18 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/stful">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/stful">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/stful">Copy</button>
     </div>
   </header>
@@ -5454,7 +6924,7 @@ class _$1State extends State&lt;$1&gt; {
       <p>.emacs.d/snippets/dart-mode/stless · 13 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/dart-mode/stless">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/dart-mode/stless">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/dart-mode/stless">Copy</button>
     </div>
   </header>
@@ -5480,7 +6950,7 @@ class $1 extends StatelessWidget {
       <p>.emacs.d/snippets/elixir-mode/inspect-ecto-query · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/elixir-mode/inspect-ecto-query">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/elixir-mode/inspect-ecto-query">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/elixir-mode/inspect-ecto-query">Copy</button>
     </div>
   </header>
@@ -5499,7 +6969,7 @@ IO.inspect(Ecto.Adapters.SQL.to_sql(:all, ${1:Repo}, ${0:query}))
       <p>.emacs.d/snippets/elixir-mode/mixtask · 14 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/elixir-mode/mixtask">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/elixir-mode/mixtask">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/elixir-mode/mixtask">Copy</button>
     </div>
   </header>
@@ -5526,7 +6996,7 @@ end</code></pre>
       <p>.emacs.d/snippets/elixir-mode/pipe-inspect · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/elixir-mode/pipe-inspect">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/elixir-mode/pipe-inspect">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/elixir-mode/pipe-inspect">Copy</button>
     </div>
   </header>
@@ -5544,7 +7014,7 @@ end</code></pre>
       <p>.emacs.d/snippets/go-mode/if-error · 7 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/go-mode/if-error">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/go-mode/if-error">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/go-mode/if-error">Copy</button>
     </div>
   </header>
@@ -5565,7 +7035,7 @@ if err != nil {
       <p>.emacs.d/snippets/go-mode/inspect · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/go-mode/inspect">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/go-mode/inspect">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/go-mode/inspect">Copy</button>
     </div>
   </header>
@@ -5583,7 +7053,7 @@ fmt.Printf(&quot;Type %T for %[1]v\n&quot;, $1)$0</code></pre>
       <p>.emacs.d/snippets/go-mode/print · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/go-mode/print">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/go-mode/print">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/go-mode/print">Copy</button>
     </div>
   </header>
@@ -5601,7 +7071,7 @@ fmt.Println($0)</code></pre>
       <p>.emacs.d/snippets/js-mode/inspect · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/js-mode/inspect">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/js-mode/inspect">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/js-mode/inspect">Copy</button>
     </div>
   </header>
@@ -5619,7 +7089,7 @@ console.log(&quot;$1&quot;, $1)$0</code></pre>
       <p>.emacs.d/snippets/python-mode/inspect · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/python-mode/inspect">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/python-mode/inspect">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/python-mode/inspect">Copy</button>
     </div>
   </header>
@@ -5638,7 +7108,7 @@ print(&quot;$1&quot;, $1)$0
       <p>.emacs.d/snippets/python-mode/logger · 19 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/python-mode/logger">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/python-mode/logger">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/python-mode/logger">Copy</button>
     </div>
   </header>
@@ -5671,7 +7141,7 @@ $0
       <p>.emacs.d/snippets/rust-mode/inspect · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.emacs.d/snippets/rust-mode/inspect">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.emacs.d/snippets/rust-mode/inspect">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .emacs.d/snippets/rust-mode/inspect">Copy</button>
     </div>
   </header>
@@ -5690,7 +7160,7 @@ println!(&quot;{:?}&quot;, $1);$0
       <p>espanso/config/default.yml · 2 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/espanso/config/default.yml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/espanso/config/default.yml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy espanso/config/default.yml">Copy</button>
     </div>
   </header>
@@ -5706,7 +7176,7 @@ show_icon: false
       <p>espanso/match/base.yml · 62 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/espanso/match/base.yml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/espanso/match/base.yml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy espanso/match/base.yml">Copy</button>
     </div>
   </header>
@@ -5782,7 +7252,7 @@ matches:
       <p>eww/eww.scss · 210 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/eww.scss">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/eww.scss">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/eww.scss">Copy</button>
     </div>
   </header>
@@ -6006,7 +7476,7 @@ window {
       <p>eww/eww.yuck · 148 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/eww.yuck">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/eww.yuck">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/eww.yuck">Copy</button>
     </div>
   </header>
@@ -6168,7 +7638,7 @@ window {
       <p>eww/scripts/cpu.sh · 22 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/scripts/cpu.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/scripts/cpu.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/scripts/cpu.sh">Copy</button>
     </div>
   </header>
@@ -6204,7 +7674,7 @@ jq -n --arg percent &quot;$percent&quot; --arg load &quot;$load&quot; --arg core
       <p>eww/scripts/disk.sh · 7 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/scripts/disk.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/scripts/disk.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/scripts/disk.sh">Copy</button>
     </div>
   </header>
@@ -6225,7 +7695,7 @@ jq -n --arg percent &quot;$percent&quot; --arg used &quot;$used&quot; --arg tota
       <p>eww/scripts/gpu.sh · 17 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/scripts/gpu.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/scripts/gpu.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/scripts/gpu.sh">Copy</button>
     </div>
   </header>
@@ -6256,7 +7726,7 @@ jq -n --arg percent &quot;$percent&quot; --arg vram_used &quot;$vram_used&quot; 
       <p>eww/scripts/net.sh · 79 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/scripts/net.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/scripts/net.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/scripts/net.sh">Copy</button>
     </div>
   </header>
@@ -6349,7 +7819,7 @@ esac
       <p>eww/scripts/ram.sh · 22 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/scripts/ram.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/scripts/ram.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/scripts/ram.sh">Copy</button>
     </div>
   </header>
@@ -6385,7 +7855,7 @@ jq -n --arg used &quot;$used_h&quot; --arg total &quot;$total_h&quot; --arg perc
       <p>eww/scripts/weather.sh · 39 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/eww/scripts/weather.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/eww/scripts/weather.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy eww/scripts/weather.sh">Copy</button>
     </div>
   </header>
@@ -6438,7 +7908,7 @@ jq -n \
       <p>.aerospace.toml · 174 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.aerospace.toml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.aerospace.toml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .aerospace.toml">Copy</button>
     </div>
   </header>
@@ -6626,7 +8096,7 @@ run = [&#x27;layout floating&#x27;]
       <p>.alacritty.toml · 627 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.alacritty.toml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.alacritty.toml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .alacritty.toml">Copy</button>
     </div>
   </header>
@@ -7267,7 +8737,7 @@ y = 2
       <p>.editorconfig · 22 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.editorconfig">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.editorconfig">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .editorconfig">Copy</button>
     </div>
   </header>
@@ -7303,7 +8773,7 @@ indent_style = tab
       <p>.git_commit_message.txt · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.git_commit_message.txt">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.git_commit_message.txt">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .git_commit_message.txt">Copy</button>
     </div>
   </header>
@@ -7322,7 +8792,7 @@ indent_style = tab
       <p>.gitconfig · 35 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.gitconfig">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.gitconfig">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .gitconfig">Copy</button>
     </div>
   </header>
@@ -7368,10 +8838,10 @@ indent_style = tab
   <header class="file-header">
     <div>
       <h3>.gitignore</h3>
-      <p>.gitignore · 6 lines</p>
+      <p>.gitignore · 7 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.gitignore">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.gitignore">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .gitignore">Copy</button>
     </div>
   </header>
@@ -7381,6 +8851,7 @@ indent_style = tab
 .emacs.d/quelpa
 *.elc
 wallpaper-picker/result
+clipboard-picker/result
 </code></pre>
 </article>
 
@@ -7391,7 +8862,7 @@ wallpaper-picker/result
       <p>.ideavimrc · 2 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.ideavimrc">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.ideavimrc">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .ideavimrc">Copy</button>
     </div>
   </header>
@@ -7407,7 +8878,7 @@ vnoremap gc :action CommentByLineComment&lt;CR&gt;
       <p>.shellcheckrc · 3 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.shellcheckrc">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.shellcheckrc">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .shellcheckrc">Copy</button>
     </div>
   </header>
@@ -7424,7 +8895,7 @@ disable=SC2012 # temporary until replace ls with find
       <p>.tmux.conf · 120 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.tmux.conf">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.tmux.conf">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .tmux.conf">Copy</button>
     </div>
   </header>
@@ -7558,7 +9029,7 @@ set -g mode-style fg=default,bg=red
       <p>.vimrc · 164 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.vimrc">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.vimrc">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .vimrc">Copy</button>
     </div>
   </header>
@@ -7736,7 +9207,7 @@ autocmd VimResized * :wincmd = &quot;
       <p>.Xmodmap · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.Xmodmap">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.Xmodmap">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .Xmodmap">Copy</button>
     </div>
   </header>
@@ -7755,7 +9226,7 @@ add Lock = Caps_Lock
       <p>Brewfile · 178 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/Brewfile">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/Brewfile">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy Brewfile">Copy</button>
     </div>
   </header>
@@ -7947,7 +9418,7 @@ cask &quot;zotero&quot;
       <p>global.gitignore · 11 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/global.gitignore">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/global.gitignore">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy global.gitignore">Copy</button>
     </div>
   </header>
@@ -7972,7 +9443,7 @@ mutagen.yml.lock
       <p>README.md · 25 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/README.md">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/README.md">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy README.md">Copy</button>
     </div>
   </header>
@@ -8011,7 +9482,7 @@ Go to `zsh` folder to check the config.
       <p>setup.sh · 40 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/setup.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/setup.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy setup.sh">Copy</button>
     </div>
   </header>
@@ -8065,7 +9536,7 @@ done &lt; &lt;(cat placements/common.txt &quot;$platform_file&quot;)
       <p>ghostty/config · 6 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/ghostty/config">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/ghostty/config">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy ghostty/config">Copy</button>
     </div>
   </header>
@@ -8085,7 +9556,7 @@ confirm-close-surface = false
       <p>.github/workflows/bash-ci.yaml · 22 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.github/workflows/bash-ci.yaml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.github/workflows/bash-ci.yaml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .github/workflows/bash-ci.yaml">Copy</button>
     </div>
   </header>
@@ -8121,7 +9592,7 @@ jobs:
       <p>.github/workflows/c-ci.yaml · 20 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.github/workflows/c-ci.yaml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.github/workflows/c-ci.yaml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .github/workflows/c-ci.yaml">Copy</button>
     </div>
   </header>
@@ -8155,7 +9626,7 @@ jobs:
       <p>.github/workflows/lua-ci.yaml · 19 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.github/workflows/lua-ci.yaml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.github/workflows/lua-ci.yaml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .github/workflows/lua-ci.yaml">Copy</button>
     </div>
   </header>
@@ -8188,7 +9659,7 @@ jobs:
       <p>.github/workflows/publish-config-site.yml · 53 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.github/workflows/publish-config-site.yml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.github/workflows/publish-config-site.yml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .github/workflows/publish-config-site.yml">Copy</button>
     </div>
   </header>
@@ -8255,7 +9726,7 @@ jobs:
       <p>gtk/gtk-3.0/settings.ini · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/gtk/gtk-3.0/settings.ini">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/gtk/gtk-3.0/settings.ini">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy gtk/gtk-3.0/settings.ini">Copy</button>
     </div>
   </header>
@@ -8274,7 +9745,7 @@ gtk-application-prefer-dark-theme=1
       <p>gtk/gtk-4.0/settings.ini · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/gtk/gtk-4.0/settings.ini">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/gtk/gtk-4.0/settings.ini">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy gtk/gtk-4.0/settings.ini">Copy</button>
     </div>
   </header>
@@ -8293,7 +9764,7 @@ gtk-application-prefer-dark-theme=1
       <p>hammerspoon/.stylua.toml · 4 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/hammerspoon/.stylua.toml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/hammerspoon/.stylua.toml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy hammerspoon/.stylua.toml">Copy</button>
     </div>
   </header>
@@ -8311,7 +9782,7 @@ call_parentheses = &quot;None&quot;
       <p>hammerspoon/init.lua · 40 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/hammerspoon/init.lua">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/hammerspoon/init.lua">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy hammerspoon/init.lua">Copy</button>
     </div>
   </header>
@@ -8365,7 +9836,7 @@ end)
       <p>hammerspoon/windows.lua · 71 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/hammerspoon/windows.lua">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/hammerspoon/windows.lua">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy hammerspoon/windows.lua">Copy</button>
     </div>
   </header>
@@ -8450,7 +9921,7 @@ end)
       <p>i3/config · 128 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/i3/config">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/i3/config">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy i3/config">Copy</button>
     </div>
   </header>
@@ -8592,7 +10063,7 @@ client.focused          #2e3436 #2e3436 #ffffff #2e3436   #2e3436
       <p>jj/config.toml · 13 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/jj/config.toml">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/jj/config.toml">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy jj/config.toml">Copy</button>
     </div>
   </header>
@@ -8619,7 +10090,7 @@ key = &quot;~/.ssh/id_ed25519.pub&quot;
       <p>nautilus/scripts/send-to-localsend.py · 46 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nautilus/scripts/send-to-localsend.py">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nautilus/scripts/send-to-localsend.py">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nautilus/scripts/send-to-localsend.py">Copy</button>
     </div>
   </header>
@@ -8679,7 +10150,7 @@ except OSError as error:
       <p>nix-darwin/common.nix · 244 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nix-darwin/common.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nix-darwin/common.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nix-darwin/common.nix">Copy</button>
     </div>
   </header>
@@ -8937,7 +10408,7 @@ except OSError as error:
       <p>nix-darwin/flake.nix · 35 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nix-darwin/flake.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nix-darwin/flake.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nix-darwin/flake.nix">Copy</button>
     </div>
   </header>
@@ -8986,7 +10457,7 @@ except OSError as error:
       <p>nix-darwin/personal.nix · 68 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nix-darwin/personal.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nix-darwin/personal.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nix-darwin/personal.nix">Copy</button>
     </div>
   </header>
@@ -9068,7 +10539,7 @@ except OSError as error:
       <p>nix-darwin/README.md · 22 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nix-darwin/README.md">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nix-darwin/README.md">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nix-darwin/README.md">Copy</button>
     </div>
   </header>
@@ -9104,7 +10575,7 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake &quot;.#simple&quot;
       <p>nix-darwin/work.nix · 41 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nix-darwin/work.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nix-darwin/work.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nix-darwin/work.nix">Copy</button>
     </div>
   </header>
@@ -9156,10 +10627,10 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake &quot;.#simple&quot;
   <header class="file-header">
     <div>
       <h3>configuration.nix</h3>
-      <p>nixos/configuration.nix · 418 lines</p>
+      <p>nixos/configuration.nix · 431 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nixos/configuration.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nixos/configuration.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nixos/configuration.nix">Copy</button>
     </div>
   </header>
@@ -9365,6 +10836,19 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake &quot;.#simple&quot;
   virtualisation.docker.enable = true;
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
+
+  # Keep the clipboard picker resident so hotkey activation only presents its existing process.
+  systemd.user.services.clipboard-picker = {
+    description = &quot;Resident GTK clipboard picker&quot;;
+    wantedBy = [ &quot;graphical-session.target&quot; ];
+    after = [ &quot;graphical-session.target&quot; ];
+    partOf = [ &quot;graphical-session.target&quot; ];
+    serviceConfig = {
+      ExecStart = &quot;%h/dotfiles/clipboard-picker/result/bin/clipboard-picker --gapplication-service&quot;;
+      Restart = &quot;on-failure&quot;;
+      RestartSec = 2;
+    };
+  };
 
   # Keep Handy ready for Sway&#x27;s on-demand transcription shortcut.
   systemd.user.services.handy = {
@@ -9591,7 +11075,7 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake &quot;.#simple&quot;
       <p>nixos/flake.nix · 14 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/nixos/flake.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/nixos/flake.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy nixos/flake.nix">Copy</button>
     </div>
   </header>
@@ -9619,7 +11103,7 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake &quot;.#simple&quot;
       <p>.pi/agent/AGENTS.md · 54 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/AGENTS.md">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/AGENTS.md">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/AGENTS.md">Copy</button>
     </div>
   </header>
@@ -9687,7 +11171,7 @@ reminds you to load them.
       <p>.pi/agent/extensions/alias-expand.ts · 37 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/extensions/alias-expand.ts">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/extensions/alias-expand.ts">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/extensions/alias-expand.ts">Copy</button>
     </div>
   </header>
@@ -9738,7 +11222,7 @@ export default function (pi: ExtensionAPI) {
       <p>.pi/agent/extensions/lang-directives.ts · 162 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/extensions/lang-directives.ts">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/extensions/lang-directives.ts">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/extensions/lang-directives.ts">Copy</button>
     </div>
   </header>
@@ -9914,7 +11398,7 @@ export default function (pi: ExtensionAPI) {
       <p>.pi/agent/extensions/prompt-prefix.ts · 36 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/extensions/prompt-prefix.ts">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/extensions/prompt-prefix.ts">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/extensions/prompt-prefix.ts">Copy</button>
     </div>
   </header>
@@ -9964,7 +11448,7 @@ export default function (pi: ExtensionAPI) {
       <p>.pi/agent/lang-directives.json · 24 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/lang-directives.json">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/lang-directives.json">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/lang-directives.json">Copy</button>
     </div>
   </header>
@@ -10002,7 +11486,7 @@ export default function (pi: ExtensionAPI) {
       <p>.pi/agent/skills/rust/SKILL.md · 13 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/skills/rust/SKILL.md">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/skills/rust/SKILL.md">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/skills/rust/SKILL.md">Copy</button>
     </div>
   </header>
@@ -10029,7 +11513,7 @@ description: General Rust conventions and best practices. Use when writing or re
       <p>.pi/agent/themes/tomorrow.json · 78 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/.pi/agent/themes/tomorrow.json">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/.pi/agent/themes/tomorrow.json">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy .pi/agent/themes/tomorrow.json">Copy</button>
     </div>
   </header>
@@ -10121,7 +11605,7 @@ description: General Rust conventions and best practices. Use when writing or re
       <p>placements/common.txt · 24 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/placements/common.txt">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/placements/common.txt">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy placements/common.txt">Copy</button>
     </div>
   </header>
@@ -10159,7 +11643,7 @@ jj/config.toml ~/.config/jj/config.toml
       <p>placements/linux.txt · 40 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/placements/linux.txt">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/placements/linux.txt">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy placements/linux.txt">Copy</button>
     </div>
   </header>
@@ -10213,7 +11697,7 @@ gtk/gtk-4.0/settings.ini ~/.config/gtk-4.0/settings.ini
       <p>placements/macos.txt · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/placements/macos.txt">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/placements/macos.txt">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy placements/macos.txt">Copy</button>
     </div>
   </header>
@@ -10232,7 +11716,7 @@ hammerspoon/windows.lua ~/.hammerspoon/windows.lua
       <p>polybar/config.ini · 116 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/polybar/config.ini">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/polybar/config.ini">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy polybar/config.ini">Copy</button>
     </div>
   </header>
@@ -10362,7 +11846,7 @@ pseudo-transparency = true
       <p>polybar/launch.sh · 5 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/polybar/launch.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/polybar/launch.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy polybar/launch.sh">Copy</button>
     </div>
   </header>
@@ -10381,7 +11865,7 @@ polybar -c ~/.config/polybar/config.ini
       <p>rofi/config.rasi · 91 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/rofi/config.rasi">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/rofi/config.rasi">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy rofi/config.rasi">Copy</button>
     </div>
   </header>
@@ -10486,7 +11970,7 @@ element-text {
       <p>scripts/build_mac.sh · 63 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/scripts/build_mac.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/scripts/build_mac.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy scripts/build_mac.sh">Copy</button>
     </div>
   </header>
@@ -10563,7 +12047,7 @@ cd - || exit
       <p>scripts/config-site.css · 91 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/scripts/config-site.css">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/scripts/config-site.css">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy scripts/config-site.css">Copy</button>
     </div>
   </header>
@@ -10668,7 +12152,7 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
       <p>scripts/generate-config-site.py · 378 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/scripts/generate-config-site.py">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/scripts/generate-config-site.py">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy scripts/generate-config-site.py">Copy</button>
     </div>
   </header>
@@ -10924,8 +12408,8 @@ def render_site(
 
     return TEMPLATE.replace(&quot;{{NAVIGATION}}&quot;, &quot;\n&quot;.join(navigation)).replace(
         &quot;{{SECTIONS}}&quot;, &quot;\n&quot;.join(sections)
-    ).replace(&quot;115&quot;, str(len(files))).replace(
-        &quot;25&quot;, str(len(grouped))
+    ).replace(&quot;118&quot;, str(len(files))).replace(
+        &quot;26&quot;, str(len(grouped))
     ).replace(&quot;:root { color-scheme: dark; --bg: #111318; --panel: #191c23; --sidebar: #15171d; --muted: #969dab; --text: #e6e9ef; --accent: #8aadf4; --border: #2c313c; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -11127,7 +12611,7 @@ th, td { padding: 8px 12px; border: 1px solid var(--border); }
 &lt;body&gt;
   &lt;aside&gt;
     &lt;h1&gt;Dotfiles&lt;/h1&gt;
-    &lt;p&gt;115 tracked files across 25 groups&lt;/p&gt;
+    &lt;p&gt;118 tracked files across 26 groups&lt;/p&gt;
     &lt;button class=&quot;nav-toggle&quot; type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;site-navigation&quot;&gt;Browse sections&lt;/button&gt;
     &lt;nav id=&quot;site-navigation&quot;&gt;{{NAVIGATION}}&lt;/nav&gt;
   &lt;/aside&gt;
@@ -11242,7 +12726,7 @@ if __name__ == &quot;__main__&quot;:
       <p>scripts/org-render-html-minimal.el · 55 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/scripts/org-render-html-minimal.el">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/scripts/org-render-html-minimal.el">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy scripts/org-render-html-minimal.el">Copy</button>
     </div>
   </header>
@@ -11311,7 +12795,7 @@ document.addEventListener(&#x27;DOMContentLoaded&#x27;, () =&gt; {
       <p>scripts/render-emacs-config-to-html.sh · 32 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/scripts/render-emacs-config-to-html.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/scripts/render-emacs-config-to-html.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy scripts/render-emacs-config-to-html.sh">Copy</button>
     </div>
   </header>
@@ -11357,7 +12841,7 @@ mv &quot;$work_dir/index.html&quot; &quot;$output&quot;
       <p>swappy/config · 10 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/swappy/config">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/swappy/config">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy swappy/config">Copy</button>
     </div>
   </header>
@@ -11378,10 +12862,10 @@ fill_shape=false
   <header class="file-header">
     <div>
       <h3>config</h3>
-      <p>sway/config · 265 lines</p>
+      <p>sway/config · 266 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/config">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/config">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/config">Copy</button>
     </div>
   </header>
@@ -11414,9 +12898,9 @@ gaps inner 5
 
 # Make the active Sway sockets available to graphical systemd user services.
 exec_always systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK
-# Restart Handy once per Sway session after importing its Wayland environment.
+# Restart resident graphical services once Sway&#x27;s Wayland environment is available.
 exec sh -c &#x27;systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
-    systemctl --user restart handy.service&#x27;
+    systemctl --user restart handy.service clipboard-picker.service&#x27;
 
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec swaync
@@ -11522,8 +13006,8 @@ input * {
         bindsym Escape mode &quot;Mouse&quot;
     }
 
-    # Open clipboard history
-    bindsym $mod+y exec ~/.config/sway/scripts/clipboard-menu.sh
+    # Open clipboard history with the compiled C picker.
+    bindsym $mod+y exec &quot;$HOME/dotfiles/clipboard-picker/result/bin/clipboard-picker&quot;
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -11636,6 +13120,7 @@ bindsym $mod+r mode &quot;resize&quot;
 # because we need to have xdg-portal service enabled
 include /etc/sway/config.d/*
 
+for_window [app_id=&quot;^com.erick.ClipboardPicker$&quot;] floating enable, move position center
 for_window [app_id=&quot;^com.erick.WallpaperPicker$&quot;] floating enable, move position center
 for_window [app_id=&quot;org.gnome.NautilusPreviewer&quot;] floating enable, move position center, resize set 900 700
 for_window [app_id=&quot;^blueman-manager$&quot;] floating enable, move position center
@@ -11660,7 +13145,7 @@ for_window [class=&quot;^Spotify$&quot;] move to workspace 4
       <p>sway/scripts/clipboard-menu.sh · 41 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/clipboard-menu.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/clipboard-menu.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/clipboard-menu.sh">Copy</button>
     </div>
   </header>
@@ -11715,7 +13200,7 @@ esac
       <p>sway/scripts/lockscreen.sh · 21 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/lockscreen.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/lockscreen.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/lockscreen.sh">Copy</button>
     </div>
   </header>
@@ -11750,7 +13235,7 @@ swaylock-plugin --command &quot;mpvpaper -o &#x27;hwdec=vaapi no-audio loop&#x27
       <p>sway/scripts/optimize-wallpaper-videos.sh · 69 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/optimize-wallpaper-videos.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/optimize-wallpaper-videos.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/optimize-wallpaper-videos.sh">Copy</button>
     </div>
   </header>
@@ -11833,7 +13318,7 @@ fi
       <p>sway/scripts/pick-wallpaper.sh · 37 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/pick-wallpaper.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/pick-wallpaper.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/pick-wallpaper.sh">Copy</button>
     </div>
   </header>
@@ -11884,7 +13369,7 @@ esac
       <p>sway/scripts/quick-actions.sh · 156 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/quick-actions.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/quick-actions.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/quick-actions.sh">Copy</button>
     </div>
   </header>
@@ -12010,7 +13495,7 @@ case &quot;$selection&quot; in
   swaymsg output &quot;$output&quot; mode &quot;${width}x${height}@${refresh}Hz&quot; &gt;/dev/null
   ;;
 &quot;  Clipboard history&quot;)
-  exec &quot;$HOME/.config/sway/scripts/clipboard-menu.sh&quot;
+  exec &quot;$HOME/dotfiles/clipboard-picker/result/bin/clipboard-picker&quot;
   ;;
 &quot;  Toggle night light&quot;)
   exec &quot;$HOME/.config/waybar/scripts/night-light.sh&quot; toggle
@@ -12054,7 +13539,7 @@ esac
       <p>sway/scripts/screenshot.sh · 45 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/screenshot.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/screenshot.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/screenshot.sh">Copy</button>
     </div>
   </header>
@@ -12113,7 +13598,7 @@ satty --filename &quot;$capture&quot; \
       <p>sway/scripts/wallpaper.sh · 65 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/wallpaper.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/wallpaper.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/wallpaper.sh">Copy</button>
     </div>
   </header>
@@ -12192,7 +13677,7 @@ esac
       <p>sway/scripts/wifi-qr.sh · 67 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/wifi-qr.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/wifi-qr.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/wifi-qr.sh">Copy</button>
     </div>
   </header>
@@ -12273,7 +13758,7 @@ printf &#x27;Scan to join %s\0icon\x1f%s\n&#x27; &quot;$ssid&quot; &quot;$qr_fil
       <p>sway/scripts/wlogout-menu.sh · 33 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/sway/scripts/wlogout-menu.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/sway/scripts/wlogout-menu.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy sway/scripts/wlogout-menu.sh">Copy</button>
     </div>
   </header>
@@ -12320,7 +13805,7 @@ exec wlogout \
       <p>swaync/config.json · 49 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/swaync/config.json">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/swaync/config.json">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy swaync/config.json">Copy</button>
     </div>
   </header>
@@ -12383,7 +13868,7 @@ exec wlogout \
       <p>swaync/style.css · 155 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/swaync/style.css">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/swaync/style.css">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy swaync/style.css">Copy</button>
     </div>
   </header>
@@ -12552,7 +14037,7 @@ blankwindow,
       <p>wallpaper-picker/default.nix · 52 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/wallpaper-picker/default.nix">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/wallpaper-picker/default.nix">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy wallpaper-picker/default.nix">Copy</button>
     </div>
   </header>
@@ -12618,7 +14103,7 @@ pkgs.stdenv.mkDerivation {
       <p>wallpaper-picker/main.c · 377 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/wallpaper-picker/main.c">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/wallpaper-picker/main.c">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy wallpaper-picker/main.c">Copy</button>
     </div>
   </header>
@@ -13009,7 +14494,7 @@ int main(int argc, char **argv) {
       <p>wallpaper-picker/README.md · 56 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/wallpaper-picker/README.md">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/wallpaper-picker/README.md">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy wallpaper-picker/README.md">Copy</button>
     </div>
   </header>
@@ -13079,7 +14564,7 @@ cc -O3 -Wall -Wextra -o wallpaper-picker main.c \
       <p>waybar/config.jsonc · 216 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/config.jsonc">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/config.jsonc">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/config.jsonc">Copy</button>
     </div>
   </header>
@@ -13309,7 +14794,7 @@ cc -O3 -Wall -Wextra -o wallpaper-picker main.c \
       <p>waybar/scripts/gpu.sh · 9 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/scripts/gpu.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/scripts/gpu.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/scripts/gpu.sh">Copy</button>
     </div>
   </header>
@@ -13332,7 +14817,7 @@ echo &quot;{\&quot;text\&quot;: \&quot;${u}%\&quot;, \&quot;tooltip\&quot;: \&qu
       <p>waybar/scripts/night-light.sh · 27 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/scripts/night-light.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/scripts/night-light.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/scripts/night-light.sh">Copy</button>
     </div>
   </header>
@@ -13373,7 +14858,7 @@ esac
       <p>waybar/scripts/spotify.sh · 26 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/scripts/spotify.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/scripts/spotify.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/scripts/spotify.sh">Copy</button>
     </div>
   </header>
@@ -13413,7 +14898,7 @@ printf &#x27;{&quot;text&quot;: &quot;%s %s&quot;, &quot;class&quot;: &quot;%s&q
       <p>waybar/scripts/vnc-session.sh · 38 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/scripts/vnc-session.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/scripts/vnc-session.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/scripts/vnc-session.sh">Copy</button>
     </div>
   </header>
@@ -13465,7 +14950,7 @@ done &lt; &lt;(wayvncctl --wait --reconnect --json event-receive 2&gt;/dev/null)
       <p>waybar/scripts/vnc-toggle.sh · 23 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/scripts/vnc-toggle.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/scripts/vnc-toggle.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/scripts/vnc-toggle.sh">Copy</button>
     </div>
   </header>
@@ -13502,7 +14987,7 @@ notify-send -a &quot;WayVNC&quot; -i preferences-desktop-remote-desktop -u norma
       <p>waybar/scripts/vpn.sh · 50 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/scripts/vpn.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/scripts/vpn.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/scripts/vpn.sh">Copy</button>
     </div>
   </header>
@@ -13566,7 +15051,7 @@ fi
       <p>waybar/styles.css · 373 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/waybar/styles.css">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/waybar/styles.css">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy waybar/styles.css">Copy</button>
     </div>
   </header>
@@ -13953,7 +15438,7 @@ label:focus {
       <p>wlogout/layout · 36 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/wlogout/layout">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/wlogout/layout">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy wlogout/layout">Copy</button>
     </div>
   </header>
@@ -14003,7 +15488,7 @@ label:focus {
       <p>wlogout/style.css · 58 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/wlogout/style.css">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/wlogout/style.css">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy wlogout/style.css">Copy</button>
     </div>
   </header>
@@ -14075,7 +15560,7 @@ button:active {
       <p>zsh/linux.sh · 18 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/zsh/linux.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/zsh/linux.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy zsh/linux.sh">Copy</button>
     </div>
   </header>
@@ -14107,7 +15592,7 @@ function nixos_run_install {
       <p>zsh/mac.sh · 63 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/zsh/mac.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/zsh/mac.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy zsh/mac.sh">Copy</button>
     </div>
   </header>
@@ -14184,7 +15669,7 @@ nixdarwin_free_space() {
       <p>zsh/main.sh · 198 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/zsh/main.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/zsh/main.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy zsh/main.sh">Copy</button>
     </div>
   </header>
@@ -14396,7 +15881,7 @@ function mj {
       <p>zsh/zshenv.sh · 51 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/zsh/zshenv.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/zsh/zshenv.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy zsh/zshenv.sh">Copy</button>
     </div>
   </header>
@@ -14461,7 +15946,7 @@ zstyle &#x27;:omz:update&#x27; mode disabled
       <p>zsh/zshrc.sh · 32 lines</p>
     </div>
     <div class="file-actions">
-      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/249c17b7810d2387f4b986af6ed85c72df840ceb/zsh/zshrc.sh">View on GitHub</a>
+      <a class="source-link" href="https://github.com/erickgnavar/dotfiles/blob/7d04e715442cde175e89b5f5e3edea400ac1118b/zsh/zshrc.sh">View on GitHub</a>
       <button class="copy" type="button" aria-label="Copy zsh/zshrc.sh">Copy</button>
     </div>
   </header>

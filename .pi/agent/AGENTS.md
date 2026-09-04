@@ -9,6 +9,7 @@ the commit message text — it never runs `git commit`:
 ## Interactions
 
 - If the user asks a question, do not apply any changes — just answer.
+- Always minimize diffs; avoid unnecessary edits, reformatting, or unrelated changes.
 - Keep reports, including plans, bug lists, and feature lists, to a maximum line width of 100
   characters.
 - Before editing files, check for an applicable `.editorconfig` and follow its guidelines.

@@ -7,6 +7,8 @@ set $up k
 set $right l
 # Your preferred terminal emulator
 set $term alacritty
+set $config_dir ~/.config/sway
+set $scripts $config_dir/scripts
 
 # Hide tiled window titles and show them on floating windows.
 default_border none
@@ -93,7 +95,7 @@ input * {
     bindsym $mod+q kill
 
     # lock screen using a video as wallpaper
-    bindsym $mod+Ctrl+q exec ~/.config/sway/scripts/lockscreen.sh
+    bindsym $mod+Ctrl+q exec $scripts/lockscreen.sh
 
     # Start rofi (a program launcher)
     bindsym $mod+space exec rofi -show drun -show-icons
@@ -243,7 +245,7 @@ bindsym $mod+r mode "resize"
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Capture screenshots and open them in Satty for annotation
-    bindsym $mod+Shift+s exec ~/.config/sway/scripts/screenshot.sh
+    bindsym $mod+Shift+s exec $scripts/screenshot.sh
 
 # Enable services so sway can run with no errors, this is required to be able to run waybar
 # because we need to have xdg-portal service enabled

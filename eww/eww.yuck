@@ -25,7 +25,7 @@
   `scripts/weather.sh`)
 
 (defwidget weather-panel []
-  (box :class "weather-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
+  (box :class "panel weather-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "weather-city" :text {weather-data.city} :halign "start")
     (box :orientation "h" :space-evenly false :spacing 10
       (label :class "weather-glyph" :text {weather-data.icon})
@@ -46,7 +46,7 @@
   `scripts/net.sh usage`)
 
 (defwidget net-panel []
-  (box :class "net-panel" :orientation "v" :space-evenly false :spacing 6 :height 102
+  (box :class "panel net-panel" :orientation "v" :space-evenly false :spacing 6 :height 102
     (label :class "net-header" :text "network" :halign "start")
     (box :orientation "h" :space-evenly false :spacing 16
       (box :orientation "h" :space-evenly false :spacing 4
@@ -65,7 +65,7 @@
   `scripts/ram.sh`)
 
 (defwidget ram-panel []
-  (box :class "ram-panel" :orientation "v" :space-evenly false :spacing 4 :height 138
+  (box :class "panel ram-panel" :orientation "v" :space-evenly false :spacing 4 :height 138
     (label :class "ram-header" :text "memory" :halign "start")
     (circular-progress :class "usage-gauge ${ram-data.percent > 85 ? "critical" : ""}"
                        :value {ram-data.percent}
@@ -81,7 +81,7 @@
   `scripts/cpu.sh`)
 
 (defwidget cpu-panel []
-  (box :class "cpu-panel" :orientation "v" :space-evenly false :spacing 4 :height 138
+  (box :class "panel cpu-panel" :orientation "v" :space-evenly false :spacing 4 :height 138
     (label :class "cpu-header" :text "cpu" :halign "start")
     (circular-progress :class "usage-gauge ${cpu-data.percent > 85 ? "critical" : ""}"
                        :value {cpu-data.percent}
@@ -97,7 +97,7 @@
   `scripts/gpu.sh`)
 
 (defwidget gpu-panel []
-  (box :class "gpu-panel" :orientation "v" :space-evenly false :spacing 4 :height 138
+  (box :class "panel gpu-panel" :orientation "v" :space-evenly false :spacing 4 :height 138
     (label :class "gpu-header" :text "gpu" :halign "start")
     (circular-progress :class "usage-gauge ${gpu-data.percent > 85 ? "critical" : ""}"
                        :value {gpu-data.percent}
@@ -113,7 +113,7 @@
   `scripts/disk.sh`)
 
 (defwidget disk-panel []
-  (box :class "disk-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
+  (box :class "panel disk-panel" :orientation "v" :space-evenly false :spacing 4 :height 102
     (label :class "disk-header" :text "disk" :halign "start")
     (progress :class "disk-bar ${disk-data.percent > 85 ? "critical" : ""}"
               :value {disk-data.percent}

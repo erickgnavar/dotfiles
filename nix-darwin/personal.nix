@@ -32,7 +32,7 @@
       "imageoptim"
       "discord"
       "hiddenbar"
-      "tigervnc-viewer"
+      "tigervnc"
       "calibre"
       "loopback"
       "keepassxc"

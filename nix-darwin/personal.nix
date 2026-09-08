@@ -7,6 +7,9 @@
   ];
 
   homebrew = {
+    taps = [
+      { name = "ruaylabs/tap"; trusted = true; }
+    ];
     brews = [
       "llama.cpp"
       "odin"
@@ -37,8 +40,8 @@
       "loopback"
       "keepassxc"
       { "name" = "guanchzhou/tap/threemf"; trusted = true; }
-      { "name" = "ruaylabs/tap/melocoton"; trusted = true; }
-      { "name" = "ruaylabs/tap/hitsu"; trusted = true; }
+      "ruaylabs/tap/melocoton"
+      "ruaylabs/tap/hitsu"
       "yubico-authenticator"
       "steam"
     ];

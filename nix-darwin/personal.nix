@@ -21,7 +21,6 @@
       "alfred"
       "1password@7"
       "obs"
-      "claude"
       "telegram"
       "firefox"
       "vlc"

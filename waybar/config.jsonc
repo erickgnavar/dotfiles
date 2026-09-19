@@ -10,7 +10,7 @@
     "sway/mode",
     "sway/window",
   ],
-  "modules-center": ["custom/spotify"],
+  "modules-center": ["mpris"],
   "modules-right": [
     "tray",
     "idle_inhibitor",
@@ -75,10 +75,12 @@
     "interval": 2,
     "format": "🎮 {}"
   },
-  "custom/spotify": {
-    "exec": "~/.config/waybar/scripts/spotify.sh",
-    "return-type": "json",
-    "interval": 2,
+  "mpris": {
+    "player": "spotify",
+    "format": "{artist} - {title}",
+    "format-paused": "{artist} - {title}",
+    "format-stopped": "",
+    "tooltip": false,
     "max-length": 40,
     "on-click": "eww open spotify-card --toggle",
     "on-scroll-up": "playerctl -p spotify next",

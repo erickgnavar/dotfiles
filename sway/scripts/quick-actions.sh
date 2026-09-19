@@ -15,7 +15,9 @@ selection=$(
     "󰆴  Kill process" \
     "󰩹  Empty trash" \
     "󰌾  Lock screen" \
-    "󰐥  Power menu" |
+    "󰐥  Power menu" \
+    "󰑐  Reload Waybar" \
+    "󰑐  Reload Eww" |
     rofi -dmenu -i -p "Quick Actions"
 ) || exit 0
 
@@ -152,5 +154,11 @@ case "$selection" in
   ;;
 "󰐥  Power menu")
   exec "$HOME/.config/sway/scripts/wlogout-menu.sh"
+  ;;
+"󰑐  Reload Waybar")
+  kill -SIGUSR2 $(pgrep waybar)
+  ;;
+"󰑐  Reload Eww")
+  eww reload
   ;;
 esac

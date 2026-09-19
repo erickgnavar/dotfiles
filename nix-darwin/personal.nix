@@ -33,7 +33,6 @@
       "blender@lts"
       "imageoptim"
       "discord"
-      "hiddenbar"
       "tigervnc"
       "calibre"
       "loopback"

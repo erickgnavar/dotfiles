@@ -19,6 +19,52 @@
               :anchor "top left")
   (calendar-panel))
 
+(deflisten spotify-data
+  :initial "{\"status\":\"Stopped\",\"artist\":\"\",\"title\":\"Nothing playing\",\"album\":\"\",\"cover\":\"\"}"
+  `scripts/spotify.sh`)
+
+(defwidget spotify-card-panel []
+  (box :class "spotify-card"
+       :visible {spotify-data.status == "Playing" || spotify-data.status == "Paused"}
+       :orientation "h" :space-evenly false :spacing 16
+    (image :class "spotify-card-cover"
+           :path {spotify-data.cover}
+           :image-width 120
+           :image-height 120
+           :preserve-aspect-ratio true)
+    (box :class "spotify-card-details"
+         :orientation "v" :space-evenly false :spacing 6 :valign "center"
+      (label :class "spotify-card-status" :text {spotify-data.status} :halign "start")
+      (label :class "spotify-card-title" :text {spotify-data.title}
+             :limit-width 26 :truncate true :halign "start")
+      (label :class "spotify-card-artist" :text {spotify-data.artist}
+             :limit-width 30 :truncate true :halign "start")
+      (label :class "spotify-card-album" :text {spotify-data.album}
+             :limit-width 30 :truncate true :halign "start")
+      (box :class "spotify-card-controls"
+           :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (button :class "spotify-card-control" :tooltip "Previous"
+                :onclick "playerctl -p spotify previous" "")
+        (button :class "spotify-card-control play-pause" :tooltip "Play or pause"
+                :onclick "playerctl -p spotify play-pause"
+          (label :text {spotify-data.status == "Playing" ? "" : ""}))
+        (button :class "spotify-card-control" :tooltip "Next"
+                :onclick "playerctl -p spotify next" "")))))
+
+(defwindow spotify-card
+  :monitor 0
+  :windowtype "dock"
+  :stacking "overlay"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "0px"
+              :y "28px"
+              :width "420px"
+              :height "160px"
+              :anchor "top center")
+  (spotify-card-panel))
+
 (defpoll weather-data
   :interval "15m"
   :initial "{\"icon\": \"\", \"temp\": \"--\", \"feels\": \"--\", \"desc\": \"loading\", \"humidity\": \"--\", \"wind\": \"--\", \"city\": \"--\"}"

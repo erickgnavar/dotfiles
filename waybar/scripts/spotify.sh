@@ -14,6 +14,8 @@ title=$(playerctl -p "$player" metadata title 2>/dev/null)
 
 text="${artist} - ${title}"
 text="${text//&/&amp;}"
+text="${text//</\&lt;}"
+text="${text//>/\&gt;}"
 
 if [[ "$status" == "Playing" ]]; then
   icon=""
@@ -23,4 +25,9 @@ else
   class="paused"
 fi
 
-printf '{"text": "%s %s", "class": "%s", "alt": "%s"}\n' "$icon" "$text" "$class" "$status"
+jq -cn \
+  --arg text "$text" \
+  --arg icon "$icon" \
+  --arg class "$class" \
+  --arg alt "$status" \
+  '{text: ($icon + " " + $text), class: $class, alt: $alt}'

@@ -8,9 +8,9 @@ is_running() {
 case "${1:-status}" in
 status)
   if is_running; then
-    printf '{"text":"","tooltip":"Night light enabled","class":"enabled"}\n'
+    printf '{"text":"","tooltip":"Automatic night light enabled","class":"enabled"}\n'
   else
-    printf '{"text":"","tooltip":"Night light disabled","class":"disabled"}\n'
+    printf '{"text":"","tooltip":"Automatic night light disabled","class":"disabled"}\n'
   fi
   ;;
 toggle)

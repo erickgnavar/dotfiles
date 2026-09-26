@@ -41,6 +41,7 @@
       { "name" = "guanchzhou/tap/threemf"; trusted = true; }
       "ruaylabs/tap/melocoton"
       "ruaylabs/tap/hitsu"
+      "ruaylabs/tap/miru"
       "yubico-authenticator"
       "steam"
     ];

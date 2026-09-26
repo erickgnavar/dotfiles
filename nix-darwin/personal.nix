@@ -16,6 +16,7 @@
       "ols"
     ];
     casks = [
+      "helium-browser"
       "krisp"
       "spotify"
       "alfred"

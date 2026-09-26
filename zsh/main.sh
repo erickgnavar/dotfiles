@@ -37,7 +37,7 @@ bindkey '^X^E' edit-command-line
 
 # helper functions
 
-function reload {
+reload() {
   source "$HOME/.zshrc"
 }
 
@@ -49,7 +49,7 @@ alias ll="ls -lh"
 
 # The `take` helpers below are adapted from Oh My Zsh's lib/functions.zsh:
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/functions.zsh
-function takedir() {
+takedir() {
   local target
   for target in "$@"; do
     :
@@ -57,7 +57,7 @@ function takedir() {
   mkdir -p -- "$@" && cd -- "$target"
 }
 
-function takeurl() {
+takeurl() {
   local data thedir
   data="$(mktemp)"
   curl -L "$1" >"$data"
@@ -67,7 +67,7 @@ function takeurl() {
   cd -- "$thedir"
 }
 
-function takezip() {
+takezip() {
   local data thedir
   data="$(mktemp)"
   curl -L "$1" >"$data"
@@ -77,11 +77,11 @@ function takezip() {
   cd -- "$thedir"
 }
 
-function takegit() {
+takegit() {
   git clone "$1" && cd -- "$(basename -- "${1%.git}")"
 }
 
-function take() {
+take() {
   if [[ $1 =~ ^(https?|ftp).*\.(tar\.(gz|bz2|xz)|tgz)$ ]]; then
     takeurl "$1"
   elif [[ $1 =~ ^(https?|ftp).*\.(zip)$ ]]; then
@@ -93,28 +93,28 @@ function take() {
   fi
 }
 
-function t() {
+t() {
   tree -I '.git|node_modules|bower_components|.DS_store' --dirsfirst -L "${1:-3}" -aC "$2"
 }
 
-function docker_remove_containers() {
+docker_remove_containers() {
   docker rm "$(docker ps -a -q)"
 }
 
-function random_password() {
+random_password() {
   openssl rand -base64 "$1"
 }
 
 # Estimate the compressed size of a file (GZIP)
-function gzip_estimation() {
+gzip_estimation() {
   gzip -9 -c "$1" | wc -c | awk '{$1=$1/1024; print "Estimated size:", $1, "Kb";}'
 }
 
-function docker_remove_images() {
+docker_remove_images() {
   docker rmi "$(docker images -q)"
 }
 
-function git_search() {
+git_search() {
   git grep "$1" "$(git rev-list --all)"
 }
 
@@ -155,26 +155,26 @@ else
   source "$(dirname "$0")/linux.sh"
 fi
 
-function gitpr {
+gitpr() {
   git fetch upstream "refs/pull/$1/head:PR$1"
   git checkout "PR$1"
 }
 
-function video_to_gif {
+video_to_gif() {
   ffmpeg -i "$1" "$2" -hide_banner
 }
 
 # k8s helpers
 
-function pick_namespace() {
+pick_namespace() {
   kubectl get ns | sed 1d | awk '{print $1}' | fzf --header="Select namespace"
 }
 
-function pick_pod() {
+pick_pod() {
   kubectl get pods -n "$1" | sed 1d | awk '/Running/ {print $1}' | fzf --header="Select pod"
 }
 
-function pod_shell {
+pod_shell() {
   local namespace
   namespace=$(pick_namespace)
   local pod
@@ -192,7 +192,7 @@ testpod() {
   kubectl run "testpod-$(date +%s)" --rm -it --image=debian:13 -- bash
 }
 
-function pod_proxy {
+pod_proxy() {
   local namespace
   namespace=$(pick_namespace)
   local pod
@@ -205,7 +205,7 @@ function pod_proxy {
   kubectl port-forward -n "$namespace" "$pod" "$port_mapping"
 }
 
-function pod_logs {
+pod_logs() {
   local namespace
   namespace=$(pick_namespace)
   local pod
@@ -215,7 +215,7 @@ function pod_logs {
   kubectl -n "$namespace" logs -f "$pod"
 }
 
-function k8s_change_context {
+k8s_change_context() {
   local context
   context=$(kubectl config get-contexts --output='name' | fzf --header="Select context")
   echo "Changing to $context"
@@ -228,7 +228,7 @@ ck8s() {
 
 # my jump, it's a similar concept of jump command but search into ~/Code folder
 # and create a new tmux session with the selected project folder
-function mj {
+mj() {
   local project_path
   project_path=$(tree ~/Code -L 2 --noreport -d -f -i | fzf)
   local org

@@ -17,26 +17,26 @@ fix_emoji_palette() {
   fi
 }
 
-function rae() {
+rae() {
   open "https://dle.rae.es/$1"
 }
 
 # use native macOS network check tool
 alias speedtest=networkQuality
 
-function reset_cache {
+reset_cache() {
   sudo dscacheutil -flushcache
   sudo killall -HUP mDNSResponder
 }
 
-function homebrew-dump {
+homebrew-dump() {
   cd ~/dotfiles/ || exit
   brew bundle dump --force
   git diff Brewfile
   cd - || exit
 }
 
-function nixdarwin_run_install {
+nixdarwin_run_install() {
   cd ~/dotfiles/nix-darwin/ || exit 1
   mkdir -p ~/.config/nix-darwin/
   cp *.nix ~/.config/nix-darwin/

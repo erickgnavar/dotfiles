@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 mkdir -p ~/.config/zsh
 
-function load_zsh_plugin() {
+load_zsh_plugin() {
   url=$1
   loader=$2
   plugin_dir=$(echo "$url" | awk -F'[/.]' '{print $(NF-1)}')

@@ -9,7 +9,7 @@ else
   alias pbpaste="xclip -selection clipboard -o"
 fi
 
-function nixos_run_install {
+nixos_run_install() {
   cd ~/dotfiles/nixos/ || exit 1
   # we need to use --impure because we're referencing absolute path
   # for hardware-configuration.nix file

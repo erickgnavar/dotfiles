@@ -8,13 +8,6 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # Setup gettext binaries
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 
-# autojump setup
-# intel
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-# arm
-[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
-
 # fix emoji and symbol pallete when it doesn't show up
 fix_emoji_palette() {
   preferences_path="$HOME/Library/Preferences/com.apple.HIToolbox.plist"

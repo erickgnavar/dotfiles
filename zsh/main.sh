@@ -245,12 +245,10 @@ mj() {
   fi
 
   if ! tmux has-session -t "$session_name"; then
-    tmux new-session -s "$session_name" -d
+    # Set the session path so new windows start in the selected project.
+    tmux new-session -s "$session_name" -c "$project_path" -d
   fi
 
   # switch to session
   tmux switch-client -t "$session_name"
-
-  window=${session_name}:0
-  tmux send-keys -t "$window" "cd $project_path" Enter
 }

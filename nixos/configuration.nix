@@ -304,6 +304,7 @@
     ffmpeg # re-encode videos
     bc # required for eww/net.sh calculations
     nixpkgs-fmt
+    kdePackages.qtdeclarative # qmlformat for Quickshell QML files
     wget
     vim
     rofi
@@ -326,6 +327,19 @@
     sushi # allow show previews in nautilus when pressing space
     tectonic
     wayland
+    # Quickshell needs Qt Multimedia's QML module and plugins for video previews;
+    # SDDM's extraPackages do not expose them to the Quickshell process.
+    (symlinkJoin {
+      name = "quickshell-with-multimedia";
+      paths = [ quickshell ];
+      nativeBuildInputs = [ makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/qs \
+          --prefix QML_IMPORT_PATH : ${kdePackages.qtmultimedia}/lib/qt-6/qml \
+          --prefix QML2_IMPORT_PATH : ${kdePackages.qtmultimedia}/lib/qt-6/qml \
+          --prefix QT_PLUGIN_PATH : ${kdePackages.qtmultimedia}/lib/qt-6/plugins
+      '';
+    })
     wlogout
     wl-clipboard
     xdg-utils # open URLs with their default Linux application

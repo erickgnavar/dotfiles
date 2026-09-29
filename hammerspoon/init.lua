@@ -23,7 +23,15 @@ hs.hotkey.bind("alt", "2", function()
 end)
 
 hs.hotkey.bind("alt", "3", function()
-  local app = hs.application.find "Emacs"
+  -- nix-launched Emacs registers only as name=emacs (no bundle ID or path),
+  -- and hs.application.find can return an hs.window instead, so scan by name.
+  local app
+  for _, running in ipairs(hs.application.runningApplications()) do
+    if running:name() == "emacs" then
+      app = running
+      break
+    end
+  end
 
   if app then
     app:activate()

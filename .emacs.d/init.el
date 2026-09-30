@@ -72,6 +72,10 @@
 ;; read bootstrap.org and load emacs-lisp code
 (org-babel-load-file (expand-file-name "bootstrap.org" user-emacs-directory))
 
+;; Apply frame transparency only on Linux without extra startup work.
+(when (eq system-type 'gnu/linux)
+  (add-to-list 'default-frame-alist '(alpha-background . 95)))
+
 ;; custom code that will be unique per machine
 (defconst local-config-file (expand-file-name "local.el" user-emacs-directory))
 (load local-config-file :noerror)

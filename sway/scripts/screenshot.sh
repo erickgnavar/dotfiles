@@ -39,7 +39,4 @@ window)
   ;;
 esac
 
-satty --filename "$capture" \
-  --app-id org.satty.satty \
-  --copy-command wl-copy \
-  --output-filename "$screenshot_dir/screenshot-%Y-%m-%d_%H-%M-%S.png"
+swappy --file "$capture" --output-file "$screenshot_dir/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"

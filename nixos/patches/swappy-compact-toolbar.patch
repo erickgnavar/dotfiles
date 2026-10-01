@@ -1,0 +1,205 @@
+diff --git a/res/style/swappy.css b/res/style/swappy.css
+index 66013b3..fc45786 100644
+--- a/res/style/swappy.css
++++ b/res/style/swappy.css
+@@ -3,6 +3,14 @@
+   padding: 4px;
+ }
+ 
++.top-toolbar button,
++.top-toolbar .drawing .text-button {
++  min-width: 24px;
++  min-height: 24px;
++  padding: 6px;
++  border-radius: 6px;
++}
++
+ .drawing .text-button radio,
+ .color-box .text-button radio {
+   padding: 0;
+diff --git a/res/swappy.glade b/res/swappy.glade
+index e12a14f..656bd1d 100644
+--- a/res/swappy.glade
++++ b/res/swappy.glade
+@@ -62,36 +62,14 @@
+     <property name="can_focus">False</property>
+     <property name="icon_name">zoom-out-symbolic</property>
+   </object>
+-  <object class="GtkApplicationWindow" id="paint-window">
+-    <property name="visible">True</property>
+-    <property name="can_focus">False</property>
+-    <property name="resizable">False</property>
+-    <property name="window_position">center</property>
+-    <property name="show_menubar">False</property>
+-    <signal name="delete-event" handler="window_delete_handler" swapped="no"/>
+-    <signal name="key-press-event" handler="window_keypress_handler" swapped="no"/>
+-    <signal name="key-release-event" handler="window_keyrelease_handler" swapped="no"/>
+-    <child>
+-      <object class="GtkOverlay">
+-        <property name="visible">True</property>
+-        <property name="can_focus">False</property>
+-        <child>
+-          <object class="GtkPaned">
+-            <property name="width_request">100</property>
+-            <property name="height_request">80</property>
+-            <property name="visible">True</property>
+-            <property name="can_focus">True</property>
+-            <child>
+-              <object class="GtkBox" id="painting-box">
++  <object class="GtkBox" id="tools-box">
++                <property name="visible">True</property>
++                <property name="halign">center</property>
+                 <property name="can_focus">False</property>
+-                <property name="margin_left">10</property>
+-                <property name="margin_right">10</property>
+-                <property name="margin_top">10</property>
+-                <property name="margin_bottom">10</property>
+                 <property name="orientation">vertical</property>
+                 <child>
+                   <object class="GtkBox">
+-                    <property name="visible">True</property>
++                    <property name="visible">False</property>
+                     <property name="can_focus">False</property>
+                     <property name="homogeneous">True</property>
+                     <child>
+@@ -177,12 +155,12 @@
+                   <object class="GtkBox">
+                     <property name="visible">True</property>
+                     <property name="can_focus">False</property>
+-                    <property name="margin_bottom">15</property>
+-                    <property name="spacing">6</property>
++                    <property name="spacing">2</property>
+                     <property name="homogeneous">True</property>
+                     <child>
+                       <object class="GtkRadioButton" id="brush">
+                         <property name="label" translatable="no"></property>
++                        <property name="tooltip_text">Brush (b)</property>
+                         <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+                         <property name="receives_default">False</property>
+@@ -199,6 +177,7 @@
+                     <child>
+                       <object class="GtkRadioButton" id="text">
+                         <property name="label" translatable="no"></property>
++                        <property name="tooltip_text">Text (t)</property>
+                         <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+                         <property name="receives_default">False</property>
+@@ -215,6 +194,7 @@
+                     <child>
+                       <object class="GtkRadioButton" id="rectangle">
+                         <property name="label" translatable="no"></property>
++                        <property name="tooltip_text">Rectangle (r)</property>
+                         <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+                         <property name="receives_default">False</property>
+@@ -231,6 +211,7 @@
+                     <child>
+                       <object class="GtkRadioButton" id="ellipse">
+                         <property name="label" translatable="no"></property>
++                        <property name="tooltip_text">Ellipse (o)</property>
+                         <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+                         <property name="receives_default">False</property>
+@@ -247,6 +228,7 @@
+                     <child>
+                       <object class="GtkRadioButton" id="arrow">
+                         <property name="label" translatable="no"></property>
++                        <property name="tooltip_text">Arrow (a)</property>
+                         <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+                         <property name="receives_default">False</property>
+@@ -263,6 +245,7 @@
+                     <child>
+                       <object class="GtkRadioButton" id="blur">
+                         <property name="label" translatable="no"></property>
++                        <property name="tooltip_text">Blur (d)</property>
+                         <property name="visible">True</property>
+                         <property name="can_focus">False</property>
+                         <property name="receives_default">False</property>
+@@ -286,6 +269,39 @@
+                     <property name="position">1</property>
+                   </packing>
+                 </child>
++  </object>
++  <object class="GtkApplicationWindow" id="paint-window">
++    <property name="visible">True</property>
++    <property name="can_focus">False</property>
++    <property name="resizable">False</property>
++    <property name="window_position">center</property>
++    <property name="show_menubar">False</property>
++    <signal name="delete-event" handler="window_delete_handler" swapped="no"/>
++    <signal name="key-press-event" handler="window_keypress_handler" swapped="no"/>
++    <signal name="key-release-event" handler="window_keyrelease_handler" swapped="no"/>
++    <child>
++      <object class="GtkOverlay">
++        <property name="visible">True</property>
++        <property name="can_focus">False</property>
++        <child>
++          <object class="GtkBox">
++            <property name="orientation">vertical</property>
++            <property name="width_request">100</property>
++            <property name="height_request">80</property>
++            <property name="visible">True</property>
++            <property name="can_focus">True</property>
++            <child>
++              <object class="GtkScrolledWindow" id="settings-scroll">
++                <property name="visible" bind-source="painting-box" bind-property="visible" bind-flags="sync-create"/>
++                <property name="can_focus">False</property>
++                <property name="hscrollbar_policy">automatic</property>
++                <property name="vscrollbar_policy">never</property>
++                <child>
++                  <object class="GtkBox" id="painting-box">
++                    <property name="can_focus">False</property>
++                    <property name="halign">center</property>
++                    <property name="spacing">12</property>
++                    <property name="margin">10</property>
+                 <child>
+                   <object class="GtkBox" id="brush-box">
+                     <property name="visible">True</property>
+@@ -703,10 +719,14 @@
+                     <property name="position">6</property>
+                   </packing>
+                 </child>
++                  </object>
++                </child>
+               </object>
+               <packing>
+-                <property name="resize">False</property>
+-                <property name="shrink">False</property>
++                <property name="expand">False</property>
++                <property name="fill">True</property>
++                <property name="pack_type">end</property>
++                <property name="position">2</property>
+               </packing>
+             </child>
+             <child>
+@@ -733,8 +753,9 @@
+                 </child>
+               </object>
+               <packing>
+-                <property name="resize">True</property>
+-                <property name="shrink">True</property>
++                <property name="expand">True</property>
++                <property name="fill">True</property>
++                <property name="position">1</property>
+               </packing>
+             </child>
+           </object>
+@@ -745,10 +766,14 @@
+       </object>
+     </child>
+     <child type="titlebar">
+-      <object class="GtkHeaderBar">
++      <object class="GtkHeaderBar" id="toolbar">
++        <property name="custom_title">tools-box</property>
+         <property name="visible">True</property>
+         <property name="can_focus">False</property>
+-        <property name="spacing">10</property>
++        <property name="spacing">5</property>
++        <style>
++          <class name="top-toolbar"/>
++        </style>
+         <child>
+           <object class="GtkBox">
+             <property name="visible">True</property>

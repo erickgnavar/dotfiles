@@ -357,12 +357,13 @@
     mpvpaper # for live wallpapers
     nerdfetch
     fastfetch
-    # image annotation tool
-    satty
     woomer # screen magnification tool
     wlrctl # scroll and click from Sway's keyboard pointer mode
     playerctl # to know what song is being played
-    swappy
+    # image annotation tool
+    (swappy.overrideAttrs (oldAttrs: {
+      patches = (oldAttrs.patches or [ ]) ++ [ ./patches/swappy-compact-toolbar.patch ];
+    }))
     grim
     slurp
     cliphist

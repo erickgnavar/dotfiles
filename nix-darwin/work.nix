@@ -21,7 +21,6 @@
       "slack"
       "notion"
       "1password-cli"
-      "maccy"
       "tinycast"
     ];
   };

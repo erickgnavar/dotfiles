@@ -252,7 +252,7 @@
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     timerConfig = {
-      OnActiveSec = "1s";
+      OnActiveSec = "30m";
       OnUnitActiveSec = "30m";
       Unit = "wallpaper-rotate.service";
     };

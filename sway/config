@@ -29,9 +29,13 @@ gaps inner 5
 
 # Make the active Sway sockets available to graphical systemd user services.
 exec_always systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK
-# Restart the clipboard picker once Sway's Wayland environment is available.
+# Restart the clipboard picker after importing Sway's environment.
 exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
     systemctl --user restart clipboard-picker.service'
+
+# Restore the wallpaper independently of the clipboard picker.
+exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
+    bash "$HOME/.config/sway/scripts/wallpaper.sh" --restore'
 
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec qs -c wallpaper-picker

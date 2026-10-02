@@ -79,7 +79,7 @@
       (box :orientation "v" :space-evenly false
         (label :class "weather-temp" :text "${weather-data.temp}°" :halign "start")
         (label :class "weather-desc" :text {weather-data.desc} :halign "start")))
-    (box :class "weather-sub" :orientation "h" :space-evenly false :spacing 10
+    (box :class "weather-sub" :orientation "h" :space-evenly false :spacing 10 :halign "center"
       (label :text "feels ${weather-data.feels}°")
       (label :text "${weather-data.humidity}% hum")
       (label :text "${weather-data.wind} km/h"))))
@@ -97,15 +97,15 @@
     (label :class "net-header" :text "network" :halign "start")
     (box :orientation "h" :space-evenly true :spacing 16 :hexpand true
       (box :orientation "v" :space-evenly false :spacing 6
-        (box :orientation "h" :space-evenly false :spacing 4
+        (box :orientation "h" :space-evenly false :spacing 4 :halign "center"
           (label :class "net-arrow" :text "↓")
           (label :class "net-value" :text {net-speed.down}))
-        (label :class "net-usage-row" :text "total ${net-usage.down_total}" :halign "start"))
+        (label :class "net-usage-row" :text "total ${net-usage.down_total}" :halign "center"))
       (box :orientation "v" :space-evenly false :spacing 6
-        (box :orientation "h" :space-evenly false :spacing 4
+        (box :orientation "h" :space-evenly false :spacing 4 :halign "center"
           (label :class "net-arrow" :text "↑")
           (label :class "net-value" :text {net-speed.up}))
-        (label :class "net-usage-row" :text "total ${net-usage.up_total}" :halign "start")))))
+        (label :class "net-usage-row" :text "total ${net-usage.up_total}" :halign "center")))))
 
 (defpoll ram-data
   :interval "5s"
@@ -117,11 +117,12 @@
     (label :class "ram-header" :text "memory" :halign "start")
     (circular-progress :class "usage-gauge ${ram-data.percent > 85 ? "critical" : ""}"
                        :value {ram-data.percent}
+                       :halign "center"
                        :thickness 8
                        :width 72
                        :height 72
       (label :class "usage-gauge-label" :text "${ram-data.percent}%" :width 56 :height 56 :halign "center"))
-    (label :class "ram-sub" :text "${ram-data.used} / ${ram-data.total}" :halign "start")))
+    (label :class "ram-sub" :text "${ram-data.used} / ${ram-data.total}" :halign "center")))
 
 (defpoll cpu-data
   :interval "2s"
@@ -133,11 +134,12 @@
     (label :class "cpu-header" :text "cpu" :halign "start")
     (circular-progress :class "usage-gauge ${cpu-data.percent > 85 ? "critical" : ""}"
                        :value {cpu-data.percent}
+                       :halign "center"
                        :thickness 8
                        :width 72
                        :height 72
       (label :class "usage-gauge-label" :text "${cpu-data.percent}%" :width 56 :height 56 :halign "center"))
-    (label :class "cpu-sub" :text "load ${cpu-data.load} / ${cpu-data.cores} cores" :halign "start")))
+    (label :class "cpu-sub" :text "load ${cpu-data.load} / ${cpu-data.cores} cores" :halign "center")))
 
 (defpoll gpu-data
   :interval "2s"
@@ -149,11 +151,12 @@
     (label :class "gpu-header" :text "gpu" :halign "start")
     (circular-progress :class "usage-gauge ${gpu-data.percent > 85 ? "critical" : ""}"
                        :value {gpu-data.percent}
+                       :halign "center"
                        :thickness 8
                        :width 72
                        :height 72
       (label :class "usage-gauge-label" :text "${gpu-data.percent}%" :width 56 :height 56 :halign "center"))
-    (label :class "gpu-sub" :text "${gpu-data.vram_used}M / ${gpu-data.vram_total}M vram" :halign "start")))
+    (label :class "gpu-sub" :text "${gpu-data.vram_used}M / ${gpu-data.vram_total}M vram" :halign "center")))
 
 (defpoll disk-data
   :interval "30s"

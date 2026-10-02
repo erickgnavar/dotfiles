@@ -95,16 +95,17 @@
 (defwidget net-panel []
   (box :class "panel net-panel" :orientation "v" :space-evenly false :spacing 6 :height 102
     (label :class "net-header" :text "network" :halign "start")
-    (box :orientation "h" :space-evenly false :spacing 16
-      (box :orientation "h" :space-evenly false :spacing 4
-        (label :class "net-arrow" :text "↓")
-        (label :class "net-value" :text {net-speed.down}))
-      (box :orientation "h" :space-evenly false :spacing 4
-        (label :class "net-arrow" :text "↑")
-        (label :class "net-value" :text {net-speed.up})))
-    (box :class "net-usage-row" :orientation "h" :space-evenly false :spacing 12
-      (label :text "total ↓ ${net-usage.down_total}")
-      (label :text "↑ ${net-usage.up_total}"))))
+    (box :orientation "h" :space-evenly true :spacing 16 :hexpand true
+      (box :orientation "v" :space-evenly false :spacing 6
+        (box :orientation "h" :space-evenly false :spacing 4
+          (label :class "net-arrow" :text "↓")
+          (label :class "net-value" :text {net-speed.down}))
+        (label :class "net-usage-row" :text "total ${net-usage.down_total}" :halign "start"))
+      (box :orientation "v" :space-evenly false :spacing 6
+        (box :orientation "h" :space-evenly false :spacing 4
+          (label :class "net-arrow" :text "↑")
+          (label :class "net-value" :text {net-speed.up}))
+        (label :class "net-usage-row" :text "total ${net-usage.up_total}" :halign "start")))))
 
 (defpoll ram-data
   :interval "5s"

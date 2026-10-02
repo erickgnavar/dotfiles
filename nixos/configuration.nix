@@ -400,7 +400,7 @@
     brightnessctl
     gammastep # adjust screen color temperature based on sunrise and sunset
     libnotify
-    swaynotificationcenter
+    swaynotificationcenter # D-Bus activates swaync.service; no Sway exec needed
     spotify
     tree
     btop

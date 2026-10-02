@@ -27,8 +27,8 @@ gaps inner 5
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
-# Make the active Sway sockets available to graphical systemd user services.
-exec_always systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK
+# Make Sway's session environment available to D-Bus and systemd user services.
+exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY SWAYSOCK XDG_SESSION_TYPE
 # Restart the clipboard picker after importing Sway's environment.
 exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
     systemctl --user restart clipboard-picker.service'

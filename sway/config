@@ -43,9 +43,8 @@ exec qs -c wallpaper-picker
 # Shift from 6500K to 4000K using GeoClue-based sunrise and sunset times.
 exec gammastep -m wayland -l geoclue2 -t 6500:4000
 
-exec_always eww daemon
-exec_always eww open widgets
-exec_always eww open calendar-window
+# open-many automatically starts the Eww daemon if it is not running.
+exec eww open-many widgets calendar-window
 
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store

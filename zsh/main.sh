@@ -129,6 +129,8 @@ ssh_connect() {
 }
 
 # custom alias
+# Use an alias so the Pi display preference is tracked without syncing machine-specific settings.
+alias pi="command pi --tui-mode regular --use-theme tomorrow"
 alias got="ps aux | grep"
 alias grep="grep --color=auto"
 alias json="python -m json.tool"

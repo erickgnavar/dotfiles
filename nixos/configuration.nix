@@ -154,6 +154,8 @@
   };
 
   services.dbus.enable = true;
+  # Enable the Trash backend used by Nautilus.
+  services.gvfs.enable = true;
 
   # Let Gammastep determine sunrise and sunset from the current location.
   services.geoclue2 = {

@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-selected=${1:?Usage: apply.sh WALLPAPER}
+frame0=false
+if [[ ${1:-} == --frame0 ]]; then
+  frame0=true
+  shift
+fi
+selected=${1:?Usage: apply.sh [--frame0] WALLPAPER}
 [[ -f "$selected" ]] || exit 1
 
 STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper"
 VIDEO_WALLPAPER_LINK="$STATE_DIR/current-video"
+if "$frame0"; then
+  script_dir=$(
+    CDPATH=
+    cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd
+  )
+  selected=$(bash "$script_dir/extract-frame.sh" "$selected")
+fi
 mkdir -p "$STATE_DIR"
 printf '%s\n' "$selected" >"$STATE_DIR/last-wallpaper"
 mime_type=$(file --brief --mime-type -- "$selected")

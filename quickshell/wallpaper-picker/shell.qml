@@ -15,6 +15,7 @@ ShellRoot {
     property string selectedThumbnail: ""
     property string selectedPreview: ""
     property string scanError: ""
+    property bool closeAfterApply: false
 
     function fileUrl(path) {
         return path ? "file://" + encodeURIComponent(path).replace(/%2F/gi, "/") : "";
@@ -41,6 +42,25 @@ ShellRoot {
         player.stop();
         player.source = "";
         scanner.running = false;
+        framePrepareDelay.stop();
+        prepareFrame.running = false;
+    }
+
+    function applyWallpaper(path, frame0) {
+        if (!path || apply.running)
+            return;
+        if (frame0) {
+            framePrepareDelay.stop();
+            prepareFrame.running = false;
+        }
+        apply.command = ["bash", Qt.resolvedUrl("apply.sh").toString().replace("file://", "")];
+        if (frame0)
+            apply.command.push("--frame0");
+        apply.command.push(path);
+        shell.closeAfterApply = frame0;
+        apply.running = true;
+        if (!frame0)
+            shell.close();
     }
 
     function select(index) {
@@ -52,6 +72,10 @@ ShellRoot {
         shell.selectedVideo = entry.video;
         shell.selectedThumbnail = entry.thumbnail;
         shell.selectedPreview = entry.preview || entry.thumbnail;
+        framePrepareDelay.stop();
+        prepareFrame.running = false;
+        if (entry.video)
+            framePrepareDelay.start();
         videoDelay.stop();
         if (player.source) {
             player.stop();
@@ -121,10 +145,34 @@ ShellRoot {
     }
 
     Process {
-        id: apply
+        id: prepareFrame
         onExited: function (code) {
             if (code !== 0)
+                console.warn("Could not prepare video frame (exit " + code + ")");
+        }
+    }
+
+    Process {
+        id: apply
+        onExited: function (code) {
+            if (code === 0 && shell.closeAfterApply) {
+                shell.closeAfterApply = false;
+                shell.close();
+            } else if (code !== 0) {
+                shell.closeAfterApply = false;
                 console.warn("Could not apply wallpaper (exit " + code + ")");
+            }
+        }
+    }
+
+    Timer {
+        id: framePrepareDelay
+        interval: 400
+        onTriggered: {
+            if (panel.visible && shell.selectedVideo) {
+                prepareFrame.command = ["bash", Qt.resolvedUrl("extract-frame.sh").toString().replace("file://", ""), shell.selectedPath];
+                prepareFrame.running = true;
+            }
         }
     }
 
@@ -183,11 +231,10 @@ ShellRoot {
                 if (event.key === Qt.Key_Escape)
                     shell.close();
                 else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    if (shell.selectedPath && !apply.running) {
-                        apply.command = ["bash", Qt.resolvedUrl("apply.sh").toString().replace("file://", ""), shell.selectedPath];
-                        apply.running = true;
-                        shell.close();
-                    }
+                    if (shell.selectedPath)
+                        shell.applyWallpaper(shell.selectedPath, false);
+                } else if (event.key === Qt.Key_F && shell.selectedVideo) {
+                    shell.applyWallpaper(shell.selectedPath, true);
                 } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Right || (event.modifiers & Qt.ControlModifier && event.key === Qt.Key_N)) {
                     shell.select((list.currentIndex + 1) % wallpapers.count);
                 } else if (event.key === Qt.Key_Up || event.key === Qt.Key_Left || (event.modifiers & Qt.ControlModifier && event.key === Qt.Key_P)) {
@@ -264,11 +311,7 @@ ShellRoot {
                                     }
                                     onDoubleClicked: {
                                         shell.select(index);
-                                        if (!apply.running) {
-                                            apply.command = ["bash", Qt.resolvedUrl("apply.sh").toString().replace("file://", ""), path];
-                                            apply.running = true;
-                                            shell.close();
-                                        }
+                                        shell.applyWallpaper(path, false);
                                     }
                                 }
                             }
@@ -303,10 +346,42 @@ ShellRoot {
                         }
                     }
 
-                    Label {
+                    RowLayout {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Arrow keys to navigate · Enter to select · Escape to cancel"
-                        color: "#aaaaaa"
+                        spacing: 12
+
+                        Button {
+                            id: frameButton
+                            visible: shell.selectedVideo
+                            text: "Use image from video"
+                            padding: 8
+                            enabled: !apply.running
+                            onClicked: shell.applyWallpaper(shell.selectedPath, true)
+
+                            background: Rectangle {
+                                implicitWidth: 110
+                                implicitHeight: 32
+                                radius: 6
+                                color: frameButton.down
+                                    ? "#64727d"
+                                    : frameButton.hovered ? "#3dffffff" : "#26ffffff"
+                                border.color: "#1fffffff"
+                            }
+
+                            contentItem: Text {
+                                text: frameButton.text
+                                color: "#eeeeee"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                        }
+
+                        Label {
+                            text: shell.selectedVideo
+                                ? "F: use image from video · Enter: use video · Escape to cancel"
+                                : "Arrow keys to navigate · Enter to select · Escape to cancel"
+                            color: "#aaaaaa"
+                        }
                     }
                 }
             }

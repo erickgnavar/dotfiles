@@ -9,11 +9,13 @@
   homebrew = {
     taps = [
       { name = "ruaylabs/tap"; trusted = true; }
+      "rustfs/tap"
     ];
     brews = [
       "llama.cpp"
       "odin"
       "ols"
+      "rustfs/tap/rc"
     ];
     casks = [
       "helium-browser"

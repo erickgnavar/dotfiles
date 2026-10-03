@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
@@ -131,6 +131,11 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  environment.variables = {
+    XCURSOR_THEME = "Bibata-Modern-Classic";
+    XCURSOR_SIZE = "24";
+  };
+
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
@@ -193,6 +198,8 @@
           color-scheme = "prefer-dark";
           gtk-theme = "adw-gtk3-dark";
           icon-theme = "Papirus-Dark";
+          cursor-theme = "Bibata-Modern-Classic";
+          cursor-size = lib.gvariant.mkUint32 24;
           font-name = "Sans 10";
         };
       }
@@ -349,6 +356,7 @@
     handy # offline speech-to-text input
     glib
     adw-gtk3
+    bibata-cursors
     papirus-icon-theme
     nwg-look
     networkmanagerapplet

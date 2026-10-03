@@ -1533,6 +1533,11 @@ Define formatter helpers using ~typstyle~
   (interactive)
   (typst-ts-compile t))
 
+;; Linux-only workaround for typst-ts-mode autoloads.
+;; TODO: Remove after upstream fixes this issue.
+(unless (eq system-type 'darwin)
+  (require 'compile))
+
 (use-package typst-ts-mode
   :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode")
   :mode-hydra

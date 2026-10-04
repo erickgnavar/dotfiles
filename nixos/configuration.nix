@@ -361,7 +361,6 @@
     nwg-look
     networkmanagerapplet
     qrencode # generate scannable Wi-Fi credentials
-    swaylock-effects
     swaylock-plugin
     eww
     mpvpaper # for live wallpapers

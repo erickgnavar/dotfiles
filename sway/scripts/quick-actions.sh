@@ -17,7 +17,8 @@ selection=$(
     "󰌾  Lock screen" \
     "󰐥  Power menu" \
     "󰑐  Reload Waybar" \
-    "󰑐  Reload Eww" |
+    "󰑐  Reload Eww" \
+    "󰑐  Reload SwayNC" |
     rofi -dmenu -i -p "Quick Actions"
 ) || exit 0
 
@@ -160,5 +161,8 @@ case "$selection" in
   ;;
 "󰑐  Reload Eww")
   eww reload
+  ;;
+"󰑐  Reload SwayNC")
+  swaync-client --reload-css
   ;;
 esac

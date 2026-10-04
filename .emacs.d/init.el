@@ -74,7 +74,7 @@
 
 ;; Apply frame transparency only on Linux without extra startup work.
 (when (eq system-type 'gnu/linux)
-  (add-to-list 'default-frame-alist '(alpha-background . 95)))
+  (add-to-list 'default-frame-alist '(alpha-background . 90)))
 
 ;; custom code that will be unique per machine
 (defconst local-config-file (expand-file-name "local.el" user-emacs-directory))

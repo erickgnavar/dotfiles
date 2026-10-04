@@ -1224,6 +1224,19 @@
 		       :inherit t :depth treeless :ref
 		       "4bb4f330c13ef82bb6e4a4b15c47cb3fede83523" :id
 		       pythontest :type git))
+ (qml-mode :source "elpaca-menu-lock-file" :recipe
+	   (:package "qml-mode" :repo "coldnew/qml-mode" :fetcher
+		     github :files
+		     ("*.el" "*.el.in" "dir" "*.info" "*.texi"
+		      "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
+		      "doc/*.texinfo" "lisp/*.el" "docs/dir"
+		      "docs/*.info" "docs/*.texi" "docs/*.texinfo"
+		      (:exclude ".dir-locals.el" "test.el" "tests.el"
+				"*-test.el" "*-tests.el" "LICENSE"
+				"README*" "*-pkg.el"))
+		     :source "MELPA" :id qml-mode :type git :protocol
+		     https :inherit t :depth treeless :ref
+		     "6c5f33ba88ae010bf201a80ee8095e20a724558c"))
  (queue :source "elpaca-menu-lock-file" :recipe
 	(:package "queue" :repo
 		  ("https://git.savannah.gnu.org/git/emacs/elpa.git"

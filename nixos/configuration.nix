@@ -147,14 +147,14 @@
 
   xdg.mime.defaultApplications = {
     "application/pdf" = "org.pwmt.zathura.desktop";
-    "image/avif" = "imv.desktop";
-    "image/bmp" = "imv.desktop";
-    "image/gif" = "imv.desktop";
-    "image/jpeg" = "imv.desktop";
-    "image/png" = "imv.desktop";
-    "image/svg+xml" = "imv.desktop";
-    "image/tiff" = "imv.desktop";
-    "image/webp" = "imv.desktop";
+    "image/avif" = "qimgv.desktop";
+    "image/bmp" = "qimgv.desktop";
+    "image/gif" = "qimgv.desktop";
+    "image/jpeg" = "qimgv.desktop";
+    "image/png" = "qimgv.desktop";
+    "image/svg+xml" = "qimgv.desktop";
+    "image/tiff" = "qimgv.desktop";
+    "image/webp" = "qimgv.desktop";
     "video/mp4" = "mpv.desktop";
     "video/mpeg" = "mpv.desktop";
     "video/ogg" = "mpv.desktop";
@@ -429,7 +429,7 @@
     delta
     gtk3
     zathura
-    imv
+    qimgv
     mpv
     gnumake
     gcc

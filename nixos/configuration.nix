@@ -213,6 +213,19 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  # Provide one graphical authentication agent after Sway imports its session environment.
+  systemd.user.services.polkit-gnome = {
+    description = "GNOME Polkit authentication agent";
+    wantedBy = [ "sway-session.target" ];
+    after = [ "sway-session.target" ];
+    partOf = [ "sway-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+  };
+
   # Keep the clipboard picker resident so hotkey activation only presents its existing process.
   systemd.user.services.clipboard-picker = {
     description = "Resident GTK clipboard picker";

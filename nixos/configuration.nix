@@ -145,6 +145,10 @@
     ];
   };
 
+  xdg.mime.defaultApplications = {
+    "application/pdf" = "org.pwmt.zathura.desktop";
+  };
+
   xdg.portal = {
     enable = true;
     wlr = {

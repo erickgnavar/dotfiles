@@ -207,6 +207,9 @@
   };
 
   virtualisation.docker.enable = true;
+  virtualisation.docker.enableOnBoot = false;
+  # Start Docker manually; docker.service will also start its required socket.
+  systemd.sockets.docker.wantedBy = lib.mkForce [ ];
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 

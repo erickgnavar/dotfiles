@@ -146,6 +146,14 @@
   };
 
   xdg.mime.defaultApplications = {
+    "application/zip" = "org.gnome.FileRoller.desktop";
+    "application/x-7z-compressed" = "org.gnome.FileRoller.desktop";
+    "application/vnd.rar" = "org.gnome.FileRoller.desktop";
+    "application/x-rar" = "org.gnome.FileRoller.desktop";
+    "application/x-tar" = "org.gnome.FileRoller.desktop";
+    "application/x-compressed-tar" = "org.gnome.FileRoller.desktop";
+    "application/x-bzip-compressed-tar" = "org.gnome.FileRoller.desktop";
+    "application/x-xz-compressed-tar" = "org.gnome.FileRoller.desktop";
     "application/pdf" = "org.pwmt.zathura.desktop";
     "image/avif" = "qimgv.desktop";
     "image/bmp" = "qimgv.desktop";
@@ -428,6 +436,7 @@
     git
     delta
     gtk3
+    file-roller
     zathura
     qimgv
     mpv

@@ -155,6 +155,15 @@
     "image/svg+xml" = "imv.desktop";
     "image/tiff" = "imv.desktop";
     "image/webp" = "imv.desktop";
+    "video/mp4" = "mpv.desktop";
+    "video/mpeg" = "mpv.desktop";
+    "video/ogg" = "mpv.desktop";
+    "video/quicktime" = "mpv.desktop";
+    "video/webm" = "mpv.desktop";
+    "video/x-m4v" = "mpv.desktop";
+    "video/x-matroska" = "mpv.desktop";
+    "video/x-msvideo" = "mpv.desktop";
+    "video/x-ms-wmv" = "mpv.desktop";
   };
 
   xdg.portal = {
@@ -421,6 +430,7 @@
     gtk3
     zathura
     imv
+    mpv
     gnumake
     gcc
     cmake

@@ -147,6 +147,14 @@
 
   xdg.mime.defaultApplications = {
     "application/pdf" = "org.pwmt.zathura.desktop";
+    "image/avif" = "imv.desktop";
+    "image/bmp" = "imv.desktop";
+    "image/gif" = "imv.desktop";
+    "image/jpeg" = "imv.desktop";
+    "image/png" = "imv.desktop";
+    "image/svg+xml" = "imv.desktop";
+    "image/tiff" = "imv.desktop";
+    "image/webp" = "imv.desktop";
   };
 
   xdg.portal = {
@@ -412,6 +420,7 @@
     delta
     gtk3
     zathura
+    imv
     gnumake
     gcc
     cmake

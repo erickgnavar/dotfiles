@@ -2244,12 +2244,15 @@ Generate a ~pyrightconfig.json~ file
 
 (setq python-shell-completion-native-enable nil)
 
-(use-package python-ts-mode
+(use-package python
   :ensure nil
   :defer t
-  :mode "\\.py\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist
+               '(python-mode . python-ts-mode))
   :mode-hydra
-  ((:title (concat (nerd-icons-icon-for-buffer) " Python commands"))
+  (python-ts-mode
+   (:title (concat (nerd-icons-icon-for-buffer) " Python commands"))
    ("Format"
     (("f" python-ruff-format-buffer)
      ("si" python-sort-imports-region))

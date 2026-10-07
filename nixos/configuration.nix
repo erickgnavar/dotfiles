@@ -112,6 +112,8 @@
 
   programs.zsh.enable = true;
   programs.ssh.startAgent = true;
+  # Run externally distributed Linux binaries.
+  programs.nix-ld.enable = true;
 
   services.espanso = {
     enable = true;

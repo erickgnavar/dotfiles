@@ -1466,7 +1466,7 @@
 			  "elpaca-menu-lock-file" :protocol https
 			  :inherit t :depth treeless :type git :host
 			  codeberg :ref
-			  "972dc69d6b8a3f8983f6b8000654f59c8a8d05ba"
+			  "ee17b331ebfa8d8b7c2f54a1c39ab3d76e134706"
 			  :id typst-ts-mode))
  (vertico :source "elpaca-menu-lock-file" :recipe
 	  (:package "vertico" :repo "minad/vertico" :files

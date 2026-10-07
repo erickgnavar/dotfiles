@@ -15,6 +15,11 @@
 ;; Avoid to show a message about deprecation of cl package
 (setq byte-compile-warnings '(cl-functions))
 
+;; Use the build date for development Emacs versions to avoid Elpaca's
+;; warning about assigning the nearest known release date.
+(defvar elpaca-core-date
+  (list (string-to-number (format-time-string "%Y%m%d" emacs-build-time))))
+
 (defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))

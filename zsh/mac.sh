@@ -29,13 +29,6 @@ reset_cache() {
   sudo killall -HUP mDNSResponder
 }
 
-homebrew-dump() {
-  cd ~/dotfiles/ || exit
-  brew bundle dump --force
-  git diff Brewfile
-  cd - || exit
-}
-
 nixdarwin_run_install() {
   cd ~/dotfiles/nix-darwin/ || exit 1
   mkdir -p ~/.config/nix-darwin/

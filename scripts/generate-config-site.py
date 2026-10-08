@@ -63,7 +63,6 @@ LANGUAGES = {
 }
 
 SPECIAL_LANGUAGES = {
-    "Brewfile": "ruby",
     ".gitconfig": "ini",
     ".ideavimrc": "vim",
     ".tmux.conf": "bash",

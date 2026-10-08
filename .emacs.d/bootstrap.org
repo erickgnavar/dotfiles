@@ -1311,13 +1311,13 @@ preview. ImageMagick is only required when saving the result to a format other t
 (defun my/meme-from-clipboard ()
   "Create a meme using an image from clipboard."
   (interactive)
-  (unless (executable-find "pngpaste")
-    (user-error "please install pngpaste"))
+  (unless (executable-find "haru")
+    (user-error "please install haru"))
 
   (let* ((filepath (make-temp-file "clipboard" nil ".png"))
-         (command (format "pngpaste %s" filepath))
+         (command (format "haru %s" filepath))
          (command-stdout (shell-command-to-string command)))
-    ;; pngpaste returns "" when found a valid image in the clipboard
+    ;; haru returns "" when found a valid image in the clipboard
     (unless (string-equal command-stdout "")
       (user-error (string-trim command-stdout)))
 
@@ -1350,7 +1350,7 @@ Configured variables:
          (image-path (format "%s/%s" images-folder image-name)))
     (unless (file-directory-p images-folder)
       (shell-command (format "mkdir -p %s" images-folder)))
-    (shell-command (format "pngpaste %s" image-path))
+    (shell-command (format "haru %s" image-path))
     (insert (format "[[file:%s]]" image-path))))
 
 (with-eval-after-load 'evil
@@ -2979,7 +2979,7 @@ Insert =org-link= image using clipboard value, if the current file is =blog/demo
          (full-path-result-image (format "%s/%s" result-image-dir result-image-name)))
 
     (shell-command (format "mkdir -p %s" result-image-dir))
-    (shell-command (format "pngpaste %s" full-path-result-image))
+    (shell-command (format "haru %s" full-path-result-image))
     (insert (format "[[file:%s]]" (car (cdr (split-string full-path-result-image "static")))))))
 #+end_src
 
@@ -3300,10 +3300,10 @@ Save image from clipboard to path.
 (defun my/save-image-from-clipboard ()
   "Save image from clipboard to the given path."
   (interactive)
-  (unless (executable-find "pngpaste")
-    (user-error "Install pngpaste to continue"))
+  (unless (executable-find "haru")
+    (user-error "Install haru to continue"))
   (let* ((path (read-file-name ""))
-         (command (format "pngpaste %s" path)))
+         (command (format "haru %s" path)))
     (shell-command command)
     (kill-new path)))
 #+end_src

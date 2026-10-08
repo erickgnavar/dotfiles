@@ -88,7 +88,6 @@
     gnused
     imagemagick
     librsvg
-    pngpaste
     watch
     gnupg
     (aspellWithDicts (dicts: with dicts; [ en en-computers es ]))
@@ -118,6 +117,7 @@
       # with no issues
       "openssl@3"
       "lorem"
+      "ruaylabs/tap/haru"
     ];
     casks = [
       "macvim-app"

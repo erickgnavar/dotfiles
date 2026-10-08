@@ -8,7 +8,6 @@
 
   homebrew = {
     taps = [
-      { name = "ruaylabs/tap"; trusted = true; }
       "rustfs/tap"
     ];
     brews = [

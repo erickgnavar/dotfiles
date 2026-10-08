@@ -105,6 +105,9 @@
       # https://github.com/Homebrew/brew/pull/22453
       extraFlags = [ "--force-cleanup" ];
     };
+    taps = [
+      { name = "ruaylabs/tap"; trusted = true; }
+    ];
     brews = [
       # libvterm is not available in nix for aarch64 so we
       # install it from homebrew

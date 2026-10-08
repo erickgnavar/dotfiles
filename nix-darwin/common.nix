@@ -1,4 +1,4 @@
-{ pkgs, config, emacs-src, ... }: {
+{ pkgs, config, emacs-src, haru, ... }: {
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -88,6 +88,7 @@
     gnused
     imagemagick
     librsvg
+    (haru.packages.${pkgs.stdenv.hostPlatform.system}.default)
     watch
     gnupg
     (aspellWithDicts (dicts: with dicts; [ en en-computers es ]))
@@ -117,7 +118,6 @@
       # with no issues
       "openssl@3"
       "lorem"
-      "ruaylabs/tap/haru"
     ];
     casks = [
       "macvim-app"

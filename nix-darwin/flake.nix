@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
+    haru = {
+      url = "github:ruaylabs/haru";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -13,7 +18,7 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, emacs-src }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, emacs-src, haru }:
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#simple
@@ -26,7 +31,7 @@
             system.configurationRevision = self.rev or self.dirtyRev or null;
           }
         ];
-        specialArgs = { inherit emacs-src; };
+        specialArgs = { inherit emacs-src haru; };
       };
 
       # Expose the package set, including overlays, for convenience.

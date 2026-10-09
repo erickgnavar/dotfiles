@@ -1,7 +1,7 @@
 /**
  * OptChat for pi: one endless chat per project, where the chat history
  * itself is the memory, stored as a compressed tree of one-line
- * summaries. See optchat.md for the full spec this implements.
+ * summaries.
  *
  * How it maps onto pi:
  * - Every message (user prompt, reply, tool call, tool result) is logged
@@ -39,7 +39,7 @@ import {
   type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
 import { CAP, errorText, OptChat } from "./memory.ts";
-import { acquireLock, type Lock } from "./store.ts";
+import { acquireLock, type Lock, saveImage } from "./store.ts";
 import { VIEW_DOC } from "./prompts.ts";
 
 /** Safety cap: never block a turn longer than this waiting for the compactor. */
@@ -57,6 +57,11 @@ export default function optchat(pi: ExtensionAPI) {
   let sawUserMessageEnd = false;
   let anchorIdx: number | null = null;
   let anchorTs: number | undefined;
+  // Provider-reported prompt tokens, including cache reads/writes, this run only.
+  let chatTokens = 0;
+  let chatCacheRead = 0;
+  let compactorTokens = 0;
+  let compactorCacheRead = 0;
 
   // ------------------------------------------------------------ lifecycle
 
@@ -89,20 +94,34 @@ export default function optchat(pi: ExtensionAPI) {
       // Low reasoning: the compactor otherwise thinks for pages before (or
       // instead of) writing its one line; 8192 tokens of headroom for models
       // that ignore the reasoning level.
-      complete: (model, context, signal) =>
-        ctx.modelRegistry
+      complete: async (model, context, signal) => {
+        const reply = await ctx.modelRegistry
           .streamSimple(model, context, {
             maxTokens: 8192,
             reasoning: "low",
             sessionId: "optchat-compactor",
             signal,
           })
-          .result(),
+          .result();
+        if (!signal.aborted) {
+          compactorCacheRead += reply.usage.cacheRead ?? 0;
+          compactorTokens +=
+            (reply.usage.input ?? 0) +
+            (reply.usage.cacheRead ?? 0) +
+            (reply.usage.cacheWrite ?? 0);
+        }
+        return reply;
+      },
       onError: (message) => ctx.ui.notify(message, "error"),
     });
-    chat.load();
-    active = true;
-    chat.pump();
+    try {
+      chat.load();
+      active = true;
+      chat.pump();
+    } catch (err) {
+      cleanup();
+      ctx.ui.notify(`OptChat disabled: ${errorText(err)}`, "error");
+    }
   });
 
   pi.on("session_shutdown", () => cleanup());
@@ -114,6 +133,7 @@ export default function optchat(pi: ExtensionAPI) {
     pendingPrompt = null;
     anchorIdx = null;
     anchorTs = undefined;
+    chatTokens = chatCacheRead = compactorTokens = compactorCacheRead = 0;
     chat?.close();
     chat = null;
     lock?.close();
@@ -125,20 +145,31 @@ export default function optchat(pi: ExtensionAPI) {
   pi.on("before_agent_start", async (event, ctx) => {
     if (!active || !chat) return;
     // §6: no call ever sees an unbuilt line; wait for the compactor.
-    const settled = await Promise.race([
-      chat.settle(ctx.signal),
-      new Promise<boolean>((resolve) =>
-        setTimeout(() => resolve(false), SETTLE_TIMEOUT_MS),
-      ),
-    ]);
+    // (Never forever: a stuck or paused compactor must not brick pi.)
+    const memory = chat;
+    const settleAbort = new AbortController();
+    const onAbort = () => settleAbort.abort();
+    ctx.signal?.addEventListener("abort", onAbort, { once: true });
+    if (ctx.signal?.aborted) settleAbort.abort();
+    const settleTimer = setTimeout(onAbort, SETTLE_TIMEOUT_MS);
+    let settled: boolean;
+    try {
+      settled = await memory.settle(settleAbort.signal);
+    } finally {
+      clearTimeout(settleTimer);
+      ctx.signal?.removeEventListener("abort", onAbort);
+    }
+    if (chat !== memory || !active) return;
     if (!settled && !chat.allBuilt()) {
       ctx.ui.notify(
-        "OptChat: the view is not fully summarized; continuing anyway.",
+        chat.isPaused()
+          ? "OptChat: compaction paused; keeping pi's transcript. Use /optchat resume."
+          : "OptChat: summaries not ready; keeping pi's transcript for this turn.",
         "warning",
       );
     }
     // The view is rendered before the new message is logged (§7).
-    viewFrozen = chat.renderView();
+    viewFrozen = settled ? chat.renderView() : null;
     turnActive = true;
     pendingPrompt = event.prompt;
     sawUserMessageEnd = false;
@@ -150,12 +181,12 @@ export default function optchat(pi: ExtensionAPI) {
 
   pi.on("context", (event) => {
     if (!active || !chat || chat.root.length === 0) return;
-    const viewText = viewFrozen ?? (chat.allBuilt() ? chat.renderView() : null);
+    const viewText = viewFrozen;
     if (!viewText) return; // never show cut text for unbuilt lines (§5.3)
     // The user prompt never arrived as a message event (fail-safe): log
     // it now, after the view was frozen, so nothing is missing from the log.
     if (turnActive && pendingPrompt !== null && !sawUserMessageEnd) {
-      chat.log("user", pendingPrompt);
+      chat.logText("user", pendingPrompt);
       pendingPrompt = null;
     }
     const idx = findAnchor(event.messages);
@@ -181,8 +212,8 @@ export default function optchat(pi: ExtensionAPI) {
       }
       return -1;
     };
-    if (!turnActive) return lastUser();
     if (anchorIdx === null) {
+      if (!turnActive) return -1; // no turn boundary was captured to reuse
       let idx = messages.length - 1;
       if (messages[idx]?.role !== "user") idx = lastUser();
       if (idx < 0) return -1;
@@ -201,6 +232,7 @@ export default function optchat(pi: ExtensionAPI) {
         return j;
       }
     }
+    if (!turnActive) return -1; // never move an idle request to a different turn
     const idx = lastUser();
     anchorIdx = idx >= 0 ? idx : null;
     if (idx >= 0) anchorTs = (messages[idx] as UserMessage).timestamp;
@@ -210,7 +242,7 @@ export default function optchat(pi: ExtensionAPI) {
   pi.on("agent_end", () => {
     turnActive = false;
     pendingPrompt = null;
-    // viewFrozen stays for idle requests (cache warming) until the next turn.
+    // The frozen view and its anchor stay for idle requests until the next turn.
   });
 
   // ------------------------------------------------------------------ log
@@ -220,39 +252,69 @@ export default function optchat(pi: ExtensionAPI) {
     const m = event.message;
     if (m.role === "user") {
       sawUserMessageEnd = true;
-      chat.log("user", flattenContent(m.content));
+      // Only the user's words are theirs; long text is never cut, and
+      // attached images are saved as files, never dropped (§1).
+      chat.logText("user", flattenContent(m.content));
+      logImages(m.content);
     } else if (m.role === "bashExecution") {
-      const out = m.truncated
-        ? `${m.output}\n[... output truncated ...]`
-        : m.output;
+      // The command is the user's words; the output is a tool result.
       const status = m.cancelled
         ? " (cancelled)"
         : m.exitCode !== undefined
           ? ` (exit ${m.exitCode})`
           : "";
-      chat.log("user", `$ ${m.command}${status}\n${out}`);
+      chat.logText("user", `$ ${m.command}${status}`);
+      chat.log("echo", capText(m.output || "(no output)"));
     } else if (m.role === "custom") {
-      chat.log("user", `[${m.customType}] ${flattenContent(m.content)}`);
+      // Another extension's message: context from outside this chat.
+      chat.logText("note", `[${m.customType}] ${flattenContent(m.content)}`);
+      logImages(m.content);
     } else if (m.role === "assistant") {
+      chatCacheRead += m.usage.cacheRead ?? 0;
+      chatTokens +=
+        (m.usage.input ?? 0) +
+        (m.usage.cacheRead ?? 0) +
+        (m.usage.cacheWrite ?? 0);
       // Thoughts are never logged (§2); the reply is the record.
       const text = m.content
         .filter((c): c is TextContent => c.type === "text")
         .map((c) => c.text)
         .join("\n");
-      if (text.trim().length > 0) chat.log("talk", text);
+      if (text.trim().length > 0) chat.logText("talk", text);
     }
     // toolResult messages are logged by tool_execution_end, capped.
   });
 
   pi.on("tool_execution_start", (event) => {
     if (!active || !chat) return;
-    chat.log("tool", capText(`${event.toolName} ${safeJson(event.args)}`));
+    // Tool inputs are never cut either (§1): long ones split in a row.
+    chat.logText("tool", `${event.toolName} ${safeJson(event.args)}`);
   });
 
   pi.on("tool_execution_end", (event) => {
     if (!active || !chat) return;
     chat.log("echo", echoText(event.result, event.isError));
+    logImages(event.result.content);
   });
+
+  function logImages(content: string | (TextContent | ImageContent)[]): void {
+    if (!chat || typeof content === "string") return;
+    let seq = 0;
+    for (const c of content) {
+      if (c.type !== "image") continue;
+      const rel = saveImage(
+        chat.dir,
+        chat.root.length,
+        seq++,
+        c.data,
+        c.mimeType,
+      );
+      chat.log(
+        "note",
+        `image attached: ${path.resolve(chat.dir, rel)} (${c.mimeType})`,
+      );
+    }
+  }
 
   // ----------------------------------------------------------------- tools
 
@@ -298,7 +360,7 @@ export default function optchat(pi: ExtensionAPI) {
 
   pi.registerCommand("optchat", {
     description:
-      "OptChat memory: status (default), view (write the view to view.txt), note <text>",
+      "OptChat memory: status (default), view, note <text>, resume (after a paused compaction)",
     handler: async (args, ctx) => {
       if (!chat) {
         ctx.ui.notify("OptChat is not active.", "warning");
@@ -316,13 +378,23 @@ export default function optchat(pi: ExtensionAPI) {
           "info",
         );
       } else if (cmd === "note" && rest) {
-        const i = chat.log("note", rest);
+        const i = chat.logText("note", rest);
         ctx.ui.notify(`Saved as message ${i}.`, "info");
+      } else if (cmd === "resume") {
+        if (chat.isPaused()) {
+          chat.resume();
+          ctx.ui.notify("OptChat compactor resumed.", "info");
+        } else {
+          ctx.ui.notify("The compactor is not paused.", "info");
+        }
       } else {
         const s = chat.stats();
         ctx.ui.notify(
           `OptChat: ${s.messages} messages, ${s.nodes} nodes, view ${s.viewBytes}B ` +
-            `in ${s.parts} lines (${s.unbuilt} unbuilt), compactor ${s.compactor}, log ${chat.dir}`,
+            `in ${s.parts} lines (${s.unbuilt} unbuilt${s.paused ? ", compaction PAUSED" : ""}), ` +
+            `compactor ${s.compactor}, log ${chat.dir}. ` +
+            `Cache-read tokens this run: chat ${chatCacheRead}/${chatTokens}, ` +
+            `compactor ${compactorCacheRead}/${compactorTokens}.`,
           "info",
         );
       }

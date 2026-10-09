@@ -45,18 +45,106 @@ export function localDay(): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
-/** Append one line and fsync it before returning (§2: durability). */
+/** Max bytes of one message of long text (§1: never cut, split in a row). */
+export const CHUNK = 16_000;
+
+/**
+ * Split long text into consecutive messages (§1): never cut, break at a
+ * line or space near the chunk size, never splitting a UTF-8 character.
+ */
+export function splitText(text: string, chunk = CHUNK): string[] {
+  if (!Number.isInteger(chunk) || chunk < 4) {
+    throw new Error("chunk must be an integer of at least 4 bytes");
+  }
+  if (byteLength(text) <= chunk) return [text];
+  const parts: string[] = [];
+  let rest = text;
+  while (byteLength(rest) > chunk) {
+    let cut = cutToBytes(rest, chunk);
+    const nl = cut.lastIndexOf("\n");
+    const sp = cut.lastIndexOf(" ");
+    if (nl > chunk / 2) cut = cut.slice(0, nl + 1);
+    else if (sp > chunk / 2) cut = cut.slice(0, sp + 1);
+    parts.push(cut);
+    rest = rest.slice(cut.length);
+  }
+  if (rest.length > 0) parts.push(rest);
+  return parts;
+}
+
+/** Save an attached image as a file; returns its path relative to the log. */
+export function saveImage(
+  dir: string,
+  index: number,
+  seq: number,
+  data: string,
+  mimeType: string,
+): string {
+  const ext =
+    /png|jpe?g|gif|webp|bmp/.exec(mimeType)?.[0]?.replace("jpeg", "jpg") ??
+    "bin";
+  const imagesDir = path.join(dir, "images");
+  fs.mkdirSync(imagesDir, { recursive: true });
+  const name = `${index}-${seq}.${ext}`;
+  fs.writeFileSync(path.join(imagesDir, name), Buffer.from(data, "base64"));
+  return path.join("images", name);
+}
+
+/** The append may be on disk: its id must not be reused before a reload. */
+export class UncertainAppendError extends Error {
+  constructor(file: string, cause: unknown) {
+    super(
+      `OptChat: append state uncertain for ${file}; /reload before recording again.`,
+      {
+        cause,
+      },
+    );
+    this.name = "UncertainAppendError";
+  }
+}
+
+/** Append and fsync; undo failed writes durably before allowing a retry. */
 export function appendLine(file: string, line: string): void {
   const buf = Buffer.from(`${line}\n`, "utf8");
   const fd = fs.openSync(file, "a");
+  let size: number | undefined;
+  let failed = false;
+  let failure: unknown;
   try {
+    size = fs.fstatSync(fd).size;
     let off = 0;
-    while (off < buf.length)
-      off += fs.writeSync(fd, buf, off, buf.length - off);
+    while (off < buf.length) {
+      const written = fs.writeSync(fd, buf, off, buf.length - off);
+      if (written === 0) throw new Error("append made no write progress");
+      off += written;
+    }
     fs.fsyncSync(fd);
-  } finally {
-    fs.closeSync(fd);
+  } catch (err) {
+    failed = true;
+    failure = err;
+    if (size !== undefined) {
+      try {
+        fs.ftruncateSync(fd, size);
+        fs.fsyncSync(fd);
+      } catch (rollbackError) {
+        failure = new UncertainAppendError(
+          file,
+          new AggregateError([err, rollbackError]),
+        );
+      }
+    }
   }
+  try {
+    fs.closeSync(fd);
+  } catch (err) {
+    // A close error after a successful append must not permit id reuse.
+    // After a failed append, preserve its original/rollback error instead.
+    if (!failed) {
+      failed = true;
+      failure = new UncertainAppendError(file, err);
+    }
+  }
+  if (failed) throw failure;
 }
 
 /**
@@ -74,17 +162,14 @@ export function loadJsonl(dir: string): { lines: unknown[]; torn: number } {
       .readdirSync(dir)
       .filter((f) => f.endsWith(".jsonl"))
       .sort();
-  } catch {
-    return { lines, torn };
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT")
+      return { lines, torn };
+    throw err;
   }
   for (const f of files) {
     const file = path.join(dir, f);
-    let text = "";
-    try {
-      text = fs.readFileSync(file, "utf8");
-    } catch {
-      continue;
-    }
+    const text = fs.readFileSync(file, "utf8");
     if (text.length === 0) continue;
     if (!text.endsWith("\n")) appendLine(file, "");
     for (const raw of text.split("\n")) {

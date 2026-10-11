@@ -19,7 +19,7 @@ selection=$(
     "󰑐  Reload Waybar" \
     "󰑐  Reload Eww" \
     "󰑐  Reload SwayNC" |
-    rofi -dmenu -i -p "Quick Actions"
+    rofi -dmenu -i -no-show-icons -p "Quick Actions"
 ) || exit 0
 
 case "$selection" in

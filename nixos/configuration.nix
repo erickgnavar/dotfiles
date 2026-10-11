@@ -87,7 +87,7 @@
 
   # enable keyring on unlock
   security.pam.services.sddm.enableGnomeKeyring = true;
-  security.pam.services."swaylock-plugin" = { };
+  security.pam.services.quickshell-lockscreen = { };
   security.pam.services.wayvnc = { };
   # Give PipeWire realtime priority for low-latency, stable audio.
   security.rtkit.enable = true;
@@ -408,7 +408,6 @@
     nwg-look
     networkmanagerapplet
     qrencode # generate scannable Wi-Fi credentials
-    swaylock-plugin
     eww
     mpvpaper # for live wallpapers
     nerdfetch

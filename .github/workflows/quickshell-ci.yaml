@@ -1,0 +1,45 @@
+---
+name: Quickshell CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'quickshell/**'
+      - 'sway/scripts/lockscreen.sh'
+      - 'sway/config'
+      - 'nixos/configuration.nix'
+      - 'wlogout/layout'
+      - '.github/workflows/quickshell-ci.yaml'
+  pull_request:
+    paths:
+      - 'quickshell/**'
+      - 'sway/scripts/lockscreen.sh'
+      - 'sway/config'
+      - 'nixos/configuration.nix'
+      - 'wlogout/layout'
+      - '.github/workflows/quickshell-ci.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Run Quickshell lock screen tests
+        run: python3 -B -m unittest discover -s quickshell/lockscreen/tests -v

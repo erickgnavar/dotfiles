@@ -42,6 +42,19 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
+  # Required for Sunshine's VA-API hardware encoding.
+  hardware.graphics.enable = true;
+
+  services.sunshine = {
+    enable = true;
+    openFirewall = true;
+    capSysAdmin = true; # Required for DRM/KMS capture on Wayland.
+    settings = {
+      sunshine_name = "nixos";
+      encoder = "vaapi";
+    };
+  };
+
   # Set your time zone.
   time.timeZone = "America/Mexico_City";
 
@@ -106,7 +119,8 @@
   users.users.erick = {
     isNormalUser = true;
     description = "Erick Navarro";
-    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" ];
+    # uinput allows Sunshine to create virtual keyboard and mouse devices.
+    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "uinput" ];
     packages = with pkgs; [ ];
   };
 

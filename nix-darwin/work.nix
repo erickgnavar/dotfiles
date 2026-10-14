@@ -17,7 +17,6 @@
     casks = [
       "1password"
       "brave-browser"
-      "claude"
       "slack"
       "notion"
       "1password-cli"

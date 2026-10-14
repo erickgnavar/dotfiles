@@ -36,6 +36,7 @@
       "imageoptim"
       "discord"
       "tigervnc"
+      "moonlight"
       "calibre"
       "loopback"
       "keepassxc"

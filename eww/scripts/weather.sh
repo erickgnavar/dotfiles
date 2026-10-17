@@ -3,7 +3,7 @@ data=$(curl -s "wttr.in/?format=j1" --max-time 5)
 location=$(curl -s "wttr.in/?format=%l" --max-time 5)
 
 if [ -z "$data" ]; then
-  echo '{"icon": "\uf071", "temp": "--", "feels": "--", "desc": "offline", "humidity": "--", "wind": "--", "city": "--"}'
+  echo '{"icon": "\uf071", "temp": "--", "feels": "--", "desc": "offline", "humidity": "--", "wind": "--", "city": "--", "forecast": []}'
   exit 0
 fi
 
@@ -17,7 +17,9 @@ code=$(echo "$data" | jq -r '.current_condition[0].weatherCode')
 city=$(printf '%s' "$location" | awk -F',' '{ city = $(NF - 1); gsub(/^[[:space:]]+|[[:space:]]+$/, "", city); print toupper(city) }')
 [ -n "$city" ] || city="--"
 
-case "$code" in
+weather_icon() {
+  local icon
+  case "$1" in
 113) icon="\ue30d" ;;
 116) icon="\ue302" ;;
 119 | 122) icon="\ue312" ;;
@@ -26,7 +28,18 @@ case "$code" in
 179 | 182 | 185 | 227 | 230 | 317 | 320 | 323 | 326 | 329 | 332 | 335 | 338 | 350 | 362 | 365 | 368 | 371 | 374 | 377) icon="\ue31a" ;;
 200 | 386 | 389 | 392 | 395) icon="\ue31d" ;;
 *) icon="\ue312" ;;
-esac
+  esac
+  printf '%b' "$icon"
+}
+icon=$(weather_icon "$code")
+
+forecast=$(echo "$data" | jq -c '.weather[1:3][]' | while IFS= read -r day; do
+  day_date=$(echo "$day" | jq -r '.date')
+  label=$(date -d "$day_date" +%a)
+  day_code=$(echo "$day" | jq -r '([.hourly[] | select(.time == "1200")][0] // .hourly[0]).weatherCode')
+  echo "$day" | jq -c --arg day "$label" --arg icon "$(weather_icon "$day_code")" \
+    '{day: $day, icon: $icon, low: .mintempC, high: .maxtempC}'
+done | jq -s '.')
 
 jq -n \
   --arg icon "$icon" \
@@ -36,4 +49,5 @@ jq -n \
   --arg humidity "$humidity" \
   --arg wind "$wind" \
   --arg city "$city" \
-  '{icon: $icon, temp: $temp, feels: $feels, desc: $desc, humidity: $humidity, wind: $wind, city: $city}'
+  --argjson forecast "$forecast" \
+  '{icon: $icon, temp: $temp, feels: $feels, desc: $desc, humidity: $humidity, wind: $wind, city: $city, forecast: $forecast}'

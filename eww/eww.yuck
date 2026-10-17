@@ -67,7 +67,7 @@
 
 (defpoll weather-data
   :interval "15m"
-  :initial "{\"icon\": \"\", \"temp\": \"--\", \"feels\": \"--\", \"desc\": \"loading\", \"humidity\": \"--\", \"wind\": \"--\", \"city\": \"--\"}"
+  :initial "{\"icon\": \"\", \"temp\": \"--\", \"feels\": \"--\", \"desc\": \"loading\", \"humidity\": \"--\", \"wind\": \"--\", \"city\": \"--\", \"forecast\": []}"
   `scripts/weather.sh`)
 
 (defwidget weather-panel []
@@ -83,7 +83,13 @@
     (box :class "weather-sub" :orientation "h" :space-evenly false :spacing 10 :halign "center"
       (label :text "feels ${weather-data.feels}°")
       (label :text "${weather-data.humidity}% hum")
-      (label :text "${weather-data.wind} km/h"))))
+      (label :text "${weather-data.wind} km/h"))
+    (box :class "weather-forecast" :orientation "v" :space-evenly false :spacing 6
+      (for day in {weather-data.forecast}
+        (box :orientation "h" :space-evenly false :spacing 10
+          (label :text {day.day} :xalign 0 :hexpand true)
+          (label :class "weather-forecast-icon" :text {day.icon})
+          (label :text "${day.low}° / ${day.high}°" :xalign 1))))))
 
 (defpoll net-speed
   :interval "1s"

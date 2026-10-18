@@ -20,8 +20,8 @@ if ! flock --nonblock 9; then
   # Guard occupancy is not proof of locking: the owner may be cleaning up after
   # a failed startup or an unlock. Query the live locker without exposing unlock.
   if secure=$(timeout --kill-after=1 "$startup_timeout" \
-    qs -c lockscreen ipc call lock isSecure 8>&- 9>&- 2>/dev/null) \
-    && [[ "$secure" == true ]]; then
+    qs -c lockscreen ipc call lock isSecure 8>&- 9>&- 2>/dev/null) &&
+    [[ "$secure" == true ]]; then
     exit 0
   fi
   echo "A lock guard is held, but the session's secure state could not be confirmed." >&2

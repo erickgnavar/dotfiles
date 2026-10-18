@@ -54,7 +54,7 @@ takedir() {
   for target in "$@"; do
     :
   done
-  mkdir -p -- "$@" && cd -- "$target"
+  mkdir -p -- "$@" && cd -- "$target" || return
 }
 
 takeurl() {
@@ -64,7 +64,7 @@ takeurl() {
   tar xf "$data"
   thedir="$(tar tf "$data" | head -n 1)"
   rm "$data"
-  cd -- "$thedir"
+  cd -- "$thedir" || return
 }
 
 takezip() {
@@ -74,11 +74,11 @@ takezip() {
   unzip "$data" -d "./"
   thedir="$(unzip -l "$data" | awk 'NR==4 {print $4}' | sed 's|/.*||')"
   rm "$data"
-  cd -- "$thedir"
+  cd -- "$thedir" || return
 }
 
 takegit() {
-  git clone "$1" && cd -- "$(basename -- "${1%.git}")"
+  git clone "$1" && cd -- "$(basename -- "${1%.git}")" || return
 }
 
 take() {

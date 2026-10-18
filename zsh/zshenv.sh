@@ -46,4 +46,3 @@ test -r "$HOME/.zshenv.private" && . "$HOME/.zshenv.private"
 
 # Disable telemetry in homebrew
 export HOMEBREW_NO_ANALYTICS=1
-

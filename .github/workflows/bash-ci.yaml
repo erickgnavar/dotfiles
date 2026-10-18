@@ -4,6 +4,13 @@ name: Bash CI
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**/*.sh'
+      - '.github/workflows/bash-ci.yaml'
+  pull_request:
+    paths:
+      - '**/*.sh'
+      - '.github/workflows/bash-ci.yaml'
 
 jobs:
   lint-and-formatter:
@@ -16,7 +23,7 @@ jobs:
         run: sudo apt update && sudo apt install shellcheck shfmt --yes
 
       - name: Run formatter using shfmt
-        run: shfmt -l -i 2 .
+        run: find . -type f -name '*.sh' -print0 | xargs -0 -r shfmt -d -i 2
 
       - name: Run shellcheck
-        run: find . -name "*.sh" -type f -exec shellcheck {} \;
+        run: find . -type f -name '*.sh' -print0 | xargs -0 -r shellcheck

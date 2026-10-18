@@ -435,6 +435,7 @@
     }))
     grim
     slurp
+    wf-recorder # screen and region recording from the Quickshell capture toolbar
     cliphist
     telegram-desktop
     firefox

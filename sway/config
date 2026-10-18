@@ -39,6 +39,7 @@ exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
 
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec qs -c wallpaper-picker
+exec qs -c capture
 
 # Shift from 6500K to 4000K using GeoClue-based sunrise and sunset times.
 exec gammastep -m wayland -l geoclue2 -t 6500:4000
@@ -246,8 +247,9 @@ bindsym $mod+r mode "resize"
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-    # Capture screenshots and open them in Swappy for annotation
-    bindsym $mod+Shift+s exec $scripts/screenshot.sh
+    # Capture toolbar and recording stop shortcut
+    bindsym $mod+Shift+s exec qs -c capture ipc call capture toggle
+    bindsym $mod+Ctrl+s exec qs -c capture ipc call capture stop
 
 # Enable services so sway can run with no errors, this is required to be able to run waybar
 # because we need to have xdg-portal service enabled

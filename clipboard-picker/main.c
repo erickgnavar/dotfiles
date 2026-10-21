@@ -49,6 +49,7 @@ typedef struct {
   GtkBox *preview_box;
   GtkStack *preview_stack;
   GtkLabel *empty_label;
+  GtkLabel *item_count;
   GtkPicture *picture;
   GtkLabel *text_preview;
   GtkLabel *mime_value;
@@ -962,6 +963,15 @@ static void apply_search_results(ClipboardPicker *app, GPtrArray *matches) {
   }
   app->updating_results = FALSE;
 
+  gchar *summary =
+      app->pending_query[0]
+          ? g_strdup_printf("%u of %u entries", matches->len,
+                            app->search_items->len)
+          : g_strdup_printf("%u %s", matches->len,
+                            matches->len == 1 ? "entry" : "entries");
+  gtk_label_set_text(app->item_count, summary);
+  g_free(summary);
+
   ClipboardItem *current =
       gtk_single_selection_get_selected_item(app->selection);
   schedule_preview(app, current, SEARCH_PREVIEW_DEBOUNCE_MS);
@@ -1040,6 +1050,10 @@ static gboolean finish_secondary_setup(gpointer user_data) {
 
   app->picture = GTK_PICTURE(gtk_picture_new());
   gtk_picture_set_content_fit(app->picture, GTK_CONTENT_FIT_CONTAIN);
+  gtk_widget_set_margin_top(GTK_WIDGET(app->picture), 16);
+  gtk_widget_set_margin_bottom(GTK_WIDGET(app->picture), 16);
+  gtk_widget_set_margin_start(GTK_WIDGET(app->picture), 16);
+  gtk_widget_set_margin_end(GTK_WIDGET(app->picture), 16);
   gtk_stack_add_named(app->preview_stack, GTK_WIDGET(app->picture), "image");
 
   GtkScrolledWindow *text_scroll =
@@ -1072,6 +1086,9 @@ static gboolean finish_secondary_setup(gpointer user_data) {
     gtk_grid_attach(metadata, GTK_WIDGET(key), 0, i, 1, 1);
     *values[i] = GTK_LABEL(gtk_label_new(""));
     gtk_label_set_xalign(*values[i], 0.0);
+    gtk_label_set_wrap(*values[i], TRUE);
+    gtk_label_set_wrap_mode(*values[i], PANGO_WRAP_WORD_CHAR);
+    gtk_widget_set_hexpand(GTK_WIDGET(*values[i]), TRUE);
     gtk_grid_attach(metadata, GTK_WIDGET(*values[i]), 1, i, 1, 1);
   }
   gtk_box_append(app->preview_box,
@@ -1143,6 +1160,17 @@ static void clipboard_picker_activate(GApplication *application) {
   gtk_widget_set_margin_end(GTK_WIDGET(root), 12);
   gtk_window_set_child(GTK_WINDOW(window), GTK_WIDGET(root));
 
+  GtkBox *header = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12));
+  GtkWidget *title = gtk_label_new("Clipboard history");
+  gtk_widget_add_css_class(title, "picker-title");
+  gtk_label_set_xalign(GTK_LABEL(title), 0.0);
+  gtk_widget_set_hexpand(title, TRUE);
+  gtk_box_append(header, title);
+  app->item_count = GTK_LABEL(gtk_label_new("Loading…"));
+  gtk_widget_add_css_class(GTK_WIDGET(app->item_count), "picker-hint");
+  gtk_box_append(header, GTK_WIDGET(app->item_count));
+  gtk_box_append(root, GTK_WIDGET(header));
+
   app->search = GTK_SEARCH_ENTRY(gtk_search_entry_new());
   gtk_search_entry_set_placeholder_text(app->search,
                                         "Search clipboard history…");
@@ -1180,26 +1208,73 @@ static void clipboard_picker_activate(GApplication *application) {
   gtk_widget_set_vexpand(GTK_WIDGET(app->preview_stack), TRUE);
   gtk_box_append(app->preview_box, GTK_WIDGET(app->preview_stack));
   app->empty_label = GTK_LABEL(gtk_label_new("Loading clipboard history…"));
+  gtk_label_set_wrap(app->empty_label, TRUE);
+  gtk_widget_add_css_class(GTK_WIDGET(app->empty_label), "picker-hint");
+  gtk_widget_set_margin_top(GTK_WIDGET(app->empty_label), 16);
+  gtk_widget_set_margin_bottom(GTK_WIDGET(app->empty_label), 16);
+  gtk_widget_set_margin_start(GTK_WIDGET(app->empty_label), 16);
+  gtk_widget_set_margin_end(GTK_WIDGET(app->empty_label), 16);
   gtk_stack_add_named(app->preview_stack, GTK_WIDGET(app->empty_label),
                       "empty");
   gtk_paned_set_end_child(panes, GTK_WIDGET(app->preview_box));
+
+  GtkWidget *footer = gtk_label_new(
+      "Enter · Paste    Ctrl+N / Ctrl+P · Navigate    Esc · Close");
+  gtk_widget_add_css_class(footer, "picker-hint");
+  gtk_label_set_xalign(GTK_LABEL(footer), 0.0);
+  gtk_box_append(root, footer);
 
   GtkCssProvider *css = gtk_css_provider_new();
   gtk_css_provider_load_from_string(
       css,
       "window.clipboard-picker { background-color: #0f0f0f; border-radius: "
-      "10px; }\n"
-      ".content-panes > separator { min-width: 12px; background: transparent; "
+      "10px; color: #eeeeee; }\n"
+      ".clipboard-picker searchentry { background: #1b1b1b; color: #eeeeee; "
+      "border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 8px; "
+      "box-shadow: none; caret-color: #7ebae4; }\n"
+      ".clipboard-picker searchentry:focus-within { border-color: #7ebae4; }\n"
+      ".clipboard-picker searchentry > text { color: #eeeeee; "
+      "background: transparent; }\n"
+      ".clipboard-picker searchentry > text > placeholder, "
+      ".clipboard-picker searchentry image { color: #bfbfbf; }\n"
+      ".clipboard-picker selection { background-color: #7ebae4; "
+      "color: #0f0f0f; }\n"
+      ".clipboard-picker listview { background-color: #1b1b1b; "
+      "color: #eeeeee; }\n"
+      ".clipboard-picker listview > row { background-color: transparent; "
+      "color: #eeeeee; border-radius: 6px; margin: 2px 4px; "
+      "outline-offset: -2px; }\n"
+      ".clipboard-picker listview > row:hover { background-color: "
+      "rgba(255, 255, 255, 0.06); }\n"
+      ".clipboard-picker listview > row:selected { background-color: "
+      "rgba(126, 186, 228, 0.25); color: #eeeeee; }\n"
+      ".clipboard-picker listview > row:selected:hover { background-color: "
+      "rgba(126, 186, 228, 0.32); }\n"
+      ".clipboard-picker listview > row:focus-visible { "
+      "outline: 1px solid #eeeeee; }\n"
+      ".clipboard-picker .picker-title { font-size: 16px; font-weight: 600; }\n"
+      ".clipboard-picker .picker-hint { font-size: 12px; color: #bfbfbf; }\n"
+      ".clipboard-picker .content-panes > separator { min-width: 12px; "
+      "background: transparent; "
       "}\n"
-      ".history, .preview { background-color: #1b1b1b; "
+      ".clipboard-picker .history, .clipboard-picker .preview { "
+      "background-color: #1b1b1b; "
       "border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 8px; }\n"
-      ".preview stack, .preview scrolledwindow, .preview picture, "
-      ".preview scrolledwindow viewport, .history scrolledwindow viewport { "
+      ".clipboard-picker .preview stack, .clipboard-picker .preview "
+      "scrolledwindow, "
+      ".clipboard-picker .preview picture, .clipboard-picker .preview "
+      "scrolledwindow viewport, "
+      ".clipboard-picker .history scrolledwindow viewport { "
       "background-color: #1b1b1b; }\n"
-      ".history-item { padding: 9px 10px; }\n"
-      ".metadata { padding: 10px 12px; }\n"
-      ".metadata-key { color: rgba(255, 255, 255, 0.55); }\n"
-      ".text-preview { background-color: #0f0f0f; }");
+      ".clipboard-picker .history-item { padding: 9px 12px; font-size: 13px; "
+      "}\n"
+      ".clipboard-picker .metadata { padding: 12px 16px; font-size: 12px; }\n"
+      ".clipboard-picker .metadata-key { color: #bfbfbf; }\n"
+      ".clipboard-picker .preview > separator { min-height: 1px; "
+      "background: rgba(255, 255, 255, 0.10); }\n"
+      ".clipboard-picker .text-preview { background-color: #1b1b1b; color: "
+      "#eeeeee; "
+      "font-family: monospace; font-size: 13px; }");
   gtk_style_context_add_provider_for_display(
       gdk_display_get_default(), GTK_STYLE_PROVIDER(css),
       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);

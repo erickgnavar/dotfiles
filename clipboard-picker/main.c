@@ -464,10 +464,7 @@ static void parse_history_task(GTask *task, gpointer source_object,
   GBytes *output = task_data;
   gsize output_size = 0;
   const gchar *output_data = g_bytes_get_data(output, &output_size);
-  gchar *text = g_malloc(output_size + 1);
-  if (output_size)
-    memcpy(text, output_data, output_size);
-  text[output_size] = '\0';
+  gchar *text = g_strndup(output_data ? output_data : "", output_size);
 
   GPtrArray *items = g_ptr_array_new_with_free_func(g_object_unref);
   gchar *line_start = text;
@@ -512,10 +509,6 @@ static void history_parsed(GObject *source, GAsyncResult *result,
   app->search_items = items;
   search_cache_reset(app);
 
-  if (app->search_items->len == 0)
-    gtk_label_set_text(app->empty_label, "Clipboard history is empty");
-  else
-    gtk_label_set_text(app->empty_label, "Select an entry to preview");
   update_search_results(app);
 }
 
@@ -1111,6 +1104,13 @@ static gboolean on_key_pressed(GtkEventControllerKey *controller, guint keyval,
   return GDK_EVENT_PROPAGATE;
 }
 
+static void set_widget_margins(GtkWidget *widget, gint margin) {
+  gtk_widget_set_margin_top(widget, margin);
+  gtk_widget_set_margin_bottom(widget, margin);
+  gtk_widget_set_margin_start(widget, margin);
+  gtk_widget_set_margin_end(widget, margin);
+}
+
 static gboolean finish_secondary_setup(gpointer user_data) {
   ClipboardPicker *app = user_data;
   app->secondary_setup_id = 0;
@@ -1119,10 +1119,7 @@ static gboolean finish_secondary_setup(gpointer user_data) {
 
   app->picture = GTK_PICTURE(gtk_picture_new());
   gtk_picture_set_content_fit(app->picture, GTK_CONTENT_FIT_CONTAIN);
-  gtk_widget_set_margin_top(GTK_WIDGET(app->picture), 16);
-  gtk_widget_set_margin_bottom(GTK_WIDGET(app->picture), 16);
-  gtk_widget_set_margin_start(GTK_WIDGET(app->picture), 16);
-  gtk_widget_set_margin_end(GTK_WIDGET(app->picture), 16);
+  set_widget_margins(GTK_WIDGET(app->picture), 16);
   gtk_stack_add_named(app->preview_stack, GTK_WIDGET(app->picture), "image");
 
   GtkScrolledWindow *text_scroll =
@@ -1134,10 +1131,7 @@ static gboolean finish_secondary_setup(gpointer user_data) {
   gtk_label_set_wrap_mode(app->text_preview, PANGO_WRAP_WORD_CHAR);
   gtk_label_set_xalign(app->text_preview, 0.0);
   gtk_label_set_yalign(app->text_preview, 0.0);
-  gtk_widget_set_margin_top(GTK_WIDGET(app->text_preview), 16);
-  gtk_widget_set_margin_bottom(GTK_WIDGET(app->text_preview), 16);
-  gtk_widget_set_margin_start(GTK_WIDGET(app->text_preview), 16);
-  gtk_widget_set_margin_end(GTK_WIDGET(app->text_preview), 16);
+  set_widget_margins(GTK_WIDGET(app->text_preview), 16);
   gtk_scrolled_window_set_child(text_scroll, GTK_WIDGET(app->text_preview));
   gtk_stack_add_named(app->preview_stack, GTK_WIDGET(text_scroll), "text");
 
@@ -1177,9 +1171,6 @@ static void refresh_history(ClipboardPicker *app) {
   app->preview_generation++;
   cancel_preview_load(app);
   g_clear_object(&app->displayed_preview_item);
-  app->updating_results = TRUE;
-  g_list_store_remove_all(app->results);
-  app->updating_results = FALSE;
   g_clear_pointer(&app->search_items, g_ptr_array_unref);
   app->search_items = g_ptr_array_new_with_free_func(g_object_unref);
   search_cache_reset(app);
@@ -1223,10 +1214,7 @@ static void clipboard_picker_activate(GApplication *application) {
   gtk_window_set_default_size(GTK_WINDOW(window), 900, 520);
 
   GtkBox *root = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 12));
-  gtk_widget_set_margin_top(GTK_WIDGET(root), 12);
-  gtk_widget_set_margin_bottom(GTK_WIDGET(root), 12);
-  gtk_widget_set_margin_start(GTK_WIDGET(root), 12);
-  gtk_widget_set_margin_end(GTK_WIDGET(root), 12);
+  set_widget_margins(GTK_WIDGET(root), 12);
   gtk_window_set_child(GTK_WINDOW(window), GTK_WIDGET(root));
 
   GtkBox *header = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12));
@@ -1286,10 +1274,7 @@ static void clipboard_picker_activate(GApplication *application) {
   app->empty_label = GTK_LABEL(gtk_label_new("Loading clipboard history…"));
   gtk_label_set_wrap(app->empty_label, TRUE);
   gtk_widget_add_css_class(GTK_WIDGET(app->empty_label), "picker-hint");
-  gtk_widget_set_margin_top(GTK_WIDGET(app->empty_label), 16);
-  gtk_widget_set_margin_bottom(GTK_WIDGET(app->empty_label), 16);
-  gtk_widget_set_margin_start(GTK_WIDGET(app->empty_label), 16);
-  gtk_widget_set_margin_end(GTK_WIDGET(app->empty_label), 16);
+  set_widget_margins(GTK_WIDGET(app->empty_label), 16);
   gtk_stack_add_named(app->preview_stack, GTK_WIDGET(app->empty_label),
                       "empty");
   gtk_paned_set_end_child(panes, GTK_WIDGET(app->preview_box));

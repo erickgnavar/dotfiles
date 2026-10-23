@@ -55,6 +55,7 @@ typedef struct {
   GtkLabel *mime_value;
   GtkLabel *size_value;
   GtkLabel *details_value;
+  GtkStack *history_stack;
   GtkListView *list_view;
   GtkWindow *window;
   gchar *focused_app;
@@ -776,25 +777,73 @@ static void selection_changed(GObject *object, GParamSpec *pspec,
   schedule_preview(app, item, PREVIEW_DEBOUNCE_MS);
 }
 
+static void update_row_highlight(GtkEditable *editable, GtkLabel *label) {
+  const gchar *text = gtk_label_get_text(label);
+  gchar *query = g_utf8_casefold(gtk_editable_get_text(editable), -1);
+  PangoAttrList *attributes = pango_attr_list_new();
+  if (query[0]) {
+    GString *folded = g_string_new(NULL);
+    GArray *starts = g_array_new(FALSE, FALSE, sizeof(guint));
+    GArray *ends = g_array_new(FALSE, FALSE, sizeof(guint));
+    for (const gchar *p = text; *p; p = g_utf8_next_char(p)) {
+      const gchar *next = g_utf8_next_char(p);
+      gchar *part = g_utf8_casefold(p, next - p);
+      guint start = p - text;
+      guint end = next - text;
+      for (gsize i = 0; part[i]; i++) {
+        g_array_append_val(starts, start);
+        g_array_append_val(ends, end);
+      }
+      g_string_append(folded, part);
+      g_free(part);
+    }
+    gsize length = strlen(query);
+    const gchar *match = folded->str;
+    while ((match = strstr(match, query))) {
+      guint offset = match - folded->str;
+      PangoAttribute *highlight =
+          pango_attr_background_new(0x7e7e, 0xbaba, 0xe4e4);
+      highlight->start_index = g_array_index(starts, guint, offset);
+      highlight->end_index = g_array_index(ends, guint, offset + length - 1);
+      PangoAttribute *foreground =
+          pango_attr_foreground_new(0x0f0f, 0x0f0f, 0x0f0f);
+      foreground->start_index = highlight->start_index;
+      foreground->end_index = highlight->end_index;
+      pango_attr_list_change(attributes, highlight);
+      pango_attr_list_change(attributes, foreground);
+      match += length;
+    }
+    g_array_unref(starts);
+    g_array_unref(ends);
+    g_string_free(folded, TRUE);
+  }
+  gtk_label_set_attributes(label, attributes);
+  pango_attr_list_unref(attributes);
+  g_free(query);
+}
+
 static void factory_setup(GtkSignalListItemFactory *factory, GtkListItem *item,
                           gpointer user_data) {
   (void)factory;
-  (void)user_data;
+  ClipboardPicker *app = user_data;
   GtkLabel *label = GTK_LABEL(gtk_label_new(NULL));
   gtk_widget_add_css_class(GTK_WIDGET(label), "history-item");
   gtk_label_set_xalign(label, 0);
   gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
   gtk_label_set_single_line_mode(label, TRUE);
   gtk_list_item_set_child(item, GTK_WIDGET(label));
+  g_signal_connect_object(app->search, "changed",
+                          G_CALLBACK(update_row_highlight), label, 0);
 }
 
 static void factory_bind(GtkSignalListItemFactory *factory, GtkListItem *item,
                          gpointer user_data) {
   (void)factory;
-  (void)user_data;
+  ClipboardPicker *app = user_data;
   ClipboardItem *value = gtk_list_item_get_item(item);
   GtkLabel *label = GTK_LABEL(gtk_list_item_get_child(item));
   gtk_label_set_text(label, value->display_single_line);
+  update_row_highlight(GTK_EDITABLE(app->search), label);
 }
 
 static gboolean is_resident(ClipboardPicker *app) {
@@ -962,6 +1011,11 @@ static void apply_search_results(ClipboardPicker *app, GPtrArray *matches) {
     gtk_single_selection_set_selected(app->selection, position);
   }
   app->updating_results = FALSE;
+  gtk_stack_set_visible_child_name(
+      app->history_stack,
+      !app->history_loading && app->pending_query[0] && matches->len == 0
+          ? "no-matches"
+          : "list");
 
   gchar *summary =
       app->pending_query[0]
@@ -1199,7 +1253,14 @@ static void clipboard_picker_activate(GApplication *application) {
   app->list_view = list;
   g_signal_connect(list, "activate", G_CALLBACK(activate_item), app);
   gtk_scrolled_window_set_child(history, GTK_WIDGET(list));
-  gtk_paned_set_start_child(panes, GTK_WIDGET(history));
+  app->history_stack = GTK_STACK(gtk_stack_new());
+  gtk_widget_add_css_class(GTK_WIDGET(app->history_stack), "history");
+  gtk_stack_add_named(app->history_stack, GTK_WIDGET(history), "list");
+  GtkWidget *no_matches = gtk_label_new("No matches\nTry a different search.");
+  gtk_widget_add_css_class(no_matches, "picker-hint");
+  gtk_label_set_justify(GTK_LABEL(no_matches), GTK_JUSTIFY_CENTER);
+  gtk_stack_add_named(app->history_stack, no_matches, "no-matches");
+  gtk_paned_set_start_child(panes, GTK_WIDGET(app->history_stack));
 
   app->preview_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
   gtk_widget_add_css_class(GTK_WIDGET(app->preview_box), "preview");

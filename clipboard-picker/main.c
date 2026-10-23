@@ -797,22 +797,28 @@ static void update_row_highlight(GtkEditable *editable, GtkLabel *label) {
       g_string_append(folded, part);
       g_free(part);
     }
-    gsize length = strlen(query);
-    const gchar *match = folded->str;
-    while ((match = strstr(match, query))) {
-      guint offset = match - folded->str;
-      PangoAttribute *highlight =
-          pango_attr_background_new(0x7e7e, 0xbaba, 0xe4e4);
-      highlight->start_index = g_array_index(starts, guint, offset);
-      highlight->end_index = g_array_index(ends, guint, offset + length - 1);
-      PangoAttribute *foreground =
-          pango_attr_foreground_new(0x0f0f, 0x0f0f, 0x0f0f);
-      foreground->start_index = highlight->start_index;
-      foreground->end_index = highlight->end_index;
-      pango_attr_list_change(attributes, highlight);
-      pango_attr_list_change(attributes, foreground);
-      match += length;
+    gchar **terms = g_strsplit_set(query, " \t\r\n\v\f", -1);
+    for (guint i = 0; terms[i]; i++) {
+      gsize length = strlen(terms[i]);
+      if (!length)
+        continue;
+      const gchar *match = folded->str;
+      while ((match = strstr(match, terms[i]))) {
+        guint offset = match - folded->str;
+        PangoAttribute *highlight =
+            pango_attr_background_new(0x7e7e, 0xbaba, 0xe4e4);
+        highlight->start_index = g_array_index(starts, guint, offset);
+        highlight->end_index = g_array_index(ends, guint, offset + length - 1);
+        PangoAttribute *foreground =
+            pango_attr_foreground_new(0x0f0f, 0x0f0f, 0x0f0f);
+        foreground->start_index = highlight->start_index;
+        foreground->end_index = highlight->end_index;
+        pango_attr_list_change(attributes, highlight);
+        pango_attr_list_change(attributes, foreground);
+        match += length;
+      }
     }
+    g_strfreev(terms);
     g_array_unref(starts);
     g_array_unref(ends);
     g_string_free(folded, TRUE);
@@ -1046,11 +1052,20 @@ static void update_search_results(ClipboardPicker *app) {
 
   GPtrArray *candidates = search_cache_find_candidates(app);
   GPtrArray *matches = g_ptr_array_new_with_free_func(g_object_unref);
+  gchar **terms = g_strsplit_set(app->pending_query, " \t\r\n\v\f", -1);
   for (guint i = 0; i < candidates->len; i++) {
     ClipboardItem *item = g_ptr_array_index(candidates, i);
-    if (g_strstr_len(item->search_text, -1, app->pending_query))
+    gboolean matched = TRUE;
+    for (guint j = 0; terms[j]; j++) {
+      if (terms[j][0] && !strstr(item->search_text, terms[j])) {
+        matched = FALSE;
+        break;
+      }
+    }
+    if (matched)
       g_ptr_array_add(matches, g_object_ref(item));
   }
+  g_strfreev(terms);
 
   search_cache_insert(app, app->pending_query, matches);
   apply_search_results(app, matches);

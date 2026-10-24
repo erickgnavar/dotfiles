@@ -18,7 +18,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { OptChat, CVIEW_CEIL } from "../memory.ts";
+import { OptChat, CVIEW_CEIL, JOBS } from "../memory.ts";
 import {
   splitText,
   byteLength,
@@ -346,6 +346,136 @@ test("the pump runs from queues: at most 8 leaves at once, in order", async () =
   const leaves = [...slow.nodes.keys()].filter((k) => k.startsWith("0:"));
   assert.equal(leaves.length, 30, "every long message was compacted, in order");
   slow.close();
+});
+
+test("a retry-delayed leaf does not block later leaves or ready merges", async () => {
+  freshDir();
+  const attempted = [];
+  const chat = new OptChat(
+    dir,
+    fakeModel,
+    {
+      complete: async (_model, context) => {
+        const step = context.messages[0].content[1].text;
+        const leaf = /compress message (\d+)/.exec(step);
+        if (leaf) {
+          const i = Number(leaf[1]);
+          attempted.push(i);
+          if (i === 0) throw new Error("socket hang up");
+        }
+        assert.ok(
+          !context.messages[0].content[0].text.includes("not summarized yet"),
+        );
+        return fakeReply("line " + "x".repeat(300));
+      },
+      onError: () => {},
+    },
+    { retryMs: 60_000 },
+  );
+  try {
+    chat.load();
+    for (let i = 0; i < 20; i++) chat.log("user", `m${i} ` + "w".repeat(600));
+    await waitFor(() => chat.nodes.has("0:19") && chat.nodes.has("1:8"));
+    assert.ok(!chat.nodes.has("0:0"));
+    assert.deepEqual(
+      attempted,
+      Array.from({ length: 20 }, (_, i) => i),
+    );
+    chat.pump();
+    assert.equal(
+      attempted.filter((i) => i === 0).length,
+      1,
+      "respect retry backoff",
+    );
+    assert.equal(
+      chat.stats().unbuilt,
+      1,
+      "only the failed leaf still needs a summary",
+    );
+  } finally {
+    chat.close();
+  }
+});
+
+test("a slow first leaf does not waste workers and settle still waits for it", async () => {
+  freshDir();
+  let release;
+  const gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  let active = 0;
+  let peak = 0;
+  const chat = new OptChat(dir, fakeModel, {
+    complete: async (_model, context) => {
+      active++;
+      peak = Math.max(peak, active);
+      try {
+        if (/compress message 0\b/.test(context.messages[0].content[1].text))
+          await gate;
+        return fakeReply("line " + "x".repeat(300));
+      } finally {
+        active--;
+      }
+    },
+    onError: (message) => assert.fail(message),
+  });
+  try {
+    chat.load();
+    for (let i = 0; i < 20; i++) chat.log("user", `m${i} ` + "w".repeat(600));
+    let settled = false;
+    const pending = chat.settle().then((ok) => {
+      settled = ok;
+      return ok;
+    });
+    await waitFor(() => chat.nodes.has("0:19"));
+    assert.ok(
+      peak <= JOBS,
+      "all leaves and merges share the concurrency limit",
+    );
+    assert.equal(settled, false, "do not expose an unfinished view");
+    release();
+    await buildAll(chat);
+    assert.equal(await pending, true);
+  } finally {
+    chat.close();
+    release();
+  }
+});
+
+test("ready merges run before newer leaves in a backlog without duplicate launches", async () => {
+  freshDir();
+  const started = [];
+  const releases = [];
+  const chat = new OptChat(dir, fakeModel, {
+    complete: async (_model, context) => {
+      started.push(context.messages[0].content[1].text);
+      await new Promise((resolve) => {
+        releases.push(resolve);
+      });
+      return fakeReply("line " + "x".repeat(300));
+    },
+    onError: (message) => assert.fail(message),
+  });
+  try {
+    chat.load();
+    for (let i = 0; i < 24; i++) chat.log("user", `m${i} ` + "w".repeat(600));
+    await waitFor(() => started.length === JOBS);
+    chat.pump();
+    assert.equal(
+      started.length,
+      JOBS,
+      "repeated pumps cannot relaunch in-flight nodes",
+    );
+    releases[0]();
+    releases[1]();
+    await waitFor(() => started.length === JOBS + 2);
+    assert.match(started[JOBS], /merge lines 0 and 1/);
+    assert.match(started[JOBS + 1], /compress message 8\b/);
+    assert.equal(chat.busy.size, JOBS);
+  } finally {
+    chat.close();
+    for (const release of releases) release();
+  }
 });
 
 test("torn lines are repaired, ids stay aligned", () => {

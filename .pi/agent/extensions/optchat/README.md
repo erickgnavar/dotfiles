@@ -30,6 +30,13 @@ flowchart LR
 
 The view summarizes earlier turns; the current turn's messages stay verbatim.
 
+Up to eight compactor jobs run at once. Admission counts unfinished messages,
+not their distance from the oldest unfinished message, so one slow or retrying
+summary does not strand free workers. Ready merges compete with messages in
+oldest-range-first order rather than waiting for the message backlog to drain.
+Compactor context still uses only the built prefix. The next turn still waits
+for every summary in its view, subject to the two-minute limit.
+
 ## Storage
 
 The memory lives per project, in `<cwd>/.pi/optchat/`: an append-only

@@ -115,11 +115,11 @@ export class OptChat {
   private readonly retryAt = new Map<string, number>();
   private readonly reported = new Set<string>();
   private readonly retryTimers = new Set<ReturnType<typeof setTimeout>>();
-  private readonly leafQueue: number[] = [];
-  private readonly mergeQueue: string[] = [];
-  private readonly mergeQueued = new Set<string>();
+  // Pending sets include in-flight work. Leaves retain message order even
+  // across failures, so admission counts unfinished leaves, not ID distance.
+  private readonly leafQueue = new Set<number>();
+  private readonly mergeQueue = new Set<string>();
   private waiters: Array<(ok: boolean) => void> = [];
-  private leafFront = 0; // first message whose level-0 node is unbuilt
   private cviewUpTo = 0; // first message not yet in the compaction view
   private batching = false;
   private cbatching = false;
@@ -238,18 +238,16 @@ export class OptChat {
     // A crash can leave durable nodes ahead of the saved compaction view.
     this.pushCviewLeaves();
     this.cfit();
-    this.advanceLeafFront();
     for (let i = 0; i < this.root.length; i++) {
-      if (!this.nodes.has(nodeKey(0, i))) this.leafQueue.push(i);
+      if (!this.nodes.has(nodeKey(0, i))) this.leafQueue.add(i);
     }
     // Queue every ready merge: a built node whose sibling is also built,
     // under a parent that is not (a crash can have lost the enqueue).
     for (const n of this.nodes.values()) {
       if (!this.nodes.has(nodeKey(n.l, n.i ^ 1))) continue;
       const parent = nodeKey(n.l + 1, n.i >> 1);
-      if (this.nodes.has(parent) || this.mergeQueued.has(parent)) continue;
-      this.mergeQueued.add(parent);
-      this.mergeQueue.push(parent);
+      if (this.nodes.has(parent)) continue;
+      this.mergeQueue.add(parent);
     }
     this.viewDirty = true;
     this.saveView();
@@ -390,7 +388,7 @@ export class OptChat {
     }
     this.root.push(msg);
     this.view.push({ l: 0, i, start: i, n: 1 });
-    this.leafQueue.push(i);
+    this.leafQueue.add(i);
     this.viewDirty = true;
     this.fit();
     this.schedulePump();
@@ -595,14 +593,6 @@ export class OptChat {
 
   // -------------------------------------------------------------- compactor
 
-  /** First message whose view line is unbuilt. */
-  firstUnbuilt(): number {
-    for (const p of this.view) {
-      if (!this.nodes.has(nodeKey(p.l, p.i))) return p.start;
-    }
-    return this.root.length;
-  }
-
   isPaused(): boolean {
     return this.paused;
   }
@@ -617,54 +607,33 @@ export class OptChat {
 
   /**
    * Launch ready nodes, up to JOBS at once (§4), from the ready queues —
-   * never by scanning the tree. Leaves run in message order, up to
-   * LEAF_WINDOW unbuilt lines ahead; merges run once both halves are
-   * built and their whole context is summarized.
+   * never by scanning the tree. Admit the first LEAF_WINDOW unfinished
+   * leaves, counting in-flight and retry-delayed leaves too. Ready merges
+   * compete with leaves by range end, oldest first (merges win ties), so
+   * a backlog cannot starve merges. Context still ends at the built prefix.
    */
   pump(): void {
     if (this.closed || this.paused) return;
-    const T = this.root.length;
-    if (T === 0) return;
+    if (this.busy.size >= JOBS || this.root.length === 0) return;
     const now = Date.now();
-    const heldLeaves: number[] = [];
-    while (this.busy.size < JOBS && this.leafQueue.length > 0) {
-      const i = this.leafQueue.shift() as number;
-      if (i >= T || this.nodes.has(nodeKey(0, i))) continue;
-      const unbuiltBefore = i - this.leafFront;
-      if (this.busy.has(nodeKey(0, i)) || unbuiltBefore >= LEAF_WINDOW) {
-        heldLeaves.push(i);
-        break; // in order: every later leaf is blocked too
-      }
-      const at = this.retryAt.get(nodeKey(0, i));
-      if (at !== undefined && now < at) {
-        heldLeaves.push(i);
-        continue;
-      }
-      this.launch(0, i);
+    const ready: Array<{ l: number; i: number; end: number }> = [];
+    const eligible = (k: string) =>
+      !this.busy.has(k) && now >= (this.retryAt.get(k) ?? 0);
+    let unfinished = 0;
+    for (const i of this.leafQueue) {
+      if (unfinished++ >= LEAF_WINDOW) break;
+      if (eligible(nodeKey(0, i))) ready.push({ l: 0, i, end: i + 1 });
     }
-    this.leafQueue.unshift(...heldLeaves);
-    const first = this.firstUnbuilt();
-    const heldMerges: string[] = [];
-    while (this.busy.size < JOBS && this.mergeQueue.length > 0) {
-      const k = this.mergeQueue.shift() as string;
-      if (this.nodes.has(k) || this.busy.has(k)) {
-        this.mergeQueued.delete(k);
-        continue;
-      }
+    for (const k of this.mergeQueue) {
+      if (!eligible(k)) continue;
       const [l, i] = parseKey(k);
-      if ((i + 1) * Math.pow(2, l) > first) {
-        heldMerges.push(k);
-        continue;
-      }
-      const at = this.retryAt.get(k);
-      if (at !== undefined && now < at) {
-        heldMerges.push(k);
-        continue;
-      }
-      this.mergeQueued.delete(k);
+      ready.push({ l, i, end: (i + 1) * 2 ** l });
+    }
+    ready.sort((a, b) => a.end - b.end || b.l - a.l);
+    for (const { l, i } of ready) {
+      if (this.closed || this.paused || this.busy.size >= JOBS) break;
       this.launch(l, i);
     }
-    this.mergeQueue.unshift(...heldMerges);
   }
 
   private launch(l: number, i: number): void {
@@ -680,13 +649,6 @@ export class OptChat {
       this.pumpQueued = false;
       this.pump();
     });
-  }
-
-  private advanceLeafFront(): void {
-    const T = this.root.length;
-    while (this.leafFront < T && this.nodes.has(nodeKey(0, this.leafFront))) {
-      this.leafFront++;
-    }
   }
 
   private async buildNode(l: number, i: number): Promise<void> {
@@ -737,15 +699,8 @@ export class OptChat {
         return;
       }
       const message = errorText(err);
-      // The queues hold only unbuilt work: put this node back (a
-      // paused compactor finds it again on /optchat resume).
-      if (l === 0) {
-        this.leafQueue.push(i);
-        this.leafQueue.sort((a, b) => a - b);
-      } else if (!this.mergeQueued.has(k)) {
-        this.mergeQueued.add(k);
-        this.mergeQueue.unshift(k);
-      }
+      // Failed and in-flight nodes stay pending until committed, retaining
+      // their order and retry deadline without re-enqueueing or duplicates.
       if (FATAL.test(message)) {
         // Quota and auth failures are not transient: pause, don't churn.
         if (!this.paused) {
@@ -788,21 +743,15 @@ export class OptChat {
 
   /** After a node is built: order, the compaction view, ready merges. */
   private onBuilt(l: number, i: number): void {
-    if (l === 0) this.advanceLeafFront();
+    if (l === 0) this.leafQueue.delete(i);
+    else this.mergeQueue.delete(nodeKey(l, i));
     this.pushCviewLeaves();
     if (this.cbatching || this.cviewByteCount() > this.budgets.cview)
       this.cfit();
     const sib = nodeKey(l, i ^ 1);
     if (this.nodes.has(sib)) {
       const parent = nodeKey(l + 1, i >> 1);
-      if (
-        !this.nodes.has(parent) &&
-        !this.mergeQueued.has(parent) &&
-        !this.busy.has(parent)
-      ) {
-        this.mergeQueued.add(parent);
-        this.mergeQueue.push(parent);
-      }
+      if (!this.nodes.has(parent)) this.mergeQueue.add(parent);
     }
   }
 

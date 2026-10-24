@@ -38,8 +38,10 @@ views, validated and restored at start; rebuilt if missing or invalid), `images/
 `lock` (the single-writer socket). Commit it (it is the log of your
 work with the agent) or ignore it, per project.
 
-Failed log appends are rolled back before retrying. If rollback cannot be
-confirmed, recording and compaction stop until `/reload` reconciles the disk log.
+Failed log appends are rolled back when possible. Any recording failure stops
+recording, compaction, and context replacement until `/reload`; Pi keeps its transcript.
+Reload does not recover messages missing from the archive. Unarchived prior messages
+also prevent context replacement, including when enabling OptChat in an existing session.
 
 ## Use
 
@@ -61,7 +63,9 @@ confirmed, recording and compaction stop until `/reload` reconciles the disk log
 | `OPTCHAT_DISABLE` | unset | Any value turns the memory off |
 
 Only one pi process writes a log (a Unix-socket lock); a second one on
-the same project runs with the memory disabled.
+the same project runs with the memory disabled. Stale sockets are not automatically
+reclaimed: doing so races with other writers. After a crash, stop all writers, remove
+the socket path reported in the error, then `/reload`. Normal shutdown removes the socket.
 
 ## How it maps onto pi
 
@@ -75,7 +79,9 @@ the same project runs with the memory disabled.
 
 Pi's own session file and compaction are left alone: the session is
 just the current turn's scratch, the log is the real memory. Start a
-new pi session whenever; the OptChat view carries over.
+new pi session whenever; the OptChat view carries over. Custom-triggered runs keep
+Pi's transcript because they have no user-message turn boundary. If compaction removes
+a captured turn boundary, OptChat also retains the transcript rather than moving it.
 
 ## Deviations from the spec
 

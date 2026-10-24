@@ -2,7 +2,13 @@
  * node test/integration.test.mjs /path/to/@earendil-works/pi-coding-agent
  */
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -152,8 +158,8 @@ try {
       const current = { role: "user", content: "new turn", timestamp: 99 };
       await session.emit("message_end", { message: current });
       const messages = [
-        { role: "user", content: "old turn", timestamp: 1 },
-        reply("old reply"),
+        { role: "user", content: "message 0 " + "w".repeat(700), timestamp: 0 },
+        { role: "user", content: "message 1 " + "w".repeat(700), timestamp: 1 },
         current,
       ];
       const first = await session.emit("context", { messages });
@@ -244,6 +250,13 @@ try {
       const active = await session.emit("context", { messages });
       assert.equal(active.messages[0].content[0].text, frozen);
       assert.deepEqual(active.messages.slice(1), messages.slice(2));
+      assert.equal(
+        await session.emit("context", {
+          messages: messages.filter((m) => m !== question),
+        }),
+        undefined,
+        "active compaction must not move the anchor to a steering message",
+      );
       await session.emit("agent_end");
       await waitFor(
         () => JSON.parse(readFileSync(viewFile, "utf8")).cviewUpTo === 6,
@@ -375,7 +388,94 @@ try {
     },
   );
 
-  console.log("\n4 integration tests passed");
+  await check(
+    "custom-triggered runs preserve context without a prompt",
+    async (_cwd, open) => {
+      const session = await open();
+      await session.emit("before_agent_start", {
+        source: "custom",
+        systemPromptOptions: { sections: {} },
+      });
+      assert.equal(
+        await session.emit("context", {
+          messages: [
+            {
+              role: "custom",
+              customType: "test",
+              content: "continue",
+              timestamp: 1,
+            },
+          ],
+        }),
+        undefined,
+      );
+    },
+  );
+
+  await check(
+    "unarchived session history is never replaced",
+    async (_cwd, open) => {
+      const session = await open();
+      await session.emit("before_agent_start", {
+        prompt: "next",
+        systemPromptOptions: { sections: {} },
+      });
+      const current = { role: "user", content: "next", timestamp: 2 };
+      await session.emit("message_end", { message: current });
+      assert.equal(
+        await session.emit("context", {
+          messages: [
+            {
+              role: "user",
+              content: "existing task must survive",
+              timestamp: 1,
+            },
+            current,
+          ],
+        }),
+        undefined,
+      );
+    },
+  );
+
+  await check(
+    "log failure permanently retains the transcript until reload",
+    async (cwd, open) => {
+      const session = await open();
+      const prior = { role: "user", content: "prior", timestamp: 1 };
+      await session.emit("message_end", { message: prior });
+      const main = join(cwd, ".pi/optchat/main");
+      const file = join(main, readdirSync(main)[0]);
+      rmSync(file);
+      mkdirSync(file);
+      const lost = {
+        role: "user",
+        content: "keep this decision",
+        timestamp: 2,
+      };
+      await session.emit("message_end", { message: lost });
+      assert.ok(
+        session.notices.some((n) => n.message.includes("recording stopped")),
+      );
+      rmSync(file, { recursive: true });
+      await session.emit("before_agent_start", {
+        prompt: "next",
+        systemPromptOptions: { sections: {} },
+      });
+      assert.equal(
+        await session.emit("context", {
+          messages: [
+            prior,
+            lost,
+            { role: "user", content: "next", timestamp: 3 },
+          ],
+        }),
+        undefined,
+      );
+    },
+  );
+
+  console.log("\n7 integration tests passed");
 } finally {
   for (const [key, value] of Object.entries(savedEnv)) {
     if (value === undefined) delete process.env[key];

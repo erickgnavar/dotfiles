@@ -157,7 +157,9 @@ export class OptChat {
     for (const raw of main.lines) {
       const m = raw as Partial<LogMessage>;
       if (
-        typeof m?.i !== "number" ||
+        !Number.isSafeInteger(m?.i) ||
+        typeof m.i !== "number" ||
+        m.i < 0 ||
         typeof m?.kind !== "string" ||
         typeof m?.text !== "string"
       ) {
@@ -174,6 +176,8 @@ export class OptChat {
     }
     // A crash can tear a message away: keep the ids aligned with hole
     // markers, so the tree's ranges stay true.
+    // Day filenames follow the wall clock, not append order (clock rollback).
+    loaded.sort((a, b) => a.i - b.i);
     for (const m of loaded) {
       while (this.root.length < m.i) {
         this.root.push({
@@ -197,6 +201,17 @@ export class OptChat {
         typeof n?.l !== "number" ||
         typeof n?.i !== "number" ||
         typeof n?.text !== "string"
+      )
+        continue;
+      // A tree append may outlive a rolled-back/torn main append. Never
+      // reuse nodes outside the authoritative log when those IDs are reused.
+      if (
+        !Number.isSafeInteger(n.l) ||
+        !Number.isSafeInteger(n.i) ||
+        n.l < 0 ||
+        n.l > 52 ||
+        n.i < 0 ||
+        (n.i + 1) * 2 ** n.l > this.root.length
       )
         continue;
       this.nodes.set(nodeKey(n.l, n.i), {
@@ -854,7 +869,9 @@ export class OptChat {
       { systemPrompt: COMPACT, messages },
       this.abort.signal,
     );
-    if (reply.stopReason === "error" || reply.stopReason === "aborted")
+    // A short reply can still be incomplete (token limit, tool call, abort).
+    // Only a normally completed response can become durable memory.
+    if (reply.stopReason !== "stop")
       throw new Error(
         reply.errorMessage ?? `compactor call ${reply.stopReason}`,
       );

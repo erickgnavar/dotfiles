@@ -189,22 +189,21 @@ export interface Lock {
 }
 
 /**
- * Single-writer lock (§2): the owner listens on a Unix socket at
- * `lockPath`. A second process that can connect to it exits; a socket
- * that refuses connections is stale (the OS frees it when the owner
- * dies), so it is deleted and taken over. No PID files, no timeouts.
+ * Single-writer lock (§2): binding the Unix socket is atomic. Never
+ * reclaim a stale pathname automatically: probing and unlinking races
+ * with another writer acquiring it. After a crash, the user must confirm
+ * no writer is running before removing the stale socket.
  */
 export function acquireLock(lockPath: string): Promise<Lock> {
   return new Promise((resolve, reject) => {
     const server = net.createServer((socket) => socket.destroy());
+    let closed = false;
     const lock: Lock = {
       close: () => {
+        if (closed) return;
+        closed = true;
+        // Node removes its own socket path; do not unlink a successor's lock.
         server.close();
-        try {
-          fs.unlinkSync(lockPath);
-        } catch {
-          // already gone
-        }
       },
     };
     server.once("error", (err: NodeJS.ErrnoException) => {
@@ -212,28 +211,12 @@ export function acquireLock(lockPath: string): Promise<Lock> {
         reject(err);
         return;
       }
-      const probe = net.connect({ path: lockPath });
-      probe.once("connect", () => {
-        probe.destroy();
-        reject(
-          new Error("another pi process is already writing this OptChat log"),
-        );
-      });
-      probe.once("error", (probeErr: NodeJS.ErrnoException) => {
-        probe.destroy();
-        if (probeErr.code !== "ECONNREFUSED") {
-          reject(probeErr);
-          return;
-        }
-        // Stale socket file from a dead owner: take it over.
-        try {
-          fs.unlinkSync(lockPath);
-        } catch {
-          // already gone
-        }
-        server.once("error", reject);
-        server.listen({ path: lockPath }, () => resolve(lock));
-      });
+      reject(
+        new Error(
+          `another pi process may be writing this OptChat log; lock exists: ${lockPath}. ` +
+            "If a writer crashed, stop all writers before removing this socket and /reload.",
+        ),
+      );
     });
     server.listen({ path: lockPath }, () => resolve(lock));
   });

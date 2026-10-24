@@ -57,6 +57,11 @@ export default function optchat(pi: ExtensionAPI) {
   let sawUserMessageEnd = false;
   let anchorIdx: number | null = null;
   let anchorTs: number | undefined;
+  let anchorKey: string | undefined;
+  // Context events contain clones, so compare message fingerprints, not identity.
+  const recorded = new Set<string>();
+  const messageKey = (message: AgentMessage) =>
+    createHash("sha256").update(JSON.stringify(message)).digest("hex");
   // Provider-reported prompt tokens, including cache reads/writes, this run only.
   let chatTokens = 0;
   let chatCacheRead = 0;
@@ -133,6 +138,8 @@ export default function optchat(pi: ExtensionAPI) {
     pendingPrompt = null;
     anchorIdx = null;
     anchorTs = undefined;
+    anchorKey = undefined;
+    recorded.clear();
     chatTokens = chatCacheRead = compactorTokens = compactorCacheRead = 0;
     chat?.close();
     chat = null;
@@ -144,6 +151,16 @@ export default function optchat(pi: ExtensionAPI) {
 
   pi.on("before_agent_start", async (event, ctx) => {
     if (!active || !chat) return;
+    // Custom-triggered runs have no user prompt or user-message boundary.
+    if (!("prompt" in event)) {
+      viewFrozen = null;
+      turnActive = false;
+      pendingPrompt = null;
+      anchorIdx = null;
+      anchorTs = undefined;
+      anchorKey = undefined;
+      return;
+    }
     // §6: no call ever sees an unbuilt line; wait for the compactor.
     // (Never forever: a stuck or paused compactor must not brick pi.)
     const memory = chat;
@@ -175,22 +192,28 @@ export default function optchat(pi: ExtensionAPI) {
     sawUserMessageEnd = false;
     anchorIdx = null;
     anchorTs = undefined;
+    anchorKey = undefined;
     // The section must stay byte-identical across turns (§7.2, §8).
     event.systemPromptOptions.sections.optchat = VIEW_DOC;
   });
 
-  pi.on("context", (event) => {
+  pi.on("context", (event, ctx) => {
     if (!active || !chat || chat.root.length === 0) return;
     const viewText = viewFrozen;
     if (!viewText) return; // never show cut text for unbuilt lines (§5.3)
     // The user prompt never arrived as a message event (fail-safe): log
     // it now, after the view was frozen, so nothing is missing from the log.
     if (turnActive && pendingPrompt !== null && !sawUserMessageEnd) {
-      chat.logText("user", pendingPrompt);
+      const prompt = pendingPrompt;
+      const memory = chat;
+      if (!record(() => memory.logText("user", prompt), ctx)) return;
       pendingPrompt = null;
     }
     const idx = findAnchor(event.messages);
     if (idx < 0) return;
+    // Never hide resumed/pre-extension history or messages we failed to archive.
+    if (event.messages.slice(0, idx).some((m) => !recorded.has(messageKey(m))))
+      return;
     const viewMessage: UserMessage = {
       role: "user",
       content: [{ type: "text", text: viewText }],
@@ -214,29 +237,37 @@ export default function optchat(pi: ExtensionAPI) {
     };
     if (anchorIdx === null) {
       if (!turnActive) return -1; // no turn boundary was captured to reuse
-      let idx = messages.length - 1;
-      if (messages[idx]?.role !== "user") idx = lastUser();
+      const idx = anchorKey
+        ? messages.findIndex((m) => messageKey(m) === anchorKey)
+        : lastUser();
       if (idx < 0) return -1;
       anchorIdx = idx;
       anchorTs = (messages[idx] as UserMessage).timestamp;
+      anchorKey = messageKey(messages[idx]);
       return idx;
     }
     const m = messages[anchorIdx];
-    if (m && m.role === "user" && (m as UserMessage).timestamp === anchorTs)
+    if (
+      m &&
+      m.role === "user" &&
+      (m as UserMessage).timestamp === anchorTs &&
+      messageKey(m) === anchorKey
+    )
       return anchorIdx;
     // The transcript moved under us (compaction, an edit): find the anchor again.
     for (let j = messages.length - 1; j >= 0; j--) {
       const mm = messages[j];
-      if (mm.role === "user" && (mm as UserMessage).timestamp === anchorTs) {
+      if (
+        mm.role === "user" &&
+        (mm as UserMessage).timestamp === anchorTs &&
+        messageKey(mm) === anchorKey
+      ) {
         anchorIdx = j;
         return j;
       }
     }
-    if (!turnActive) return -1; // never move an idle request to a different turn
-    const idx = lastUser();
-    anchorIdx = idx >= 0 ? idx : null;
-    if (idx >= 0) anchorTs = (messages[idx] as UserMessage).timestamp;
-    return idx;
+    // A missing anchor is not permission to discard earlier current-turn work.
+    return -1;
   }
 
   pi.on("agent_end", () => {
@@ -247,54 +278,87 @@ export default function optchat(pi: ExtensionAPI) {
 
   // ------------------------------------------------------------------ log
 
-  pi.on("message_end", (event) => {
-    if (!active || !chat) return;
-    const m = event.message;
-    if (m.role === "user") {
-      sawUserMessageEnd = true;
-      // Only the user's words are theirs; long text is never cut, and
-      // attached images are saved as files, never dropped (§1).
-      chat.logText("user", flattenContent(m.content));
-      logImages(m.content);
-    } else if (m.role === "bashExecution") {
-      // The command is the user's words; the output is a tool result.
-      const status = m.cancelled
-        ? " (cancelled)"
-        : m.exitCode !== undefined
-          ? ` (exit ${m.exitCode})`
-          : "";
-      chat.logText("user", `$ ${m.command}${status}`);
-      chat.log("echo", capText(m.output || "(no output)"));
-    } else if (m.role === "custom") {
-      // Another extension's message: context from outside this chat.
-      chat.logText("note", `[${m.customType}] ${flattenContent(m.content)}`);
-      logImages(m.content);
-    } else if (m.role === "assistant") {
-      chatCacheRead += m.usage.cacheRead ?? 0;
-      chatTokens +=
-        (m.usage.input ?? 0) +
-        (m.usage.cacheRead ?? 0) +
-        (m.usage.cacheWrite ?? 0);
-      // Thoughts are never logged (§2); the reply is the record.
-      const text = m.content
-        .filter((c): c is TextContent => c.type === "text")
-        .map((c) => c.text)
-        .join("\n");
-      if (text.trim().length > 0) chat.logText("talk", text);
+  function record(action: () => void, ctx: ExtensionContext): boolean {
+    try {
+      action();
+      return true;
+    } catch (err) {
+      // Even a confirmed rollback means the archive lacks a real message.
+      // Stop replacing context until reload; never silently resume with a gap.
+      active = false;
+      viewFrozen = null;
+      chat?.close();
+      ctx.ui.notify(
+        `OptChat recording stopped; keeping pi's transcript: ${errorText(err)}. /reload after fixing storage.`,
+        "error",
+      );
+      return false;
     }
-    // toolResult messages are logged by tool_execution_end, capped.
+  }
+
+  pi.on("message_end", (event, ctx) => {
+    if (!active || !chat) return;
+    record(() => {
+      if (!chat) return;
+      const m = event.message;
+      if (m.role === "user") {
+        if (turnActive && !sawUserMessageEnd) {
+          anchorTs = m.timestamp;
+          anchorKey = messageKey(m);
+        }
+        sawUserMessageEnd = true;
+        // Only the user's words are theirs; long text is never cut, and
+        // attached images are saved as files, never dropped (§1).
+        chat.logText("user", flattenContent(m.content));
+        logImages(m.content);
+      } else if (m.role === "bashExecution") {
+        // The command is the user's words; the output is a tool result.
+        const status = m.cancelled
+          ? " (cancelled)"
+          : m.exitCode !== undefined
+            ? ` (exit ${m.exitCode})`
+            : "";
+        chat.logText("user", `$ ${m.command}${status}`);
+        chat.log("echo", capText(m.output || "(no output)"));
+      } else if (m.role === "custom") {
+        // Another extension's message: context from outside this chat.
+        chat.logText("note", `[${m.customType}] ${flattenContent(m.content)}`);
+        logImages(m.content);
+      } else if (m.role === "assistant") {
+        chatCacheRead += m.usage.cacheRead ?? 0;
+        chatTokens +=
+          (m.usage.input ?? 0) +
+          (m.usage.cacheRead ?? 0) +
+          (m.usage.cacheWrite ?? 0);
+        // Thoughts are never logged (§2); the reply is the record.
+        const text = m.content
+          .filter((c): c is TextContent => c.type === "text")
+          .map((c) => c.text)
+          .join("\n");
+        if (text.trim().length > 0) chat.logText("talk", text);
+      }
+      // toolResult messages are logged by tool_execution_end, capped.
+      recorded.add(messageKey(m));
+    }, ctx);
   });
 
-  pi.on("tool_execution_start", (event) => {
+  pi.on("tool_execution_start", (event, ctx) => {
     if (!active || !chat) return;
     // Tool inputs are never cut either (§1): long ones split in a row.
-    chat.logText("tool", `${event.toolName} ${safeJson(event.args)}`);
+    const memory = chat;
+    record(
+      () => memory.logText("tool", `${event.toolName} ${safeJson(event.args)}`),
+      ctx,
+    );
   });
 
-  pi.on("tool_execution_end", (event) => {
+  pi.on("tool_execution_end", (event, ctx) => {
     if (!active || !chat) return;
-    chat.log("echo", echoText(event.result, event.isError));
-    logImages(event.result.content);
+    const memory = chat;
+    record(() => {
+      memory.log("echo", echoText(event.result, event.isError));
+      logImages(event.result.content);
+    }, ctx);
   });
 
   function logImages(content: string | (TextContent | ImageContent)[]): void {

@@ -6,6 +6,7 @@
 
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { spawnSync } from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
 import {
   mkdtempSync,
@@ -25,6 +26,7 @@ import {
   saveImage,
   loadJsonl,
   UncertainAppendError,
+  acquireLock,
 } from "../store.ts";
 import { NODE, RULER } from "../prompts.ts";
 
@@ -875,9 +877,91 @@ test("persistent oversized replies never become oversized nodes", async () => {
   chat.close();
 });
 
+test("short truncated replies never become durable summaries", async () => {
+  freshDir();
+  let fail = true;
+  const hooks = fakeHooks();
+  hooks.complete = async () => ({
+    ...fakeReply("user: incomplete"),
+    stopReason: fail ? "length" : "stop",
+  });
+  const chat = new OptChat(dir, fakeModel, hooks, { retryMs: 50 });
+  chat.load();
+  chat.log("user", "w".repeat(700));
+  await waitFor(() => errors.length > 0);
+  assert.equal(chat.nodes.size, 0);
+  assert.match(errors[0], /length/);
+  fail = false;
+  await buildAll(chat);
+  assert.equal(chat.nodes.get("0:0").text, "user: incomplete");
+  chat.close();
+});
+
 test("the ruler is 512 dashes and the limit stays 512 bytes", () => {
   assert.equal(RULER, "-".repeat(512));
   assert.equal(RULER.length, NODE);
+});
+
+test("stale sockets fail closed under simultaneous acquisition", async () => {
+  freshDir();
+  const socket = join(dir, "lock");
+  const child = spawnSync(process.execPath, [
+    "-e",
+    'require("node:net").createServer().listen(process.argv[1], () => process.exit(0))',
+    socket,
+  ]);
+  assert.equal(child.status, 0);
+  const attempts = await Promise.allSettled([
+    acquireLock(socket),
+    acquireLock(socket),
+  ]);
+  assert.ok(attempts.every((r) => r.status === "rejected"));
+  assert.ok(
+    fs.existsSync(socket),
+    "never unlink a potentially live writer's socket",
+  );
+  fs.unlinkSync(socket);
+  const first = await acquireLock(socket);
+  first.close();
+  const second = await acquireLock(socket);
+  first.close();
+  assert.ok(
+    fs.existsSync(socket),
+    "repeated close cannot delete a successor's lock",
+  );
+  second.close();
+});
+
+test("replay follows IDs across clock rollback and rejects orphan nodes", () => {
+  freshDir();
+  const message = (i) => ({ i, kind: "user", text: `message ${i}`, date: "" });
+  writeFileSync(
+    join(dir, "main/2026-02-02.jsonl"),
+    JSON.stringify(message(0)) + "\n",
+  );
+  writeFileSync(
+    join(dir, "main/2026-02-01.jsonl"),
+    JSON.stringify(message(1)) + "\n",
+  );
+  writeFileSync(
+    join(dir, "tree/2026-02-02.jsonl"),
+    JSON.stringify({
+      l: 0,
+      i: 2,
+      text: "stale orphan",
+      size: 12,
+    }) + "\n",
+  );
+  const chat = new OptChat(dir, fakeModel, fakeHooks());
+  chat.load();
+  assert.deepEqual(
+    chat.root.map((m) => m.text),
+    ["message 0", "message 1"],
+  );
+  assert.ok(!chat.nodes.has("0:2"));
+  chat.log("user", "replacement");
+  assert.ok(!chat.renderView().includes("stale orphan"));
+  chat.close();
 });
 
 let failed = 0;

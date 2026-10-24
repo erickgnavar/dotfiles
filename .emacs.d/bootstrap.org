@@ -1127,7 +1127,9 @@ Search into project source
   :config
   ;; without --hidden ripgrep avoid hidden files like yaml files
   ;; inside a .github folder or this file inside .emacs.d
-  (setopt consult-ripgrep-args (concat consult-ripgrep-args " --hidden "))
+  ;; Exclude Git and Jujutsu metadata directories at any depth.
+  (setopt consult-ripgrep-args
+          (concat consult-ripgrep-args " --hidden --glob !.git --glob !.jj"))
   ;; Use consult for completion inside minibuffer, for example when
   ;; searching for a file.
   (setq completion-in-region-function #'consult-completion-in-region))

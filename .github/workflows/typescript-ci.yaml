@@ -6,10 +6,12 @@ on:
     branches: [ master ]
     paths:
       - '.pi/**/*.ts'
+      - '.pi/agent/extensions/optchat/test/**'
       - '.github/workflows/typescript-ci.yaml'
   pull_request:
     paths:
       - '.pi/**/*.ts'
+      - '.pi/agent/extensions/optchat/test/**'
       - '.github/workflows/typescript-ci.yaml'
 
 permissions:
@@ -32,3 +34,16 @@ jobs:
 
       - name: Check TypeScript formatting in .pi
         run: npx --yes prettier@3.8.1 --check '.pi/**/*.ts'
+
+      - name: Run OptChat unit tests
+        run: node --experimental-strip-types .pi/agent/extensions/optchat/test/optchat.test.mjs
+
+      - name: Install Pi for OptChat integration tests
+        run: |
+          npm install --global --prefix "$RUNNER_TEMP/optchat-pi" --ignore-scripts \
+            @earendil-works/pi-coding-agent@1.4.0
+
+      - name: Run OptChat integration tests
+        run: |
+          node .pi/agent/extensions/optchat/test/integration.test.mjs \
+            "$RUNNER_TEMP/optchat-pi/lib/node_modules/@earendil-works/pi-coding-agent"

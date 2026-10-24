@@ -51,7 +51,7 @@ typedef struct {
   GtkLabel *empty_label;
   GtkLabel *item_count;
   GtkPicture *picture;
-  GtkLabel *text_preview;
+  GtkTextView *text_preview;
   GtkLabel *mime_value;
   GtkLabel *size_value;
   GtkLabel *details_value;
@@ -618,7 +618,8 @@ static void show_preview(ClipboardPicker *app, ClipboardItem *item,
       g_strdup_printf("%zu characters · %zu lines", characters, lines);
   gtk_label_set_text(app->details_value, details);
   g_free(details);
-  gtk_label_set_text(app->text_preview, text);
+  gtk_text_buffer_set_text(gtk_text_view_get_buffer(app->text_preview), text,
+                           -1);
   gtk_stack_set_visible_child_name(app->preview_stack, "text");
   g_clear_error(&error);
   g_free(text);
@@ -1124,13 +1125,11 @@ static gboolean finish_secondary_setup(gpointer user_data) {
 
   GtkScrolledWindow *text_scroll =
       GTK_SCROLLED_WINDOW(gtk_scrolled_window_new());
-  app->text_preview = GTK_LABEL(gtk_label_new(NULL));
+  app->text_preview = GTK_TEXT_VIEW(gtk_text_view_new());
   gtk_widget_add_css_class(GTK_WIDGET(app->text_preview), "text-preview");
-  gtk_label_set_selectable(app->text_preview, TRUE);
-  gtk_label_set_wrap(app->text_preview, TRUE);
-  gtk_label_set_wrap_mode(app->text_preview, PANGO_WRAP_WORD_CHAR);
-  gtk_label_set_xalign(app->text_preview, 0.0);
-  gtk_label_set_yalign(app->text_preview, 0.0);
+  gtk_text_view_set_editable(app->text_preview, FALSE);
+  gtk_text_view_set_cursor_visible(app->text_preview, FALSE);
+  gtk_text_view_set_wrap_mode(app->text_preview, GTK_WRAP_WORD_CHAR);
   set_widget_margins(GTK_WIDGET(app->text_preview), 16);
   gtk_scrolled_window_set_child(text_scroll, GTK_WIDGET(app->text_preview));
   gtk_stack_add_named(app->preview_stack, GTK_WIDGET(text_scroll), "text");
@@ -1333,7 +1332,8 @@ static void clipboard_picker_activate(GApplication *application) {
       ".clipboard-picker .metadata-key { color: #bfbfbf; }\n"
       ".clipboard-picker .preview > separator { min-height: 1px; "
       "background: rgba(255, 255, 255, 0.10); }\n"
-      ".clipboard-picker .text-preview { background-color: #1b1b1b; color: "
+      ".clipboard-picker .text-preview, .clipboard-picker .text-preview text { "
+      "background-color: #1b1b1b; color: "
       "#eeeeee; "
       "font-family: monospace; font-size: 13px; }");
   gtk_style_context_add_provider_for_display(

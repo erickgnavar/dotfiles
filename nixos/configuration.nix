@@ -162,6 +162,9 @@
   };
 
   xdg.mime.defaultApplications = {
+    "text/html" = "helium.desktop";
+    "x-scheme-handler/http" = "helium.desktop";
+    "x-scheme-handler/https" = "helium.desktop";
     "application/zip" = "org.gnome.FileRoller.desktop";
     "application/x-7z-compressed" = "org.gnome.FileRoller.desktop";
     "application/vnd.rar" = "org.gnome.FileRoller.desktop";

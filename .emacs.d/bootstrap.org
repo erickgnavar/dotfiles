@@ -1944,7 +1944,12 @@ The last part can change depending of the version installed
 
 (use-package qml-mode
   :ensure t
-  :mode "\\.qml\\'")
+  :hook (qml-mode . eglot-ensure)
+  :mode "\\.qml\\'"
+  :init
+  (with-eval-after-load 'eglot
+    ;; Qt's qmlls must be available on PATH.
+    (add-to-list 'eglot-server-programs '(qml-mode . ("qmlls")))))
 
 (with-eval-after-load 'reformatter
   (reformatter-define nix-format

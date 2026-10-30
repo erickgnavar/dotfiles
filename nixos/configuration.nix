@@ -377,7 +377,18 @@
     ffmpeg # re-encode videos
     bc # required for eww/net.sh calculations
     nixpkgs-fmt
-    kdePackages.qtdeclarative # qmlformat for Quickshell QML files
+    (symlinkJoin {
+      name = "qtdeclarative-with-quickshell-imports";
+      paths = [ kdePackages.qtdeclarative ]; # qmlformat for Quickshell QML files
+      nativeBuildInputs = [ makeWrapper ];
+      postBuild = ''
+        # qmlls requires -E to read QML_IMPORT_PATH from the environment.
+        wrapProgram $out/bin/qmlls \
+          --add-flags "-E" \
+          --prefix QML_IMPORT_PATH : ${kdePackages.qtdeclarative}/lib/qt-6/qml:${quickshell}/lib/qt-6/qml:${kdePackages.qtmultimedia}/lib/qt-6/qml \
+          --prefix QML2_IMPORT_PATH : ${kdePackages.qtdeclarative}/lib/qt-6/qml:${quickshell}/lib/qt-6/qml:${kdePackages.qtmultimedia}/lib/qt-6/qml
+      '';
+    })
     wget
     vim
     rofi

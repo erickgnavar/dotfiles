@@ -482,6 +482,7 @@
     pyright
     zig
     zls
+    swayosd # volume and brightness on-screen indicators
     nixd
     biome
     brightnessctl

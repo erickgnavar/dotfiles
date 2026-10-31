@@ -41,6 +41,7 @@ exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec qs -c wallpaper-picker
 exec qs -c capture
 exec qs -c dock
+exec swayosd-server
 
 # Shift from 6500K to 4000K using GeoClue-based sunrise and sunset times.
 exec gammastep -m wayland -l geoclue2 -t 6500:4000
@@ -241,13 +242,13 @@ bindsym $mod+r mode "resize"
 # Utilities:
 #
     # Special keys to adjust volume via PulseAudio
-    bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
-    bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
-    bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
-    bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+    bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
+    bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume -5
+    bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume +5
+    bindsym --locked XF86AudioMicMute exec bash $scripts/microphone-mute.sh
     # Special keys to adjust brightness via brightnessctl
-    bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness -5
+    bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness +5
     # Capture toolbar and recording stop shortcut
     bindsym $mod+Shift+s exec qs -c capture ipc call capture toggle
     bindsym $mod+Ctrl+s exec qs -c capture ipc call capture stop

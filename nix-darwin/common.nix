@@ -91,7 +91,7 @@
     (haru.packages.${pkgs.stdenv.hostPlatform.system}.default)
     watch
     gnupg
-    (aspellWithDicts (dicts: with dicts; [ en en-computers es ]))
+    (aspellWithDicts (dicts: with dicts; [ en es ]))
   ];
 
   homebrew = {

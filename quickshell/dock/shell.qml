@@ -10,6 +10,23 @@ ShellRoot {
     id: shell
     property bool forcedOpen: false
     property int desktopEntriesRevision: 0
+    readonly property var pinnedApps: ["helium", "Alacritty", "emacs", "spotify", "org.gnome.Nautilus"]
+    readonly property var dockItems: {
+        shell.desktopEntriesRevision;
+        const items = pinnedApps.map(appId => ({ appId: appId, pinned: true, toplevel: null }));
+        for (const window of ToplevelManager.toplevels.values) {
+            if (!pinnedApps.some(appId => matchesApp(window, appId)))
+                items.push({ appId: window.appId, pinned: false, toplevel: window });
+        }
+        return items;
+    }
+
+    function matchesApp(window, appId): bool {
+        if ((window.appId || "").toLowerCase() === appId.toLowerCase()) return true;
+        const desktop = DesktopEntries.heuristicLookup(window.appId);
+        const pinned = DesktopEntries.heuristicLookup(appId);
+        return desktop !== null && pinned !== null && desktop.id === pinned.id;
+    }
 
     Connections {
         target: DesktopEntries
@@ -166,7 +183,7 @@ ShellRoot {
                         spacing: 4
                         clip: true
                         boundsBehavior: Flickable.StopAtBounds
-                        model: ToplevelManager.toplevels
+                        model: shell.dockItems
 
                         delegate: Button {
                             id: entry
@@ -176,6 +193,13 @@ ShellRoot {
                                 shell.desktopEntriesRevision;
                                 return DesktopEntries.heuristicLookup(modelData.appId);
                             }
+                            readonly property var appWindows: {
+                                shell.desktopEntriesRevision;
+                                return modelData.pinned
+                                    ? ToplevelManager.toplevels.values.filter(window => shell.matchesApp(window, modelData.appId))
+                                    : (modelData.toplevel ? [modelData.toplevel] : []);
+                            }
+                            readonly property bool active: appWindows.some(window => window.activated)
                             readonly property string appName: desktopEntry ? desktopEntry.name : (modelData.appId || "Application")
                             readonly property string iconSource: desktopEntry && desktopEntry.icon ? Quickshell.iconPath(desktopEntry.icon, true) : ""
 
@@ -184,8 +208,15 @@ ShellRoot {
                             padding: 0
                             hoverEnabled: true
                             focusPolicy: Qt.NoFocus
-                            Accessible.name: appName + ": " + modelData.title
-                            onClicked: modelData.activate()
+                            Accessible.name: appName + (appWindows.length ? ": " + appWindows[0].title : "")
+                            onClicked: {
+                                if (appWindows.length) {
+                                    const window = appWindows.find(window => window.activated) || appWindows[0];
+                                    window.activate();
+                                } else if (desktopEntry) {
+                                    desktopEntry.execute();
+                                }
+                            }
 
                             readonly property var tooltipIcon: appIcon
                             onHoveredChanged: {
@@ -198,8 +229,8 @@ ShellRoot {
                                 radius: 8
                                 color: entry.down ? "#527ebae4"
                                     : entry.hovered ? "#26ffffff"
-                                    : entry.modelData.activated ? "#407ebae4" : "transparent"
-                                border.color: entry.modelData.activated ? "#7ebae4" : "transparent"
+                                    : entry.active ? "#407ebae4" : "transparent"
+                                border.color: entry.active ? "#7ebae4" : "transparent"
                                 Behavior on color { ColorAnimation { duration: 120 } }
                             }
 
@@ -232,10 +263,11 @@ ShellRoot {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     anchors.bottom: parent.bottom
                                     anchors.bottomMargin: 3
-                                    width: entry.modelData.activated ? 14 : 4
+                                    visible: entry.appWindows.length > 0
+                                    width: entry.active ? 14 : 4
                                     height: 3
                                     radius: 2
-                                    color: entry.modelData.activated ? "#7ebae4" : "#bfbfbf"
+                                    color: entry.active ? "#7ebae4" : "#bfbfbf"
                                 }
                             }
                         }

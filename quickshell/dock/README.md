@@ -1,18 +1,22 @@
-# Running-window dock
+# Application dock
 
 A Quickshell dock matching the dark capture toolbar, with blue active-window accents.
 
 - Hover anywhere along the left screen edge to reveal it (100 ms delay).
 - Move away to hide it (350 ms grace period).
-- Click an icon to focus that window, including windows on other workspaces.
+- Pins appear in order: Helium, Alacritty, Emacs, Spotify, and Nautilus.
+- Click a closed pinned app to launch it using its installed desktop entry.
+- Click a running app to focus its active or first window, including on other workspaces.
 - Hover over an icon for its application name (100 ms delay), centered to its right.
 - Each screen shares one click-through tooltip, with a 4-pixel gap from the dock.
 - Scroll the dock when there are more windows than fit on screen.
-- Each window has its own icon; the active window has a blue outline and indicator.
+- Pinned apps group their windows into one icon; other windows appear after the pins.
+- Running apps have an indicator; active apps also have a blue outline.
 - Missing application icons fall back to the application's initial.
 
-The dock appears on each output and lists all running windows. It does not reserve
-workspace space, take keyboard focus, pin launchers, or run polling scripts.
+The dock appears on each output. Edit `pinnedApps` in `shell.qml` to change the desktop IDs
+or their order. Apps must be installed for desktop-entry launching and icon lookup.
+It does not reserve workspace space, take keyboard focus, or run polling scripts.
 Only a 3-pixel-wide, full-height activation strip receives input while hidden.
 The trigger is available from startup, without first enabling the dock through IPC.
 It requires the compositor's foreign-toplevel protocol (supported by Sway).

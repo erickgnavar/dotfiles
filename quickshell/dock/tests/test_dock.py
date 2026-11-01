@@ -93,6 +93,49 @@ class DockTests(unittest.TestCase):
             "tooltipDelay.entry = null; anchor(); }"
         )
 
+    def test_pinned_order_matching_and_remaining_windows(self):
+        pins = re.search(r"pinnedApps: (\[.*\])", SOURCE).group(1)
+        self.javascript(
+            f"const pinnedApps = {pins};"
+            "assert.deepEqual(pinnedApps, ['helium', 'Alacritty', 'emacs', 'spotify', 'org.gnome.Nautilus']);"
+            "const shell = { desktopEntriesRevision: 0 };"
+            "const DesktopEntries = { heuristicLookup: id => "
+            "id === 'nautilus' || id === 'org.gnome.Nautilus' ? { id: 'org.gnome.Nautilus' } : null };"
+            f"const matchesApp = (window, appId) => {{{block('function matchesApp')}}};"
+            "assert.equal(matchesApp({ appId: 'alacritty' }, 'Alacritty'), true);"
+            "assert.equal(matchesApp({ appId: 'nautilus' }, 'org.gnome.Nautilus'), true);"
+            "assert.equal(matchesApp({ appId: 'unknown' }, 'emacs'), false);"
+            "const ToplevelManager = { toplevels: { values: [] } };"
+            f"const items = () => {{{block('readonly property var dockItems:')}}};"
+            "assert.equal(items().length, 5);"
+            "const a = { appId: 'Alacritty' }, b = { appId: 'Alacritty' };"
+            "const other = { appId: 'firefox' };"
+            "ToplevelManager.toplevels.values = [a, b, other, { appId: 'nautilus' }];"
+            "assert.equal(items().length, 6); assert.equal(items()[5].toplevel, other);"
+            "ToplevelManager.toplevels.values = []; assert.equal(items().length, 5);"
+        )
+
+    def test_launch_focus_and_running_state(self):
+        self.javascript(
+            "const shell = { desktopEntriesRevision: 0, matchesApp: (w, id) => w.appId === id };"
+            "let focused = 0, launched = 0;"
+            "const a = { appId: 'helium', activated: false, activate: () => focused = 1 };"
+            "const b = { appId: 'helium', activated: true, activate: () => focused = 2 };"
+            "const ToplevelManager = { toplevels: { values: [a, b] } };"
+            "let modelData = { appId: 'helium', pinned: true };"
+            f"const matching = () => {{{block('readonly property var appWindows:')}}};"
+            "let appWindows = matching(); const desktopEntry = { execute: () => launched++ };"
+            f"const click = () => {{{block('onClicked:')}}};"
+            "assert.equal(appWindows.length, 2); click(); assert.equal(focused, 2);"
+            "b.activated = false; click(); assert.equal(focused, 1);"
+            "ToplevelManager.toplevels.values = []; appWindows = matching(); click();"
+            "assert.equal(launched, 1);"
+            "modelData = { pinned: false, toplevel: a }; appWindows = matching(); click();"
+            "assert.equal(focused, 1); assert.equal(launched, 1);"
+        )
+        self.assertIn("visible: entry.appWindows.length > 0", SOURCE)
+        self.assertIn("appWindows.some(window => window.activated)", SOURCE)
+
     def test_async_desktop_entry_refresh(self):
         self.assertIn(
             "shell.desktopEntriesRevision;",

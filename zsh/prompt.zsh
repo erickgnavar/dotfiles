@@ -75,7 +75,7 @@ _pure_git_start() {
     while [[ $repo_dir != / && ! -e $repo_dir/.jj && ! -e $repo_dir/.git ]]; do
       repo_dir=${repo_dir:h}
     done
-    if [[ -d $repo_dir/.jj ]] && (($ + commands[jj])); then
+    if [[ -d $repo_dir/.jj ]] && command -v jj >/dev/null 2>&1; then
       # Never snapshot or update the working copy just to render the prompt.
       if jj_state=$(command jj --ignore-working-copy --color=never --no-pager log -G -r @ \
         -T 'change_id.short(8) ++ " " ++ if(empty, "0", "1") ++ " " ++

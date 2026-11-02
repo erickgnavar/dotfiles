@@ -2,7 +2,6 @@
   environment.systemPackages = with pkgs; [
     lima
     mutagen
-    (azure-cli.withExtensions [ azure-cli.extensions.aks-preview ])
     google-cloud-sql-proxy
   ];
 

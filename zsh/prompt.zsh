@@ -1,6 +1,7 @@
 # A small Pure-style prompt with asynchronous local Git/JJ checks; no fetches.
 autoload -Uz add-zsh-hook
 zmodload zsh/datetime
+zmodload zsh/zpty
 
 # Build literal prompt text, not through shell substitutions.
 unsetopt promptsubst
@@ -8,8 +9,12 @@ unsetopt promptsubst
 _pure_cleanup() {
   if [[ -n ${_pure_fd-} ]]; then
     zle -F "$_pure_fd"
-    exec {_pure_fd}<&-
-    unset _pure_fd
+    # zpty deletes the worker and signals its entire process group.
+    if ! zpty -d _pure_worker 2>/dev/null; then
+      # Also allow reloading from the old process-substitution implementation.
+      exec {_pure_fd}<&-
+    fi
+    unset _pure_fd _pure_output
   fi
 }
 
@@ -38,7 +43,14 @@ _pure_git_ready() {
     return
   fi
   # A closed writer can report hup while its final result is still buffered.
-  if [[ -z ${2-} || ${2-} == hup ]] && IFS= read -r -u "$1" result; then
+  if [[ -z ${2-} || ${2-} == hup ]] && zpty -rt _pure_worker result; then
+    _pure_output=${_pure_output-}$result
+    if [[ $_pure_output != *$'\n' ]]; then
+      [[ -n ${2-} ]] && _pure_cleanup
+      return 0
+    fi
+    result=${_pure_output%$'\n'}
+    result=${result%$'\r'}
     if [[ $PWD == $_pure_git_pwd ]]; then
       _pure_git=$result
       _pure_git_checked=$EPOCHSECONDS
@@ -47,6 +59,9 @@ _pure_git_ready() {
         zle reset-prompt
       fi
     fi
+  elif [[ -z ${2-} ]] && zpty -t _pure_worker; then
+    # No complete result yet; wait for the next readable event.
+    return
   fi
   _pure_cleanup
 }
@@ -67,7 +82,10 @@ _pure_git_start() {
   fi
   _pure_git_pwd=$PWD
 
-  exec {_pure_fd}< <(
+  _pure_worker() {
+    # Keep Git/JJ and their children in the worker's isolated process group.
+    unsetopt monitor
+    trap - HUP
     local git_state line git_dir operation oid branch='' dirty='' details=''
     local ahead=0 behind=0
     local repo_dir=$PWD jj_state jj_change jj_dirty jj_conflict jj_bookmarks
@@ -128,8 +146,11 @@ _pure_git_start() {
       fi
     fi
     print -r -- "$details"
-  )
-  zle -F "$_pure_fd" _pure_git_ready
+  }
+  if zpty -b _pure_worker _pure_worker; then
+    _pure_fd=$REPLY
+    zle -F "$_pure_fd" _pure_git_ready
+  fi
 }
 
 _pure_preexec() {

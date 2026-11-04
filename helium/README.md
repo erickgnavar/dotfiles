@@ -1,7 +1,7 @@
 # Helium for NixOS
 
 Standalone flake following [Hitsu's packaging layout][hitsu]. Packages the upstream Linux
-binary distribution of [Helium][helium], version **0.20.1.1**, for **x86_64-linux**.
+binary distribution of [Helium][helium], version **0.20.3.1**, for **x86_64-linux**.
 It includes the desktop entry, icon, URL associations, and ChromeDriver.
 
 The browser archive is SHA-256 pinned. `flake.lock` initially reuses the nixpkgs revision

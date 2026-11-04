@@ -9,13 +9,13 @@ from pathlib import Path
 SOURCE = (Path(__file__).resolve().parents[1] / "shell.qml").read_text()
 
 
-def block(marker):
-    start = SOURCE.index("{", SOURCE.index(marker)) + 1
+def block(marker, source=SOURCE):
+    start = source.index("{", source.index(marker)) + 1
     depth = 1
-    for end in range(start, len(SOURCE)):
-        depth += (SOURCE[end] == "{") - (SOURCE[end] == "}")
+    for end in range(start, len(source)):
+        depth += (source[end] == "{") - (source[end] == "}")
         if not depth:
-            return SOURCE[start:end]
+            return source[start:end]
     raise AssertionError(f"Unclosed block: {marker}")
 
 
@@ -25,6 +25,32 @@ class DockTests(unittest.TestCase):
             ["node", "-e", "const assert = require('node:assert/strict');\n" + code],
             check=True,
         )
+
+    def test_chooser_workspace_and_urgency_metadata(self):
+        self.javascript(
+            f"function collectWindows(node, workspace) {{{block('function collectWindows(')}}}"
+            "const tree = {nodes: [{type: 'workspace', name: '2: web', nodes: ["
+            "{type: 'con', app_id: 'helium', name: 'Browser', urgent: true}],"
+            "floating_nodes: [{type: 'con', window_properties: {class: 'Emacs'}, name: 'Editor'}]}]};"
+            "const chooser = {windowDetails: collectWindows(tree, '')};"
+            f"function detailsFor(window) {{{block('function detailsFor(').replace('windowDetails', 'chooser.windowDetails')}}}"
+            "assert.equal(chooser.windowDetails.length, 2);"
+            "assert.equal(detailsFor({appId: 'HELIUM', title: 'Browser'}).workspace, '2: web');"
+            "assert.equal(detailsFor({appId: 'helium', title: 'Browser'}).urgent, true);"
+            "assert.equal(detailsFor({appId: 'emacs', title: 'Editor'}).urgent, false);"
+            "assert.equal(detailsFor({appId: 'helium', title: 'Missing'}), null);"
+            "chooser.windowDetails.push({...chooser.windowDetails[0]});"
+            "assert.equal(detailsFor({appId: 'helium', title: 'Browser'}), null);"
+            "assert.deepEqual(collectWindows({}, ''), []);"
+        )
+        self.assertIn("running: chooser.visible", SOURCE)
+        self.assertIn('["window","workspace"]', SOURCE)
+        self.assertIn(
+            'details ? "Workspace " + details.workspace : "Workspace unknown"', SOURCE
+        )
+        self.assertIn(" · Focused", SOURCE)
+        self.assertIn(" · Urgent", SOURCE)
+        self.assertIn("sourceSize.width: 28", SOURCE)
 
     def test_startup_edge_and_ipc(self):
         self.assertIn("visible: true", SOURCE)
@@ -46,17 +72,22 @@ class DockTests(unittest.TestCase):
         )
 
     def test_one_tooltip_per_screen(self):
-        self.assertEqual(SOURCE.count("PopupWindow {"), 1)
+        self.assertEqual(SOURCE.count("id: tooltip\n"), 1)
+        self.assertEqual(SOURCE.count("PopupWindow {"), 2)
         self.assertLess(SOURCE.index("PopupWindow {"), SOURCE.index("delegate: Button"))
         self.assertIn("mask: Region {}", block("PopupWindow {"))
         self.assertIn("interval: 100", block("            Timer {"))
-        self.assertIn("dock.expanded ? dock.hoveredEntry : null", SOURCE)
+        self.assertIn(
+            "dock.expanded && !dock.chooserAppId ? dock.hoveredEntry : null", SOURCE
+        )
 
     def test_hover_switch_removal_and_delay(self):
         clear = block("function clearHoveredEntry")
         change = block("onEntryChanged:")
         hover = block("readonly property var tooltipIcon")
-        self.assertIn("Component.onDestruction: dock.clearHoveredEntry(entry)", SOURCE)
+        self.assertIn(
+            "dock.clearHoveredEntry(entry);", block("Component.onDestruction:")
+        )
         self.javascript(
             "const tooltip = { visible: true }; let restarts = 0, stops = 0;"
             "const restart = () => restarts++; const stop = () => stops++;"
@@ -123,11 +154,14 @@ class DockTests(unittest.TestCase):
             "const b = { appId: 'helium', activated: true, activate: () => focused = 2 };"
             "const ToplevelManager = { toplevels: { values: [a, b] } };"
             "let modelData = { appId: 'helium', pinned: true };"
-            f"const matching = () => {{{block('readonly property var appWindows:')}}};"
+            f"const matching = () => {{{block('readonly property var appWindows: {', SOURCE[SOURCE.index('id: entry') :])}}};"
             "let appWindows = matching(); const desktopEntry = { execute: () => launched++ };"
-            f"const click = () => {{{block('onClicked:')}}};"
-            "assert.equal(appWindows.length, 2); click(); assert.equal(focused, 2);"
-            "b.activated = false; click(); assert.equal(focused, 1);"
+            "const dock = { chooserAppId: '' };"
+            f"const click = () => {{{block('onClicked: {\n                                if (appWindows')}}};"
+            "assert.equal(appWindows.length, 2); click(); assert.equal(dock.chooserAppId, 'helium');"
+            "assert.equal(focused, 0); click(); assert.equal(dock.chooserAppId, '');"
+            "ToplevelManager.toplevels.values = [a]; appWindows = matching(); click();"
+            "assert.equal(focused, 1);"
             "ToplevelManager.toplevels.values = []; appWindows = matching(); click();"
             "assert.equal(launched, 1);"
             "modelData = { pinned: false, toplevel: a }; appWindows = matching(); click();"
@@ -135,6 +169,66 @@ class DockTests(unittest.TestCase):
         )
         self.assertIn("visible: entry.appWindows.length > 0", SOURCE)
         self.assertIn("appWindows.some(window => window.activated)", SOURCE)
+
+    def test_window_chooser_selection_and_lifecycle(self):
+        chooser = SOURCE[
+            SOURCE.index("id: chooser\n") : SOURCE.index("// The full-height")
+        ]
+        self.assertIn("model: chooser.appWindows", chooser)
+        self.assertIn("elide: Text.ElideRight", chooser)
+        self.assertIn("clip: true", chooser)
+        self.assertIn("chooser.anchor.updateAnchor()", chooser)
+        self.assertIn("if (hover.hovered || chooserHover.hovered) return;", SOURCE)
+        self.javascript(
+            "const dock = { chooserAppId: 'helium' }; let focused = 0;"
+            "const modelData = { activate: () => focused++ };"
+            f"const choose = () => {{{block('                            onClicked:')}}};"
+            "choose(); assert.equal(focused, 1); assert.equal(dock.chooserAppId, '');"
+            "let appWindows = [{}, {}]; dock.chooserAppId = 'helium';"
+            f"const changed = () => {{{block('onAppWindowsChanged:')}}};"
+            "changed(); assert.equal(dock.chooserAppId, 'helium');"
+            "appWindows = [{}]; changed(); assert.equal(dock.chooserAppId, '');"
+            "appWindows = []; changed();"
+            "dock.chooserAppId = 'helium'; let expanded = false;"
+            f"const collapse = () => {{{block('onExpandedChanged:')}}};"
+            "collapse(); assert.equal(dock.chooserAppId, '');"
+        )
+
+    def test_chooser_survives_model_and_delegate_replacement(self):
+        chooser = SOURCE[
+            SOURCE.index("id: chooser\n") : SOURCE.index("// The full-height")
+        ]
+        self.assertNotIn("chooserEntry", SOURCE)
+        self.assertIn(
+            "function onYChanged(): void { chooser.anchor.updateAnchor(); }", chooser
+        )
+        app_index = re.search(r"appIndex: (.*)", chooser).group(1)
+        anchor = chooser[chooser.index("if (chooser.appIndex < 0)") :]
+        anchor = anchor[: anchor.index("\n                    }")]
+        self.javascript(
+            "const dock = { chooserAppId: 'helium', clearHoveredEntry: () => {} };"
+            "const shell = { desktopEntriesRevision: 0, dockItems: [{ appId: 'helium' }],"
+            "matchesApp: (w, id) => w.appId === id };"
+            "const a = { appId: 'helium' }, b = { appId: 'helium' };"
+            "const ToplevelManager = { toplevels: { values: [a, b] } };"
+            f"const matching = () => {{{block('readonly property var appWindows: {')}}};"
+            f"const index = () => {app_index};"
+            f"const destroy = entry => {{{block('Component.onDestruction:')}}};"
+            "assert.deepEqual(matching(), [a, b]); destroy({});"
+            "shell.dockItems = [{ appId: 'helium' }, { appId: 'other' }];"
+            "ToplevelManager.toplevels.values = [a, b, { appId: 'other' }];"
+            "assert.equal(dock.chooserAppId, 'helium'); assert.equal(index(), 0);"
+            "assert.deepEqual(matching(), [a, b]);"
+            "const c = { appId: 'helium' }; ToplevelManager.toplevels.values = [a, b, c];"
+            "shell.desktopEntriesRevision++; destroy({});"
+            "assert.deepEqual(matching(), [a, b, c]);"
+            "const windows = { rowHeight: 48, spacing: 4, contentY: 12 };"
+            "const chooser = { appIndex: index(), height: 100, anchor: { rect: {} } };"
+            "dock.width = 76; dock.contentItem = { mapFromItem: (item, x, y) => ({ y: y + 200 }) };"
+            f"const anchor = () => {{{anchor}}};"
+            "anchor(); assert.equal(chooser.anchor.rect.y, 158);"
+            "assert.equal(chooser.anchor.rect.x, 71);"
+        )
 
     def test_async_desktop_entry_refresh(self):
         self.assertIn(

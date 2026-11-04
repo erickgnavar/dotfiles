@@ -6,7 +6,11 @@ A Quickshell dock matching the dark capture toolbar, with blue active-window acc
 - Move away to hide it (350 ms grace period).
 - Pins appear in order: Helium, Alacritty, Emacs, Spotify, and Nautilus.
 - Click a closed pinned app to launch it using its installed desktop entry.
-- Click a running app to focus its active or first window, including on other workspaces.
+- Click an app with one window to focus it, including on another workspace.
+- Click an app with multiple windows to open a scrollable chooser with icons and window titles.
+- Chooser rows show the workspace and focused/urgent state, using Sway events while open.
+  Identical app/title matches show “Workspace unknown” instead of guessing; titles still work.
+- Click a title to focus that window; click the app again or move away to dismiss the chooser.
 - Hover over an icon for its application name (100 ms delay), centered to its right.
 - Each screen shares one click-through tooltip, with a 4-pixel gap from the dock.
 - Scroll the dock when there are more windows than fit on screen.

@@ -8,7 +8,6 @@
   homebrew = {
     taps = [
       "Azure/kubelogin"
-      { name = "abue-ammar/tinycast"; trusted = true; }
     ];
     brews = [
       "Azure/kubelogin/kubelogin"

@@ -771,7 +771,7 @@
 		   jj-mode :host github :repo "bolivier/jj-mode.el"
 		   :type git :protocol https :inherit t :depth
 		   treeless :ref
-		   "64a59eda9022080dcd7e86c128bb1bc3c92964df"))
+		   "c6abaecedd15ed8f2b1ef6b79a0a096126b2171c"))
  (just-ts-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "just-ts-mode" :fetcher github :repo
 			 "leon-barrett/just-ts-mode.el" :files

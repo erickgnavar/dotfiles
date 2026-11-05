@@ -251,7 +251,7 @@
 				     "*-pkg.el"))
 			  :source "elpaca-menu-lock-file" :protocol
 			  https :inherit t :depth treeless :ref
-			  "33edc978783a311479ca8edf3f7437d7e930eb10"
+			  "88396f176a00751a7179843edb304e1c057093d4"
 			  :id doom-modeline :type git))
  (dumb-jump :source "elpaca-menu-lock-file" :recipe
 	    (:package "dumb-jump" :repo "jacktasia/dumb-jump" :fetcher

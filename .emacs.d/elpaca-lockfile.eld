@@ -73,7 +73,7 @@
 				  :source "elpaca-menu-lock-file"
 				  :protocol https :inherit t :depth
 				  treeless :ref
-				  "9ce4bc783acc4ebebed1b13427873cdffc1b7960"
+				  "3b7af324a7391fba53d07bef4495e9e4e8cbcece"
 				  :id color-theme-sanityinc-tomorrow
 				  :type git))
  (company :source "elpaca-menu-lock-file" :recipe

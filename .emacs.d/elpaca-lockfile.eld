@@ -1040,7 +1040,7 @@
 				 "README*" "*-pkg.el"))
 		      :source "elpaca-menu-lock-file" :protocol https
 		      :inherit t :depth treeless :ref
-		      "c7cb04499d94ee1c17affb29b1cfcd2a45116c97" :id
+		      "e271a8ec938929b726331236cf56d1c44571122e" :id
 		      orderless :type git))
  (org-modern :source "elpaca-menu-lock-file" :recipe
 	     (:package "org-modern" :repo "minad/org-modern" :fetcher
@@ -1473,7 +1473,7 @@
 		    (:defaults "extensions/vertico-*.el") :fetcher
 		    github :source "elpaca-menu-lock-file" :protocol
 		    https :inherit t :depth treeless :ref
-		    "17c629087ea23466b10fd0dd4ecce53e17a810e3" :id
+		    "c60d80215d19b4b36c0ba49599b6815ed35f2ac1" :id
 		    vertico :type git))
  (vertico-posframe :source "elpaca-menu-lock-file" :recipe
 		   (:package "vertico-posframe" :repo

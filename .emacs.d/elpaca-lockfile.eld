@@ -842,10 +842,11 @@
 	(:package "magit" :fetcher github :repo "magit/magit" :files
 		  ("lisp/magit*.el" "lisp/git-*.el" "docs/magit.texi"
 		   "docs/AUTHORS.md" "LICENSE" ".dir-locals.el"
+		   ("githooks" "githooks/*")
 		   (:exclude "lisp/magit-section.el"))
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
-		  "c800f79c2061621fde847f6a53129eca0e8da728" :id magit
+		  "942d61d5de37c89a3a7c6cf693696b900b1d97b0" :id magit
 		  :type git))
  (magit-delta :source "elpaca-menu-lock-file" :recipe
 	      (:package "magit-delta" :fetcher github :repo
@@ -870,7 +871,7 @@
 			   "magit-section-pkg.el")
 			  :source "elpaca-menu-lock-file" :protocol
 			  https :inherit t :depth treeless :ref
-			  "c800f79c2061621fde847f6a53129eca0e8da728"
+			  "942d61d5de37c89a3a7c6cf693696b900b1d97b0"
 			  :id magit-section :type git))
  (major-mode-hydra :source "elpaca-menu-lock-file" :recipe
 		   (:package "major-mode-hydra" :repo
@@ -1593,7 +1594,7 @@
 			"*-pkg.el"))
 	     :source "elpaca-menu-lock-file" :protocol https :inherit
 	     t :depth treeless :ref
-	     "64211dcb815f2533ac3d2a7e56ff36ae804d8338" :id
+	     "5021ef6885381cf5b2852f7a3f67ca8c4be1dca2" :id
 	     with-editor :type git))
  (writeroom-mode :source "elpaca-menu-lock-file" :recipe
 		 (:package "writeroom-mode" :fetcher github :repo

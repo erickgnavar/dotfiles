@@ -206,7 +206,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "685ea2d50607a9902f1c6c141ee6268d759b9b25" :id
+		    "8dfb5c27ea43b8c7ac1c008bb97090ad4f059285" :id
 		    diff-hl :type git))
  (dired-hacks-utils :source "elpaca-menu-lock-file" :recipe
 		    (:package "dired-hacks-utils" :fetcher github

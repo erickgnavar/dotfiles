@@ -84,7 +84,7 @@
 				"doc/images/small/*.png"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "1bf7dcd3ce1c8e192a402360930ca18790fec5d4" :id
+		    "0029cbb435c7fc68ceff0987fae0256f1ccf0507" :id
 		    company :type git))
  (compat :source "elpaca-menu-lock-file" :recipe
 	 (:package "compat" :fetcher github :repo

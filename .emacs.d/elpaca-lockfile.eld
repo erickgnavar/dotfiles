@@ -1235,8 +1235,9 @@
 		      (:exclude ".dir-locals.el" "test.el" "tests.el"
 				"*-test.el" "*-tests.el" "LICENSE"
 				"README*" "*-pkg.el"))
-		     :source "MELPA" :id qml-mode :type git :protocol
-		     https :inherit t :depth treeless :ref
+		     :source "elpaca-menu-lock-file" :id qml-mode
+		     :type git :protocol https :inherit t :depth
+		     treeless :ref
 		     "6c5f33ba88ae010bf201a80ee8095e20a724558c"))
  (queue :source "elpaca-menu-lock-file" :recipe
 	(:package "queue" :repo

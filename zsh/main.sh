@@ -141,6 +141,7 @@ alias wow="git status"
 alias cat="bat"
 alias ls="eza --icons"
 alias k="kubectl"
+alias tf="terraform"
 # Use z zsh plugin as autojump
 alias j="z"
 

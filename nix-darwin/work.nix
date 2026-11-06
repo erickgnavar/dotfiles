@@ -16,7 +16,6 @@
       "1password"
       "brave-browser"
       "slack"
-      "notion"
       "1password-cli"
       "tinycast"
     ];

@@ -24,8 +24,9 @@
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
+;; Match the lockfile revision to avoid mixed Elpaca code and void-function errors.
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth nil :inherit ignore
+                              :ref "e974e6f4b5ea2e974f4d7686c5d956aff455594d" :depth nil :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
                               :build (:not elpaca-activate)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))

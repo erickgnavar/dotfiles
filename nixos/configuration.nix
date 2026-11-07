@@ -413,7 +413,15 @@
     fzf
     shfmt
     shellcheck
-    nautilus
+    (nautilus.overrideAttrs (old: {
+      # Include media codecs in Nautilus's wrapper for Properties inspection.
+      buildInputs = old.buildInputs ++ (with gst_all_1; [
+        gst-plugins-good
+        gst-plugins-bad
+        gst-plugins-ugly
+        gst-libav
+      ]);
+    }))
     sushi # allow show previews in nautilus when pressing space
     tectonic
     wayland

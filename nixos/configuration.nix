@@ -124,6 +124,9 @@
     packages = with pkgs; [ ];
   };
 
+  # Includes 32-bit graphics/audio support and Steam controller udev rules.
+  programs.steam.enable = true;
+
   programs.zsh.enable = true;
   programs.ssh.startAgent = true;
   # Run externally distributed Linux binaries.

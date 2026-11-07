@@ -402,6 +402,7 @@
     pavucontrol
     killall
     ripgrep
+    just # Command runner for justfiles.
     mutagen
     aspell
     aspellDicts.en

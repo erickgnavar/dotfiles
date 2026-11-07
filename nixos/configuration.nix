@@ -165,6 +165,8 @@
   };
 
   xdg.mime.defaultApplications = {
+    "text/plain" = "gvim.desktop";
+    "text/x-log" = "gvim.desktop";
     "text/html" = "helium.desktop";
     "x-scheme-handler/http" = "helium.desktop";
     "x-scheme-handler/https" = "helium.desktop";
@@ -393,7 +395,7 @@
       '';
     })
     wget
-    vim
+    vim-full # Includes the graphical version, GVim.
     rofi
     rofimoji
     wayvnc # enable remote control

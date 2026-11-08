@@ -19,7 +19,13 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { OptChat, CVIEW_CEIL, JOBS } from "../memory.ts";
+import {
+  OptChat,
+  CVIEW_CEIL,
+  JOBS,
+  TRIES,
+  SIZE_RETRY_MAX_MS,
+} from "../memory.ts";
 import {
   splitText,
   byteLength,
@@ -63,7 +69,15 @@ function fakeHooks() {
   return {
     complete: async (_model, context) => {
       calls++;
-      const step = context.messages[0].content[1].text;
+      const step = context.messages[0].content[1]?.text;
+      if (!step) {
+        assert.equal(context.messages.length, 1, "rewrites have no history");
+        assert.match(
+          context.messages[0].content[0].text,
+          /^Compaction: rewrite/,
+        );
+        return fakeReply(plan.shift());
+      }
       steps.push(step);
       assert.match(
         step,
@@ -237,7 +251,7 @@ test("a corrupt view.json falls back to a fold, not a crash", async () => {
   chat2.close();
 });
 
-test("empty then oversized replies retry in the same conversation", async () => {
+test("empty then oversized replies recover within the attempt limit", async () => {
   const chat = fresh();
   plan = ["", "z".repeat(600), "good short line"];
   chat.log("user", "w".repeat(600));
@@ -247,6 +261,132 @@ test("empty then oversized replies retry in the same conversation", async () => 
   assert.equal(calls, 3, "empty and oversized each got one feedback round");
   assert.equal(errors.length, 0, "no node failure for recoverable replies");
   chat.close();
+});
+
+test("rewrites isolate the shortest whole summary and tighten the byte target", async () => {
+  freshDir();
+  const shortest = "é".repeat(260); // 520 bytes, despite only 260 characters.
+  const replies = [shortest, "z".repeat(700), "", "user: recovered"];
+  const contexts = [];
+  const chat = new OptChat(dir, fakeModel, {
+    complete: async (_model, context) => {
+      contexts.push(context);
+      return fakeReply(replies.shift());
+    },
+    onError: assert.fail,
+  });
+  try {
+    const result = await chat.summarize(
+      0,
+      compressStep(0, "user", "original-marker".repeat(100)),
+    );
+    assert.equal(result, "user: recovered");
+    assert.match(contexts[0].messages[0].content[0].text, /<chat>/);
+    for (const [i, context] of contexts.slice(1).entries()) {
+      assert.equal(context.messages.length, 1);
+      const text = context.messages[0].content[0].text;
+      assert.match(text, /520 UTF-8 bytes/);
+      assert.ok(text.includes(`at most ${350 - i * 50} UTF-8 bytes`));
+      assert.ok(
+        text.includes(`<input>\n${shortest}\n</input>`),
+        "no truncation",
+      );
+      assert.doesNotMatch(text, /<chat>|original-marker|zzzz/);
+      assert.ok(
+        JSON.stringify(context).length < JSON.stringify(contexts[0]).length,
+        "rewrite request is smaller than the original request",
+      );
+    }
+  } finally {
+    chat.close();
+  }
+});
+
+test("size failures back off per node, respect the cap, and reset on success", async () => {
+  freshDir();
+  let calls = 0;
+  let recover = false;
+  const errors = [];
+  const chat = new OptChat(dir, fakeModel, {
+    complete: async () => {
+      calls++;
+      return fakeReply(recover ? "user: recovered" : "é".repeat(260));
+    },
+    onError: (message) => errors.push(message),
+  });
+  try {
+    chat.log("user", "x".repeat(600));
+    const key = "0:0";
+    for (const [i, ms] of [
+      10_000,
+      20_000,
+      40_000,
+      80_000,
+      160_000,
+      SIZE_RETRY_MAX_MS,
+      SIZE_RETRY_MAX_MS,
+    ].entries()) {
+      await waitFor(() => chat.sizeRetryMs.get(key) === ms && !chat.busy.size);
+      assert.equal(calls, (i + 1) * TRIES);
+      assert.ok(chat.retryAt.get(key) > Date.now());
+      assert.equal(
+        chat.nodes.has(key),
+        false,
+        "oversized replies are never committed",
+      );
+      chat.pump();
+      await delay(5);
+      assert.equal(calls, (i + 1) * TRIES, "pump respects the deadline");
+      if (i < 6) {
+        chat.retryAt.set(key, 0); // Advance this node without waiting minutes.
+        chat.pump();
+      }
+    }
+    assert.equal(errors.length, 1, "backoff does not spam notices");
+    assert.match(errors[0], /retrying in 10s; size-failure backoff up to 300s/);
+    chat.log("user", "unrelated short message");
+    await waitFor(() => chat.nodes.has("0:1"));
+    assert.equal(calls, 7 * TRIES, "delayed nodes do not block other work");
+    recover = true;
+    chat.retryAt.set(key, 0);
+    chat.pump();
+    await buildAll(chat);
+    assert.equal(chat.nodes.get(key).text, "user: recovered");
+    assert.equal(chat.sizeRetryMs.has(key), false);
+    assert.equal(chat.retryAt.has(key), false);
+  } finally {
+    chat.close();
+  }
+});
+
+test("size backoff retries automatically and resets on a transient failure", async () => {
+  freshDir();
+  let calls = 0;
+  const chat = new OptChat(
+    dir,
+    fakeModel,
+    {
+      complete: async () => {
+        calls++;
+        if (calls <= TRIES) return fakeReply("x".repeat(600));
+        if (calls === TRIES + 1) throw new Error("socket hang up");
+        return fakeReply("user: recovered");
+      },
+      onError: () => {},
+    },
+    { retryMs: 20 },
+  );
+  try {
+    chat.log("user", "x".repeat(600));
+    await waitFor(() => chat.sizeRetryMs.has("0:0"));
+    await waitFor(() => calls === TRIES + 1);
+    assert.equal(chat.sizeRetryMs.has("0:0"), false);
+    assert.ok(chat.retryAt.get("0:0") <= Date.now() + 20);
+    await buildAll(chat);
+    assert.equal(calls, TRIES + 2);
+  } finally {
+    chat.close();
+  }
 });
 
 test("quota failures pause the compactor; resume restarts it", async () => {

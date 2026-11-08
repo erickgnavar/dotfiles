@@ -37,6 +37,13 @@ oldest-range-first order rather than waiting for the message backlog to drain.
 Compactor context still uses only the built prefix. The next turn still waits
 for every summary in its view, subject to the two-minute limit.
 
+Oversized replies are rewritten using only the shortest candidate, without the
+chat context or previous attempts. Rewrite targets tighten from 350 to 200 UTF-8
+bytes, with at most five calls per node attempt; the hard limit stays 512 bytes.
+Repeated size-limit failures retry after 10, 20, 40, 80, 160, then 300 seconds
+(capped). Other transient failures still retry after 10 seconds. Successful builds
+or resuming after a quota/auth pause clear the size backoff; it is not persisted.
+
 ## Storage
 
 The memory lives per project, in `<cwd>/.pi/optchat/`: an append-only

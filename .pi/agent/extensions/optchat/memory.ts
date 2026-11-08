@@ -42,6 +42,7 @@ export const JOBS = 8; // compactor calls running at once
 export const LEAF_WINDOW = 8; // unbuilt lines allowed before a message's node
 export const TRIES = 5; // attempts per node to get under NODE
 export const RETRY_MS = 10_000; // wait before retrying a transiently failed node
+export const SIZE_RETRY_MAX_MS = 300_000; // cap size-failure backoff at five minutes
 export const CAP = 30_000; // max characters of one tool result (head + tail kept)
 const PLACEHOLDER = "(not summarized yet: zoom it)";
 /** Quota or authentication failures are not transient: pause instead of retrying. */
@@ -101,6 +102,8 @@ export function errorText(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
 
+class SizeLimitError extends Error {}
+
 export class OptChat {
   readonly dir: string;
   root: LogMessage[] = [];
@@ -113,6 +116,7 @@ export class OptChat {
   private readonly abort = new AbortController();
   private readonly busy = new Set<string>();
   private readonly retryAt = new Map<string, number>();
+  private readonly sizeRetryMs = new Map<string, number>();
   private readonly reported = new Set<string>();
   private readonly retryTimers = new Set<ReturnType<typeof setTimeout>>();
   // Pending sets include in-flight work. Leaves retain message order even
@@ -616,6 +620,7 @@ export class OptChat {
     if (!this.paused) return;
     this.paused = false;
     this.retryAt.clear();
+    this.sizeRetryMs.clear();
     this.pump();
   }
 
@@ -706,6 +711,7 @@ export class OptChat {
         appendLine(this.dayFile("tree"), JSON.stringify(node));
       this.nodes.set(k, node);
       this.retryAt.delete(k);
+      this.sizeRetryMs.delete(k);
       this.onBuilt(l, i);
       this.fit();
     } catch (err) {
@@ -730,20 +736,30 @@ export class OptChat {
         }
       } else {
         failed = true;
+        let retryMs = this.budgets.retryMs;
+        if (err instanceof SizeLimitError) {
+          retryMs = Math.min(
+            SIZE_RETRY_MAX_MS,
+            (this.sizeRetryMs.get(k) ?? retryMs / 2) * 2,
+          );
+          this.sizeRetryMs.set(k, retryMs);
+        } else {
+          this.sizeRetryMs.delete(k);
+        }
         if (!this.reported.has(k)) {
           this.reported.add(k);
           this.hooks.onError(
-            `OptChat compactor: node ${k} failed: ${message} (retrying every ${Math.round(this.budgets.retryMs / 1000)}s)`,
+            `OptChat compactor: node ${k} failed: ${message} (retrying in ${Math.round(retryMs / 1000)}s${err instanceof SizeLimitError ? "; size-failure backoff up to 300s" : ""})`,
           );
         }
-        this.retryAt.set(k, Date.now() + this.budgets.retryMs);
+        this.retryAt.set(k, Date.now() + retryMs);
       }
     } finally {
       this.busy.delete(k);
       if (!this.paused) this.schedulePump();
     }
     if (failed && !this.paused) {
-      // No exponential backoff: the next turn waits on these (§4).
+      // Size failures back off; settle's timeout still bounds the next turn's wait.
       const at = this.retryAt.get(k);
       if (at !== undefined) {
         const timer = setTimeout(
@@ -773,14 +789,14 @@ export class OptChat {
   }
 
   /**
-   * One compactor call per node (§4): the compaction view up to the node
-   * as context, the ruler, then the task in <input>; oversized or empty
-   * replies are fed back, up to TRIES, keeping the shortest.
+   * Start with the compaction view and task. Rewrite the shortest oversized
+   * reply in isolation, tightening the target up to TRIES total calls.
+   * Empty replies before any summary retry the original task without history.
    */
   private async summarize(end: number, step: string): Promise<string> {
     const model = this.compactor;
     if (!model) throw new Error("no compactor model configured");
-    let conversation: Message[] = [
+    const initial: Message[] = [
       {
         role: "user",
         content: [
@@ -790,40 +806,38 @@ export class OptChat {
         timestamp: Date.now(),
       },
     ];
-    const tries: string[] = [];
-    let reply = await this.ask(model, conversation);
-    for (let attempts = 1; ; attempts++) {
+    let conversation = initial;
+    let shortest = "";
+    let target = 350;
+    for (let attempts = 1; attempts <= TRIES; attempts++) {
+      const reply = await this.ask(model, conversation);
       const line = assistantText(reply).trim();
-      if (line) tries.push(line);
-      if (line && (byteLength(line) <= NODE || attempts >= TRIES)) break;
-      if (!line && attempts >= TRIES) {
+      if (line && byteLength(line) <= NODE) return line;
+      if (line && (!shortest || byteLength(line) < byteLength(shortest)))
+        shortest = line;
+      if (attempts === TRIES) {
+        if (shortest)
+          throw new SizeLimitError(
+            `compactor line remains over ${NODE} bytes after ${TRIES} attempts`,
+          );
         throw new Error(
           `compactor returned an empty reply ${attempts} times (stopReason: ${reply.stopReason})`,
         );
       }
-      const feedback = line
-        ? overLimitFeedback(line, byteLength(line))
+      const feedback = shortest
+        ? overLimitFeedback(shortest, byteLength(shortest), target)
         : "That reply was empty. Output only the line.";
       conversation = [
-        ...conversation,
-        reply,
+        ...(shortest ? [] : initial),
         {
           role: "user",
           content: [{ type: "text", text: feedback }],
           timestamp: Date.now(),
         },
       ];
-      reply = await this.ask(model, conversation);
+      if (shortest) target -= 50;
     }
-    const shortest = tries.reduce((a, c) =>
-      byteLength(c) < byteLength(a) ? c : a,
-    );
-    if (byteLength(shortest) > NODE) {
-      throw new Error(
-        `compactor line remains over ${NODE} bytes after ${TRIES} attempts`,
-      );
-    }
-    return shortest;
+    throw new Error("compactor exhausted attempts");
   }
 
   private async ask(

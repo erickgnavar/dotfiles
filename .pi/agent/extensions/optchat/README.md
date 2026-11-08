@@ -42,8 +42,8 @@ for every summary in its view, subject to the two-minute limit.
 The memory lives per project, in `<cwd>/.pi/optchat/`: an append-only
 `main/` and `tree/` (one JSONL file per day), `view.json` (the saved
 views, validated and restored at start; rebuilt if missing or invalid),
-`model.txt` (saved compactor choice), `images/` (attachments), and
-`lock` (the single-writer socket). Commit it (it is the log of your
+`model.txt` (saved compactor choice), `stats.jsonl` (dated provider-usage
+records), `images/` (attachments), and `lock` (the single-writer socket). Commit it (it is the log of your
 work with the agent) or ignore it, per project.
 
 Failed log appends are rolled back when possible. Any recording failure stops
@@ -54,8 +54,12 @@ also prevent context replacement, including when enabling OptChat in an existing
 ## Use
 
 - Just chat. Nothing else to do; the memory builds itself.
-- `/optchat` — status: messages, nodes, view size, compactor, cache-read token counters.
-  Chat and compactor counters are provider-reported and reset on startup/reload.
+- `/optchat` — status: messages, nodes, view size, compactor, cumulative chat
+  and compactor calls, prompt tokens and cache-read tokens. Usage records are
+  provider-reported, start when this version is installed, and survive reloads.
+  Each response appends one dated record to `stats.jsonl`; a torn final record
+  is discarded on load. If tracking fails, memory recording continues but
+  `/optchat` warns that the counters may be incomplete.
 - `/optchat view` — write the current view to `.pi/optchat/view.txt`.
 - `/optchat note <text>` — add a note to the memory by hand.
 - `/optchat resume` — restart a paused compactor (quota/auth errors).

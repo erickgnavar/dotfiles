@@ -3,6 +3,7 @@
  */
 import assert from "node:assert/strict";
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -183,7 +184,9 @@ try {
       await session.extension.commands.get("optchat").handler("", session.ctx);
       assert.ok(
         session.notices.some((n) =>
-          n.message.includes("chat 200/300, compactor 600/900"),
+          n.message.includes(
+            "chat 1 calls, 200/300 cache-read/prompt tokens; compactor 3 calls, 600/900",
+          ),
         ),
       );
       const image = {
@@ -203,6 +206,71 @@ try {
         Buffer.from([0, 255, 1]),
       );
       assert.ok(!session.notices.some((n) => n.type === "error"));
+      const stats = readFileSync(join(cwd, ".pi/optchat/stats.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+      assert.equal(stats.length, 4);
+      assert.ok(stats.every((row) => /^\d{4}-\d{2}-\d{2}$/.test(row.date)));
+    },
+  );
+
+  await check(
+    "usage totals survive session restart without counting requests twice",
+    async (cwd, open) => {
+      const first = await open();
+      await first.emit("message_end", {
+        message: { role: "user", content: "w".repeat(700), timestamp: 1 },
+      });
+      const statsFile = join(cwd, ".pi/optchat/stats.jsonl");
+      await waitFor(
+        () =>
+          existsSync(statsFile) &&
+          readFileSync(statsFile, "utf8").includes('"kind":"compactor"'),
+      );
+      await waitFor(
+        () =>
+          JSON.parse(readFileSync(join(cwd, ".pi/optchat/view.json"), "utf8"))
+            .cviewUpTo === 1,
+      );
+      await first.emit("message_end", { message: reply("first response") });
+      await first.emit("session_shutdown");
+      const next = await open();
+      await next.extension.commands.get("optchat").handler("", next.ctx);
+      assert.ok(
+        next.notices.some((n) =>
+          n.message.includes(
+            "chat 1 calls, 200/300 cache-read/prompt tokens; compactor 1 calls, 200/300",
+          ),
+        ),
+      );
+      await next.emit("message_end", { message: reply("second response") });
+      await next.extension.commands.get("optchat").handler("", next.ctx);
+      assert.ok(
+        next.notices.some((n) =>
+          n.message.includes(
+            "chat 2 calls, 400/600 cache-read/prompt tokens; compactor 1 calls, 200/300",
+          ),
+        ),
+      );
+    },
+  );
+
+  await check(
+    "usage file errors do not stop memory recording",
+    async (cwd, open) => {
+      mkdirSync(join(cwd, ".pi/optchat/stats.jsonl"), { recursive: true });
+      const session = await open();
+      await session.emit("message_end", {
+        message: { role: "user", content: "keep recording", timestamp: 1 },
+      });
+      await session.extension.commands.get("optchat").handler("", session.ctx);
+      assert.ok(
+        session.notices.some((n) =>
+          n.message.includes("usage tracking unavailable"),
+        ),
+      );
+      assert.ok(session.notices.some((n) => n.message.includes("1 messages")));
     },
   );
 
@@ -408,10 +476,14 @@ try {
       await first.emit("session_shutdown");
 
       const restored = await open(undefined, cheaperModel);
-      await restored.extension.commands.get("optchat").handler("", restored.ctx);
-      assert.ok(restored.notices.some((n) =>
-        n.message.includes("compactor openai-codex/cheaper-model")
-      ));
+      await restored.extension.commands
+        .get("optchat")
+        .handler("", restored.ctx);
+      assert.ok(
+        restored.notices.some((n) =>
+          n.message.includes("compactor openai-codex/cheaper-model"),
+        ),
+      );
       await restored.emit("message_end", {
         message: { role: "user", content: "w".repeat(700), timestamp: 1 },
       });
@@ -421,10 +493,14 @@ try {
       process.env.OPTCHAT_MODEL = "openai-codex/subscription-model";
       try {
         const overridden = await open();
-        await overridden.extension.commands.get("optchat").handler("", overridden.ctx);
-        assert.ok(overridden.notices.some((n) =>
-          n.message.includes("compactor openai-codex/subscription-model")
-        ));
+        await overridden.extension.commands
+          .get("optchat")
+          .handler("", overridden.ctx);
+        assert.ok(
+          overridden.notices.some((n) =>
+            n.message.includes("compactor openai-codex/subscription-model"),
+          ),
+        );
       } finally {
         delete process.env.OPTCHAT_MODEL;
       }
@@ -440,15 +516,19 @@ try {
       const file = join(dir, "model.txt");
       writeFileSync(file, "openai-codex/unavailable\n");
       const session = await open();
-      assert.ok(session.notices.some((n) =>
-        n.type === "error" && n.message.includes("saved compactor")
-      ));
+      assert.ok(
+        session.notices.some(
+          (n) => n.type === "error" && n.message.includes("saved compactor"),
+        ),
+      );
       assert.equal(session.calls.length, 0);
       writeFileSync(file, "");
       const blank = await open();
-      assert.ok(blank.notices.some((n) =>
-        n.type === "error" && n.message.includes("saved compactor")
-      ));
+      assert.ok(
+        blank.notices.some(
+          (n) => n.type === "error" && n.message.includes("saved compactor"),
+        ),
+      );
     },
   );
 
@@ -461,13 +541,17 @@ try {
       await session.extension.commands
         .get("optchat")
         .handler("model openai-codex/cheaper-model", session.ctx);
-      assert.ok(session.notices.some((n) =>
-        n.message.includes("could not save compactor")
-      ));
+      assert.ok(
+        session.notices.some((n) =>
+          n.message.includes("could not save compactor"),
+        ),
+      );
       await session.extension.commands.get("optchat").handler("", session.ctx);
-      assert.ok(session.notices.some((n) =>
-        n.message.includes("compactor openai-codex/subscription-model")
-      ));
+      assert.ok(
+        session.notices.some((n) =>
+          n.message.includes("compactor openai-codex/subscription-model"),
+        ),
+      );
     },
   );
 
@@ -558,7 +642,7 @@ try {
     },
   );
 
-  console.log("\n10 integration tests passed");
+  console.log("\n12 integration tests passed");
 } finally {
   for (const [key, value] of Object.entries(savedEnv)) {
     if (value === undefined) delete process.env[key];

@@ -30,6 +30,7 @@ import {
   acquireLock,
 } from "../store.ts";
 import { NODE, RULER } from "../prompts.ts";
+import { UsageJournal } from "../usage.ts";
 
 const fakeModel = { provider: "fake", id: "fake" };
 const fakeReply = (text) => ({
@@ -954,6 +955,43 @@ test("unreadable logs fail rather than pretending memory is empty", () => {
   freshDir();
   mkdirSync(join(dir, "main", "broken.jsonl"));
   assert.throws(() => loadJsonl(join(dir, "main")));
+});
+
+test("usage journal replays totals and recovers a torn final line", () => {
+  freshDir();
+  const file = join(dir, "stats.jsonl");
+  const usage = new UsageJournal(file);
+  usage.record("chat", { input: 100, cacheRead: 200, cacheWrite: 50 });
+  usage.record("compactor", { input: 40 });
+  fs.appendFileSync(file, '{"kind":"chat","promptTokens":');
+  const reloaded = new UsageJournal(file);
+  assert.deepEqual(reloaded.totals.chat, {
+    calls: 1,
+    promptTokens: 350,
+    cacheRead: 200,
+  });
+  assert.deepEqual(reloaded.totals.compactor, {
+    calls: 1,
+    promptTokens: 40,
+    cacheRead: 0,
+  });
+  reloaded.record("chat", { input: 5 });
+  assert.deepEqual(new UsageJournal(file).totals.chat, {
+    calls: 2,
+    promptTokens: 355,
+    cacheRead: 200,
+  });
+});
+
+test("usage journal keeps a complete final record without its newline", () => {
+  freshDir();
+  const file = join(dir, "stats.jsonl");
+  writeFileSync(file, '{"kind":"chat","promptTokens":2,"cacheRead":1}');
+  const usage = new UsageJournal(file);
+  assert.equal(usage.totals.chat.calls, 1);
+  usage.record("compactor", {});
+  assert.equal(new UsageJournal(file).totals.chat.calls, 1);
+  assert.equal(new UsageJournal(file).totals.compactor.calls, 1);
 });
 
 test("image attachments preserve binary bytes and dedup by content", () => {

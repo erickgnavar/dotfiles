@@ -49,6 +49,7 @@ import {
 import { CAP, errorText, OptChat } from "./memory.ts";
 import { acquireLock, type Lock, saveImage } from "./store.ts";
 import { VIEW_DOC } from "./prompts.ts";
+import { UsageJournal } from "./usage.ts";
 
 /** Safety cap: never block a turn longer than this waiting for the compactor. */
 const SETTLE_TIMEOUT_MS = 120_000;
@@ -82,11 +83,22 @@ export default function optchat(pi: ExtensionAPI) {
     }
     return key;
   };
-  // Provider-reported prompt tokens, including cache reads/writes, this run only.
-  let chatTokens = 0;
-  let chatCacheRead = 0;
-  let compactorTokens = 0;
-  let compactorCacheRead = 0;
+  let usageJournal: UsageJournal | null = null;
+
+  function trackUsage(
+    kind: "chat" | "compactor",
+    usage: { input?: number; cacheRead?: number; cacheWrite?: number },
+    ctx: ExtensionContext,
+  ): void {
+    try {
+      usageJournal?.record(kind, usage);
+    } catch (err) {
+      ctx.ui.notify(
+        `OptChat usage tracking stopped: ${errorText(err)}`,
+        "warning",
+      );
+    }
+  }
 
   // The standalone footer owns rendering; publish the labeled compactor ID.
   function publishCompactor(): void {
@@ -136,6 +148,14 @@ export default function optchat(pi: ExtensionAPI) {
       lock = null;
       return;
     }
+    try {
+      usageJournal = new UsageJournal(path.join(dir, "stats.jsonl"));
+    } catch (err) {
+      ctx.ui.notify(
+        `OptChat usage tracking unavailable: ${errorText(err)}`,
+        "warning",
+      );
+    }
     chat = new OptChat(dir, compactor, {
       // Low reasoning: the compactor otherwise thinks for pages before (or
       // instead of) writing its one line; 8192 tokens of headroom for models
@@ -149,13 +169,7 @@ export default function optchat(pi: ExtensionAPI) {
             signal,
           })
           .result();
-        if (!signal.aborted) {
-          compactorCacheRead += reply.usage.cacheRead ?? 0;
-          compactorTokens +=
-            (reply.usage.input ?? 0) +
-            (reply.usage.cacheRead ?? 0) +
-            (reply.usage.cacheWrite ?? 0);
-        }
+        if (!signal.aborted) trackUsage("compactor", reply.usage, ctx);
         return reply;
       },
       onError: (message) => ctx.ui.notify(message, "error"),
@@ -182,7 +196,7 @@ export default function optchat(pi: ExtensionAPI) {
     anchorTs = undefined;
     anchorKey = undefined;
     recorded.clear();
-    chatTokens = chatCacheRead = compactorTokens = compactorCacheRead = 0;
+    usageJournal = null;
     chat?.close();
     chat = null;
     lock?.close();
@@ -370,11 +384,6 @@ export default function optchat(pi: ExtensionAPI) {
         chat.logText("note", `[${m.customType}] ${flattenContent(m.content)}`);
         logImages(m.content);
       } else if (m.role === "assistant") {
-        chatCacheRead += m.usage.cacheRead ?? 0;
-        chatTokens +=
-          (m.usage.input ?? 0) +
-          (m.usage.cacheRead ?? 0) +
-          (m.usage.cacheWrite ?? 0);
         // Thoughts are never logged (§2); the reply is the record.
         const text = m.content
           .filter((c): c is TextContent => c.type === "text")
@@ -385,6 +394,8 @@ export default function optchat(pi: ExtensionAPI) {
       // toolResult messages are logged by tool_execution_end, capped.
       recorded.add(messageKey(m));
     }, ctx);
+    if (event.message.role === "assistant")
+      trackUsage("chat", event.message.usage, ctx);
   });
 
   pi.on("tool_execution_start", (event, ctx) => {
@@ -523,12 +534,17 @@ export default function optchat(pi: ExtensionAPI) {
         }
       } else {
         const s = chat.stats();
+        const chatUsage = usageJournal?.totals.chat;
+        const compactorUsage = usageJournal?.totals.compactor;
         ctx.ui.notify(
           `OptChat: ${s.messages} messages, ${s.nodes} nodes, view ${s.viewBytes}B ` +
             `in ${s.parts} lines (${s.unbuilt} unbuilt${s.paused ? ", compaction PAUSED" : ""}), ` +
             `compactor ${s.compactor}, log ${chat.dir}. ` +
-            `Cache-read tokens this run: chat ${chatCacheRead}/${chatTokens}, ` +
-            `compactor ${compactorCacheRead}/${compactorTokens}.`,
+            `Cumulative usage: chat ${chatUsage?.calls ?? 0} calls, ` +
+            `${chatUsage?.cacheRead ?? 0}/${chatUsage?.promptTokens ?? 0} cache-read/prompt tokens; ` +
+            `compactor ${compactorUsage?.calls ?? 0} calls, ` +
+            `${compactorUsage?.cacheRead ?? 0}/${compactorUsage?.promptTokens ?? 0}` +
+            `${!usageJournal || !usageJournal.isWritable() ? " (usage tracking unavailable)" : ""}.`,
           "info",
         );
       }

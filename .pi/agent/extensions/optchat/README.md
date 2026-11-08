@@ -62,6 +62,9 @@ also prevent context replacement, including when enabling OptChat in an existing
   argument a picker lists the session's default available models and
   marks the current one. A change applies to later compactor calls and
   lasts until startup/reload; set `OPTCHAT_MODEL` to make it permanent.
+- With the standalone `footer` extension loaded, the compactor model ID appears
+  after the chat model's effort (`model • high • (optchat compactor) compactor-model`).
+  OptChat only publishes its model; the footer remains independent and optional.
 - The model navigates its own memory with the `zoom(id, n)` and
   `date(id)` tools.
 

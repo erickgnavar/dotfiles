@@ -11,8 +11,24 @@ Reload enables the replica again. Like any `setFooter` extension, it owns
 Pi's single custom-footer slot while enabled.
 
 `replica.ts` owns the layout; `index.ts` handles installation and lifecycle.
-No compactor display or OptChat integration is included yet. Those can be
-added later without making OptChat responsible for rendering the footer.
+When OptChat is active, its compactor model appears after the inference
+model's effort: `model • high • (optchat compactor) compactor-model`.
+Changes via `/optchat model`
+update the suffix immediately. Without OptChat, the default layout is unchanged.
+
+## Model-line contributions
+
+Other extensions can publish a suffix without importing or owning this footer:
+
+```ts
+pi.events.emit("footer:model-suffix", { id: "my-extension", text: "extra" });
+```
+
+Suffixes are appended on the right after the effort, separated by ` • `.
+Publish the same ID to replace its text, or omit `text` to remove it.
+Producers should republish on `footer:request-model-suffix` (sent at session
+start) and clear their suffix on shutdown or disable. This works regardless
+of extension startup order. Contributions use the existing width-fitting rules.
 
 The public extension API does not expose the live virtual-model routing
 state, so the default footer's routed-model arrow is not replicated.

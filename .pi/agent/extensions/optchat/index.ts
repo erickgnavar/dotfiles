@@ -71,6 +71,18 @@ export default function optchat(pi: ExtensionAPI) {
   let compactorTokens = 0;
   let compactorCacheRead = 0;
 
+  // The standalone footer owns rendering; publish the labeled compactor ID.
+  function publishCompactor(): void {
+    pi.events.emit("footer:model-suffix", {
+      id: "optchat",
+      text:
+        active && compactorModel
+          ? `(optchat compactor) ${compactorModel.id}`
+          : undefined,
+    });
+  }
+  pi.events.on("footer:request-model-suffix", publishCompactor);
+
   // ------------------------------------------------------------ lifecycle
 
   pi.on("session_start", async (_event, ctx) => {
@@ -127,6 +139,7 @@ export default function optchat(pi: ExtensionAPI) {
       chat.load();
       active = true;
       chat.pump();
+      publishCompactor();
     } catch (err) {
       cleanup();
       ctx.ui.notify(`OptChat disabled: ${errorText(err)}`, "error");
@@ -149,6 +162,8 @@ export default function optchat(pi: ExtensionAPI) {
     chat = null;
     lock?.close();
     lock = null;
+    compactorModel = undefined;
+    publishCompactor();
   }
 
   // ----------------------------------------------------------------- turns
@@ -292,6 +307,7 @@ export default function optchat(pi: ExtensionAPI) {
       active = false;
       viewFrozen = null;
       chat?.close();
+      publishCompactor();
       ctx.ui.notify(
         `OptChat recording stopped; keeping pi's transcript: ${errorText(err)}. /reload after fixing storage.`,
         "error",
@@ -471,6 +487,7 @@ export default function optchat(pi: ExtensionAPI) {
         } else {
           chat.setCompactor(model);
           compactorModel = model;
+          publishCompactor();
           const paused = chat.isPaused() ? "; paused; use /optchat resume" : "";
           ctx.ui.notify(
             `OptChat compactor: ${model.provider}/${model.id}${paused}.`,

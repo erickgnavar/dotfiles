@@ -72,6 +72,7 @@ export class ReplicaFooter {
     private readonly data: ReadonlyFooterDataProvider,
     private readonly theme: Pick<Theme, "fg" | "bold">,
     private readonly autoCompactEnabled: () => boolean,
+    private readonly modelSuffix: () => string = () => "",
   ) {}
 
   invalidate(): void {
@@ -144,10 +145,13 @@ export class ReplicaFooter {
   /** Separate model formatting so later additions need not change the stats layout. */
   private modelText(): string {
     const model = this.ctx.model;
-    const name = model?.id || "no-model";
-    if (!model?.reasoning) return name;
-    const level = this.ctx.thinkingLevel || "off";
-    return level === "off" ? `${name} • thinking off` : `${name} • ${level}`;
+    let text = model?.id || "no-model";
+    if (model?.reasoning) {
+      const level = this.ctx.thinkingLevel || "off";
+      text += level === "off" ? " • thinking off" : ` • ${level}`;
+    }
+    const suffix = this.modelSuffix();
+    return suffix ? `${text} • ${suffix}` : text;
   }
 
   render(width: number): string[] {

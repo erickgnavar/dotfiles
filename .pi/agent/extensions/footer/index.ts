@@ -8,6 +8,17 @@ import { ReplicaFooter } from "./replica.ts";
 export default function footerExtension(pi: ExtensionAPI) {
   let enabled = true;
   let requestRender: (() => void) | undefined;
+  const modelSuffixes = new Map<string, string>();
+
+  pi.events.on("footer:model-suffix", (data) => {
+    const update = data as { id?: unknown; text?: unknown } | null;
+    if (!update || typeof update.id !== "string" || !update.id) return;
+    if (update.text !== undefined && typeof update.text !== "string") return;
+    const text = update.text?.replace(/[\r\n\t]/g, " ").trim();
+    if (text) modelSuffixes.set(update.id, text);
+    else modelSuffixes.delete(update.id);
+    requestRender?.();
+  });
 
   function install(ctx: ExtensionContext): void {
     if (ctx.mode !== "tui") return;
@@ -17,6 +28,7 @@ export default function footerExtension(pi: ExtensionAPI) {
         data,
         theme,
         () => pi.getSettings().compaction?.enabled ?? true,
+        () => [...modelSuffixes.values()].join(" • "),
       );
       const render = () => tui.requestRender();
       requestRender = render;
@@ -33,11 +45,15 @@ export default function footerExtension(pi: ExtensionAPI) {
   }
 
   pi.on("session_start", (_event, ctx) => {
+    modelSuffixes.clear();
     if (enabled) install(ctx);
+    // Request current values even when a producer started before this footer.
+    pi.events.emit("footer:request-model-suffix", {});
   });
   pi.on("model_select", () => requestRender?.());
   pi.on("thinking_level_select", () => requestRender?.());
   pi.on("session_shutdown", (_event, ctx) => {
+    modelSuffixes.clear();
     if (enabled && ctx.mode === "tui") ctx.ui.setFooter(undefined);
   });
   pi.registerCommand("footer", {

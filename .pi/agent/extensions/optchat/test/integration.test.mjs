@@ -8,6 +8,7 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
+  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -33,6 +34,7 @@ const model = {
   id: "subscription-model",
   api: "openai-codex-responses",
 };
+const cheaperModel = { ...model, id: "cheaper-model" };
 const savedEnv = Object.fromEntries(
   ["OPTCHAT_DIR", "OPTCHAT_DISABLE", "OPTCHAT_MODEL"].map((key) => [
     key,
@@ -61,6 +63,7 @@ async function waitFor(predicate) {
 async function start(
   cwd,
   respond = () => reply("user: summarized " + "x".repeat(300)),
+  expectedModel = model,
 ) {
   const notices = [];
   const calls = [];
@@ -70,8 +73,8 @@ async function start(
     streamSimple(selected, context, options) {
       assert.equal(
         selected,
-        model,
-        "use the session model, including subscription auth",
+        expectedModel,
+        "use the selected compactor model, including subscription auth",
       );
       assert.equal(options.reasoning, "low");
       assert.equal(options.maxTokens, 8192);
@@ -81,6 +84,9 @@ async function start(
       return stream;
     },
   });
+  registry.find = (provider, id) =>
+    [model, cheaperModel].find((m) => m.provider === provider && m.id === id);
+  registry.getAvailable = () => [model, cheaperModel];
   const ctx = {
     cwd,
     model,
@@ -106,8 +112,8 @@ async function check(name, run) {
   const cwd = mkdtempSync(join(tmpdir(), "optchat-integration-"));
   const sessions = [];
   try {
-    await run(cwd, async (respond) => {
-      const session = await start(cwd, respond);
+    await run(cwd, async (respond, expectedModel) => {
+      const session = await start(cwd, respond, expectedModel);
       sessions.push(session);
       return session;
     });
@@ -391,6 +397,81 @@ try {
   );
 
   await check(
+    "compactor choice survives restart, while environment override takes precedence",
+    async (cwd, open) => {
+      const first = await open();
+      await first.extension.commands
+        .get("optchat")
+        .handler("model openai-codex/cheaper-model", first.ctx);
+      const file = join(cwd, ".pi/optchat/model.txt");
+      assert.equal(readFileSync(file, "utf8"), "openai-codex/cheaper-model\n");
+      await first.emit("session_shutdown");
+
+      const restored = await open(undefined, cheaperModel);
+      await restored.extension.commands.get("optchat").handler("", restored.ctx);
+      assert.ok(restored.notices.some((n) =>
+        n.message.includes("compactor openai-codex/cheaper-model")
+      ));
+      await restored.emit("message_end", {
+        message: { role: "user", content: "w".repeat(700), timestamp: 1 },
+      });
+      await waitFor(() => restored.calls.length === 1);
+      await restored.emit("session_shutdown");
+
+      process.env.OPTCHAT_MODEL = "openai-codex/subscription-model";
+      try {
+        const overridden = await open();
+        await overridden.extension.commands.get("optchat").handler("", overridden.ctx);
+        assert.ok(overridden.notices.some((n) =>
+          n.message.includes("compactor openai-codex/subscription-model")
+        ));
+      } finally {
+        delete process.env.OPTCHAT_MODEL;
+      }
+      assert.equal(readFileSync(file, "utf8"), "openai-codex/cheaper-model\n");
+    },
+  );
+
+  await check(
+    "unavailable saved compactor never silently falls back to the session model",
+    async (cwd, open) => {
+      const dir = join(cwd, ".pi/optchat");
+      mkdirSync(dir, { recursive: true });
+      const file = join(dir, "model.txt");
+      writeFileSync(file, "openai-codex/unavailable\n");
+      const session = await open();
+      assert.ok(session.notices.some((n) =>
+        n.type === "error" && n.message.includes("saved compactor")
+      ));
+      assert.equal(session.calls.length, 0);
+      writeFileSync(file, "");
+      const blank = await open();
+      assert.ok(blank.notices.some((n) =>
+        n.type === "error" && n.message.includes("saved compactor")
+      ));
+    },
+  );
+
+  await check(
+    "failed compactor save leaves the current selection unchanged",
+    async (cwd, open) => {
+      const session = await open();
+      const dir = join(cwd, ".pi/optchat");
+      mkdirSync(join(dir, "model.txt.tmp"));
+      await session.extension.commands
+        .get("optchat")
+        .handler("model openai-codex/cheaper-model", session.ctx);
+      assert.ok(session.notices.some((n) =>
+        n.message.includes("could not save compactor")
+      ));
+      await session.extension.commands.get("optchat").handler("", session.ctx);
+      assert.ok(session.notices.some((n) =>
+        n.message.includes("compactor openai-codex/subscription-model")
+      ));
+    },
+  );
+
+  await check(
     "custom-triggered runs preserve context without a prompt",
     async (_cwd, open) => {
       const session = await open();
@@ -477,7 +558,7 @@ try {
     },
   );
 
-  console.log("\n7 integration tests passed");
+  console.log("\n10 integration tests passed");
 } finally {
   for (const [key, value] of Object.entries(savedEnv)) {
     if (value === undefined) delete process.env[key];

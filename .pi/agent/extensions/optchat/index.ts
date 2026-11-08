@@ -117,7 +117,15 @@ export default function optchat(pi: ExtensionAPI) {
       ctx.ui.notify(`OptChat disabled: ${errorText(err)}`, "error");
       return;
     }
-    const compactor = resolveCompactor(ctx);
+    let compactor: Model<any> | undefined;
+    try {
+      compactor = resolveCompactor(ctx, dir);
+    } catch (err) {
+      ctx.ui.notify(`OptChat disabled: ${errorText(err)}`, "error");
+      lock.close();
+      lock = null;
+      return;
+    }
     compactorModel = compactor;
     if (!compactor) {
       ctx.ui.notify(
@@ -495,6 +503,15 @@ export default function optchat(pi: ExtensionAPI) {
         } else if (!model) {
           ctx.ui.notify("Compactor unchanged.", "info");
         } else {
+          try {
+            saveCompactor(chat.dir, model);
+          } catch (err) {
+            ctx.ui.notify(
+              `OptChat: could not save compactor: ${errorText(err)}`,
+              "error",
+            );
+            return;
+          }
           chat.setCompactor(model);
           compactorModel = model;
           publishCompactor();
@@ -521,13 +538,38 @@ export default function optchat(pi: ExtensionAPI) {
 
 // ----------------------------------------------------------------- helpers
 
-/** Use the session's model unless OPTCHAT_MODEL explicitly selects "provider/model". */
-function resolveCompactor(ctx: ExtensionContext): Model<any> | undefined {
-  const pref = process.env.OPTCHAT_MODEL;
-  if (!pref) return ctx.model;
+/** Prefer the environment, then the saved choice, then the session model. */
+function resolveCompactor(
+  ctx: ExtensionContext,
+  dir: string,
+): Model<any> | undefined {
+  const override = process.env.OPTCHAT_MODEL;
+  let pref = override;
+  if (!pref) {
+    try {
+      pref = fs.readFileSync(path.join(dir, "model.txt"), "utf8").trim();
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+    }
+  }
+  if (pref === undefined) return ctx.model;
   const slash = pref.indexOf("/");
-  if (slash <= 0) return undefined;
-  return ctx.modelRegistry.find(pref.slice(0, slash), pref.slice(slash + 1));
+  const model =
+    slash > 0
+      ? ctx.modelRegistry.find(pref.slice(0, slash), pref.slice(slash + 1))
+      : undefined;
+  if (!model && !override)
+    throw new Error(
+      `saved compactor "${pref}" is unavailable; fix or remove ${path.join(dir, "model.txt")}`,
+    );
+  return model;
+}
+
+function saveCompactor(dir: string, model: Model<any>): void {
+  const file = path.join(dir, "model.txt");
+  const tmp = `${file}.tmp`;
+  fs.writeFileSync(tmp, `${model.provider}/${model.id}\n`);
+  fs.renameSync(tmp, file);
 }
 
 /** Resolve "provider/model" for /optchat model against known chat models. */

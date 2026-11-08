@@ -41,7 +41,8 @@ for every summary in its view, subject to the two-minute limit.
 
 The memory lives per project, in `<cwd>/.pi/optchat/`: an append-only
 `main/` and `tree/` (one JSONL file per day), `view.json` (the saved
-views, validated and restored at start; rebuilt if missing or invalid), `images/` (attachments), and
+views, validated and restored at start; rebuilt if missing or invalid),
+`model.txt` (saved compactor choice), `images/` (attachments), and
 `lock` (the single-writer socket). Commit it (it is the log of your
 work with the agent) or ignore it, per project.
 
@@ -62,8 +63,8 @@ also prevent context replacement, including when enabling OptChat in an existing
   argument a picker lists the session's default available models and
   marks the current one. Type to fuzzy-filter by provider or model; use arrows
   to navigate, Enter to select, Escape to cancel (terminal UI).
-  A change applies to later compactor calls and
-  lasts until startup/reload; set `OPTCHAT_MODEL` to make it permanent.
+  A change applies to later compactor calls and persists across reloads in
+  `model.txt`. Set `OPTCHAT_MODEL` to override the saved choice at startup.
 - With the standalone `footer` extension loaded, the compactor model ID appears
   after the chat model's effort (`model • high • (optchat compactor) compactor-model`).
   OptChat only publishes its model; the footer remains independent and optional.
@@ -75,8 +76,12 @@ also prevent context replacement, including when enabling OptChat in an existing
 | Variable | Default | Meaning |
 |---|---|---|
 | `OPTCHAT_DIR` | `<cwd>/.pi/optchat` | Where the log lives |
-| `OPTCHAT_MODEL` | Session model at startup/reload | Compactor override, `provider/model`; change at runtime with `/optchat model` |
+| `OPTCHAT_MODEL` | Saved choice, then session model | Compactor override, `provider/model`; change the saved choice with `/optchat model` |
 | `OPTCHAT_DISABLE` | unset | Any value turns the memory off |
+
+If a saved model is unavailable, OptChat disables itself rather than silently
+falling back to the session model. Fix or remove `model.txt` to restore the
+session-model default.
 
 Only one pi process writes a log (a Unix-socket lock); a second one on
 the same project runs with the memory disabled. Stale sockets are not automatically

@@ -47,6 +47,8 @@
 
   services.sunshine = {
     enable = true;
+    # Boot start disabled: start on demand with `systemctl --user start sunshine`.
+    autoStart = false;
     openFirewall = true;
     capSysAdmin = true; # Required for DRM/KMS capture on Wayland.
     settings = {

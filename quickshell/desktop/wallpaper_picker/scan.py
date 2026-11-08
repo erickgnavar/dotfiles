@@ -4,13 +4,35 @@
 import hashlib
 import json
 import os
+import signal
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 IMAGES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".avif"}
-VIDEOS = {".mp4", ".mkv", ".webm", ".mov", ".avi"}
+VIDEOS = {".mp4", ".mkv", ".webm", ".mov", ".avi", ".m4v"}
+
+# Quickshell only signals this process directly. FFmpeg children run in their
+# own process groups, and a shutdown signal terminates those groups here so
+# closing or reopening the picker cannot leave media decoders behind.
+_children = []
+_stopping = False
+
+
+def terminate_children():
+    for job in list(_children):
+        try:
+            os.killpg(job.pid, signal.SIGTERM)
+        except (ProcessLookupError, PermissionError):
+            pass
+
+
+def cancel_children(signum, frame):
+    global _stopping
+    _stopping = True
+    terminate_children()
+    sys.exit(0)
 
 
 def emit(entry):
@@ -24,9 +46,32 @@ def small_thumbnail_path(path, cache):
     return cache / (key.hexdigest() + ".png")
 
 
+def run(command, target):
+    global _stopping
+    if _stopping:
+        return None
+    temporary = target.with_suffix(".tmp.png")
+    job = subprocess.Popen(
+        command + [str(temporary)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    _children.append(job)
+    status = job.wait()
+    try:
+        _children.remove(job)
+    except ValueError:
+        pass
+    if status != 0 or _stopping:
+        temporary.unlink(missing_ok=True)
+        return None
+    temporary.replace(target)
+    return str(target)
+
+
 def thumbnail(path, target, video, source):
     if not target.is_file():
-        temporary = target.with_suffix(".tmp.png")
         command = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error"]
         if video and source is None:
             command += ["-ss", "1"]
@@ -37,47 +82,26 @@ def thumbnail(path, target, video, source):
             "scale=200:120:force_original_aspect_ratio=decrease",
             "-frames:v",
             "1",
-            str(temporary),
         ]
-        result = subprocess.run(
-            command,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-        if result.returncode != 0:
-            temporary.unlink(missing_ok=True)
-            return None
-        temporary.replace(target)
+        return run(command, target)
     return str(target)
 
 
 def video_preview(path, target):
-    temporary = target.with_suffix(".tmp.png")
-    result = subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-hide_banner",
-            "-loglevel",
-            "error",
-            "-ss",
-            "1",
-            "-i",
-            str(path),
-            "-frames:v",
-            "1",
-            str(temporary),
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    )
-    if result.returncode != 0:
-        temporary.unlink(missing_ok=True)
-        return None
-    temporary.replace(target)
-    return str(target)
+    command = [
+        "ffmpeg",
+        "-y",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-ss",
+        "1",
+        "-i",
+        str(path),
+        "-frames:v",
+        "1",
+    ]
+    return run(command, target)
 
 
 def main(directory):
@@ -85,6 +109,8 @@ def main(directory):
         Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
         / "wallpaper-picker"
     )
+    signal.signal(signal.SIGTERM, cancel_children)
+    signal.signal(signal.SIGINT, cancel_children)
     pending = []
     previews = []
     try:
@@ -144,7 +170,7 @@ def main(directory):
 
     if pending or previews:
         cache.mkdir(parents=True, exist_ok=True)
-        with ThreadPoolExecutor(max_workers=2) as pool:
+        with ThreadPoolExecutor(max_workers=2, thread_name_prefix="wallpaper") as pool:
             futures = {
                 pool.submit(thumbnail, path, target, video, source): (path, "thumbnail")
                 for path, target, video, source in pending

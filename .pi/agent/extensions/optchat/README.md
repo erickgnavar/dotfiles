@@ -46,6 +46,10 @@ views, validated and restored at start; rebuilt if missing or invalid),
 records), `images/` (attachments), and `lock` (the single-writer socket). Commit it (it is the log of your
 work with the agent) or ignore it, per project.
 
+Verbatim level-0 nodes (up to 512 UTF-8 bytes including the kind prefix) are
+reconstructed from `main/` on load instead of appended to `tree/`. Summaries
+and merges remain durable; existing tree files remain readable and are not pruned.
+
 Failed log appends are rolled back when possible. Any recording failure stops
 recording, compaction, and context replacement until `/reload`; Pi keeps its transcript.
 Reload does not recover messages missing from the archive. Unarchived prior messages

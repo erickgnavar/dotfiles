@@ -635,7 +635,7 @@ test("restored compaction view resumes an unfinished batch below the ceiling", a
 
 test("startup catch-up stops at an unbuilt leaf and later fills the suffix", async () => {
   const chat = fresh();
-  for (let i = 0; i < 3; i++) chat.log("user", `m${i}`);
+  for (let i = 0; i < 3; i++) chat.log("user", `m${i} ` + "x".repeat(600));
   await waitFor(() => chat.nodes.size === 4);
   chat.close();
   const treeFile = join(dir, "tree", `${localDay()}.jsonl`);
@@ -673,7 +673,7 @@ test("startup catch-up stops at an unbuilt leaf and later fills the suffix", asy
       [0, 2],
     ],
   );
-  assert.equal(calls, 0);
+  assert.equal(calls, 2, "rebuild the missing leaf and its merge");
   restored.close();
 });
 
@@ -860,9 +860,78 @@ test("close failure after a committed append cannot lead to id reuse", async () 
   restored.close();
 });
 
+test("verbatim leaves skip tree writes and restore saved views and zoom", async () => {
+  const chat = fresh();
+  chat.log("user", "é".repeat(253)); // Exactly 512 bytes including "user: ".
+  await buildAll(chat);
+  assert.equal(readdirSync(join(dir, "tree")).length, 0);
+  const view = chat.renderView();
+  const zoom = chat.zoom(0, 1);
+  chat.close();
+  const restored = new OptChat(dir, fakeModel, fakeHooks());
+  restored.load();
+  assert.equal(restored.nodes.get("0:0").size, 512);
+  assert.equal(restored.renderView(), view);
+  assert.deepEqual(restored.zoom(0, 1), zoom);
+  assert.equal(restored.cviewUpTo, 1);
+  await buildAll(restored);
+  assert.equal(calls, 0);
+  assert.equal(readdirSync(join(dir, "tree")).length, 0);
+  restored.close();
+});
+
+test("derived leaves rebuild missing views and merge with durable summaries", async () => {
+  const chat = fresh();
+  chat.log("user", "short");
+  chat.log("user", "é".repeat(254)); // Above NODE in bytes, not characters.
+  await buildAll(chat);
+  const treeFile = join(dir, "tree", `${localDay()}.jsonl`);
+  const persisted = readFileSync(treeFile, "utf8");
+  const nodes = persisted.trim().split("\n").map(JSON.parse);
+  assert.deepEqual(
+    nodes.map((n) => [n.l, n.i]),
+    [
+      [0, 1],
+      [1, 0],
+    ],
+  );
+  const zoom = chat.zoom(0, 2);
+  chat.close();
+  rmSync(join(dir, "view.json"));
+  const restored = new OptChat(dir, fakeModel, fakeHooks());
+  restored.load();
+  assert.equal(restored.nodes.get("0:0").text, "user: short");
+  assert.deepEqual(restored.zoom(0, 2), zoom);
+  await buildAll(restored);
+  assert.equal(
+    calls,
+    0,
+    "reload reuses durable summaries without provider calls",
+  );
+  assert.equal(readFileSync(treeFile, "utf8"), persisted);
+  restored.close();
+});
+
+test("legacy durable leaves remain readable without duplicate writes", async () => {
+  const chat = fresh();
+  chat.log("user", "legacy");
+  await buildAll(chat);
+  chat.close();
+  const treeFile = join(dir, "tree", `${localDay()}.jsonl`);
+  const legacy = { l: 0, i: 0, text: "user: legacy", size: 12 };
+  writeFileSync(treeFile, JSON.stringify(legacy) + "\n");
+  const restored = new OptChat(dir, fakeModel, fakeHooks());
+  restored.load();
+  assert.deepEqual(restored.nodes.get("0:0"), legacy);
+  await buildAll(restored);
+  assert.equal(readFileSync(treeFile, "utf8"), JSON.stringify(legacy) + "\n");
+  assert.equal(calls, 0);
+  restored.close();
+});
+
 test("failed tree fsync rolls back before the compactor retries", async () => {
   const chat = fresh({ retryMs: 20 });
-  chat.log("user", "durable message");
+  chat.log("user", "durable message".repeat(50));
   let syncs = 0;
   await withFsFaults(
     {
@@ -885,7 +954,7 @@ test("failed tree fsync rolls back before the compactor retries", async () => {
 
 test("uncertain tree append stops both recording and compaction", async () => {
   const chat = fresh({ retryMs: 20 });
-  chat.log("user", "durable message");
+  chat.log("user", "durable message".repeat(50));
   await withFsFaults(
     {
       fsyncSync() {
@@ -914,10 +983,7 @@ test("uncertain tree append stops both recording and compaction", async () => {
   );
   const restored = new OptChat(dir, fakeModel, fakeHooks());
   restored.load();
-  assert.equal(
-    restored.nodes.get("0:0").text,
-    `user: ${restored.root[0].text}`,
-  );
+  assert.equal(restored.nodes.get("0:0").text, "line " + "x".repeat(300));
   restored.close();
 });
 
@@ -925,14 +991,14 @@ test("failed tree writes leave nodes unbuilt and retry durably", async () => {
   const chat = fresh({ retryMs: 20 });
   const file = join(dir, "tree", `${localDay()}.jsonl`);
   mkdirSync(file);
-  chat.log("user", "durable message");
+  chat.log("user", "durable message".repeat(50));
   await waitFor(() => errors.length > 0);
   assert.equal(chat.nodes.size, 0);
   rmSync(file, { recursive: true });
   await buildAll(chat);
   assert.equal(
     JSON.parse(readFileSync(file, "utf8")).text,
-    "user: durable message",
+    "line " + "x".repeat(300),
   );
   chat.close();
 });

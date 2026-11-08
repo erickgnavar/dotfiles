@@ -226,6 +226,15 @@ export class OptChat {
         size: n.size ?? byteLength(n.text),
       });
     }
+    // Short leaves are recoverable from the main log, without a tree append.
+    // Keep legacy leaves when present, including their saved text.
+    for (const m of this.root) {
+      const k = nodeKey(0, m.i);
+      const text = `${m.kind}: ${m.text}`;
+      const size = byteLength(text);
+      if (!this.nodes.has(k) && size <= NODE)
+        this.nodes.set(k, { l: 0, i: m.i, text, size });
+    }
     // The view is saved in view.json and restored, never rebuilt (§3.2):
     // a rebuilt view differs from the live one, and every cache entry dies.
     if (!this.loadSavedView()) {
@@ -691,7 +700,10 @@ export class OptChat {
       }
       if (this.closed || this.abort.signal.aborted) return;
       const node: TreeNode = { l, i, text, size: byteLength(text) };
-      appendLine(this.dayFile("tree"), JSON.stringify(node));
+      // Verbatim leaves already live in main; only summaries and merges
+      // need their own durable record.
+      if (l !== 0 || text !== `${this.root[i].kind}: ${this.root[i].text}`)
+        appendLine(this.dayFile("tree"), JSON.stringify(node));
       this.nodes.set(k, node);
       this.retryAt.delete(k);
       this.onBuilt(l, i);

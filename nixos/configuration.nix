@@ -37,6 +37,8 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  # No cellular modem; skip the optional resident daemon NetworkManager enables by default.
+  networking.modemmanager.enable = false;
 
   # Enable Bluetooth and the Blueman applet service.
   hardware.bluetooth.enable = true;

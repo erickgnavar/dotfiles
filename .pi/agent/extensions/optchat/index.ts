@@ -86,12 +86,18 @@ export default function optchat(pi: ExtensionAPI) {
   let usageJournal: UsageJournal | null = null;
 
   function trackUsage(
-    kind: "chat" | "compactor",
-    usage: { input?: number; cacheRead?: number; cacheWrite?: number },
+    kind: "chat" | "compactor" | "node",
+    usage: {
+      input?: number;
+      output?: number;
+      cacheRead?: number;
+      cacheWrite?: number;
+    },
     ctx: ExtensionContext,
+    rewrite?: boolean,
   ): void {
     try {
-      usageJournal?.record(kind, usage);
+      usageJournal?.record(kind, usage, rewrite);
     } catch (err) {
       ctx.ui.notify(
         `OptChat usage tracking stopped: ${errorText(err)}`,
@@ -160,7 +166,7 @@ export default function optchat(pi: ExtensionAPI) {
       // Low reasoning: the compactor otherwise thinks for pages before (or
       // instead of) writing its one line; 8192 tokens of headroom for models
       // that ignore the reasoning level.
-      complete: async (model, context, signal) => {
+      complete: async (model, context, signal, rewrite) => {
         const reply = await ctx.modelRegistry
           .streamSimple(model, context, {
             maxTokens: 8192,
@@ -169,10 +175,11 @@ export default function optchat(pi: ExtensionAPI) {
             signal,
           })
           .result();
-        if (!signal.aborted) trackUsage("compactor", reply.usage, ctx);
+        if (!signal.aborted) trackUsage("compactor", reply.usage, ctx, rewrite);
         return reply;
       },
       onError: (message) => ctx.ui.notify(message, "error"),
+      onNodeBuilt: () => trackUsage("node", {}, ctx),
     });
     try {
       chat.load();
@@ -536,6 +543,13 @@ export default function optchat(pi: ExtensionAPI) {
         const s = chat.stats();
         const chatUsage = usageJournal?.totals.chat;
         const compactorUsage = usageJournal?.totals.compactor;
+        const efficiency = usageJournal?.efficiency;
+        const rewriteRate = efficiency?.calls
+          ? ((100 * efficiency.rewrites) / efficiency.calls).toFixed(1)
+          : "0.0";
+        const tokensPerNode = efficiency?.nodes
+          ? Math.round(efficiency.tokens / efficiency.nodes)
+          : "n/a";
         ctx.ui.notify(
           `OptChat: ${s.messages} messages, ${s.nodes} nodes, view ${s.viewBytes}B ` +
             `in ${s.parts} lines (${s.unbuilt} unbuilt${s.paused ? ", compaction PAUSED" : ""}), ` +
@@ -543,7 +557,10 @@ export default function optchat(pi: ExtensionAPI) {
             `Cumulative usage: chat ${chatUsage?.calls ?? 0} calls, ` +
             `${chatUsage?.cacheRead ?? 0}/${chatUsage?.promptTokens ?? 0} cache-read/prompt tokens; ` +
             `compactor ${compactorUsage?.calls ?? 0} calls, ` +
-            `${compactorUsage?.cacheRead ?? 0}/${compactorUsage?.promptTokens ?? 0}` +
+            `${compactorUsage?.cacheRead ?? 0}/${compactorUsage?.promptTokens ?? 0}. ` +
+            `Compaction efficiency (since tracking began): ` +
+            `${efficiency?.rewrites ?? 0}/${efficiency?.calls ?? 0} rewrite calls (${rewriteRate}%), ` +
+            `${efficiency?.nodes ?? 0} model-built nodes, ${tokensPerNode} tokens/node (prompt + output)` +
             `${!usageJournal || !usageJournal.isWritable() ? " (usage tracking unavailable)" : ""}.`,
           "info",
         );

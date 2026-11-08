@@ -8,7 +8,12 @@ export interface UsageTotal {
 }
 
 type Kind = "chat" | "compactor";
-type Tokens = { input?: number; cacheRead?: number; cacheWrite?: number };
+type Tokens = {
+  input?: number;
+  output?: number;
+  cacheRead?: number;
+  cacheWrite?: number;
+};
 
 const empty = (): UsageTotal => ({ calls: 0, promptTokens: 0, cacheRead: 0 });
 
@@ -18,6 +23,7 @@ export class UsageJournal {
     chat: empty(),
     compactor: empty(),
   };
+  readonly efficiency = { calls: 0, rewrites: 0, tokens: 0, nodes: 0 };
   private writable = true;
   private readonly file: string;
 
@@ -55,20 +61,39 @@ export class UsageJournal {
     for (const line of text.split("\n")) {
       if (!line) continue;
       const entry = JSON.parse(line) as {
-        kind?: Kind;
+        kind?: Kind | "node";
         promptTokens?: number;
         cacheRead?: number;
+        rewrite?: boolean;
+        outputTokens?: number;
       };
       if (
-        (entry.kind !== "chat" && entry.kind !== "compactor") ||
+        (entry.kind !== "chat" &&
+          entry.kind !== "compactor" &&
+          entry.kind !== "node") ||
         typeof entry.promptTokens !== "number" ||
         !Number.isSafeInteger(entry.promptTokens) ||
         entry.promptTokens < 0 ||
         typeof entry.cacheRead !== "number" ||
         !Number.isSafeInteger(entry.cacheRead) ||
-        entry.cacheRead < 0
+        entry.cacheRead < 0 ||
+        (entry.rewrite !== undefined &&
+          (entry.kind !== "compactor" ||
+            typeof entry.rewrite !== "boolean" ||
+            !Number.isSafeInteger(entry.outputTokens) ||
+            (entry.outputTokens ?? -1) < 0))
       )
         throw new Error(`invalid usage record in ${file}`);
+      if (entry.kind === "node") {
+        this.efficiency.nodes++;
+        continue;
+      }
+      if (entry.rewrite !== undefined) {
+        this.efficiency.calls++;
+        this.efficiency.rewrites += Number(entry.rewrite);
+        this.efficiency.tokens +=
+          entry.promptTokens + (entry.outputTokens ?? 0);
+      }
       const total = this.totals[entry.kind];
       total.calls++;
       total.promptTokens += entry.promptTokens;
@@ -76,14 +101,23 @@ export class UsageJournal {
     }
   }
 
-  record(kind: Kind, usage: Tokens): void {
+  record(kind: Kind | "node", usage: Tokens = {}, rewrite?: boolean): void {
     const promptTokens =
       (usage.input ?? 0) + (usage.cacheRead ?? 0) + (usage.cacheWrite ?? 0);
     const cacheRead = usage.cacheRead ?? 0;
-    const total = this.totals[kind];
-    total.calls++;
-    total.promptTokens += promptTokens;
-    total.cacheRead += cacheRead;
+    if (kind === "node") {
+      this.efficiency.nodes++;
+    } else {
+      const total = this.totals[kind];
+      total.calls++;
+      total.promptTokens += promptTokens;
+      total.cacheRead += cacheRead;
+      if (kind === "compactor" && rewrite !== undefined) {
+        this.efficiency.calls++;
+        this.efficiency.rewrites += Number(rewrite);
+        this.efficiency.tokens += promptTokens + (usage.output ?? 0);
+      }
+    }
     if (!this.writable) return;
     try {
       appendLine(
@@ -93,6 +127,9 @@ export class UsageJournal {
           kind,
           promptTokens,
           cacheRead,
+          ...(kind === "compactor" && rewrite !== undefined
+            ? { rewrite, outputTokens: usage.output ?? 0 }
+            : {}),
         }),
       );
     } catch (err) {

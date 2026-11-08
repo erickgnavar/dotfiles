@@ -68,8 +68,15 @@ also prevent context replacement, including when enabling OptChat in an existing
 - `/optchat` — status: messages, nodes, view size, compactor, cumulative chat
   and compactor calls, prompt tokens and cache-read tokens. Usage records are
   provider-reported, start when this version is installed, and survive reloads.
-  Each response appends one dated record to `stats.jsonl`; a torn final record
-  is discarded on load. If tracking fails, memory recording continues but
+  Compaction efficiency also shows rewrite calls / measured calls, their percentage,
+  successful model-built nodes, and amortized tokens per node (prompt + output,
+  including failed attempts). Empty-response retries are not rewrites; verbatim
+  leaves and free merges are not model-built nodes. Efficiency starts with this
+  version, excluding older usage records without rewrite metadata; zero successful
+  nodes displays `n/a` tokens/node. These counters also survive reloads.
+  Each response and successful model-built node appends one dated record to
+  `stats.jsonl`; a torn final record is discarded on load. Node and usage records
+  are separate writes, so a crash between them can leave efficiency approximate. If tracking fails, memory recording continues but
   `/optchat` warns that the counters may be incomplete.
 - `/optchat view` — write the current view to `.pi/optchat/view.txt`.
 - `/optchat note <text>` — add a note to the memory by hand.

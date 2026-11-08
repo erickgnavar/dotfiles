@@ -210,7 +210,8 @@ try {
         .trim()
         .split("\n")
         .map(JSON.parse);
-      assert.equal(stats.length, 4);
+      assert.equal(stats.length, 7);
+      assert.equal(stats.filter((row) => row.kind === "node").length, 3);
       assert.ok(stats.every((row) => /^\d{4}-\d{2}-\d{2}$/.test(row.date)));
     },
   );
@@ -253,6 +254,56 @@ try {
           ),
         ),
       );
+    },
+  );
+
+  await check(
+    "rewrite efficiency survives reloads and excludes free nodes",
+    async (cwd, open) => {
+      let calls = 0;
+      const first = await open(() =>
+        reply(++calls === 1 ? "x".repeat(600) : "user: short summary"),
+      );
+      await first.emit("message_end", {
+        message: { role: "user", content: "w".repeat(700), timestamp: 1 },
+      });
+      const file = join(cwd, ".pi/optchat/stats.jsonl");
+      await waitFor(
+        () =>
+          existsSync(file) &&
+          readFileSync(file, "utf8").includes('"kind":"node"'),
+      );
+      await first.emit("message_end", {
+        message: { role: "user", content: "short", timestamp: 2 },
+      });
+      const view = join(cwd, ".pi/optchat/view.json");
+      await waitFor(
+        () => JSON.parse(readFileSync(view, "utf8")).cviewUpTo === 2,
+      );
+      await first.emit("session_shutdown");
+      const next = await open();
+      await next.extension.commands.get("optchat").handler("", next.ctx);
+      assert.ok(
+        next.notices.some((n) =>
+          n.message.includes(
+            "1/2 rewrite calls (50.0%), 1 model-built nodes, 620 tokens/node (prompt + output)",
+          ),
+        ),
+      );
+      assert.equal(
+        next.calls.length,
+        0,
+        "reloading does not rebuild successful nodes",
+      );
+      const records = readFileSync(file, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+      assert.deepEqual(
+        records.filter((r) => r.kind === "compactor").map((r) => r.rewrite),
+        [false, true],
+      );
+      assert.equal(records.filter((r) => r.kind === "node").length, 1);
     },
   );
 

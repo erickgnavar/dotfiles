@@ -263,6 +263,35 @@ test("empty then oversized replies recover within the attempt limit", async () =
   chat.close();
 });
 
+test("node metrics distinguish rewrites, empty retries, failures and free builds", async () => {
+  freshDir();
+  const rewrites = [];
+  let built = 0;
+  const replies = ["", "x".repeat(600), "user: summarized"];
+  const chat = new OptChat(dir, fakeModel, {
+    complete: async (_model, _context, _signal, rewrite) => {
+      rewrites.push(rewrite);
+      return fakeReply(replies.shift() ?? "x".repeat(600));
+    },
+    onNodeBuilt: () => built++,
+    onError: () => {},
+  });
+  try {
+    chat.log("user", "w".repeat(700));
+    await buildAll(chat);
+    assert.deepEqual(rewrites, [false, false, true]);
+    assert.equal(built, 1);
+    chat.log("user", "short");
+    await buildAll(chat);
+    assert.equal(built, 1, "verbatim leaves and free merges are excluded");
+    chat.log("user", "w".repeat(700));
+    await waitFor(() => chat.sizeRetryMs.has("0:2"));
+    assert.equal(built, 1, "failed nodes do not count as successes");
+  } finally {
+    chat.close();
+  }
+});
+
 test("rewrites isolate the shortest whole summary and tighten the byte target", async () => {
   freshDir();
   const shortest = "é".repeat(260); // 520 bytes, despite only 260 characters.
@@ -1187,6 +1216,58 @@ test("usage journal replays totals and recovers a torn final line", () => {
     promptTokens: 355,
     cacheRead: 200,
   });
+});
+
+test("efficiency excludes legacy calls and survives reloads and torn records", () => {
+  freshDir();
+  const file = join(dir, "stats.jsonl");
+  const usage = new UsageJournal(file);
+  usage.record("compactor", { input: 999 }); // No historical rewrite metadata.
+  usage.record(
+    "compactor",
+    { input: 100, cacheRead: 20, cacheWrite: 5, output: 10 },
+    false,
+  );
+  usage.record("compactor", { input: 30, output: 5 }, true);
+  usage.record("node");
+  // A failed node's calls still contribute to amortized tokens/node.
+  usage.record("compactor", { input: 40, output: 10 }, true);
+  const expected = { calls: 3, rewrites: 2, tokens: 220, nodes: 1 };
+  assert.deepEqual(usage.efficiency, expected);
+  fs.appendFileSync(file, '{"kind":"node"');
+  const reloaded = new UsageJournal(file);
+  assert.deepEqual(reloaded.efficiency, expected);
+  assert.equal(
+    reloaded.totals.compactor.calls,
+    4,
+    "node records are not provider calls",
+  );
+  reloaded.record("node");
+  assert.deepEqual(new UsageJournal(file).efficiency, {
+    ...expected,
+    nodes: 2,
+  });
+});
+
+test("efficiency rejects invalid rewrite metadata", () => {
+  freshDir();
+  const file = join(dir, "stats.jsonl");
+  for (const metadata of [
+    { rewrite: "yes", outputTokens: 1 },
+    { rewrite: true, outputTokens: -1 },
+    { rewrite: false },
+  ]) {
+    writeFileSync(
+      file,
+      JSON.stringify({
+        kind: "compactor",
+        promptTokens: 1,
+        cacheRead: 0,
+        ...metadata,
+      }) + "\n",
+    );
+    assert.throws(() => new UsageJournal(file), /invalid usage record/);
+  }
 });
 
 test("usage journal keeps a complete final record without its newline", () => {

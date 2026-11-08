@@ -70,8 +70,10 @@ export interface CompactorHooks {
     model: Model<any>,
     context: Context,
     signal: AbortSignal,
+    rewrite?: boolean,
   ): Promise<AssistantMessage>;
   onError(message: string): void;
+  onNodeBuilt?(): void;
 }
 
 export interface MemoryStats {
@@ -676,9 +678,11 @@ export class OptChat {
     try {
       const end = l === 0 ? i + 1 : (i + 1) * Math.pow(2, l);
       let text: string;
+      let summarized = false;
       if (l === 0) {
         const m = this.root[i];
         const src = `${m.kind}: ${m.text}`;
+        summarized = byteLength(src) > NODE;
         text =
           byteLength(src) <= NODE
             ? src
@@ -688,6 +692,7 @@ export class OptChat {
         const b = this.nodes.get(nodeKey(l - 1, 2 * i + 1));
         if (!a || !b) return; // cannot happen: the queue checks readiness
         const joined = `${a.text}\n${b.text}`;
+        summarized = byteLength(joined) > NODE;
         text =
           byteLength(joined) <= NODE
             ? joined
@@ -714,6 +719,7 @@ export class OptChat {
       this.sizeRetryMs.delete(k);
       this.onBuilt(l, i);
       this.fit();
+      if (summarized) this.hooks.onNodeBuilt?.();
     } catch (err) {
       if (this.closed || this.abort.signal.aborted) return;
       if (err instanceof UncertainAppendError) {
@@ -810,7 +816,7 @@ export class OptChat {
     let shortest = "";
     let target = 350;
     for (let attempts = 1; attempts <= TRIES; attempts++) {
-      const reply = await this.ask(model, conversation);
+      const reply = await this.ask(model, conversation, Boolean(shortest));
       const line = assistantText(reply).trim();
       if (line && byteLength(line) <= NODE) return line;
       if (line && (!shortest || byteLength(line) < byteLength(shortest)))
@@ -843,11 +849,13 @@ export class OptChat {
   private async ask(
     model: Model<any>,
     messages: Message[],
+    rewrite: boolean,
   ): Promise<AssistantMessage> {
     const reply = await this.hooks.complete(
       model,
       { systemPrompt: COMPACT, messages },
       this.abort.signal,
+      rewrite,
     );
     // A short reply can still be incomplete (token limit, tool call, abort).
     // Only a normally completed response can become durable memory.

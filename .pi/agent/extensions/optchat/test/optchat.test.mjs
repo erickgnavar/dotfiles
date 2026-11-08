@@ -29,7 +29,7 @@ import {
   UncertainAppendError,
   acquireLock,
 } from "../store.ts";
-import { NODE, RULER } from "../prompts.ts";
+import { COMPACT, NODE, RULER, compressStep, mergeStep } from "../prompts.ts";
 import { UsageJournal } from "../usage.ts";
 
 const fakeModel = { provider: "fake", id: "fake" };
@@ -1148,6 +1148,18 @@ test("short truncated replies never become durable summaries", async () => {
 test("the ruler is 512 dashes and the limit stays 512 bytes", () => {
   assert.equal(RULER, "-".repeat(512));
   assert.equal(RULER.length, NODE);
+});
+
+test("compaction prompts target 350 bytes below the hard limit", () => {
+  for (const prompt of [
+    COMPACT,
+    compressStep(0, "user", "example"),
+    mergeStep(0, 1, 0, 2, "user: example", "talk: reply"),
+  ]) {
+    assert.match(prompt, /about 350 UTF-8 bytes/);
+    assert.match(prompt, /512[ -]byte/);
+    assert.doesNotMatch(prompt, /about 70 words|Use the space up to the limit/);
+  }
 });
 
 test("stale sockets fail closed under simultaneous acquisition", async () => {

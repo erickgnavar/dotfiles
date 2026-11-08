@@ -34,7 +34,8 @@ is lost to pi and to every line above.
 
 Goal: let pi work later as well as if it remembered the whole stretch.
 
-Use the space up to the limit, and give it by value:
+Aim for about 350 UTF-8 bytes per line, leaving room below the hard
+512-byte limit. Prioritize information by value:
 
 1. The user's own words matter most: orders, decisions, corrections,
 questions and reasons. Keep them close to verbatim, however short.
@@ -90,7 +91,7 @@ learned that will matter later.`;
 /** §4: the task for a level-0 node: the message whole, newlines kept. */
 export function compressStep(id: number, kind: string, text: string): string {
   return `Compaction: compress message ${id} into one line of at most 512 bytes
-(about 70 words), the length of this ruler:
+(hard limit). Aim for about 350 UTF-8 bytes, not the full ruler below:
 ${RULER}
 <input>
 ${kind}: ${text}
@@ -107,7 +108,7 @@ export function mergeStep(
   b: string,
 ): string {
   return `Compaction: merge lines ${aId} and ${bId}, adjacent, into one line of at most
-512 bytes (about 70 words), the length of this ruler:
+512 bytes (hard limit). Aim for about 350 UTF-8 bytes, not the full ruler below:
 ${RULER}
 <chat> may hold their messages, ${start} to ${end - 1}, in more detail: take details
 of them from there too, without adding facts from outside that range.

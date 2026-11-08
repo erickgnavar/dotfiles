@@ -60,7 +60,9 @@ also prevent context replacement, including when enabling OptChat in an existing
 - `/optchat resume` — restart a paused compactor (quota/auth errors).
 - `/optchat model [provider/model]` — change the compactor: without an
   argument a picker lists the session's default available models and
-  marks the current one. A change applies to later compactor calls and
+  marks the current one. Type to fuzzy-filter by provider or model; use arrows
+  to navigate, Enter to select, Escape to cancel (terminal UI).
+  A change applies to later compactor calls and
   lasts until startup/reload; set `OPTCHAT_MODEL` to make it permanent.
 - With the standalone `footer` extension loaded, the compactor model ID appears
   after the chat model's effort (`model • high • (optchat compactor) compactor-model`).

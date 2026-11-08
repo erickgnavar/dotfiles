@@ -27,6 +27,13 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { Type } from "@earendil-works/pi-ai";
+import {
+  Container,
+  fuzzyFilter,
+  Input,
+  SelectList,
+  Text,
+} from "@earendil-works/pi-tui";
 import type { AgentMessage } from "@earendil-works/pi-agent-core";
 import type {
   ImageContent,
@@ -567,8 +574,76 @@ async function pickModel(
       ? `${m.provider}/${m.id} (current)`
       : `${m.provider}/${m.id}`,
   );
-  const choice = await ctx.ui.select("OptChat compactor model:", options);
-  return choice ? candidates[options.indexOf(choice)] : undefined;
+  // RPC supports ordinary dialogs, but not custom terminal components.
+  if (ctx.mode !== "tui") {
+    const choice = await ctx.ui.select("OptChat compactor model:", options);
+    return choice ? candidates[options.indexOf(choice)] : undefined;
+  }
+  return ctx.ui.custom<Model<any> | undefined>((tui, theme, keys, done) => {
+    const input = new Input();
+    const items = options.map((label, index) => ({
+      value: String(index),
+      label,
+    }));
+    const createList = (query: string) => {
+      const result = new SelectList(
+        fuzzyFilter(items, query, (item) => item.label),
+        10,
+        {
+          selectedPrefix: (text) => theme.fg("accent", text),
+          selectedText: (text) => theme.fg("accent", text),
+          description: (text) => theme.fg("muted", text),
+          scrollInfo: (text) => theme.fg("dim", text),
+          noMatch: (text) => theme.fg("warning", text),
+        },
+      );
+      result.onSelect = (item) => done(candidates[Number(item.value)]);
+      result.onCancel = () => done(undefined);
+      return result;
+    };
+    let list = createList("");
+    const currentIndex = candidates.findIndex(
+      (m) => m.provider === current?.provider && m.id === current.id,
+    );
+    if (currentIndex >= 0) list.setSelectedIndex(currentIndex);
+    const container = new Container();
+    container.addChild(
+      new Text("OptChat compactor model — type to filter", 0, 0),
+    );
+    container.addChild(input);
+    container.addChild(list);
+    return {
+      get focused() {
+        return input.focused;
+      },
+      set focused(value: boolean) {
+        input.focused = value;
+      },
+      render: (width) => container.render(width),
+      invalidate: () => container.invalidate(),
+      handleInput(data) {
+        if (
+          [
+            "tui.select.up",
+            "tui.select.down",
+            "tui.select.confirm",
+            "tui.select.cancel",
+          ].some((action) => keys.matches(data, action))
+        ) {
+          list.handleInput(data);
+        } else {
+          const previous = input.getValue();
+          input.handleInput(data);
+          if (input.getValue() !== previous) {
+            container.removeChild(list);
+            list = createList(input.getValue());
+            container.addChild(list);
+          }
+        }
+        tui.requestRender();
+      },
+    };
+  });
 }
 
 /** The lock socket of a log; hashed into /tmp when the path is too long for one. */

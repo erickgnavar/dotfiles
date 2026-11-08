@@ -17,7 +17,7 @@ const { FooterComponent } = await load(
 );
 const themes = await load("dist/modes/interactive/theme/theme.js");
 const require = createRequire(join(pkg, "package.json"));
-const { visibleWidth } = await import(
+const { visibleWidth, getKeybindings } = await import(
   pathToFileURL(require.resolve("@earendil-works/pi-tui"))
 );
 const entry = join(dirname(fileURLToPath(import.meta.url)), "../index.ts");
@@ -107,6 +107,27 @@ async function fixture(mode = "tui", paths = [entry], cwd = process.cwd()) {
       },
       notify() {},
       select: async () => state.choice,
+      custom: async (factory) => {
+        let selected;
+        const component = factory(
+          { requestRender() {} },
+          themes.theme,
+          getKeybindings(),
+          (value) => {
+            selected = value;
+          },
+        );
+        component.focused = true;
+        component.handleInput("no-such-model");
+        assert.match(component.render(80).join("\n"), /No matching/i);
+        component.handleInput("\u0015"); // Clear the query.
+        component.handleInput(state.choice.split("/").at(-1));
+        assert.match(component.render(80).join("\n"), /other\/compact/);
+        for (const line of component.render(20))
+          assert.ok(visibleWidth(line) <= 20);
+        component.handleInput("\r");
+        return selected;
+      },
     },
   };
   const events = createEventBus();

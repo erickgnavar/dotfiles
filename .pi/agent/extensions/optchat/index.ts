@@ -17,7 +17,8 @@
  * - Before each turn, the harness waits (up to 2 minutes) until every
  *   line of the view is a real summary, so no call ever sees cut text.
  *
- * Commands: /optchat (status), /optchat view, /optchat note <text>.
+ * Commands: /optchat (status), /optchat view, /optchat note <text>,
+ * /optchat resume, /optchat model (change the compactor).
  * Set OPTCHAT_DISABLE=1 to turn the memory off for one run.
  */
 
@@ -48,6 +49,8 @@ const SETTLE_TIMEOUT_MS = 120_000;
 export default function optchat(pi: ExtensionAPI) {
   let chat: OptChat | null = null;
   let lock: Lock | null = null;
+  // The compactor model this run; changes via /optchat model.
+  let compactorModel: Model<any> | undefined;
   let active = false;
   let turnActive = false;
   // The view of the current turn, frozen before its first message is
@@ -86,6 +89,7 @@ export default function optchat(pi: ExtensionAPI) {
       return;
     }
     const compactor = resolveCompactor(ctx);
+    compactorModel = compactor;
     if (!compactor) {
       ctx.ui.notify(
         "OptChat disabled: no compactor model. Set OPTCHAT_MODEL=provider/model.",
@@ -424,7 +428,7 @@ export default function optchat(pi: ExtensionAPI) {
 
   pi.registerCommand("optchat", {
     description:
-      "OptChat memory: status (default), view, note <text>, resume (after a paused compaction)",
+      "OptChat memory: status (default), view, note <text>, resume, model (change the compactor)",
     handler: async (args, ctx) => {
       if (!chat) {
         ctx.ui.notify("OptChat is not active.", "warning");
@@ -451,6 +455,28 @@ export default function optchat(pi: ExtensionAPI) {
         } else {
           ctx.ui.notify("The compactor is not paused.", "info");
         }
+      } else if (cmd === "model") {
+        // `/optchat model` picks interactively; `/optchat model provider/model`
+        // sets directly. The change is runtime-only until the next reload.
+        const model = rest
+          ? findModel(ctx, rest)
+          : await pickModel(ctx, compactorModel);
+        if (rest && !model) {
+          ctx.ui.notify(
+            `No chat model "${rest}". Use provider/model, like OPTCHAT_MODEL.`,
+            "warning",
+          );
+        } else if (!model) {
+          ctx.ui.notify("Compactor unchanged.", "info");
+        } else {
+          chat.setCompactor(model);
+          compactorModel = model;
+          const paused = chat.isPaused() ? "; paused; use /optchat resume" : "";
+          ctx.ui.notify(
+            `OptChat compactor: ${model.provider}/${model.id}${paused}.`,
+            "info",
+          );
+        }
       } else {
         const s = chat.stats();
         ctx.ui.notify(
@@ -475,6 +501,57 @@ function resolveCompactor(ctx: ExtensionContext): Model<any> | undefined {
   const slash = pref.indexOf("/");
   if (slash <= 0) return undefined;
   return ctx.modelRegistry.find(pref.slice(0, slash), pref.slice(slash + 1));
+}
+
+/** Resolve "provider/model" for /optchat model against known chat models. */
+function findModel(
+  ctx: ExtensionContext,
+  pref: string,
+): Model<any> | undefined {
+  const slash = pref.indexOf("/");
+  if (slash <= 0) return undefined;
+  const found = ctx.modelRegistry.find(
+    pref.slice(0, slash),
+    pref.slice(slash + 1),
+  );
+  if (
+    found &&
+    availableModels(ctx).some(
+      (m) => m.provider === found.provider && m.id === found.id,
+    )
+  )
+    return found;
+}
+
+/** Chat models the picker should offer: the session's default available models. */
+function availableModels(ctx: ExtensionContext): readonly Model<any>[] {
+  return ctx.modelRegistry.getAvailable();
+}
+
+/** Interactive compactor choice; undefined when the user cancels. */
+async function pickModel(
+  ctx: ExtensionContext,
+  current: Model<any> | undefined,
+): Promise<Model<any> | undefined> {
+  if (!ctx.hasUI) {
+    ctx.ui.notify(
+      "Interactive selection needs a UI; use `/optchat model provider/model`.",
+      "warning",
+    );
+    return;
+  }
+  const candidates = availableModels(ctx);
+  if (candidates.length === 0) {
+    ctx.ui.notify("No chat models available.", "warning");
+    return;
+  }
+  const options = candidates.map((m) =>
+    current && m.provider === current.provider && m.id === current.id
+      ? `${m.provider}/${m.id} (current)`
+      : `${m.provider}/${m.id}`,
+  );
+  const choice = await ctx.ui.select("OptChat compactor model:", options);
+  return choice ? candidates[options.indexOf(choice)] : undefined;
 }
 
 /** The lock socket of a log; hashed into /tmp when the path is too long for one. */

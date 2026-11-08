@@ -167,6 +167,14 @@ test("the view is a batched sawtooth: between batches it only grows", async () =
   chat.close();
 });
 
+test("setCompactor swaps the model for later calls", () => {
+  const chat = fresh();
+  assert.equal(chat.stats().compactor, "fake/fake");
+  chat.setCompactor({ provider: "other", id: "fast" });
+  assert.equal(chat.stats().compactor, "other/fast");
+  chat.close();
+});
+
 test("the compaction view stays within its own smaller budget", async () => {
   const chat = fresh(); // default budgets: chat 128k/64k, compaction 32k/16k
   for (let i = 0; i < 300; i++)

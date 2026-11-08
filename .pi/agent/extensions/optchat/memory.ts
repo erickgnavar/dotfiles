@@ -107,7 +107,7 @@ export class OptChat {
   nodes = new Map<string, TreeNode>();
   view: Part[] = [];
   cview: Part[] = [];
-  private readonly compactor: Model<any> | undefined;
+  private compactor: Model<any> | undefined;
   private readonly hooks: CompactorHooks;
   private readonly budgets: Required<Budgets>;
   private readonly abort = new AbortController();
@@ -145,6 +145,11 @@ export class OptChat {
       cfloor: budgets.cfloor ?? CVIEW_FLOOR,
       retryMs: budgets.retryMs ?? RETRY_MS,
     };
+  }
+
+  /** Swap the compactor for later calls; in-flight jobs keep their model. */
+  setCompactor(model: Model<any> | undefined): void {
+    this.compactor = model;
   }
 
   // ------------------------------------------------------------------ load

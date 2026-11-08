@@ -58,6 +58,10 @@ also prevent context replacement, including when enabling OptChat in an existing
 - `/optchat view` — write the current view to `.pi/optchat/view.txt`.
 - `/optchat note <text>` — add a note to the memory by hand.
 - `/optchat resume` — restart a paused compactor (quota/auth errors).
+- `/optchat model [provider/model]` — change the compactor: without an
+  argument a picker lists the session's default available models and
+  marks the current one. A change applies to later compactor calls and
+  lasts until startup/reload; set `OPTCHAT_MODEL` to make it permanent.
 - The model navigates its own memory with the `zoom(id, n)` and
   `date(id)` tools.
 
@@ -66,7 +70,7 @@ also prevent context replacement, including when enabling OptChat in an existing
 | Variable | Default | Meaning |
 |---|---|---|
 | `OPTCHAT_DIR` | `<cwd>/.pi/optchat` | Where the log lives |
-| `OPTCHAT_MODEL` | Session model at startup/reload | Compactor override, `provider/model` |
+| `OPTCHAT_MODEL` | Session model at startup/reload | Compactor override, `provider/model`; change at runtime with `/optchat model` |
 | `OPTCHAT_DISABLE` | unset | Any value turns the memory off |
 
 Only one pi process writes a log (a Unix-socket lock); a second one on

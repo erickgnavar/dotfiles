@@ -48,6 +48,7 @@ exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 exec qs -c wallpaper-picker
 exec qs -c capture
 exec qs -c dock
+exec qs -c app-switcher
 exec swayosd-server
 
 # Shift from 6500K to 4000K using GeoClue-based sunrise and sunset times.
@@ -112,7 +113,12 @@ seat seat0 xcursor_theme Bibata-Modern-Classic 24
     bindsym $mod+space exec rofi -show drun -show-icons
 
     # Switch between open windows across workspaces
-    bindsym $mod+Tab exec bash $scripts/window-switcher.sh
+    bindsym $mod+Tab nop app-switcher-next
+    bindsym $mod+Shift+Tab nop app-switcher-previous
+    bindsym --release Super_L nop app-switcher-accept
+    bindsym --release Super_R nop app-switcher-accept
+    bindsym --release Shift+Super_L nop app-switcher-accept
+    bindsym --release Shift+Super_R nop app-switcher-accept
 
     # Open frequently used desktop actions
     bindsym $mod+Shift+space exec ~/.config/sway/scripts/quick-actions.sh

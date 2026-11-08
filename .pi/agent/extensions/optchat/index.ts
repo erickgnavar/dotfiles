@@ -70,8 +70,18 @@ export default function optchat(pi: ExtensionAPI) {
   let anchorKey: string | undefined;
   // Context events contain clones, so compare message fingerprints, not identity.
   const recorded = new Set<string>();
-  const messageKey = (message: AgentMessage) =>
-    createHash("sha256").update(JSON.stringify(message)).digest("hex");
+  // Fingerprints are memoized per message object: context events pass the
+  // same stable message references every request, so each is hashed once,
+  // not once per pre-anchor check per request.
+  const fingerprints = new WeakMap<AgentMessage, string>();
+  const messageKey = (message: AgentMessage): string => {
+    let key = fingerprints.get(message);
+    if (key === undefined) {
+      key = createHash("sha256").update(JSON.stringify(message)).digest("hex");
+      fingerprints.set(message, key);
+    }
+    return key;
+  };
   // Provider-reported prompt tokens, including cache reads/writes, this run only.
   let chatTokens = 0;
   let chatCacheRead = 0;

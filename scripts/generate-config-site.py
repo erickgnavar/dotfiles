@@ -42,32 +42,46 @@ DEFAULT_EXCLUDES = (
 )
 
 LANGUAGES = {
+    ".awk": "awk",
+    ".c": "c",
     ".css": "css",
     ".el": "lisp",
+    ".eld": "lisp",
     ".html": "markup",
     ".ini": "ini",
+    ".js": "javascript",
     ".json": "json",
     ".jsonc": "json",
     ".lua": "lua",
     ".md": "markdown",
+    ".mjs": "javascript",
     ".nix": "nix",
     ".org": "markup",
+    ".patch": "diff",
+    ".py": "python",
+    ".qml": "qml",
     ".rasi": "css",
     ".scss": "scss",
     ".sh": "bash",
     ".toml": "toml",
+    ".ts": "typescript",
     ".xml": "markup",
     ".yaml": "yaml",
     ".yml": "yaml",
     ".yuck": "lisp",
+    ".zsh": "bash",
 }
 
 SPECIAL_LANGUAGES = {
+    ".editorconfig": "editorconfig",
     ".gitconfig": "ini",
+    ".gitignore": "ignore",
     ".ideavimrc": "vim",
+    ".shellcheckrc": "bash",
     ".tmux.conf": "bash",
     ".vimrc": "vim",
     ".Xmodmap": "text",
+    "global.gitignore": "ignore",
 }
 
 GROUP_NAMES = {

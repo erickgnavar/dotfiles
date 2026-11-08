@@ -390,16 +390,9 @@ export default function optchat(pi: ExtensionAPI) {
 
   function logImages(content: string | (TextContent | ImageContent)[]): void {
     if (!chat || typeof content === "string") return;
-    let seq = 0;
     for (const c of content) {
       if (c.type !== "image") continue;
-      const rel = saveImage(
-        chat.dir,
-        chat.root.length,
-        seq++,
-        c.data,
-        c.mimeType,
-      );
+      const rel = saveImage(chat.dir, c.data, c.mimeType);
       chat.log(
         "note",
         `image attached: ${path.resolve(chat.dir, rel)} (${c.mimeType})`,

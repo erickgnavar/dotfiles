@@ -5,6 +5,7 @@
  */
 
 import * as fs from "node:fs";
+import { createHash } from "node:crypto";
 import * as net from "node:net";
 import * as path from "node:path";
 
@@ -72,22 +73,22 @@ export function splitText(text: string, chunk = CHUNK): string[] {
   return parts;
 }
 
-/** Save an attached image as a file; returns its path relative to the log. */
-export function saveImage(
-  dir: string,
-  index: number,
-  seq: number,
-  data: string,
-  mimeType: string,
-): string {
+/**
+ * Save an attached image as a file; returns its path relative to the log.
+ * Files are named by content hash, so identical attachments are stored once
+ * and later saves reuse the existing file.
+ */
+export function saveImage(dir: string, data: string, mimeType: string): string {
   const ext =
     /png|jpe?g|gif|webp|bmp/.exec(mimeType)?.[0]?.replace("jpeg", "jpg") ??
     "bin";
   const imagesDir = path.join(dir, "images");
   fs.mkdirSync(imagesDir, { recursive: true });
-  const name = `${index}-${seq}.${ext}`;
-  fs.writeFileSync(path.join(imagesDir, name), Buffer.from(data, "base64"));
-  return path.join("images", name);
+  const buf = Buffer.from(data, "base64");
+  const hash = createHash("sha256").update(buf).digest("hex");
+  const file = path.join(imagesDir, `${hash}.${ext}`);
+  if (!fs.existsSync(file)) fs.writeFileSync(file, buf);
+  return path.join("images", `${hash}.${ext}`);
 }
 
 /** The append may be on disk: its id must not be reused before a reload. */

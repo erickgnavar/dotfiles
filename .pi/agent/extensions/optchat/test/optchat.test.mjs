@@ -11,6 +11,7 @@ import { syncBuiltinESMExports } from "node:module";
 import {
   mkdtempSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   writeFileSync,
   rmSync,
@@ -955,12 +956,17 @@ test("unreadable logs fail rather than pretending memory is empty", () => {
   assert.throws(() => loadJsonl(join(dir, "main")));
 });
 
-test("image attachments preserve binary bytes", () => {
+test("image attachments preserve binary bytes and dedup by content", () => {
   freshDir();
   const bytes = Buffer.from([0, 255, 13, 10, 37, 128]);
-  const rel = saveImage(dir, 3, 0, bytes.toString("base64"), "image/png");
-  assert.equal(rel, "images/3-0.png");
+  const b64 = bytes.toString("base64");
+  const rel = saveImage(dir, b64, "image/png");
+  assert.ok(rel.startsWith("images/") && rel.endsWith(".png"));
   assert.deepEqual(readFileSync(join(dir, rel)), bytes);
+  // The same content again reuses the existing file instead of writing a new one.
+  const rel2 = saveImage(dir, b64, "image/png");
+  assert.equal(rel2, rel);
+  assert.equal(readdirSync(join(dir, "images")).length, 1);
 });
 
 test("settle cancellation removes waiters, including an already aborted signal", async () => {

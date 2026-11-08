@@ -186,10 +186,12 @@ try {
         mimeType: "image/png",
       };
       await session.emit("tool_execution_end", {
-        result: { content: [image] },
+        result: { content: [image, image] },
         isError: false,
       });
       const images = join(cwd, ".pi/optchat/images");
+      // Identical attachments are stored once and both notes reference it.
+      assert.equal(readdirSync(images).length, 1);
       assert.deepEqual(
         readFileSync(join(images, readdirSync(images)[0])),
         Buffer.from([0, 255, 1]),

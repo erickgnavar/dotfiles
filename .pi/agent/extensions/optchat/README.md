@@ -111,6 +111,7 @@ a captured turn boundary, OptChat also retains the transcript rather than moving
   every other long text is never cut, but split over several messages.
   User, custom-message and tool-result images are saved as files; memory
   notes give absolute paths for pi's `read` tool (zoom returns text, not images).
+  Identical attachments dedup to one hash-named file.
 - **zoom(id, 1) renders `id+1|`**, not the spec's `id+0|`, so a
   one-message line reads the same as in the view.
 - **No manual cache breakpoints.** Pi's provider layer owns caching;

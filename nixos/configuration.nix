@@ -423,6 +423,7 @@
       ]);
     }))
     sushi # allow show previews in nautilus when pressing space
+    ncdu # Terminal disk usage analyzer.
     tectonic
     wayland
     # Quickshell needs Qt Multimedia's QML module and plugins for video previews;

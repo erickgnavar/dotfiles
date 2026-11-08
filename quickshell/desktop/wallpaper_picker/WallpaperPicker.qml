@@ -6,7 +6,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtMultimedia
 
-ShellRoot {
+Scope {
     id: shell
 
     property string directory: Quickshell.env("HOME") + "/Wallpapers"

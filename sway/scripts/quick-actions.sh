@@ -27,7 +27,7 @@ case "$selection" in
   systemctl --user start wallpaper-rotate.service
   ;;
 "󰑇  Pick wallpaper")
-  exec qs -c wallpaper-picker ipc call picker toggle
+  exec qs -c desktop ipc call picker toggle
   ;;
 "󰄀  Take screenshot")
   exec "$HOME/.config/sway/scripts/screenshot.sh"

@@ -21,15 +21,15 @@ This avoids foreign-toplevel activation's dependency on a prior overlay keypress
 No previews or polling are used. The compositor chooses the screen for this overlay.
 
 `placements/linux.txt` already deploys the entire `quickshell` directory. Apply
-placements with `bash setup.sh linux`, then start the new configuration once:
+placements with `bash setup.sh linux`, then start the merged `desktop` configuration once:
 
 ```sh
-qs -c app-switcher
+qs -c desktop
 ```
 
 Leave it running and run `swaymsg reload` in another terminal. Future Sway logins
-start it automatically. After QML changes, restart with `qs -c app-switcher kill` and
-`qs -c app-switcher`.
+start it automatically. After QML changes, restart with `qs -c desktop kill` and
+`qs -c desktop`.
 
 Live Sway validation is required for the exclusive keyboard grab and Super-release
 handoff, including quick taps, reverse cycling, and both Super keys. Enter/Escape
@@ -38,5 +38,5 @@ also provide explicit selection/cancellation.
 Run regression tests with:
 
 ```sh
-python3 -B -m unittest discover -s quickshell/app-switcher/tests -v
+python3 -B -m unittest discover -s quickshell/desktop/app_switcher/tests -v
 ```

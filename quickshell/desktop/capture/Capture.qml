@@ -5,7 +5,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ShellRoot {
+Scope {
     id: shell
 
     property string kind: "screenshot"

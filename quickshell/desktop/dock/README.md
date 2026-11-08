@@ -18,7 +18,7 @@ A Quickshell dock matching the dark capture toolbar, with blue active-window acc
 - Running apps have an indicator; active apps also have a blue outline.
 - Missing application icons fall back to the application's initial.
 
-The dock appears on each output. Edit `pinnedApps` in `shell.qml` to change the desktop IDs
+The dock appears on each output. Edit `pinnedApps` in `Dock.qml` to change the desktop IDs
 or their order. Apps must be installed for desktop-entry launching and icon lookup.
 It does not reserve workspace space, take keyboard focus, or run polling scripts.
 Only a 3-pixel-wide, full-height activation strip receives input while hidden.
@@ -31,17 +31,19 @@ The repository's Quickshell directory must be linked at `~/.config/quickshell`
 (as configured in `placements/linux.txt`). Then run:
 
 ```sh
-qs -c dock
+qs -c desktop
 ```
 
-`sway/config` starts the dock for new sessions. Reloading Sway does not rerun `exec`
-commands, so start it manually for the current session. Avoid launching duplicates.
-To apply later QML edits, stop that dock instance and run the command again.
+The dock now lives in the merged `desktop` Quickshell configuration together with the
+capture toolbar, app switcher, and wallpaper picker, so they share one process.
+`sway/config` starts it for new sessions. Reloading Sway does not rerun `exec` commands, so start it
+manually for the current session. Avoid launching duplicates. To apply later QML edits,
+stop that instance and run the command again.
 
 To force the dock open for testing:
 
 ```sh
-qs -c dock ipc call dock toggle
+qs -c desktop ipc call dock toggle
 ```
 
 Run it again to restore hover-only behavior. Forced mode stays open when the pointer leaves.
@@ -49,7 +51,7 @@ Run it again to restore hover-only behavior. Forced mode stays open when the poi
 ## Regression checks
 
 ```sh
-python3 -B -m unittest discover -s quickshell/dock/tests -v
+python3 -B -m unittest discover -s quickshell/desktop/dock/tests -v
 ```
 
 These require Python and Node.js. They check QML wiring and execute the actual JavaScript

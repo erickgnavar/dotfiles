@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 
-SOURCE = (Path(__file__).resolve().parents[1] / "shell.qml").read_text()
+SOURCE = (Path(__file__).resolve().parents[1] / "Dock.qml").read_text()
 
 
 def block(marker, source=SOURCE):

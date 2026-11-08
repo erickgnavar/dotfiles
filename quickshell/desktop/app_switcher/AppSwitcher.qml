@@ -1,11 +1,9 @@
-//@ pragma IconTheme Papirus-Dark
-
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 
-ShellRoot {
+Scope {
     id: shell
     property bool opened: false
     property var history: []

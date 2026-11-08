@@ -7,14 +7,14 @@ import unittest
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[3]
-SWITCHER = ROOT / "quickshell/app-switcher"
+ROOT = Path(__file__).resolve().parents[4]
+SWITCHER = ROOT / "quickshell/desktop/app_switcher"
 
 
 class SwitcherTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which("node"), "Node.js required")
     def test_model(self):
-        qml = (SWITCHER / "shell.qml").read_text()
+        qml = (SWITCHER / "AppSwitcher.qml").read_text()
         functions = []
         for name in ("orderedWindows", "buildApplications", "cycle"):
             match = re.search(
@@ -50,7 +50,7 @@ assert.equal(cycle(0, 1, 0), 0);
     def test_sway_integration_and_placement(self):
         config = (ROOT / "sway/config").read_text()
         for line in (
-            "exec qs -c app-switcher",
+            "exec qs -c desktop",
             "    bindsym $mod+Tab nop app-switcher-next",
             "    bindsym $mod+Shift+Tab nop app-switcher-previous",
             "    bindsym --release Super_L nop app-switcher-accept",
@@ -65,7 +65,7 @@ assert.equal(cycle(0, 1, 0), 0);
         )
 
     def test_compact_layout(self):
-        source = (SWITCHER / "shell.qml").read_text()
+        source = (SWITCHER / "AppSwitcher.qml").read_text()
         self.assertIn("text: appName", source)
         self.assertNotIn("modelData.windows.length", source)
         self.assertIn(
@@ -76,7 +76,7 @@ assert.equal(cycle(0, 1, 0), 0);
         self.assertIn("implicitHeight: 140", source)
 
     def test_keyboard_and_lifecycle_contract(self):
-        source = (SWITCHER / "shell.qml").read_text()
+        source = (SWITCHER / "AppSwitcher.qml").read_text()
         for fragment in (
             "visible: shell.opened",
             "shell.opened ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None",
@@ -105,7 +105,7 @@ assert.equal(cycle(0, 1, 0), 0);
 
     @unittest.skipUnless(shutil.which("node"), "Node.js required")
     def test_sway_container_matching(self):
-        source = (SWITCHER / "shell.qml").read_text()
+        source = (SWITCHER / "AppSwitcher.qml").read_text()
         function = re.search(
             r"^    function findContainer\([^\n]*\) \{\n.*?^    \}", source, re.M | re.S
         )
@@ -143,7 +143,7 @@ assert.equal(findContainer(tree, {appId: 'helium', title: 'Same title'}), 50);
 
     @unittest.skipUnless(shutil.which("node"), "Node.js required")
     def test_accept_without_overlay_keypress(self):
-        source = (SWITCHER / "shell.qml").read_text()
+        source = (SWITCHER / "AppSwitcher.qml").read_text()
         functions = []
         for name in ("findContainer", "accept"):
             match = re.search(
@@ -209,7 +209,7 @@ assert.equal(focusRequest.target, null);
 
     @unittest.skipUnless(shutil.which("node"), "Node.js required")
     def test_ordered_shortcuts_before_overlay_focus(self):
-        source = (SWITCHER / "shell.qml").read_text()
+        source = (SWITCHER / "AppSwitcher.qml").read_text()
         handler = re.search(
             r"^    function handleBinding\(line\) \{\n.*?^    \}", source, re.M | re.S
         )

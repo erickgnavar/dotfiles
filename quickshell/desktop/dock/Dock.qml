@@ -1,12 +1,10 @@
-//@ pragma IconTheme Papirus-Dark
-
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Controls
 
-ShellRoot {
+Scope {
     id: shell
     property bool forcedOpen: false
     property int desktopEntriesRevision: 0

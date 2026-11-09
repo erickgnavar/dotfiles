@@ -12,6 +12,7 @@ selection=$(
     "  Clipboard history" \
     "  Toggle night light" \
     "󰢹  Toggle remote desktop" \
+    "󰆴  Toggle process monitor" \
     "󰆴  Kill process" \
     "󰩹  Empty trash" \
     "󰌾  Lock screen" \
@@ -130,6 +131,9 @@ case "$selection" in
   ;;
 "󰢹  Toggle remote desktop")
   exec "$HOME/.config/waybar/scripts/vnc-toggle.sh"
+  ;;
+"󰆴  Toggle process monitor")
+  exec eww open --toggle processes
   ;;
 "󰆴  Kill process")
   process_selection=$(

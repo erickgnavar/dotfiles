@@ -1,0 +1,32 @@
+---
+name: Eww CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'eww/**'
+      - '.github/workflows/eww-ci.yaml'
+  pull_request:
+    paths:
+      - 'eww/**'
+      - '.github/workflows/eww-ci.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Run Eww tests
+        run: python3 -B -m unittest discover -s eww/tests -v

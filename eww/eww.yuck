@@ -182,6 +182,48 @@
              :text "${disk-data.percent}%"
              :halign "end"))))
 
+(defvar process-sort "cpu")
+
+(deflisten process-data
+  :initial "{\"cpu\":[],\"memory\":[]}"
+  `python3 scripts/processes.py`)
+
+(defwidget processes-panel []
+  (box :class "panel processes-panel" :orientation "v" :space-evenly false :spacing 6
+    (box :space-evenly false :spacing 6
+      (label :class "processes-header" :text "top 10 processes" :halign "start" :hexpand true)
+      (button :class "processes-sort ${process-sort == 'cpu' ? 'active' : ''}"
+              :onclick "eww update process-sort=cpu" "CPU")
+      (button :class "processes-sort ${process-sort == 'memory' ? 'active' : ''}"
+              :onclick "eww update process-sort=memory" "RAM"))
+    (box :class "processes-columns" :space-evenly false :spacing 12
+      (label :text "NAME" :xalign 0 :hexpand true)
+      (label :class "processes-memory" :text "MiB" :xalign 1)
+      (label :class "processes-cpu" :text "CPU %" :xalign 1)
+      (label :class "processes-pid" :text "PID" :xalign 1))
+    (for process in {process-sort == "memory" ? process-data.memory : process-data.cpu}
+      (box :class "processes-row" :space-evenly false :spacing 12
+        (label :text {process.name} :tooltip {process.name}
+               :limit-width 22 :xalign 0 :hexpand true)
+        (label :class "processes-memory" :text {process.memory} :xalign 1)
+        (label :class "processes-cpu" :text {process.cpu} :xalign 1)
+        (label :class "processes-pid" :text {process.pid} :xalign 1)))
+    (label :class "processes-note" :text "100% CPU = one core · memory = RSS"
+           :halign "start")))
+
+(defwindow processes
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bottom"
+  :exclusive false
+  :focusable false
+  :geometry (geometry
+              :x "0px"
+              :y "24px"
+              :width "430px"
+              :anchor "top center")
+  (processes-panel))
+
 (defwidget widget-stack []
   (box :orientation "v" :space-evenly false :spacing 12
     (weather-panel)

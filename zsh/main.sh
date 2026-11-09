@@ -139,7 +139,8 @@ alias weather="curl http://wttr.in/Lima"
 alias g="git"
 alias wow="git status"
 alias cat="bat"
-alias ls="eza --icons"
+# Explicit auto prevents --icons from consuming the following path as its value.
+alias ls="eza --icons=auto"
 alias k="kubectl"
 alias tf="terraform"
 # Use z zsh plugin as autojump

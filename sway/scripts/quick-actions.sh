@@ -6,6 +6,7 @@ selection=$(
     "󰸉  Change wallpaper" \
     "󰑇  Pick wallpaper" \
     "󰄀  Take screenshot" \
+    "󰍉  Copy text from region" \
     "󰖩  Share Wi-Fi" \
     "󰍹  Scale display" \
     "󰑐  Refresh rate" \
@@ -32,6 +33,9 @@ case "$selection" in
   ;;
 "󰄀  Take screenshot")
   exec "$HOME/.config/sway/scripts/screenshot.sh"
+  ;;
+"󰍉  Copy text from region")
+  exec bash "$HOME/.config/sway/scripts/ocr-region.sh"
   ;;
 "󰖩  Share Wi-Fi")
   exec "$HOME/.config/sway/scripts/wifi-qr.sh"

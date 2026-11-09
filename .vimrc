@@ -8,35 +8,38 @@ if s:plug_install
     echo "Installing vim-plug..."
     silent !mkdir -p ~/.vim/autoload
     silent !curl -fLo ~/.vim/autoload/plug.vim
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/0.15.0/plug.vim
 endif
 call plug#begin('~/.vim/plugged')
 
 " Plugins
-Plug 'tomtom/tcomment_vim'
+Plug 'tomtom/tcomment_vim', { 'commit': '48ab639a461d9b8344f7fee06cb69b4374863b13' }
 " Zen coding
-Plug 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim', { 'commit': '92ef2f74f4093edc99db5e9e4cf7e40116a85bd6' }
 " Airline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-surround'
-Plug 'Townk/vim-autoclose' " Allow show diff sign of opened files
-Plug 'lilydjwg/colorizer'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'sheerun/vim-polyglot'  " Plugins for most of the programming languages
-Plug 'elzr/vim-json'
-Plug 'mattn/webapi-vim' "gist-vim requirement
-Plug 'mattn/gist-vim'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'henrik/vim-indexed-search'
-Plug 'airblade/vim-rooter'
-Plug 'terryma/vim-expand-region'
-Plug 'chriskempson/tomorrow-theme', { 'rtp': 'vim' }
+Plug 'vim-airline/vim-airline', { 'commit': '8dc1bd0a116de527f6bc58c1d04386ba357c624f' }
+Plug 'vim-airline/vim-airline-themes', { 'commit': '77aab8c6cf7179ddb8a05741da7e358a86b2c3ab' }
+Plug 'tpope/vim-surround', { 'commit': '3d188ed2113431cf8dac77be61b842acb64433d9' }
+Plug 'Townk/vim-autoclose', { 'commit': 'a9a3b7384657bc1f60a963fd6c08c63fc48d61c3' }
+Plug 'lilydjwg/colorizer', { 'commit': '72790a003d5a706c287486a1a81e3a6b32158b54' }
+Plug 'editorconfig/editorconfig-vim', { 'commit': 'c0227885a06b155d5aa5465e08b9800e8c939f70' }
+Plug 'sheerun/vim-polyglot', { 'commit': 'f061eddb7cdcc614c8406847b2bfb53099832a4e' }
+Plug 'elzr/vim-json', { 'commit': '3727f089410e23ae113be6222e8a08dd2613ecf2' }
+Plug 'mattn/webapi-vim', { 'commit': 'c7eec04aad31e1665164d8292d0ec8b5c3cc5a57' }
+Plug 'mattn/gist-vim', { 'commit': 'fd55721a8f7c2a7c23d2e704405047e03d6f95f6' }
+Plug 'tpope/vim-fugitive', { 'commit': '3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0' }
+Plug 'airblade/vim-gitgutter', { 'commit': '90b75207bd9b55d8ac4af15f72b4e935462014d0' }
+Plug 'henrik/vim-indexed-search', { 'commit': '763fdd0eb818ad441433aa04d00eabfda579476c' }
+Plug 'airblade/vim-rooter', { 'commit': '51402fb77c4d6ae94994e37dc7ca13bec8f4afcc' }
+Plug 'terryma/vim-expand-region', { 'commit': '966513543de0ddc2d673b5528a056269e7917276' }
+Plug 'chriskempson/tomorrow-theme', {
+    \ 'commit': 'ccf6666d888198d341b26b3a99d0bc96500ad503',
+    \ 'rtp': 'vim',
+    \ }
 " Provides the fzf#run autoload glue used by fzf.vim; the binary comes from the system.
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'andymass/vim-matchup'
+Plug 'junegunn/fzf', { 'commit': 'c7bf2b8eea25952dd257a466c0afa72faae206fb' }
+Plug 'junegunn/fzf.vim', { 'commit': '023de3c0e158ff9c2b0992175af10be97c2f2158' }
+Plug 'andymass/vim-matchup', { 'commit': '0106b1afd4a2f7e1098037b5ceb161bab7471088' }
 
 call plug#end()
 

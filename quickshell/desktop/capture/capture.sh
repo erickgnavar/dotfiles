@@ -14,13 +14,41 @@ state_file="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/quickshell-recording.pid"
 refresh_waybar() {
   pkill -RTMIN+8 -u "$(id -u)" -x waybar 2>/dev/null || true
 }
+# Bash reaps exited background jobs while polling; never wait on a live recorder.
+wait_for_recorder() {
+  local ticks=$1
+  while kill -0 "$recorder_pid" 2>/dev/null; do
+    if ((ticks-- == 0)); then
+      return 1
+    fi
+    sleep 0.1
+  done
+}
+stop_recorder() {
+  local status=0
+  if kill -0 "$recorder_pid" 2>/dev/null; then
+    kill -INT "$recorder_pid" 2>/dev/null || true
+    if ! wait_for_recorder 50; then
+      printf 'Recorder did not finalize within 5s; sending SIGTERM.\n' >&2
+      status=1
+      kill -TERM "$recorder_pid" 2>/dev/null || true
+      if ! wait_for_recorder 20; then
+        printf 'Recorder did not exit within 2s; sending SIGKILL.\n' >&2
+        kill -KILL "$recorder_pid" 2>/dev/null || true
+      fi
+    fi
+  fi
+  wait "$recorder_pid" || status=$?
+  recorder_pid=
+  return "$status"
+}
 cleanup() {
+  trap '' INT TERM HUP
   if [[ -n "$selection_errors" ]]; then
     rm -f "$selection_errors"
   fi
-  if [[ -n "$recorder_pid" ]] && kill -0 "$recorder_pid" 2>/dev/null; then
-    kill -INT "$recorder_pid" 2>/dev/null || true
-    wait "$recorder_pid" || true
+  if [[ -n "$recorder_pid" ]]; then
+    stop_recorder || true
   fi
   if [[ -f "$state_file" && "$(<"$state_file")" == "$$" ]]; then
     rm -f "$state_file"
@@ -28,7 +56,8 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-trap 'exit 130' INT TERM HUP
+# Reap before exiting: waiting inside EXIT after an interrupted read can crash Bash.
+trap 'trap - EXIT; cleanup; exit 130' INT TERM HUP
 trap 'notify-send -a Capture -u critical "Capture failed" "Check the capture shell logs." || true' ERR
 
 # Screen means the currently focused Sway output, not the entire desktop.
@@ -95,7 +124,5 @@ while kill -0 "$recorder_pid" 2>/dev/null; do
     break
   fi
 done
-kill -INT "$recorder_pid" 2>/dev/null || true
-wait "$recorder_pid"
-recorder_pid=
+stop_recorder
 notify-send -a Capture "Recording saved" "$file" || true

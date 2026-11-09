@@ -6,6 +6,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -49,7 +50,10 @@ elif name == "wf-recorder":
     def stop(signum, frame):
         Path(os.environ["TEST_STOPPED"]).touch()
         sys.exit(0)
-    signal.signal(signal.SIGINT, stop)
+    Path(os.environ["TEST_RECORDER_PID"]).write_text(str(os.getpid()))
+    mode = os.environ["TEST_RECORDER_MODE"]
+    signal.signal(signal.SIGINT, signal.SIG_IGN if mode != "normal" else stop)
+    signal.signal(signal.SIGTERM, signal.SIG_IGN if mode == "ignore-both" else stop)
     Path(args[args.index("-f") + 1]).touch()
     while True:
         time.sleep(0.05)
@@ -77,6 +81,8 @@ class CaptureTests(unittest.TestCase):
             TEST_SELECTION_STATUS="0",
             TEST_NOTIFY_STATUS="0",
             TEST_RECORDER_FAIL="0",
+            TEST_RECORDER_MODE="normal",
+            TEST_RECORDER_PID=str(self.root / "recorder.pid"),
         )
         for command in (
             "slurp",
@@ -104,7 +110,7 @@ class CaptureTests(unittest.TestCase):
             start_new_session=True,
         )
         try:
-            stdout, stderr = process.communicate(request, timeout=8)
+            stdout, stderr = process.communicate(request, timeout=12)
         finally:
             # Also reap a mocked recorder if a regression leaves it running.
             try:
@@ -191,6 +197,7 @@ class CaptureTests(unittest.TestCase):
                 self.assertEqual(
                     stdout.splitlines(), ["REGION -100,50 640x480", "RECORDING"]
                 )
+                self.assert_recorder_gone()
                 self.assertTrue((self.root / "stopped").exists())
                 (self.root / "stopped").unlink()
                 self.assertFalse(
@@ -206,6 +213,78 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(stdout.splitlines(), ["RECORDING"])
         self.assertEqual(self.calls("wf-recorder")[0][:2], ["-o", "HDMI-A-2"])
         self.assertFalse((self.root / "runtime/quickshell-recording.pid").exists())
+
+    def assert_recorder_gone(self):
+        pid = int((self.root / "recorder.pid").read_text())
+        with self.assertRaises(ProcessLookupError):
+            os.kill(pid, 0)
+        self.assertFalse((self.root / "runtime/quickshell-recording.pid").exists())
+
+    def test_stop_escalates_to_term_and_kill(self):
+        for mode, diagnostic in (
+            ("ignore-int", "sending SIGTERM"),
+            ("ignore-both", "sending SIGKILL"),
+        ):
+            with self.subTest(mode=mode):
+                self.env["TEST_RECORDER_MODE"] = mode
+                started = time.monotonic()
+                status, _, stderr = self.run_capture(kind="record", request="stop\n")
+                self.assertNotEqual(status, 0)
+                self.assertLess(time.monotonic() - started, 11)
+                self.assertIn(diagnostic, stderr)
+                self.assert_recorder_gone()
+                self.assertFalse(
+                    any("Recording saved" in call for call in self.calls("notify-send"))
+                )
+
+    def test_eof_escalates_for_unresponsive_recorder(self):
+        self.env["TEST_RECORDER_MODE"] = "ignore-int"
+        status, _, stderr = self.run_capture(kind="record")
+        self.assertNotEqual(status, 0)
+        self.assertIn("sending SIGTERM", stderr)
+        self.assert_recorder_gone()
+
+    def test_backend_termination_reaps_recorder(self):
+        for ready, mode in ((False, "normal"), (True, "normal"), (True, "ignore-both")):
+            with self.subTest(after_recording_message=ready, mode=mode):
+                self.env["TEST_RECORDER_MODE"] = mode
+                process = subprocess.Popen(
+                    ["bash", str(SCRIPT), "record", "region"],
+                    env=self.env,
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    start_new_session=True,
+                )
+                try:
+                    deadline = time.monotonic() + 4
+                    # Wait for handlers to be installed, but not necessarily RECORDING.
+                    while True:
+                        if ready:
+                            started = bool(self.calls("pkill"))
+                        else:
+                            started = any(
+                                (self.root / "home/Videos/Recordings").glob("*.mp4")
+                            )
+                        if started:
+                            break
+                        self.assertLess(time.monotonic(), deadline)
+                        time.sleep(0.01)
+                    process.terminate()
+                    _, stderr = process.communicate(timeout=12)
+                    self.assertEqual(process.returncode, 130, stderr)
+                    self.assert_recorder_gone()
+                finally:
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    process.wait()
+                # Do not let the previous run satisfy the next readiness check.
+                (self.root / "trace").unlink()
+                for file in (self.root / "home/Videos/Recordings").glob("*.mp4"):
+                    file.unlink()
 
     def test_recorder_startup_failure(self):
         self.env["TEST_RECORDER_FAIL"] = "1"

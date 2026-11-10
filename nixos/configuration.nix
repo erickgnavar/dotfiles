@@ -468,6 +468,7 @@
     }))
     grim
     slurp
+    imagemagick # Pixel color picking from screenshots.
     tesseract # Region OCR to clipboard (English recognition).
     wf-recorder # screen and region recording from the Quickshell capture toolbar
     cliphist

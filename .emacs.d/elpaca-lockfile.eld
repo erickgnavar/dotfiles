@@ -1531,22 +1531,6 @@
 			 https :inherit t :depth treeless :ref
 			 "a0051a8b8eaa85f8df54ddb032f5710c1f62779d"
 			 :id vterm-toggle :type git))
- (wakatime-mode :source "elpaca-menu-lock-file" :recipe
-		(:package "wakatime-mode" :fetcher github :repo
-			  "wakatime/wakatime-mode" :files
-			  ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-			   "*.texinfo" "doc/dir" "doc/*.info"
-			   "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
-			   "docs/dir" "docs/*.info" "docs/*.texi"
-			   "docs/*.texinfo"
-			   (:exclude ".dir-locals.el" "test.el"
-				     "tests.el" "*-test.el"
-				     "*-tests.el" "LICENSE" "README*"
-				     "*-pkg.el"))
-			  :source "elpaca-menu-lock-file" :protocol
-			  https :inherit t :depth treeless :ref
-			  "1c5b2254dd72f2ff504d6a6189a8c10be03a98d1"
-			  :id wakatime-mode :type git))
  (web-mode :source "elpaca-menu-lock-file" :recipe
 	   (:package "web-mode" :repo "fxbois/web-mode" :fetcher
 		     github :files

@@ -70,7 +70,6 @@
     ripgrep
     docker-client
     colima
-    wakatime-cli
     uv
     kubectl
     kubernetes-helm

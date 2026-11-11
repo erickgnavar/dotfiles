@@ -5,24 +5,70 @@ notify() {
   notify-send "Color picker" "$1" || true
 }
 
-# slurp -p returns 1 when the point selection is cancelled.
-if point=$(slurp -p); then
-  [[ -n "$point" ]] || exit 0
-else
-  status=$?
-  [[ "$status" -eq 1 ]] && exit 0
-  notify "Point selection failed."
-  exit "$status"
-fi
-
 umask 077
 workdir=$(mktemp -d)
-trap 'rm -rf -- "$workdir"' EXIT
+# The magnifier overlay is only up while the Quickshell pick is in flight;
+# on unexpected exits (e.g. grim failed before the explicit dismiss) it
+# would keep the keyboard and the blank cursor, so the trap dismisses it.
+qs_pick=0
+cleanup() {
+  if ((qs_pick)); then
+    qs -c desktop ipc call colorpicker cancel >/dev/null 2>&1 || true
+  fi
+  rm -rf -- "$workdir"
+}
+trap cleanup EXIT
 trap 'exit 130' INT TERM HUP
+point_file="$workdir/point"
 
+# Prefer the Quickshell desktop magnifier, which writes "<x> <y>" in
+# compositor coordinates on pick and touches an empty file on cancel. Fall
+# back to slurp point selection when Quickshell is unavailable.
+point=""
+if command -v qs >/dev/null 2>&1 &&
+  qs -c desktop ipc call colorpicker pick "$point_file" >/dev/null 2>&1; then
+  qs_pick=1
+  deadline=$((SECONDS + ${PICK_TIMEOUT:-120}))
+  until [ -e "$point_file" ]; do
+    ((SECONDS < deadline)) || {
+      # Dismiss the overlay; otherwise it keeps the exclusive keyboard.
+      qs -c desktop ipc call colorpicker cancel >/dev/null 2>&1 || true
+      qs_pick=0
+      notify "Point selection timed out."
+      exit 0
+    }
+    sleep 0.1
+  done
+  if [ -s "$point_file" ]; then
+    point=$(tr ' ' ',' <"$point_file")
+    # The magnifier reports a position, so give grim its 1x1 size.
+    point="$point 1x1"
+  else
+    # The overlay already dismissed itself (empty selection).
+    qs_pick=0
+    exit 0
+  fi
+fi
+if [[ -z "$point" ]]; then
+  # slurp -p returns 1 when the point selection is cancelled.
+  if point=$(slurp -p); then
+    [[ -n "$point" ]] || exit 0
+  else
+    status=$?
+    [[ "$status" -eq 1 ]] && exit 0
+    notify "Point selection failed."
+    exit "$status"
+  fi
+fi
 if ! grim -g "$point" "$workdir/pixel.png"; then
   notify "Could not capture the selected pixel."
   exit 1
+fi
+# The overlay kept a blank cursor so the captures would not include one;
+# dismiss it now that the pixel is on disk, before showing the menu.
+if ((qs_pick)); then
+  qs -c desktop ipc call colorpicker cancel >/dev/null 2>&1 || true
+  qs_pick=0
 fi
 if ! color=$(magick "$workdir/pixel.png" -format '%[hex:p{0,0}]' info:); then
   notify "Could not read the pixel color."
@@ -72,16 +118,22 @@ fi
 sat_pct=$(((sat_scaled * 100 + scale / 2) / scale))
 light_pct=$(((light_scaled * 100 + scale / 2) / scale))
 
-# Each entry is "Label<TAB>value"; the value after the tab is what gets copied.
+# Each entry is "swatch Label<TAB>value". The swatch is a Pango background
+# span rendered by rofi -markup-rows; the value after the tab is what gets
+# copied, so the markup never leaks into the clipboard.
+swatch=$(printf '<span background="#%s">      </span> ' "$hex")
 menu=$(
-  printf 'Hex\t#%s\n' "$hex"
-  printf 'RGB\trgb(%d, %d, %d)\n' "$r" "$g" "$b"
-  printf 'RGBA\trgba(%d, %d, %d, 1.0)\n' "$r" "$g" "$b"
-  printf 'HSL\thsl(%d, %d%%, %d%%)\n' "$hue" "$sat_pct" "$light_pct"
+  printf '%sHex\t#%s\n' "$swatch" "$hex"
+  printf '%sRGB\trgb(%d, %d, %d)\n' "$swatch" "$r" "$g" "$b"
+  printf '%sRGBA\trgba(%d, %d, %d, 1.0)\n' "$swatch" "$r" "$g" "$b"
+  printf '%sHSL\thsl(%d, %d%%, %d%%)\n' "$swatch" "$hue" "$sat_pct" "$light_pct"
 )
 
 # Rofi returns nonzero when the menu is dismissed.
-if ! choice=$(printf '%s\n' "$menu" | rofi -dmenu -i -no-show-icons -p "Copy color as"); then
+# Rofi returns nonzero when the menu is dismissed; -markup-rows renders the
+# swatch spans while the returned line keeps the raw entry text intact.
+if ! choice=$(printf '%s\n' "$menu" |
+  rofi -dmenu -i -no-show-icons -markup-rows -p "Copy color as"); then
   exit 0
 fi
 value=${choice##*$'\t'}

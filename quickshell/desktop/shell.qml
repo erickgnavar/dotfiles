@@ -10,10 +10,12 @@ import "./dock"
 import "./capture"
 import "./app_switcher"
 import "./wallpaper_picker"
+import "./color_picker"
 
 ShellRoot {
     Dock { }
     Capture { }
     AppSwitcher { }
     WallpaperPicker { }
+    ColorPicker { }
 }

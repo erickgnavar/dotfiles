@@ -65,6 +65,8 @@ export interface Budgets {
   retryMs?: number;
 }
 
+export type CompactionState = "idle" | "running" | "paused";
+
 export interface CompactorHooks {
   complete(
     model: Model<any>,
@@ -74,6 +76,7 @@ export interface CompactorHooks {
   ): Promise<AssistantMessage>;
   onError(message: string): void;
   onNodeBuilt?(): void;
+  onStateChange?(state: CompactionState): void;
 }
 
 export interface MemoryStats {
@@ -134,6 +137,7 @@ export class OptChat {
   private pumpQueued = false;
   private loading = false;
   private viewDirty = false;
+  private lastState: CompactionState | undefined;
 
   constructor(
     dir: string,
@@ -271,6 +275,7 @@ export class OptChat {
     }
     this.viewDirty = true;
     this.saveView();
+    this.notifyState();
     if (torn > 0)
       this.hooks.onError(
         `OptChat: skipped ${torn} torn lines while loading the log`,
@@ -411,6 +416,7 @@ export class OptChat {
     this.leafQueue.add(i);
     this.viewDirty = true;
     this.fit();
+    this.notifyState();
     this.schedulePump();
     return i;
   }
@@ -604,6 +610,7 @@ export class OptChat {
   close(): void {
     if (this.closed) return;
     this.closed = true;
+    this.notifyState();
     this.abort.abort();
     for (const timer of this.retryTimers) clearTimeout(timer);
     this.retryTimers.clear();
@@ -623,6 +630,7 @@ export class OptChat {
     this.paused = false;
     this.retryAt.clear();
     this.sizeRetryMs.clear();
+    this.notifyState();
     this.pump();
   }
 
@@ -660,6 +668,7 @@ export class OptChat {
   private launch(l: number, i: number): void {
     const k = nodeKey(l, i);
     this.busy.add(k);
+    this.notifyState();
     void this.buildNode(l, i);
   }
 
@@ -762,6 +771,7 @@ export class OptChat {
       }
     } finally {
       this.busy.delete(k);
+      this.notifyState();
       if (!this.paused) this.schedulePump();
     }
     if (failed && !this.paused) {
@@ -792,6 +802,20 @@ export class OptChat {
       const parent = nodeKey(l + 1, i >> 1);
       if (!this.nodes.has(parent)) this.mergeQueue.add(parent);
     }
+    this.notifyState();
+  }
+
+  private notifyState(): void {
+    const pending = this.leafQueue.size + this.mergeQueue.size > 0;
+    const state: CompactionState =
+      this.closed || (!pending && this.busy.size === 0)
+        ? "idle"
+        : this.paused
+          ? "paused"
+          : "running";
+    if (state === this.lastState) return;
+    this.lastState = state;
+    this.hooks.onStateChange?.(state);
   }
 
   /**

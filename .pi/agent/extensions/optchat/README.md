@@ -88,8 +88,10 @@ also prevent context replacement, including when enabling OptChat in an existing
   A change applies to later compactor calls and persists across reloads in
   `model.txt`. Set `OPTCHAT_MODEL` to override the saved choice at startup.
 - With the standalone `footer` extension loaded, the compactor model ID appears
-  after the chat model's effort (`model • high • (optchat compactor) compactor-model`).
-  OptChat only publishes its model; the footer remains independent and optional.
+  after the chat model's effort. A `●` appears beside it while compaction is pending
+  and disappears when finished; a `⏸` indicates quota or authentication pauses
+  (`model • high • (optchat compactor) compactor-model ●`). OptChat only publishes
+  its model and state; the footer remains independent and optional.
 - The model navigates its own memory with the `zoom(id, n)` and
   `date(id)` tools.
 

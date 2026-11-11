@@ -46,7 +46,7 @@ import {
   type ExtensionAPI,
   type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
-import { CAP, errorText, OptChat } from "./memory.ts";
+import { CAP, type CompactionState, errorText, OptChat } from "./memory.ts";
 import { acquireLock, type Lock, saveImage } from "./store.ts";
 import { VIEW_DOC } from "./prompts.ts";
 import { UsageJournal } from "./usage.ts";
@@ -84,6 +84,12 @@ export default function optchat(pi: ExtensionAPI) {
     return key;
   };
   let usageJournal: UsageJournal | null = null;
+  let compactionState: CompactionState = "idle";
+
+  function setCompactionState(state: CompactionState): void {
+    compactionState = state;
+    publishCompactor();
+  }
 
   function trackUsage(
     kind: "chat" | "compactor" | "node",
@@ -108,11 +114,17 @@ export default function optchat(pi: ExtensionAPI) {
 
   // The standalone footer owns rendering; publish the labeled compactor ID.
   function publishCompactor(): void {
+    const indicator =
+      compactionState === "running"
+        ? " ●"
+        : compactionState === "paused"
+          ? " ⏸"
+          : "";
     pi.events.emit("footer:model-suffix", {
       id: "optchat",
       text:
         active && compactorModel
-          ? `(optchat compactor) ${compactorModel.id}`
+          ? `(optchat compactor) ${compactorModel.id}${indicator}`
           : undefined,
     });
   }
@@ -180,6 +192,7 @@ export default function optchat(pi: ExtensionAPI) {
       },
       onError: (message) => ctx.ui.notify(message, "error"),
       onNodeBuilt: () => trackUsage("node", {}, ctx),
+      onStateChange: setCompactionState,
     });
     try {
       chat.load();
@@ -196,6 +209,7 @@ export default function optchat(pi: ExtensionAPI) {
 
   function cleanup(): void {
     active = false;
+    compactionState = "idle";
     turnActive = false;
     viewFrozen = null;
     pendingPrompt = null;

@@ -292,6 +292,31 @@ test("node metrics distinguish rewrites, empty retries, failures and free builds
   }
 });
 
+test("compaction state reports work in progress and completion", async () => {
+  freshDir();
+  const states = [];
+  let release;
+  const chat = new OptChat(dir, fakeModel, {
+    complete: () =>
+      new Promise((resolve) => {
+        release = () => resolve(fakeReply("user: summarized"));
+      }),
+    onError: assert.fail,
+    onStateChange: (state) => states.push(state),
+  });
+  try {
+    chat.load();
+    chat.log("user", "x".repeat(700));
+    await waitFor(() => typeof release === "function");
+    assert.equal(states.at(-1), "running");
+    release();
+    await buildAll(chat);
+    await waitFor(() => states.at(-1) === "idle");
+  } finally {
+    chat.close();
+  }
+});
+
 test("rewrites isolate the shortest whole summary and tighten the byte target", async () => {
   freshDir();
   const shortest = "é".repeat(260); // 520 bytes, despite only 260 characters.
@@ -421,6 +446,7 @@ test("size backoff retries automatically and resets on a transient failure", asy
 test("quota failures pause the compactor; resume restarts it", async () => {
   freshDir();
   let quotaFail = true;
+  const states = [];
   const bad = new OptChat(dir, fakeModel, {
     complete: async () => {
       if (quotaFail) {
@@ -432,11 +458,13 @@ test("quota failures pause the compactor; resume restarts it", async () => {
       return fakeReply("line " + "x".repeat(300));
     },
     onError: (m) => errors.push(m),
+    onStateChange: (state) => states.push(state),
   });
   errors = [];
   bad.log("user", "w".repeat(600));
   await delay(50);
   assert.ok(bad.isPaused(), "a quota error pauses compaction");
+  assert.equal(states.at(-1), "paused");
   assert.equal(await bad.settle(), false, "settle does not hang while paused");
   assert.ok(
     errors.some((e) => e.includes("paused")),
@@ -449,6 +477,7 @@ test("quota failures pause the compactor; resume restarts it", async () => {
   bad.resume();
   await buildAll(bad, 2000);
   assert.ok(!bad.isPaused(), "resume clears the pause and finishes the work");
+  assert.equal(states.at(-1), "idle");
   bad.close();
 });
 

@@ -56,8 +56,12 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-# Reap before exiting: waiting inside EXIT after an interrupted read can crash Bash.
-trap 'trap - EXIT; cleanup; exit 130' INT TERM HUP
+# Bash's `read -t` arms a longjmp timeout: once it expires, check_signals()
+# jumps back into read, abandoning whatever a signal trap handler was still
+# doing. Handlers must stay trivial, so signals only set a flag and the read
+# loop below finalizes on the main flow, outside read's dynamic scope.
+signal_stop=
+trap 'signal_stop=1' INT TERM HUP
 trap 'notify-send -a Capture -u critical "Capture failed" "Check the capture shell logs." || true' ERR
 
 # Screen means the currently focused Sway output, not the entire desktop.
@@ -117,6 +121,7 @@ if [[ "$area" == region ]]; then
 fi
 printf 'RECORDING\n'
 while kill -0 "$recorder_pid" 2>/dev/null; do
+  [[ -n "$signal_stop" ]] && break
   if IFS= read -r -t 0.2 request; then
     [[ "$request" == stop ]] && break
   elif [[ $? -le 128 ]]; then
@@ -124,5 +129,9 @@ while kill -0 "$recorder_pid" 2>/dev/null; do
     break
   fi
 done
+if [[ -n "$signal_stop" ]]; then
+  stop_recorder || true
+  exit 130
+fi
 stop_recorder
 notify-send -a Capture "Recording saved" "$file" || true

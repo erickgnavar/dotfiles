@@ -1499,7 +1499,7 @@
 		   "vterm-module.c" "vterm-module.h")
 		  :source "elpaca-menu-lock-file" :protocol https
 		  :inherit t :depth treeless :ref
-		  "056ad74653704bc353d8ec8ab52ac75267b7d373" :id vterm
+		  "6d715a93fa0e5182bc137d4db09f376e06938aa5" :id vterm
 		  :type git))
  (vterm-toggle :source "elpaca-menu-lock-file" :recipe
 	       (:package "vterm-toggle" :fetcher github :repo

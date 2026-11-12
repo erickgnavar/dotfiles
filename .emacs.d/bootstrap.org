@@ -999,8 +999,10 @@ Define helper functions to be used by other packages
 (defun my/project-switch-action ()
   "Switch to a new perspective which name is project's name and open `project-find-file'."
   (interactive)
-  (persp-switch (my/project-name))
-  (project-find-file))
+  (let ((root (my/project-root)))
+    (persp-switch (my/project-name))
+    (let ((default-directory root))
+      (project-find-file))))
 
 (defun my/project-kill-buffers ()
   "Kill all the related buffers to the current project and delete its perspective as well."

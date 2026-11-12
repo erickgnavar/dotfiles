@@ -99,9 +99,17 @@ class CaptureTests(unittest.TestCase):
             mock.write_text(f"#!{sys.executable}\n" + MOCK)
             mock.chmod(0o755)
 
-    def run_capture(self, kind="screenshot", area="region", option="plain", request=""):
+    def run_capture(
+        self,
+        kind="screenshot",
+        area="region",
+        option="plain",
+        audio="silent",
+        source="default",
+        request="",
+    ):
         process = subprocess.Popen(
-            ["bash", str(SCRIPT), kind, area, option],
+            ["bash", str(SCRIPT), kind, area, option, audio, source],
             env=self.env,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -133,6 +141,17 @@ class CaptureTests(unittest.TestCase):
     def test_invalid_arguments(self):
         self.assertEqual(self.run_capture(kind="invalid")[0], 2)
         self.assertFalse((self.root / "trace").exists())
+
+    def test_ui_can_enable_recording_audio(self):
+        source = SCRIPT.with_name("Capture.qml").read_text()
+        self.assertIn("import Quickshell.Services.Pipewire", source)
+        self.assertIn('text: shell.kind === "record" ? "Include audio"', source)
+        self.assertIn('label: "Default microphone", name: "default"', source)
+        self.assertIn('!node.name.endsWith(".monitor")', source)
+        self.assertIn('audioSourcePicker.currentValue || "default"', source)
+        self.assertIn('color: audioSourcePicker.down ? "#64727d"', source)
+        self.assertIn("visible: shell.recording && region !== null", source)
+        self.assertNotIn("region.x - 2 < screen.x", source)
 
     def test_cancel_is_silent(self):
         self.env.update(
@@ -212,7 +231,28 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(status, 0, stderr)
         self.assertEqual(stdout.splitlines(), ["RECORDING"])
         self.assertEqual(self.calls("wf-recorder")[0][:2], ["-o", "HDMI-A-2"])
+        self.assertNotIn("--audio", self.calls("wf-recorder")[0])
         self.assertFalse((self.root / "runtime/quickshell-recording.pid").exists())
+
+    def test_recording_can_include_audio(self):
+        status, _, stderr = self.run_capture(
+            kind="record", area="screen", audio="audio", request="stop\n"
+        )
+        self.assertEqual(status, 0, stderr)
+        self.assertIn("--audio", self.calls("wf-recorder")[0])
+
+    def test_recording_can_select_audio_source(self):
+        source = "alsa_input.usb-example_microphone.mono-fallback"
+        status, _, stderr = self.run_capture(
+            kind="record",
+            area="screen",
+            audio="audio",
+            source=source,
+            request="stop\n",
+        )
+        self.assertEqual(status, 0, stderr)
+        self.assertIn(f"--audio={source}", self.calls("wf-recorder")[0])
+        self.assertNotIn("--audio", self.calls("wf-recorder")[0])
 
     def assert_recorder_gone(self):
         pid = int((self.root / "recorder.pid").read_text())

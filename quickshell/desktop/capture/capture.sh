@@ -106,10 +106,27 @@ if [[ "$kind" == screenshot ]]; then
   exit 0
 fi
 
+audio=${4:-silent}
+audio_source=${5:-default}
+case "$audio" in
+silent) recorder_args=("${capture_args[@]}") ;;
+audio)
+  recorder_args=("${capture_args[@]}")
+  if [[ "$audio_source" == default ]]; then
+    recorder_args+=(--audio)
+  elif [[ -n "$audio_source" && "$audio_source" != *$'\n'* ]]; then
+    recorder_args+=("--audio=$audio_source")
+  else
+    exit 2
+  fi
+  ;;
+*) exit 2 ;;
+esac
+
 directory="$HOME/Videos/Recordings"
 mkdir -p "$directory"
 file="$directory/recording-$(date +%Y-%m-%d_%H-%M-%S-%N).mp4"
-wf-recorder "${capture_args[@]}" -f "$file" &
+wf-recorder "${recorder_args[@]}" -f "$file" &
 recorder_pid=$!
 # Report recording only once the process has survived initial startup.
 sleep 0.3

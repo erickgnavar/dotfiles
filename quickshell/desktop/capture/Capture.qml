@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Io
+import Quickshell.Services.Pipewire
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Controls
@@ -11,6 +12,18 @@ Scope {
     property string kind: "screenshot"
     property string area: "region"
     property bool annotate: false
+    property bool audio: false
+    property string audioSource: "default"
+    property var audioSources: {
+        const sources = Pipewire.nodes.values.filter(node => node.audio !== null
+            && !node.isSink && !node.isStream && node.name
+            && !node.name.endsWith(".monitor")).map(node => ({
+                label: node.description || node.nickname || node.name,
+                name: node.name
+            }));
+        sources.sort((left, right) => left.label.localeCompare(right.label));
+        return [{ label: "Default microphone", name: "default" }].concat(sources);
+    }
     property bool recording: false
     property bool stopping: false
     property var recordingRegion: null
@@ -88,7 +101,15 @@ Scope {
         id: captureDelay
         interval: 250
         onTriggered: {
-            backend.command = ["bash", decodeURIComponent(Qt.resolvedUrl("capture.sh").toString().replace("file://", "")), shell.kind, shell.area, shell.annotate ? "annotate" : "plain"];
+            backend.command = [
+                "bash",
+                decodeURIComponent(Qt.resolvedUrl("capture.sh").toString().replace("file://", "")),
+                shell.kind,
+                shell.area,
+                shell.annotate ? "annotate" : "plain",
+                shell.audio ? "audio" : "silent",
+                audioSourcePicker.currentValue || "default"
+            ];
             backend.running = true;
         }
     }
@@ -129,10 +150,6 @@ Scope {
 
             screen: modelData
             visible: shell.recording && region !== null
-                && region.x - 2 < screen.x + screen.width
-                && region.x + region.width + 2 > screen.x
-                && region.y - 2 < screen.y + screen.height
-                && region.y + region.height + 2 > screen.y
             anchors { top: true; bottom: true; left: true; right: true }
             exclusionMode: ExclusionMode.Ignore
             exclusiveZone: 0
@@ -269,42 +286,132 @@ Scope {
                     Layout.fillWidth: true
                     spacing: 16
                     CheckBox {
-                        id: annotateToggle
-                        text: "Annotate in Swappy"
-                        enabled: shell.kind === "screenshot"
-                        checked: shell.annotate
-                        onToggled: shell.annotate = annotateToggle.checked
+                        id: optionToggle
+                        text: shell.kind === "record" ? "Include audio" : "Annotate in Swappy"
+                        checked: shell.kind === "record" ? shell.audio : shell.annotate
+                        onToggled: {
+                            if (shell.kind === "record")
+                                shell.audio = optionToggle.checked;
+                            else
+                                shell.annotate = optionToggle.checked;
+                        }
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 12
                         spacing: 8
                         padding: 6
                         leftPadding: 0
-                        opacity: enabled ? 1 : 0.4
 
                         contentItem: Text {
-                            text: annotateToggle.text
-                            font: annotateToggle.font
+                            text: optionToggle.text
+                            font: optionToggle.font
                             color: "#eeeeee"
-                            leftPadding: annotateToggle.indicator.width + annotateToggle.spacing
+                            leftPadding: optionToggle.indicator.width + optionToggle.spacing
                             verticalAlignment: Text.AlignVCenter
                         }
 
                         indicator: Rectangle {
-                            x: annotateToggle.leftPadding
-                            y: (annotateToggle.height - height) / 2
+                            x: optionToggle.leftPadding
+                            y: (optionToggle.height - height) / 2
                             implicitWidth: 20
                             implicitHeight: 20
                             radius: 4
-                            color: annotateToggle.checked ? "#7ebae4" : "transparent"
-                            border.color: annotateToggle.visualFocus ? "#eeeeee" : "#7ebae4"
+                            color: optionToggle.checked ? "#7ebae4" : "transparent"
+                            border.color: optionToggle.visualFocus ? "#eeeeee" : "#7ebae4"
                             border.width: 2
 
                             Text {
                                 anchors.centerIn: parent
                                 text: "✓"
-                                visible: annotateToggle.checked
+                                visible: optionToggle.checked
                                 color: "#0f0f0f"
                                 font.pixelSize: 16
+                            }
+                        }
+                    }
+                    ComboBox {
+                        id: audioSourcePicker
+                        visible: shell.kind === "record" && shell.audio
+                        Layout.preferredWidth: 240
+                        model: shell.audioSources
+                        textRole: "label"
+                        valueRole: "name"
+                        currentIndex: Math.max(0, shell.audioSources.findIndex(
+                            source => source.name === shell.audioSource))
+                        implicitHeight: 36
+                        leftPadding: 12
+                        rightPadding: 34
+                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: 12
+                        onActivated: shell.audioSource = currentValue
+
+                        background: Rectangle {
+                            radius: 6
+                            color: audioSourcePicker.down ? "#64727d"
+                                : audioSourcePicker.hovered ? "#26ffffff" : "#12ffffff"
+                            border.color: audioSourcePicker.visualFocus
+                                ? "#eeeeee" : "#1fffffff"
+                            border.width: audioSourcePicker.visualFocus ? 2 : 1
+                            Behavior on color { ColorAnimation { duration: 120 } }
+                        }
+
+                        contentItem: Text {
+                            text: audioSourcePicker.displayText
+                            font: audioSourcePicker.font
+                            color: "#eeeeee"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        indicator: Text {
+                            x: audioSourcePicker.width - width - 12
+                            y: (audioSourcePicker.height - height) / 2
+                            text: "▾"
+                            color: "#7ebae4"
+                            font: audioSourcePicker.font
+                        }
+
+                        delegate: ItemDelegate {
+                            required property int index
+                            required property var modelData
+                            width: audioSourcePicker.width
+                            height: 34
+                            padding: 10
+                            highlighted: audioSourcePicker.highlightedIndex === index
+
+                            background: Rectangle {
+                                radius: 4
+                                color: parent.highlighted ? "#407ebae4"
+                                    : parent.hovered ? "#26ffffff" : "transparent"
+                            }
+
+                            contentItem: Text {
+                                text: parent.modelData.label
+                                font: audioSourcePicker.font
+                                color: "#eeeeee"
+                                verticalAlignment: Text.AlignVCenter
+                                elide: Text.ElideRight
+                            }
+                        }
+
+                        popup: Popup {
+                            y: audioSourcePicker.height + 4
+                            width: audioSourcePicker.width
+                            implicitHeight: Math.min(contentItem.implicitHeight + 8, 220)
+                            padding: 4
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: audioSourcePicker.popup.visible
+                                    ? audioSourcePicker.delegateModel : null
+                                currentIndex: audioSourcePicker.highlightedIndex
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                radius: 8
+                                color: "#f20f0f0f"
+                                border.color: "#407ebae4"
                             }
                         }
                     }
@@ -317,8 +424,12 @@ Scope {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: (shell.area === "region" ? "Drag to select a region · " : "Focused screen · ")
-                        + (shell.kind === "record" ? "No audio" : "Saved + copied to clipboard")
+                    text: (shell.area === "region"
+                            ? "Drag to select a region · " : "Focused screen · ")
+                        + (shell.kind === "record"
+                            ? (shell.audio ? "Audio: " + audioSourcePicker.currentText
+                                : "No audio")
+                            : "Saved + copied to clipboard")
                     color: "#bfbfbf"
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 12

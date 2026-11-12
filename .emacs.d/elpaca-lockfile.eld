@@ -528,7 +528,7 @@
 				    "*-pkg.el"))
 			 :source "elpaca-menu-lock-file" :protocol
 			 https :inherit t :depth treeless :ref
-			 "970acdac865d5b6ee8541b82a413f3a107b9332e"
+			 "ef4a6caed72bce77a27bda54ffb30e3fdb0e7d76"
 			 :id flymake-ruff :type git))
  (flymake-sqlfluff :source "elpaca-menu-lock-file" :recipe
 		   (:package "flymake-sqlfluff" :fetcher github :repo

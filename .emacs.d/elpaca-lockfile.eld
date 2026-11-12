@@ -1006,7 +1006,7 @@
 				   "LICENSE" "README*" "*-pkg.el"))
 			:source "elpaca-menu-lock-file" :protocol
 			https :inherit t :depth treeless :ref
-			"706bbfaf7f344d7c5914bf7aa5beb2d904eb53b3" :id
+			"09c89886a22b8e37ac0de9210ff5b2b79c520fd7" :id
 			nix-ts-mode :type git))
  (ob-d2 :source "elpaca-menu-lock-file" :recipe
 	(:package "ob-d2" :repo "xcapaldi/ob-d2" :fetcher github

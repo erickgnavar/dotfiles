@@ -895,7 +895,7 @@
 				  "LICENSE" "README*" "*-pkg.el"))
 		       :source "elpaca-menu-lock-file" :protocol https
 		       :inherit t :depth treeless :ref
-		       "a527fb03b76a2bce1e360c6e73a095e06922c3f3" :id
+		       "381af583d2530796b9955ff2fe0cba3ad3119943" :id
 		       marginalia :type git))
  (mermaid-mode :source "elpaca-menu-lock-file" :recipe
 	       (:package "mermaid-mode" :repo "abrochard/mermaid-mode"

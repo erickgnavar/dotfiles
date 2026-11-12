@@ -265,7 +265,7 @@
 				 "README*" "*-pkg.el"))
 		      :source "elpaca-menu-lock-file" :protocol https
 		      :inherit t :depth treeless :ref
-		      "9f3967b0bea038c37d4a6c6bb96144574bb706ee" :id
+		      "cf06b4ccdce6a39346c32f05139f9ee8b77ee229" :id
 		      dumb-jump :type git))
  (edit-indirect :source "elpaca-menu-lock-file" :recipe
 		(:package "edit-indirect" :fetcher github :repo
@@ -1174,20 +1174,6 @@
 		   :inherit t :depth treeless :ref
 		   "faf155059e519fb036324af579c342365795dbbb" :id
 		   popper :type git))
- (popup :source "elpaca-menu-lock-file" :recipe
-	(:package "popup" :fetcher github :repo
-		  "auto-complete/popup-el" :files
-		  ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		   "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		   "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		   "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		   (:exclude ".dir-locals.el" "test.el" "tests.el"
-			     "*-test.el" "*-tests.el" "LICENSE"
-			     "README*" "*-pkg.el"))
-		  :source "elpaca-menu-lock-file" :protocol https
-		  :inherit t :depth treeless :ref
-		  "7a05700a37aae66d2b24f0cd8851f65383a5cf96" :id popup
-		  :type git))
  (posframe :source "elpaca-menu-lock-file" :recipe
 	   (:package "posframe" :fetcher github :repo
 		     "tumashu/posframe" :files

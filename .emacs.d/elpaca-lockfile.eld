@@ -120,7 +120,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "74e6cc77609cb36cd61aa2a23848659fbb66f05a" :id
+		    "a64569f377b8bc0f62e1d2ae0f3ee48ba4a7cc1c" :id
 		    consult :type git))
  (consult-yasnippet :source "elpaca-menu-lock-file" :recipe
 		    (:package "consult-yasnippet" :fetcher github

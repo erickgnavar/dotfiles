@@ -1158,7 +1158,7 @@
 				   "LICENSE" "README*" "*-pkg.el"))
 			:source "elpaca-menu-lock-file" :protocol
 			https :inherit t :depth treeless :ref
-			"e32d3ea731f6bc551ce196527b3cb0dc19d71151" :id
+			"37437b339abfc23a37aa5803a09563ccdfab1f9a" :id
 			perspective :type git))
  (popper :source "elpaca-menu-lock-file" :recipe
 	 (:package "popper" :fetcher github :repo "karthink/popper"

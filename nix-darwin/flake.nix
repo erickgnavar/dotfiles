@@ -13,7 +13,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     emacs-src = {
-      url = "github:emacs-mirror/emacs/b5c91b3fa6af78c1f86e5a88be26f9690236b5be";
+      url = "github:emacs-mirror/emacs/205ae0b0583dbfe09e258164adbc49e130645221";
       flake = false;
     };
   };

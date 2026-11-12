@@ -339,7 +339,7 @@
 		   :files ("embark.el" "embark-org.el" "embark.texi")
 		   :source "elpaca-menu-lock-file" :protocol https
 		   :inherit t :depth treeless :ref
-		   "195add1f1ccd1059472c9df7334c97c4d155425e" :id
+		   "87e53827cf6659dcc4ac4e54be9af34aeca44f6e" :id
 		   embark :type git))
  (embark-consult :source "elpaca-menu-lock-file" :recipe
 		 (:package "embark-consult" :repo "oantolin/embark"
@@ -347,7 +347,7 @@
 			   ("embark-consult.el") :source
 			   "elpaca-menu-lock-file" :protocol https
 			   :inherit t :depth treeless :ref
-			   "195add1f1ccd1059472c9df7334c97c4d155425e"
+			   "87e53827cf6659dcc4ac4e54be9af34aeca44f6e"
 			   :id embark-consult :type git))
  (emmet-mode :source "elpaca-menu-lock-file" :recipe
 	     (:package "emmet-mode" :fetcher github :repo

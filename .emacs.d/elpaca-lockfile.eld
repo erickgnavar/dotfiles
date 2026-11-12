@@ -1186,7 +1186,7 @@
 				"README*" "*-pkg.el"))
 		     :source "elpaca-menu-lock-file" :protocol https
 		     :inherit t :depth treeless :ref
-		     "fcf1757baee481f617fbf2dc39f8c561207df263" :id
+		     "1a6a25c58559ef43821a071c43b23de5cbc3cc3a" :id
 		     posframe :type git))
  (pretty-hydra :source "elpaca-menu-lock-file" :recipe
 	       (:package "pretty-hydra" :repo
@@ -1470,7 +1470,7 @@
 			     :files ("*" (:exclude ".git")) :source
 			     "elpaca-menu-lock-file" :protocol https
 			     :inherit t :depth treeless :ref
-			     "d89a70743cfd95b7fcda621679b7555bbef51acb"
+			     "bc0d9caf16ecf48605a3f156b8cc559c51959b15"
 			     :id vertico-posframe :type git))
  (visual-fill-column :source "elpaca-menu-lock-file" :recipe
 		     (:package "visual-fill-column" :fetcher codeberg

@@ -377,7 +377,7 @@
 			    (:exclude "evil-test-helpers.el"))
 		 :source "elpaca-menu-lock-file" :protocol https
 		 :inherit t :depth treeless :ref
-		 "729d9a58b387704011a115c9200614e32da3cefc" :id evil
+		 "6a3e1ddd04ac504a016590940d0af2a3361b9efd" :id evil
 		 :type git))
  (evil-collection :source "elpaca-menu-lock-file" :recipe
 		  (:package "evil-collection" :fetcher github :repo
@@ -672,7 +672,7 @@
 			       "README*" "*-pkg.el"))
 		    :source "elpaca-menu-lock-file" :protocol https
 		    :inherit t :depth treeless :ref
-		    "34328c639ed7aad371a3f57209acad2a5bb66401" :id
+		    "03756fa6ad4dcca5e0920622b1ee3f70abfc4e39" :id
 		    helpful :type git))
  (hide-mode-line :source "elpaca-menu-lock-file" :recipe
 		 (:package "hide-mode-line" :repo

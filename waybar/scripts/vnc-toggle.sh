@@ -20,4 +20,4 @@ if ! systemctl --user start wayvnc.service; then
 fi
 
 notify-send -a "WayVNC" -i preferences-desktop-remote-desktop -u normal -t 4000 \
-  "WayVNC started" "Listening on 0.0.0.0:5901 using wayland-1."
+  "WayVNC started" "Listening on 0.0.0.0:5999 using wayland-1."

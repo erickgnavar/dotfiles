@@ -57,7 +57,7 @@ class DockTests(unittest.TestCase):
         for edge in ("left", "top", "bottom"):
             self.assertIn(f"anchors.{edge}: true", SOURCE)
         self.assertIn("implicitWidth: expanded ? 76 : 3", SOURCE)
-        self.assertIn("shell.forcedOpen || hoverExpanded", SOURCE)
+        self.assertIn("shell.forcedOpen || dock.hoverExpanded", SOURCE)
         reveal = re.search(r"onTriggered: (dock\.hoverExpanded = true)", SOURCE).group(
             1
         )

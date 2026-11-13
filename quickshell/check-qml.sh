@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export LC_ALL=C.UTF-8
+
 cd "$(dirname "${BASH_SOURCE[0]}")"
 for tool in qmlformat qmllint python3; do
   if ! command -v "$tool" >/dev/null; then

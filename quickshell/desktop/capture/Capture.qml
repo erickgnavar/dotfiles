@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pipewire
@@ -147,7 +149,7 @@ Scope {
             readonly property var region: shell.recordingRegion
 
             screen: modelData
-            visible: shell.recording && region !== null
+            visible: shell.recording && outline.region !== null
             anchors { top: true; bottom: true; left: true; right: true }
             exclusionMode: ExclusionMode.Ignore
             exclusiveZone: 0
@@ -365,6 +367,7 @@ Scope {
                         }
 
                         delegate: ItemDelegate {
+                            id: sourceOption
                             required property int index
                             required property var modelData
                             width: audioSourcePicker.width
@@ -374,12 +377,12 @@ Scope {
 
                             background: Rectangle {
                                 radius: 4
-                                color: parent.highlighted ? "#407ebae4"
-                                    : parent.hovered ? "#26ffffff" : "transparent"
+                                color: sourceOption.highlighted ? "#407ebae4"
+                                    : sourceOption.hovered ? "#26ffffff" : "transparent"
                             }
 
                             contentItem: Text {
-                                text: parent.modelData.label
+                                text: sourceOption.modelData.label
                                 font: audioSourcePicker.font
                                 color: "#eeeeee"
                                 verticalAlignment: Text.AlignVCenter

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -240,7 +242,7 @@ Scope {
                     height: width
                     smooth: false
                     fillMode: Image.Stretch
-                    source: patchTarget ? picker.fileUrl(patchTarget) : ""
+                    source: overlay.patchTarget ? picker.fileUrl(overlay.patchTarget) : ""
 
                     Rectangle { // highlight the exact picked pixel; the
                         // border sits outside it so the color stays clean.

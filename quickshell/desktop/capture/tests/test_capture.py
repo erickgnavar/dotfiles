@@ -152,7 +152,9 @@ class CaptureTests(unittest.TestCase):
         self.assertIn('!node.name.endsWith(".monitor")', source)
         self.assertIn('audioSourcePicker.currentValue || "default"', source)
         self.assertIn('color: audioSourcePicker.down ? "#64727d"', source)
-        self.assertIn("visible: shell.recording && region !== null", source)
+        self.assertIn("visible: shell.recording && outline.region !== null", source)
+        self.assertIn("color: sourceOption.highlighted", source)
+        self.assertIn("text: sourceOption.modelData.label", source)
         self.assertNotIn("region.x - 2 < screen.x", source)
 
     def test_cancel_is_silent(self):

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -189,7 +191,7 @@ Scope {
 
     MediaPlayer {
         id: player
-        videoOutput: videoOutput
+        videoOutput: wallpaperVideo
         loops: MediaPlayer.Infinite
     }
 
@@ -285,6 +287,7 @@ Scope {
                             model: wallpapers
                             highlightMoveDuration: 0
                             delegate: Rectangle {
+                                id: wallpaperEntry
                                 required property string path
                                 required property string thumbnail
                                 required property bool small
@@ -297,21 +300,21 @@ Scope {
                                 Image {
                                     anchors.fill: parent
                                     anchors.margins: 4
-                                    source: shell.fileUrl(thumbnail)
+                                    source: shell.fileUrl(wallpaperEntry.thumbnail)
                                     sourceSize.width: 200
                                     sourceSize.height: 120
                                     fillMode: Image.PreserveAspectFit
-                                    asynchronous: !small
+                                    asynchronous: !wallpaperEntry.small
                                 }
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        shell.select(index);
+                                        shell.select(wallpaperEntry.index);
                                         list.forceActiveFocus();
                                     }
                                     onDoubleClicked: {
-                                        shell.select(index);
-                                        shell.applyWallpaper(path, false);
+                                        shell.select(wallpaperEntry.index);
+                                        shell.applyWallpaper(wallpaperEntry.path, false);
                                     }
                                 }
                             }
@@ -331,7 +334,7 @@ Scope {
                                 visible: player.playbackState !== MediaPlayer.PlayingState
                             }
                             VideoOutput {
-                                id: videoOutput
+                                id: wallpaperVideo
                                 anchors.fill: parent
                                 fillMode: VideoOutput.PreserveAspectFit
                                 visible: player.playbackState === MediaPlayer.PlayingState

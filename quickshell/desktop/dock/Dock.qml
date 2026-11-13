@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -43,7 +45,7 @@ Scope {
             id: dock
             required property var modelData
             property bool hoverExpanded: false
-            readonly property bool expanded: shell.forcedOpen || hoverExpanded
+            readonly property bool expanded: shell.forcedOpen || dock.hoverExpanded
             property var hoveredEntry: null
             property string chooserAppId: ""
             onExpandedChanged: { if (!expanded) dock.chooserAppId = ""; }

@@ -21,9 +21,16 @@ _pure_cleanup() {
 # Drop an old worker's descriptor when sourcing this file again.
 _pure_cleanup
 _pure_git=''
+_pure_kube=''
 _pure_git_pwd=''
 _pure_git_checked=0
 _pure_running=0
+
+_pure_kube_refresh() {
+  _pure_kube=''
+  _pure_git_checked=0
+  [[ -n ${_pure_fd-} ]] && _pure_cleanup
+}
 
 _pure_render() {
   local nix_shell='' ssh_identity=''
@@ -33,7 +40,9 @@ _pure_render() {
   fi
   # nix-shell and nix develop set IN_NIX_SHELL (usually pure or impure).
   [[ -n ${IN_NIX_SHELL-} ]] && nix_shell=' %F{cyan}nix-shell%f'
-  PROMPT=$'\n'"${ssh_identity}"'%F{blue}%~%f'"${_pure_git}${nix_shell}${_pure_duration}"$'\n'"%F{${_pure_color}}❯%f "
+  PROMPT=$'\n'"${ssh_identity}"'%F{blue}%~%f'
+  PROMPT+="${_pure_git}${_pure_kube}${nix_shell}${_pure_duration}"
+  PROMPT+=$'\n'"%F{${_pure_color}}❯%f "
   RPROMPT=''
 }
 
@@ -52,7 +61,8 @@ _pure_git_ready() {
     result=${_pure_output%$'\n'}
     result=${result%$'\r'}
     if [[ $PWD == $_pure_git_pwd ]]; then
-      _pure_git=$result
+      _pure_git=${result%%$'\t'*}
+      _pure_kube=${result#*$'\t'}
       _pure_git_checked=$EPOCHSECONDS
       _pure_render
       if ((_pure_running == 0)) && zle; then
@@ -87,6 +97,7 @@ _pure_git_start() {
     unsetopt monitor
     trap - HUP
     local git_state line git_dir operation oid branch='' dirty='' details=''
+    local kube='' kube_context kube_display kube_project
     local ahead=0 behind=0
     local repo_dir=$PWD jj_state jj_change jj_dirty jj_conflict jj_bookmarks
     # Use the nearest repository; JJ wins when .jj and .git are colocated.
@@ -145,7 +156,24 @@ _pure_git_start() {
         [[ -n $operation ]] && details+=" %F{yellow}${operation}%f"
       fi
     fi
-    print -r -- "$details"
+    if command -v kubectl >/dev/null 2>&1; then
+      kube_context=$(command kubectl config current-context 2>/dev/null)
+      kube_context=${kube_context//[[:cntrl:]]/ }
+      if [[ -n $kube_context ]]; then
+        kube_display=$kube_context
+        if [[ $kube_context == gke_*_*_* ]]; then
+          kube_project=${kube_context#gke_}
+          kube_project=${kube_project%%_*}
+          kube_display="$kube_project/${kube_context#*_*_*_}"
+        fi
+        if [[ ${kube_context:l} == *prod* ]]; then
+          kube=" %F{red}k8s(${kube_display//\%/%%})%f"
+        else
+          kube=" %F{cyan}k8s(${kube_display//\%/%%})%f"
+        fi
+      fi
+    fi
+    print -r -- "$details"$'\t'"$kube"
   }
   if zpty -b _pure_worker _pure_worker; then
     _pure_fd=$REPLY

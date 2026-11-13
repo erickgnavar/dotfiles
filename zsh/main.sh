@@ -220,7 +220,9 @@ k8s_change_context() {
   local context
   context=$(kubectl config get-contexts --output='name' | fzf --header="Select context")
   echo "Changing to $context"
-  kubectl config use-context "$context"
+  if kubectl config use-context "$context"; then
+    command -v _pure_kube_refresh >/dev/null 2>&1 && _pure_kube_refresh
+  fi
 }
 
 ck8s() {

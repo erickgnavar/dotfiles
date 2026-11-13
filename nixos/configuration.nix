@@ -363,7 +363,7 @@
     environment.WAYLAND_DISPLAY = "wayland-1";
     serviceConfig = {
       # Port 5900 is reserved by libvirt/QEMU's local VNC display.
-      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -C /etc/wayvnc/config -Ldebug 0.0.0.0 5901";
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -C /etc/wayvnc/config -Ldebug 0.0.0.0 5999";
       Restart = "on-failure";
       RestartSec = 2;
     };
@@ -544,7 +544,7 @@
     # Allow direct Tailscale peer connections and LocalSend discovery.
     allowedUDPPorts = [ config.services.tailscale.port 53317 ];
     # WayVNC listens globally but is reachable only through Tailscale.
-    interfaces.${config.services.tailscale.interfaceName}.allowedTCPPorts = [ 5901 ];
+    interfaces.${config.services.tailscale.interfaceName}.allowedTCPPorts = [ 5999 ];
   };
 
   # This value determines the NixOS release from which the default

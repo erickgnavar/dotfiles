@@ -1115,7 +1115,7 @@
 	 (:package "parrot" :fetcher github :repo "dp12/parrot" :files
 		   (:defaults "img") :source "elpaca-menu-lock-file"
 		   :protocol https :inherit t :depth treeless :ref
-		   "1d381f24d74242018e306d1a0c891bed9a465ac3" :id
+		   "c2700b1d42f94f8cb574a0f96a143f4865b180b6" :id
 		   parrot :type git))
  (parseclj :source "elpaca-menu-lock-file" :recipe
 	   (:package "parseclj" :repo "clojure-emacs/parseclj"

@@ -15,6 +15,7 @@ selection=$(
     "  Clipboard history" \
     "  Toggle night light" \
     "󰢹  Toggle remote desktop" \
+    "󰖔  Toggle Sunshine" \
     "󰆴  Toggle process monitor" \
     "󰆴  Kill process" \
     "󰩹  Empty trash" \
@@ -143,6 +144,20 @@ case "$selection" in
   ;;
 "󰢹  Toggle remote desktop")
   exec "$HOME/.config/waybar/scripts/vnc-toggle.sh"
+  ;;
+"󰖔  Toggle Sunshine")
+  if systemctl --user is-active --quiet sunshine.service; then
+    action=stop
+    message="Sunshine stopped"
+  else
+    action=start
+    message="Sunshine started"
+  fi
+  if ! systemctl --user "$action" sunshine.service; then
+    notify-send -u critical "Sunshine" "Failed to $action Sunshine. Check the user service journal."
+    exit 1
+  fi
+  notify-send "Sunshine" "$message" || true
   ;;
 "󰆴  Toggle process monitor")
   exec eww open --toggle processes

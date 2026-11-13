@@ -11,7 +11,7 @@ screenshot)
   ;;
 record)
   title="Recording saved"
-  actions=()
+  actions=(--action=trim="Trim")
   ;;
 *) exit 2 ;;
 esac
@@ -26,6 +26,10 @@ open) xdg-open "$file" ;;
 edit)
   [[ "$kind" == screenshot ]] || exit 2
   swappy -f "$file" -o "$file"
+  ;;
+trim)
+  [[ "$kind" == record ]] || exit 2
+  qs -c desktop ipc call trimmer open "$file"
   ;;
 reveal) nautilus --select "$file" ;;
 share) localsend_app "$file" ;;

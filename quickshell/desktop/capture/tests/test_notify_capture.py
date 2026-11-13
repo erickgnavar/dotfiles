@@ -20,6 +20,8 @@ class CaptureNotificationTests(unittest.TestCase):
             ("screenshot", "reveal", "nautilus"),
             ("screenshot", "share", "localsend_app"),
             ("record", "open", "xdg-open"),
+            ("record", "trim", "qs"),
+            ("screenshot", "trim", None),
             ("record", "reveal", "nautilus"),
             ("record", "share", "localsend_app"),
             ("record", "", None),
@@ -40,6 +42,7 @@ class CaptureNotificationTests(unittest.TestCase):
                     "swappy",
                     "nautilus",
                     "localsend_app",
+                    "qs",
                 ):
                     mock = root / name
                     mock.write_text(
@@ -65,13 +68,17 @@ class CaptureNotificationTests(unittest.TestCase):
                     timeout=5,
                 )
                 self.assertEqual(
-                    result.returncode, 2 if action == "edit" and kind == "record" else 0
+                    result.returncode,
+                    2
+                    if (action, kind) in (("edit", "record"), ("trim", "screenshot"))
+                    else 0,
                 )
                 calls = [json.loads(line) for line in trace.read_text().splitlines()]
                 self.assertIn("--action=share=Share via LocalSend", calls[0])
                 self.assertEqual(
                     "--action=edit=Edit in Swappy" in calls[0], kind == "screenshot"
                 )
+                self.assertEqual("--action=trim=Trim" in calls[0], kind == "record")
                 self.assertEqual(len(calls), 2 if command else 1)
                 if command:
                     self.assertEqual(calls[1][0], command)
@@ -79,6 +86,11 @@ class CaptureNotificationTests(unittest.TestCase):
                     if command == "swappy":
                         self.assertEqual(
                             calls[1][1:], ["-f", str(file), "-o", str(file)]
+                        )
+                    if command == "qs":
+                        self.assertEqual(
+                            calls[1][1:-1],
+                            ["-c", "desktop", "ipc", "call", "trimmer", "open"],
                         )
                     if command == "nautilus":
                         self.assertEqual(calls[1][1], "--select")

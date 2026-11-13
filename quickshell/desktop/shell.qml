@@ -15,6 +15,7 @@ import "./color_picker"
 ShellRoot {
     Dock { }
     Capture { }
+    Trimmer { }
     AppSwitcher { }
     WallpaperPicker { }
     ColorPicker { }

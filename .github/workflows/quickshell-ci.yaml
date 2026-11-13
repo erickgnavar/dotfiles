@@ -9,6 +9,7 @@ on:
       - 'sway/scripts/lockscreen.sh'
       - 'sway/config'
       - 'nixos/configuration.nix'
+      - 'nixos/flake.lock'
       - 'wlogout/layout'
       - '.github/workflows/quickshell-ci.yaml'
   pull_request:
@@ -17,6 +18,7 @@ on:
       - 'sway/scripts/lockscreen.sh'
       - 'sway/config'
       - 'nixos/configuration.nix'
+      - 'nixos/flake.lock'
       - 'wlogout/layout'
       - '.github/workflows/quickshell-ci.yaml'
 
@@ -24,6 +26,19 @@ permissions:
   contents: read
 
 jobs:
+  qml:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31.11.5
+
+      - name: Check QML parsing and imports
+        run: nix-shell --pure quickshell/qml-check.nix --run 'bash quickshell/check-qml.sh'
+
   tests:
     runs-on: ubuntu-26.04
     timeout-minutes: 5

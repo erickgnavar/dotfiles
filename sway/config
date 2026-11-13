@@ -34,15 +34,8 @@ gaps inner 5
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
-# Make Sway's session environment available to D-Bus and systemd user services.
-exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY SWAYSOCK XDG_SESSION_TYPE
-# Restart the clipboard picker after importing Sway's environment.
-exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
-    systemctl --user restart clipboard-picker.service'
-
-# Restore the wallpaper independently of the clipboard picker.
-exec sh -c 'systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK; \
-    bash "$HOME/.config/sway/scripts/wallpaper.sh" --restore'
+# Refresh session environment on reload; initialize clipboard and wallpaper once per session.
+exec_always bash $scripts/session-init.sh
 
 exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/styles.css
 # Dock, capture toolbar, app switcher, and wallpaper picker share one process.

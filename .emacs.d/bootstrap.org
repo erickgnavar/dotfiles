@@ -2672,7 +2672,11 @@ after installation run ~M-x treesit-install-language-grammer~ to compile ~svelte
   :ensure t
   :defer t
   :custom
-  (zig-format-on-save nil))
+  (zig-format-on-save nil)
+  :mode-hydra
+  ((:title (concat (nerd-icons-icon-for-buffer) " Zig Commands"))
+   ("Format"
+    (("f" zig-format-buffer)))))
 #+end_src
 
 ** Odin

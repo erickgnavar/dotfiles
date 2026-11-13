@@ -256,7 +256,7 @@
           gtk-theme = "adw-gtk3-dark";
           icon-theme = "Papirus-Dark";
           cursor-theme = "Bibata-Modern-Classic";
-          cursor-size = lib.gvariant.mkUint32 24;
+          cursor-size = lib.gvariant.mkInt32 24;
           font-name = "Sans 10";
         };
       }

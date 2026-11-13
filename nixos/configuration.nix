@@ -268,6 +268,8 @@
   # Start Docker manually; docker.service will also start its required socket.
   systemd.sockets.docker.wantedBy = lib.mkForce [ ];
   virtualisation.libvirtd.enable = true;
+  # prevent to start VMs automatically on host boot
+  virtualisation.libvirtd.onBoot = "ignore";
   programs.virt-manager.enable = true;
 
   # Provide one graphical authentication agent after Sway imports its session environment.

@@ -470,6 +470,7 @@
     slurp
     imagemagick # Pixel color picking from screenshots.
     tesseract # Region OCR to clipboard (English recognition).
+    zbar # Decode QR codes from selected screen regions.
     wf-recorder # screen and region recording from the Quickshell capture toolbar
     cliphist
     telegram-desktop

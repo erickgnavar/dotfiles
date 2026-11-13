@@ -24,3 +24,6 @@ source ~/.config/zsh/prompt.zsh
 source ~/.config/zsh/main.sh
 
 nerdfetch
+
+# Always use the standard kubeconfig location
+export KUBECONFIG="$HOME/.kube/config"

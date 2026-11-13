@@ -11,7 +11,6 @@ Scope {
 
     property string kind: "screenshot"
     property string area: "region"
-    property bool annotate: false
     property bool audio: false
     property string audioSource: "default"
     property var audioSources: {
@@ -106,7 +105,6 @@ Scope {
                 decodeURIComponent(Qt.resolvedUrl("capture.sh").toString().replace("file://", "")),
                 shell.kind,
                 shell.area,
-                shell.annotate ? "annotate" : "plain",
                 shell.audio ? "audio" : "silent",
                 audioSourcePicker.currentValue || "default"
             ];
@@ -287,14 +285,10 @@ Scope {
                     spacing: 16
                     CheckBox {
                         id: optionToggle
-                        text: shell.kind === "record" ? "Include audio" : "Annotate in Swappy"
-                        checked: shell.kind === "record" ? shell.audio : shell.annotate
-                        onToggled: {
-                            if (shell.kind === "record")
-                                shell.audio = optionToggle.checked;
-                            else
-                                shell.annotate = optionToggle.checked;
-                        }
+                        visible: shell.kind === "record"
+                        text: "Include audio"
+                        checked: shell.audio
+                        onToggled: shell.audio = optionToggle.checked
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 12
                         spacing: 8

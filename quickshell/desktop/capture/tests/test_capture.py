@@ -103,13 +103,12 @@ class CaptureTests(unittest.TestCase):
         self,
         kind="screenshot",
         area="region",
-        option="plain",
         audio="silent",
         source="default",
         request="",
     ):
         process = subprocess.Popen(
-            ["bash", str(SCRIPT), kind, area, option, audio, source],
+            ["bash", str(SCRIPT), kind, area, audio, source],
             env=self.env,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
@@ -145,7 +144,10 @@ class CaptureTests(unittest.TestCase):
     def test_ui_can_enable_recording_audio(self):
         source = SCRIPT.with_name("Capture.qml").read_text()
         self.assertIn("import Quickshell.Services.Pipewire", source)
-        self.assertIn('text: shell.kind === "record" ? "Include audio"', source)
+        self.assertIn('text: "Include audio"', source)
+        self.assertIn('visible: shell.kind === "record"', source)
+        self.assertNotIn("annotate", source)
+        self.assertNotIn("Annotate in Swappy", source)
         self.assertIn('label: "Default microphone", name: "default"', source)
         self.assertIn('!node.name.endsWith(".monitor")', source)
         self.assertIn('audioSourcePicker.currentValue || "default"', source)
@@ -190,15 +192,14 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(self.calls("grim")[0][:2], ["-g", "-100,50 640x480"])
         self.assertEqual(self.calls("swappy"), [])
 
-    def test_annotation_survives_notification_failure(self):
+    def test_screenshot_survives_notification_failure(self):
         self.env["TEST_NOTIFY_STATUS"] = "1"
-        self.assertEqual(self.run_capture(option="annotate", request="stop\n")[0], 0)
+        self.assertEqual(self.run_capture(request="stop\n")[0], 0)
         files = list((self.root / "home/Pictures/Screenshots").glob("*.png"))
         self.assertEqual(len(files), 1)
-        self.assertEqual(files[0].read_bytes(), b"annotated")
-        self.assertEqual(
-            self.calls("swappy"), [["-f", str(files[0]), "-o", str(files[0])]]
-        )
+        self.assertEqual(files[0].read_bytes(), b"original")
+        self.assertEqual((self.root / "clipboard").read_bytes(), b"original")
+        self.assertEqual(self.calls("swappy"), [])
 
     def test_focused_screen_screenshot(self):
         self.assertEqual(self.run_capture(area="screen")[0], 0)

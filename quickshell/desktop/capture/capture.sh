@@ -99,15 +99,12 @@ if [[ "$kind" == screenshot ]]; then
   file="$directory/screenshot-$(date +%Y-%m-%d_%H-%M-%S-%N).png"
   grim "${capture_args[@]}" "$file"
   wl-copy --type image/png <"$file"
-  notify-send -a Capture "Screenshot saved and copied" "$file" || true
-  if [[ "${3:-}" == annotate ]]; then
-    swappy -f "$file" -o "$file" </dev/null
-  fi
+  bash "$(dirname -- "${BASH_SOURCE[0]}")/notify-capture.sh" screenshot "$file" </dev/null >/dev/null 2>&1 &
   exit 0
 fi
 
-audio=${4:-silent}
-audio_source=${5:-default}
+audio=${3:-silent}
+audio_source=${4:-default}
 case "$audio" in
 silent) recorder_args=("${capture_args[@]}") ;;
 audio)
@@ -151,4 +148,4 @@ if [[ -n "$signal_stop" ]]; then
   exit 130
 fi
 stop_recorder
-notify-send -a Capture "Recording saved" "$file" || true
+bash "$(dirname -- "${BASH_SOURCE[0]}")/notify-capture.sh" record "$file" </dev/null >/dev/null 2>&1 &

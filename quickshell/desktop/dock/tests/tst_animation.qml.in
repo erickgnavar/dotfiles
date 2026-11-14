@@ -1,0 +1,60 @@
+import QtQuick
+import QtTest
+
+TestCase {
+    name: "DockAnimation"
+    when: windowShown
+    width: 100
+    height: 100
+
+    DockAnimation {
+        id: dock
+    }
+
+    function init() {
+        dock.expanded = false;
+        tryCompare(dock.panel, "x", -60);
+        tryCompare(dock.panel, "opacity", 0);
+    }
+
+    function verifyIntermediate() {
+        verify(dock.panel.x > -60 && dock.panel.x < 8,
+               "Slide must pass through intermediate positions");
+        verify(dock.panel.opacity > 0 && dock.panel.opacity < 1,
+               "Fade must pass through intermediate opacity");
+        // Both animations share their duration and easing curve.
+        fuzzyCompare((dock.panel.x + 60) / 68, dock.panel.opacity, 0.02);
+    }
+
+    function test_reveal_and_hide() {
+        dock.expanded = true;
+        wait(60);
+        verifyIntermediate();
+        tryCompare(dock.panel, "x", 8);
+        tryCompare(dock.panel, "opacity", 1);
+
+        dock.expanded = false;
+        wait(60);
+        verifyIntermediate();
+        tryCompare(dock.panel, "x", -60);
+        tryCompare(dock.panel, "opacity", 0);
+    }
+
+    function test_reverse_mid_animation() {
+        dock.expanded = true;
+        wait(60);
+        verifyIntermediate();
+        const previousX = dock.panel.x;
+        const previousOpacity = dock.panel.opacity;
+        dock.expanded = false;
+        // Reversing must not jump immediately to either endpoint.
+        fuzzyCompare(dock.panel.x, previousX, 0.01);
+        fuzzyCompare(dock.panel.opacity, previousOpacity, 0.01);
+        tryCompare(dock.panel, "x", -60);
+        tryCompare(dock.panel, "opacity", 0);
+
+        dock.expanded = true;
+        tryCompare(dock.panel, "x", 8);
+        tryCompare(dock.panel, "opacity", 1);
+    }
+}

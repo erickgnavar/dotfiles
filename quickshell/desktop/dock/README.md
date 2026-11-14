@@ -56,3 +56,18 @@ python3 -B -m unittest discover -s quickshell/desktop/dock/tests -v
 
 These require Python and Node.js. They check QML wiring and execute the actual JavaScript
 handlers with mocked objects; they do not replace live Wayland positioning tests.
+
+## Qt runtime tests
+
+From the repository root:
+
+```sh
+nix-shell quickshell/qml-check.nix --run \
+  'python3 -B quickshell/desktop/dock/tests/run_qt_tests.py'
+```
+
+The runner uses `qmltestrunner` with the offscreen platform and software rendering by default.
+It extracts the production slide/fade bindings from `Dock.qml` into a temporary Qt Quick scene.
+Tests exercise intermediate frames, synchronized motion, endpoints, and mid-animation reversal.
+The `.qml.in` template becomes a QML test beside that generated scene; no fixture is kept in-tree.
+These tests do not instantiate Quickshell windows or verify input masks, hover, or Wayland behavior.

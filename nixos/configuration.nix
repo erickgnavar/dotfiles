@@ -513,6 +513,7 @@
     tree
     btop
     htop
+    mission-center
     obs-studio
     go
     gopls # LSP server

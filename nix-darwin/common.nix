@@ -32,6 +32,7 @@
     gopls
     gotools
     air
+    clang-tools
     biome
     bat
     mise

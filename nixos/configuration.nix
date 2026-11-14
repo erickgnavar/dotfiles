@@ -373,8 +373,6 @@
 
   environment.systemPackages = with pkgs; [
     pamixer
-    i3lock-fancy
-    polybar
     # available theme config file are inside
     # /run/current-system/sw/share/sddm/themes/sddm-astronaut-theme/Themes
     (sddm-astronaut.overrideAttrs (oldAttrs: {

@@ -44,6 +44,11 @@ jobs:
           nix-shell --pure quickshell/qml-check.nix --run
           'python3 -B quickshell/desktop/dock/tests/run_qt_tests.py'
 
+      - name: Run component Qt runtime tests
+        run: >-
+          nix-shell --pure quickshell/qml-check.nix --run
+          'python3 -B quickshell/tests/run_qt_tests.py'
+
   tests:
     runs-on: ubuntu-26.04
     timeout-minutes: 5

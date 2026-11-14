@@ -1,0 +1,222 @@
+import QtQuick
+import QtQuick.Controls
+import QtMultimedia
+import QtTest
+import "app_switcher"
+import "capture"
+import "color_picker"
+import "wallpaper_picker"
+
+TestCase {
+    name: "QuickshellComponents"
+    when: windowShown
+    width: 800
+    height: 600
+
+    Component { id: switcherFactory; AppSwitcher {} }
+    Component { id: captureFactory; Capture {} }
+    Component { id: trimmerFactory; Trimmer {} }
+    Component { id: colorFactory; ColorPicker {} }
+    Component { id: wallpaperFactory; WallpaperPicker {} }
+    Component { id: lockFactory; LockScreen {} }
+    Component { id: desktopFactory; Desktop {} }
+
+    function make(factory) {
+        const item = createTemporaryObject(factory, this);
+        verify(item !== null);
+        return item;
+    }
+
+    function test_switcher_cycle_accept() {
+        const item = make(switcherFactory);
+        const first = {appId: "terminal", title: "Terminal"};
+        const second = {appId: "browser", title: "Browser"};
+        item.windows.toplevels = {values: [first, second]};
+        item.windows.activeToplevel = first;
+        item.step(1);
+        verify(item.opened);
+        compare(item.selected, 1);
+        item.step(1);
+        compare(item.selected, 0);
+        item.step(-1);
+        compare(item.selected, 1);
+        item.accept();
+        verify(!item.opened);
+        compare(item.applications.length, 0);
+        compare(item.focusRequest.target.appId, "browser");
+        verify(item.focusRequest.running);
+    }
+
+    function test_switcher_empty_and_removed_window() {
+        const item = make(switcherFactory);
+        item.step(1);
+        verify(!item.opened);
+        item.windows.toplevels = {values: [{appId: "terminal", title: "Gone"}]};
+        item.step(1);
+        item.windows.toplevels = {values: []};
+        item.accept();
+        verify(!item.opened);
+        verify(!item.focusRequest.running);
+    }
+
+    function test_capture_busy_and_stop() {
+        const item = make(captureFactory);
+        item.toggle();
+        verify(item.toolbar.visible);
+        item.backend.running = true;
+        item.capture();
+        verify(item.toolbar.visible);
+        item.backend.running = false;
+        item.capture();
+        verify(!item.toolbar.visible);
+        verify(item.captureDelay.running);
+        item.toggle();
+        verify(!item.toolbar.visible);
+        item.recording = true;
+        item.stop();
+        verify(item.stopping);
+        compare(item.backend.written, "stop\n");
+        item.stop();
+        compare(item.backend.written, "stop\n");
+    }
+
+    function test_capture_button_disabled_state() {
+        const item = make(captureFactory);
+        compare(item.button.opacity, 1);
+        item.button.enabled = false;
+        compare(item.button.opacity, 0.5);
+        item.button.enabled = true;
+        compare(item.button.opacity, 1);
+    }
+
+    function test_trimmer_range_bindings() {
+        const item = make(trimmerFactory);
+        verify(!item.valid);
+        item.duration = 10;
+        item.limits.setValues(2, 8);
+        compare(item.startTime, 2);
+        compare(item.endTime, 8);
+        verify(item.valid);
+        item.limits.setValues(4, 4);
+        verify(!item.valid);
+        compare(item.formatTime(61.234), "01:01.234");
+    }
+
+    function test_trimmer_playback_and_cancel() {
+        const item = make(trimmerFactory);
+        item.duration = 10;
+        item.limits.setValues(2, 8);
+        item.togglePlayback();
+        compare(item.player.position, 2000);
+        compare(item.player.playbackState, MediaPlayer.PlayingState);
+        item.togglePlayback();
+        compare(item.player.playbackState, MediaPlayer.PausedState);
+        item.worker.running = true;
+        item.togglePlayback();
+        compare(item.player.playbackState, MediaPlayer.PausedState);
+        item.close();
+        verify(item.cancelled);
+        compare(item.worker.lastSignal, 15);
+        compare(item.player.playbackState, MediaPlayer.StoppedState);
+    }
+
+    function test_color_picker_path_and_cancel() {
+        const item = make(colorFactory);
+        item.cancel();
+        verify(!item.writer.running);
+        item.pick("/tmp/color test/point");
+        verify(item.picking);
+        compare(item.patchFile, "/tmp/color test/patch.png");
+        compare(item.fileUrl(item.pointFile), "file:///tmp/color%20test/point");
+        item.cancel();
+        verify(!item.picking);
+        compare(item.writer.command, ["touch", "/tmp/color test/point"]);
+        verify(item.writer.running);
+        item.pointFile = "";
+        compare(item.patchFile, "");
+    }
+
+    function test_wallpaper_selection_and_preview() {
+        const item = make(wallpaperFactory);
+        item.wallpapers.append({path: "/image.png", video: false,
+                               thumbnail: "/thumb.png", preview: ""});
+        item.wallpapers.append({path: "/video.mp4", video: true,
+                               thumbnail: "/thumb2.png", preview: "/preview.mp4"});
+        item.select(-1);
+        compare(item.selectedPath, "");
+        item.select(1);
+        compare(item.selectedPath, "/video.mp4");
+        compare(item.selectedPreview, "/preview.mp4");
+        verify(item.videoDelay.running);
+        verify(item.framePrepareDelay.running);
+        item.select(0);
+        compare(item.selectedPreview, "/thumb.png");
+        verify(!item.selectedVideo);
+        verify(!item.videoDelay.running);
+        verify(!item.framePrepareDelay.running);
+        item.select(20);
+        compare(item.selectedPath, "/image.png");
+    }
+
+    function test_wallpaper_open_close_and_apply() {
+        const item = make(wallpaperFactory);
+        item.open();
+        verify(item.panel.visible);
+        verify(item.scanner.running);
+        item.applyWallpaper("", false);
+        verify(!item.apply.running);
+        item.applyWallpaper("/image.png", false);
+        verify(item.apply.running);
+        compare(item.apply.command[item.apply.command.length - 1], "/image.png");
+        verify(!item.panel.visible);
+        verify(!item.scanner.running);
+        item.applyWallpaper("/ignored.png", true);
+        compare(item.apply.command[item.apply.command.length - 1], "/image.png");
+    }
+
+    function test_lock_busy_and_rejected_start() {
+        const item = make(lockFactory);
+        item.submit("");
+        compare(item.pam.starts, 0);
+        item.submit("secret");
+        verify(item.busy);
+        compare(item.pendingPassword, "secret");
+        item.submit("duplicate");
+        compare(item.pam.starts, 1);
+        item.waitingForPam = false;
+        item.pam.startResult = false;
+        item.submit("retry");
+        verify(!item.busy);
+        verify(item.failed);
+        compare(item.pendingPassword, "");
+        compare(item.status, "Could not start authentication");
+        compare(item.accent, Qt.color("#f53c3c"));
+        item.unlocked = true;
+        verify(item.busy);
+        compare(item.accent, Qt.color("#2ecc71"));
+    }
+
+    function test_lock_challenge_and_clear_signal() {
+        const item = make(lockFactory);
+        const spy = createTemporaryObject(spyFactory, this, {target: item});
+        item.pam.active = true;
+        item.pam.responseRequired = true;
+        item.submit("challenge response");
+        compare(item.pam.response, "challenge response");
+        compare(spy.count, 1);
+        verify(item.waitingForPam);
+    }
+
+    Component {
+        id: spyFactory
+        SignalSpy { signalName: "clearInputs" }
+    }
+
+    function test_desktop_composition() {
+        const item = make(desktopFactory);
+        for (const name of ["Dock", "Capture", "Trimmer", "AppSwitcher",
+                            "WallpaperPicker", "ColorPicker"]) {
+            verify(findChild(item, name) !== null, name + " must be instantiated");
+        }
+    }
+}

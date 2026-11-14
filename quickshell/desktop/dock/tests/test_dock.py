@@ -56,7 +56,7 @@ class DockTests(unittest.TestCase):
         self.assertIn("visible: true", SOURCE)
         for edge in ("left", "top", "bottom"):
             self.assertIn(f"anchors.{edge}: true", SOURCE)
-        self.assertIn("implicitWidth: expanded ? 76 : 3", SOURCE)
+        self.assertIn("implicitWidth: 76", SOURCE)
         self.assertIn("shell.forcedOpen || dock.hoverExpanded", SOURCE)
         reveal = re.search(r"onTriggered: (dock\.hoverExpanded = true)", SOURCE).group(
             1
@@ -70,6 +70,17 @@ class DockTests(unittest.TestCase):
             "toggle(); assert.equal(shell.forcedOpen, true);"
             "toggle(); assert.equal(shell.forcedOpen, false);"
         )
+
+    def test_smooth_animation_preserves_hidden_input_edge(self):
+        mask = block("mask: Region")
+        self.assertIn("width: 3", mask)
+        self.assertIn("width: dock.expanded ? dock.width : 0", mask)
+        for property_name in ("x", "opacity"):
+            animation = block(f"Behavior on {property_name}")
+            self.assertIn("duration: 200", animation)
+            self.assertIn("easing.type: Easing.InOutCubic", animation)
+        self.assertRegex(SOURCE, r"id: revealDelay\s+interval: 100")
+        self.assertRegex(SOURCE, r"id: hideDelay\s+interval: 350")
 
     def test_one_tooltip_per_screen(self):
         self.assertEqual(SOURCE.count("id: tooltip\n"), 1)

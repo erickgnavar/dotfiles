@@ -59,7 +59,7 @@ Scope {
             anchors.left: true
             anchors.top: true
             anchors.bottom: true
-            implicitWidth: expanded ? 76 : 3
+            implicitWidth: 76
             mask: Region {
                 width: 3
                 height: dock.height
@@ -387,8 +387,8 @@ Scope {
                     border.color: "#26ffffff"
                     opacity: dock.expanded ? 1 : 0
 
-                    Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-                    Behavior on opacity { NumberAnimation { duration: 120 } }
+                    Behavior on x { NumberAnimation { duration: 200; easing.type: Easing.InOutCubic } }
+                    Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.InOutCubic } }
 
                     ListView {
                         id: windows

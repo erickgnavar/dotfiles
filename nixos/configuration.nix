@@ -375,6 +375,7 @@ in
 
   environment.systemPackages = with pkgs; [
     clipboardPicker
+    python3Packages.faker
     pamixer
     # available theme config file are inside
     # /run/current-system/sw/share/sddm/themes/sddm-astronaut-theme/Themes

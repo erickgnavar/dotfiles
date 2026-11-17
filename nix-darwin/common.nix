@@ -13,6 +13,7 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
     mkalias
+    python3Packages.faker
     btop
     htop
     tokei
@@ -117,7 +118,6 @@
       # we need to use homebrew version to be able to use erlang
       # with no issues
       "openssl@3"
-      "lorem"
     ];
     casks = [
       "macvim-app"

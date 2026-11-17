@@ -142,6 +142,8 @@ in
   services.espanso = {
     enable = true;
     package = pkgs.espanso-wayland;
+    # The user service has an isolated PATH; system packages are not available to shell expansions.
+    extraPackages = with pkgs; [ bash curl python3Packages.faker ];
   };
   services.gnome.gcr-ssh-agent.enable = false;
 
@@ -375,7 +377,6 @@ in
 
   environment.systemPackages = with pkgs; [
     clipboardPicker
-    python3Packages.faker
     pamixer
     # available theme config file are inside
     # /run/current-system/sw/share/sddm/themes/sddm-astronaut-theme/Themes

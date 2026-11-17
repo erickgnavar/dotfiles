@@ -170,6 +170,7 @@ in
   };
 
   xdg.mime.defaultApplications = {
+    "inode/directory" = "org.gnome.Nautilus.desktop";
     "text/plain" = "gvim.desktop";
     "text/x-log" = "gvim.desktop";
     "text/html" = "helium.desktop";

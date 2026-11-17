@@ -175,11 +175,17 @@ case "$selection" in
   kill -TERM -- "$pid"
   ;;
 "󰩹  Empty trash")
-  trash_dir="${XDG_DATA_HOME:-$HOME/.local/share}/Trash"
-  for directory in files info; do
-    [[ -d "$trash_dir/$directory" ]] || continue
-    find "$trash_dir/$directory" -mindepth 1 -delete
-  done
+  confirmation=$(
+    printf '%s\n' "Cancel" "Empty trash" |
+      rofi -dmenu -p "Permanently delete all trash?"
+  ) || exit 0
+  [[ "$confirmation" == "Empty trash" ]] || exit 0
+
+  if ! gio trash --empty; then
+    notify-send -u critical "Trash" "Failed to empty trash."
+    exit 1
+  fi
+  notify-send "Trash" "Trash emptied." || true
   ;;
 "󰌾  Lock screen")
   exec "$HOME/.config/sway/scripts/lockscreen.sh"

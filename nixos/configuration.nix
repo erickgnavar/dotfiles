@@ -3,6 +3,9 @@
 
 { config, lib, pkgs, haru, helium, ... }:
 
+let
+  clipboardPicker = import ../clipboard-picker { inherit pkgs; };
+in
 {
   imports =
     [
@@ -290,7 +293,7 @@
     after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     serviceConfig = {
-      ExecStart = "%h/dotfiles/clipboard-picker/result/bin/clipboard-picker --gapplication-service";
+      ExecStart = "${clipboardPicker}/bin/clipboard-picker --gapplication-service";
       Restart = "on-failure";
       RestartSec = 2;
     };
@@ -370,6 +373,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    clipboardPicker
     pamixer
     # available theme config file are inside
     # /run/current-system/sw/share/sddm/themes/sddm-astronaut-theme/Themes

@@ -70,11 +70,11 @@ The NixOS configuration starts the picker with `--gapplication-service`. This pr
 opening a window. Running the normal executable then activates the resident process over D-Bus.
 Escape and successful paste actions hide the resident window instead of stopping the service.
 
-Build the package before starting the service, then rebuild NixOS:
+NixOS builds and installs the package declaratively; no local `result` symlink is needed.
+From this directory, rebuild NixOS and restart the service:
 
 ```bash
-nix-build default.nix
-sudo nixos-rebuild switch --flake ../nixos
+sudo nixos-rebuild switch --impure --flake ../nixos
 systemctl --user restart clipboard-picker.service
 ```
 

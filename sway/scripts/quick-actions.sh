@@ -137,7 +137,7 @@ case "$selection" in
   swaymsg output "$output" mode "${width}x${height}@${refresh}Hz" >/dev/null
   ;;
 "  Clipboard history")
-  exec "$HOME/dotfiles/clipboard-picker/result/bin/clipboard-picker"
+  exec clipboard-picker
   ;;
 "  Toggle night light")
   exec "$HOME/.config/waybar/scripts/night-light.sh" toggle

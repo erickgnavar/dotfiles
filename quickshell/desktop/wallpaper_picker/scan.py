@@ -18,6 +18,7 @@ VIDEOS = {".mp4", ".mkv", ".webm", ".mov", ".avi", ".m4v"}
 # closing or reopening the picker cannot leave media decoders behind.
 _children = []
 _stopping = False
+_generation = None
 
 
 def terminate_children():
@@ -36,6 +37,8 @@ def cancel_children(signum, frame):
 
 
 def emit(entry):
+    if _generation is not None:
+        entry = {**entry, "generation": _generation}
     print(json.dumps(entry), flush=True)
 
 
@@ -192,4 +195,5 @@ def main(directory):
 
 
 if __name__ == "__main__":
+    _generation = int(sys.argv[2]) if len(sys.argv) > 2 else None
     main(sys.argv[1])

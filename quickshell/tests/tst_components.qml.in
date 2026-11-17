@@ -158,6 +158,52 @@ TestCase {
         compare(item.selectedPath, "/image.png");
     }
 
+    function test_wallpaper_indexed_updates_data() {
+        return [{tag: "1000 rows", count: 1000}, {tag: "10000 rows", count: 10000}];
+    }
+
+    function test_wallpaper_indexed_updates(data) {
+        const item = make(wallpaperFactory);
+        item.open();
+        const generation = item.scanGeneration;
+        for (let i = 0; i < data.count; i++)
+            item.updateWallpaper({path: "/" + i, video: false, thumbnail: "", preview: "",
+                                  small: false, generation: generation});
+        item.select(data.count - 1);
+        for (let i = data.count - 1; i >= 0; i--) {
+            item.updateWallpaper({path: "/" + i, thumbnail: "/thumb" + i,
+                                  small: true, generation: generation});
+            item.updateWallpaper({path: "/" + i, preview: "/preview" + i,
+                                  generation: generation});
+        }
+        compare(item.wallpapers.count, data.count);
+        compare(item.wallpaperIndices.size, data.count);
+        compare(item.selectedThumbnail, "/thumb" + (data.count - 1));
+        compare(item.selectedPreview, "/preview" + (data.count - 1));
+        for (let i = 0; i < data.count; i++) {
+            compare(item.wallpapers.get(i).path, "/" + i);
+            compare(item.wallpapers.get(i).preview, "/preview" + i);
+        }
+        item.updateWallpaper({path: "/unknown", preview: "/ignored", generation: generation});
+        compare(item.wallpapers.count, data.count);
+        item.close();
+        item.updateWallpaper({path: "/0", preview: "/closed", generation: generation});
+        compare(item.wallpapers.get(0).preview, "/preview0");
+        item.open();
+        compare(item.wallpaperIndices.size, 0);
+        compare(item.wallpapers.count, 0);
+        item.updateWallpaper({path: "/old", video: false, generation: generation});
+        item.updateWallpaper({error: "stale error", generation: generation});
+        compare(item.wallpapers.count, 0);
+        compare(item.scanError, "");
+        item.updateWallpaper({path: "/new", video: false, thumbnail: "", preview: "",
+                              small: false, generation: item.scanGeneration});
+        item.updateWallpaper({path: "/0", preview: "/late", generation: generation});
+        compare(item.selectedPath, "/new");
+        compare(item.wallpaperIndices.get("/new"), 0);
+        compare(item.wallpapers.get(0).preview, "");
+    }
+
     function test_wallpaper_open_close_and_apply() {
         const item = make(wallpaperFactory);
         item.open();

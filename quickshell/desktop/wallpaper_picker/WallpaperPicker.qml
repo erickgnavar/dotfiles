@@ -18,6 +18,8 @@ Scope {
     property string selectedPreview: ""
     property string scanError: ""
     property bool closeAfterApply: false
+    property var wallpaperIndices: new Map()
+    property int scanGeneration: 0
 
     function fileUrl(path) {
         return path ? "file://" + encodeURIComponent(path).replace(/%2F/gi, "/") : "";
@@ -28,6 +30,8 @@ Scope {
             list.forceActiveFocus();
             return;
         }
+        shell.scanGeneration++;
+        shell.wallpaperIndices = new Map();
         wallpapers.clear();
         shell.selectedPath = "";
         shell.selectedThumbnail = "";
@@ -87,6 +91,42 @@ Scope {
             videoDelay.start();
     }
 
+    function updateWallpaper(entry) {
+        if (!panel.visible || entry.generation !== shell.scanGeneration)
+            return;
+        if (entry.error) {
+            shell.scanError = entry.error;
+        } else if (entry.video !== undefined) {
+            const index = wallpapers.count;
+            // Generation is transport metadata, not a model role.
+            delete entry.generation;
+            wallpapers.append(entry);
+            shell.wallpaperIndices.set(entry.path, index);
+            if (wallpapers.count === 1)
+                shell.select(0);
+        } else {
+            const index = shell.wallpaperIndices.get(entry.path);
+            if (index === undefined)
+                return;
+            if (entry.thumbnail !== undefined) {
+                wallpapers.setProperty(index, "thumbnail", entry.thumbnail);
+                wallpapers.setProperty(index, "small", entry.small);
+                if (shell.selectedPath === entry.path)
+                    shell.selectedThumbnail = entry.thumbnail;
+                if (!wallpapers.get(index).preview) {
+                    wallpapers.setProperty(index, "preview", entry.thumbnail);
+                    if (shell.selectedPath === entry.path)
+                        shell.selectedPreview = entry.thumbnail;
+                }
+            }
+            if (entry.preview !== undefined) {
+                wallpapers.setProperty(index, "preview", entry.preview);
+                if (shell.selectedPath === entry.path)
+                    shell.selectedPreview = entry.preview;
+            }
+        }
+    }
+
     IpcHandler {
         target: "picker"
         function toggle(): void {
@@ -103,42 +143,13 @@ Scope {
 
     Process {
         id: scanner
-        command: ["python3", Qt.resolvedUrl("scan.py").toString().replace("file://", ""), shell.directory]
+        command: ["python3", Qt.resolvedUrl("scan.py").toString().replace("file://", ""), shell.directory, String(shell.scanGeneration)]
         stdout: SplitParser {
             onRead: function (line) {
                 if (!panel.visible)
                     return;
                 try {
-                    const entry = JSON.parse(line);
-                    if (entry.error) {
-                        shell.scanError = entry.error;
-                    } else if (entry.video !== undefined) {
-                        wallpapers.append(entry);
-                        if (wallpapers.count === 1)
-                            shell.select(0);
-                    } else {
-                        for (let i = 0; i < wallpapers.count; i++) {
-                            if (wallpapers.get(i).path === entry.path) {
-                                if (entry.thumbnail !== undefined) {
-                                    wallpapers.setProperty(i, "thumbnail", entry.thumbnail);
-                                    wallpapers.setProperty(i, "small", entry.small);
-                                    if (shell.selectedPath === entry.path)
-                                        shell.selectedThumbnail = entry.thumbnail;
-                                    if (!wallpapers.get(i).preview) {
-                                        wallpapers.setProperty(i, "preview", entry.thumbnail);
-                                        if (shell.selectedPath === entry.path)
-                                            shell.selectedPreview = entry.thumbnail;
-                                    }
-                                }
-                                if (entry.preview !== undefined) {
-                                    wallpapers.setProperty(i, "preview", entry.preview);
-                                    if (shell.selectedPath === entry.path)
-                                        shell.selectedPreview = entry.preview;
-                                }
-                                break;
-                            }
-                        }
-                    }
+                    shell.updateWallpaper(JSON.parse(line));
                 } catch (error) {
                     console.warn("Wallpaper scan:", error);
                 }

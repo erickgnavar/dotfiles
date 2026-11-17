@@ -40,6 +40,20 @@ def alive(pid):
 
 
 class WallpaperPickerTests(unittest.TestCase):
+    def test_generation_tags_discovery_and_updates(self):
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), str(self.root / "collection"), "42"],
+            env=self.env,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        )
+        entries = [json.loads(line) for line in result.stdout.splitlines()]
+        self.assertTrue(any("video" in entry for entry in entries))
+        self.assertTrue(any("video" not in entry for entry in entries))
+        self.assertTrue(all(entry["generation"] == 42 for entry in entries))
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(
             prefix="quickshell-wallpaper-test-"

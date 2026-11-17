@@ -138,8 +138,9 @@ def generate(target):
     )
     sources["wallpaper_picker/WallpaperPicker.qml"] = fixture(
         "desktop/wallpaper_picker/WallpaperPicker.qml",
-        "selectedPath selectedVideo selectedThumbnail selectedPreview scanError closeAfterApply",
-        "fileUrl open close applyWallpaper select",
+        "selectedPath selectedVideo selectedThumbnail selectedPreview scanError closeAfterApply "
+        "wallpaperIndices scanGeneration",
+        "fileUrl open close applyWallpaper select updateWallpaper",
         process("scanner")
         + process("prepareFrame")
         + process("apply")

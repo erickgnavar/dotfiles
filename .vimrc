@@ -25,8 +25,6 @@ Plug 'lilydjwg/colorizer', { 'commit': '72790a003d5a706c287486a1a81e3a6b32158b54
 Plug 'editorconfig/editorconfig-vim', { 'commit': 'c0227885a06b155d5aa5465e08b9800e8c939f70' }
 Plug 'sheerun/vim-polyglot', { 'commit': 'f061eddb7cdcc614c8406847b2bfb53099832a4e' }
 Plug 'elzr/vim-json', { 'commit': '3727f089410e23ae113be6222e8a08dd2613ecf2' }
-Plug 'mattn/webapi-vim', { 'commit': 'c7eec04aad31e1665164d8292d0ec8b5c3cc5a57' }
-Plug 'mattn/gist-vim', { 'commit': 'fd55721a8f7c2a7c23d2e704405047e03d6f95f6' }
 Plug 'tpope/vim-fugitive', { 'commit': '3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0' }
 Plug 'airblade/vim-gitgutter', { 'commit': '90b75207bd9b55d8ac4af15f72b4e935462014d0' }
 Plug 'henrik/vim-indexed-search', { 'commit': '763fdd0eb818ad441433aa04d00eabfda579476c' }
@@ -82,10 +80,6 @@ set wildmenu "visual autocomplete for command menu
 set showmatch "highlight match [{}]
 set encoding=utf-8
 nnoremap <space> za
-
-" Gist commands
-let g:gist_clip_command = 'pbcopy'
-let g:gist_detect_filetype = 1
 
 set completeopt-=preview
 

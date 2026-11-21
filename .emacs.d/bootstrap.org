@@ -2668,18 +2668,35 @@ after installation run ~M-x treesit-install-language-grammer~ to compile ~svelte
 
 ** Zig
 
+After loading this configuration, run ~M-x treesit-install-language-grammar RET zig RET~ to install
+the Zig grammar from the configured ~tree-sitter-grammars~ repository. Reopen Zig buffers afterward.
+
+The grammar repository is overridden below until [[https://github.com/renzmann/treesit-auto/pull/156][PR #156]] is merged into ~treesit-auto~.
+
 #+begin_src emacs-lisp
-(use-package zig-mode
+(with-eval-after-load 'reformatter
+  (reformatter-define zig-format
+    :program zig-ts-zig-bin
+    :args '("fmt" "--stdin")))
+
+(use-package zig-ts-mode
   :ensure t
-  :defer t
-  :custom
-  (zig-format-on-save nil)
+  :mode ("\\.\\(zig\\|zon\\)\\'" . zig-ts-mode)
+  :init
+  (setf (alist-get 'zig treesit-language-source-alist)
+        '("https://github.com/tree-sitter-grammars/tree-sitter-zig"))
+  (with-eval-after-load 'treesit-auto
+    (when-let* ((recipe (seq-find (lambda (recipe)
+                                    (eq (treesit-auto-recipe-lang recipe) 'zig))
+                                  treesit-auto-recipe-list)))
+      (setf (treesit-auto-recipe-url recipe)
+            "https://github.com/tree-sitter-grammars/tree-sitter-zig")))
   :mode-hydra
   ((:title (concat (nerd-icons-icon-for-buffer) " Zig Commands"))
    ("Format"
     (("f" zig-format-buffer))
     "Run"
-    (("r" zig-run)))))
+    (("r" zig-ts-run)))))
 #+end_src
 
 ** Odin

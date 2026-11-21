@@ -1642,17 +1642,18 @@
 			       :inherit t :depth treeless :ref
 			       "f1907ed38acc479e78d5c113810465e4d77d8604"
 			       :id yasnippet-snippets :type git))
- (zig-mode :source "elpaca-menu-lock-file" :recipe
-	   (:package "zig-mode" :repo "ziglang/zig-mode" :fetcher
-		     github :files
-		     ("*.el" "*.el.in" "dir" "*.info" "*.texi"
-		      "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
-		      "doc/*.texinfo" "lisp/*.el" "docs/dir"
-		      "docs/*.info" "docs/*.texi" "docs/*.texinfo"
-		      (:exclude ".dir-locals.el" "test.el" "tests.el"
-				"*-test.el" "*-tests.el" "LICENSE"
-				"README*" "*-pkg.el"))
-		     :source "elpaca-menu-lock-file" :protocol https
-		     :inherit t :depth treeless :ref
-		     "f0b4a487530146f99230f4a5ff67e8d56c8f3f80" :id
-		     zig-mode :type git)))
+ (zig-ts-mode :source "elpaca-menu-lock-file" :recipe
+	      (:package "zig-ts-mode" :fetcher codeberg :repo
+			"meow_king/zig-ts-mode" :files
+			("*.el" "*.el.in" "dir" "*.info" "*.texi"
+			 "*.texinfo" "doc/dir" "doc/*.info"
+			 "doc/*.texi" "doc/*.texinfo" "lisp/*.el"
+			 "docs/dir" "docs/*.info" "docs/*.texi"
+			 "docs/*.texinfo"
+			 (:exclude ".dir-locals.el" "test.el"
+				   "tests.el" "*-test.el" "*-tests.el"
+				   "LICENSE" "README*" "*-pkg.el"))
+			:source "MELPA" :id zig-ts-mode :type git
+			:protocol https :inherit t :depth treeless
+			:ref
+			"4c03d52bd1e7f1b5601c638bff109b6e763b1cab")))
